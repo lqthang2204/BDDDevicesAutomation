@@ -1,0 +1,484 @@
+elements:
+  - id: segmentation-name-input
+    description: Segmentation name input
+    locators:
+      - device: WEB
+        type: CSS
+        value: input[placeholder='Segmentation Name']
+  - id: description-input
+    description: Description input
+    locators:
+      - device: WEB
+        type: CSS
+        value: textarea
+  - &communication-channel-dropdown
+    id: communication-channel-dropdown
+    description: Communication channel dropdown
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()='Communication Channel']/parent::div//*[contains(@class,'indicators')]
+  - id: communication-channel-dropdown-option
+    description: Select communication channel dropdown option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()="{text}"]
+  - &email-option
+    id: email-option
+    description: Email option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='Email']
+  - &sms-option
+    id: sms-option
+    description: SMS option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='SMS']
+  - &target-audience-dropdown
+    id: target-audience-dropdown
+    description: Target audience dropdown
+    locators:
+      - device: WEB
+        type: CSS
+        value: div[data-value="participants"]
+  - &prospect-option
+    id: prospect-option
+    description: Prospect option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='Prospects']
+  - &organizational-structure-edit-button
+    id: organizational-structure-edit-button
+    description: Organizational structure edit button
+    locators:
+      - device: WEB
+        type: CSS
+        value: div[class*='pencil-button']
+  - &awardee-title
+    id: awardee-title
+    description: Awardee title
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[@class='title-hierarchy'][text()='Awardee']
+  - &automation-awardee-checkbox
+    id: automation-awardee-checkbox
+    description: Automation awardee checkbox
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //span[text()='Automation Awardee']
+  - &awardee-view-all-button
+    id: awardee-view-all-button
+    description: Awardee view all button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='Awardee']//button[text()='View All']
+  - &select-all-checkbox
+    id: select-all-checkbox
+    description: Select all checkbox
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //span[text()='Select All']
+  - &organizational-structure-save-button
+    id: organizational-structure-save-button
+    description: Organizational structure save button
+    locators:
+      - device: WEB
+        type: CSS
+        value: .btn-save.btn.btn-primary
+  - &segmentation-dropdown
+    id: segmentation-dropdown
+    description: Dropdown Select a segmentation category
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[contains(text(), 'Select Filter')]
+  - id: segmentation-dropdown-option
+    description: Segmentation dropdown option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()="{text}"]
+  - &add-category-button
+    id: add-category-button
+    description: Add category button
+    locators:
+      - device: WEB
+        type: CSS
+        value: button[aria-label="Add Category"]
+  - &program-update-on-dna-option
+    id: program-update-on-dna-option
+    description: Program update on DNA option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='Program Update on DNA']
+  - &operator-dropdown
+    id: operator-dropdown
+    description: Select filter operator dropdown
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='Select Operator']
+  - id: operator-dropdown-option
+    description: Select filter operator dropdown option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()="{text}"]
+  - &is-equal-to-only-option
+    id: is-equal-to-only-option
+    description: Is equal to only option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='is equal to only']
+  - &is-any-of-option
+    id: is-any-of-option
+    description: Is any of option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='is any of']
+  - &value-dropdown
+    id: value-dropdown
+    description: Select value dropdown
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()='Value']/following::div[contains(@class,'value-container')]
+  - id: value-dropdown-option
+    description: Select value dropdown option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[contains(text(),"{text}")]
+  - id: value-input-field
+    description: Select value input field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()='Value']/following::input[1]
+  - &eligible-but-not-started-option
+    id: eligible-but-not-started-option
+    description: Eligible but not started option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='Eligible but Not Started']
+  - &select-date-range-dropdown
+    id: select-date-range-dropdown
+    description: Select date range dropdown
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='Select Date Range']
+  - &on-any-date-option
+    id: on-any-date-option
+    description: On any dated option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='on any date']
+  - id: save-button
+    description: Save button
+    locators:
+      - device: WEB
+        type: ID
+        value: saveButton
+  - &phone-only-option
+    id: phone-only-option
+    description: Phone Only option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='Phone Only']
+  - &phone-or-email-option
+    id: phone-or-email-option
+    description: Phone or email option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='Phone or Email']
+  - &prospect-history-option
+    id: prospect-history-option
+    description: Prospect history option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='Prospect History']
+  - &prospect-list-name-option
+    id: prospect-list-name-option
+    description: Prospect list name option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='List Name']
+  - &prospect-first-list-option
+    id: prospect-first-list-option
+    description: Prospect first list name option
+    locators:
+      - device: WEB
+        type: CSS
+        value: div[id*='option-0']
+  - &demographic-segmentation-option
+    id: demographic-segmentation-option
+    description: Demographic Segmentation option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='Demographic Segmentation']
+  - &automation-prospect-list-option
+    id: automation-prospect-list-option
+    description: Automation prospect list option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='Automation prospect list']
+  - &age18-24-option
+    id: age18-24-option
+    description: Option age 18-24
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='18-24']
+  - &age25-34-option
+    id: age25-34-option
+    description: Option age 25-34
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='25-34']
+  - &age35-44-option
+    id: age35-44-option
+    description: Option age 35-44
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='35-44']
+  - &age45-54-option
+    id: age45-54-option
+    description: Option age 45-54
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='45-54']
+  - &age55-64-option
+    id: age55-64-option
+    description: Option age 55-64
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='55-64']
+  - &age-option
+    id: age-option
+    description: Age option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()='Age']
+  - &program-milestones-option
+    id: program-milestones-option
+    description: Program milestones option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()='Program Milestones']
+  - &primary-consent-option
+    id: primary-consent-option
+    description: Primary consent option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()='Primary Consent']
+  - &completed-option
+    id: completed-option
+    description: Completed option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()='Completed']
+  - &select-date-dropdown
+    id: select-date-dropdown
+    description: Select date dropdown
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()='Date']/following-sibling::div//*[contains(@class,'select__indicators')]
+  - &is-today-option
+    id: is-today-option
+    description: Is today option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()='is today']
+  - id: close-button
+    description: Close button
+    locators:
+      - device: WEB
+        type: CSS
+        value: span[id='close-btn'] svg
+  - id: cms-web-form-option
+    description: CMS web form option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()='CMS Web Form']
+  - id: automates-option
+    description: Automates option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(text(),'Automates')]
+  - &race-option
+    id: race-option
+    description: Age option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()='Race']
+  - &asian-option
+    id: asian-option
+    description: Asian option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()='Asian']
+  - id: loading-text
+    description: Loading text
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[contains(text(),'Loading')]
+  - id: dropdown-value
+    description: Loading text
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(text(), "{text}")]
+actions:
+  - id: create-1-on-1-participants-segmentation
+    description: Create 1-on-1 participants segmentation
+    actionElements:
+      - element: *communication-channel-dropdown
+        inputType: click
+      - element: *phone-only-option
+        inputType: click
+      - element: *organizational-structure-edit-button
+        inputType: click
+      - element: *awardee-title
+        inputType: click
+      - element: *awardee-view-all-button
+        inputType: click
+      - element: *automation-awardee-checkbox
+        condition: DISPLAYED
+        inputType: click
+      - element: *organizational-structure-save-button
+        inputType: click
+      - element: *segmentation-dropdown
+        inputType: click
+      - element: *add-category-button
+        condition: NOT_DISPLAYED
+        timeout: 2000
+        inputType: click
+      - element: *demographic-segmentation-option
+        inputType: click
+      - element: *add-category-button
+        inputType: click
+      - element: *segmentation-dropdown
+        inputType: click
+      - element: *age-option
+        inputType: click
+      - element: *operator-dropdown
+        inputType: click
+      - element: *is-any-of-option
+        inputType: click
+      - element: description-input
+        inputType: click
+      - element: *value-dropdown
+        inputType: click
+      - element: *age18-24-option
+        inputType: click
+      - element: *age25-34-option
+        inputType: click
+      - element: *age35-44-option
+        inputType: click
+      - element: *age45-54-option
+        inputType: click
+      - element: *age55-64-option
+        inputType: click
+  - id: create-1-on-1-prospects-segmentation
+    description: Create 1-on-1 prospects segmentation
+    actionElements:
+      - element: *communication-channel-dropdown
+        inputType: click
+      - element: *phone-only-option
+        inputType: click
+      - element: *target-audience-dropdown
+        inputType: click
+      - element: *prospect-option
+        inputType: click
+      - element: *organizational-structure-edit-button
+        inputType: click
+      - element: *awardee-title
+        inputType: click
+      - element: *awardee-view-all-button
+        inputType: click
+      - element: *select-all-checkbox
+        inputType: click
+      - element: *organizational-structure-save-button
+        inputType: click
+      - element: *segmentation-dropdown
+        inputType: click
+      - element: *add-category-button
+        condition: NOT_DISPLAYED
+        timeout: 2000
+        inputType: click
+      - element: *prospect-history-option
+        inputType: click
+      - element: *add-category-button
+        inputType: click
+      - element: *segmentation-dropdown
+        inputType: click
+      - element: *prospect-list-name-option
+        inputType: click
+      - element: *operator-dropdown
+        inputType: click
+      - element: *is-equal-to-only-option
+        inputType: click
+      - element: *value-dropdown
+        inputType: click
+      - element: *prospect-first-list-option
+        inputType: click
+  - id: create-demographic-category
+    description: Create demographic category
+    actionElements:
+      - element: *segmentation-dropdown
+        inputType: click
+      - element: *add-category-button
+        condition: NOT_DISPLAYED
+        timeout: 2000
+      - element: *demographic-segmentation-option
+        inputType: click
+      - element: *add-category-button
+        inputType: click
+      - element: *segmentation-dropdown
+        inputType: click
+      - element: *race-option
+        inputType: click
+      - element: *operator-dropdown
+        inputType: click
+      - element: *is-equal-to-only-option
+        inputType: click
+      - element: *value-dropdown
+        inputType: click
+      - element: *asian-option
+        inputType: click
