@@ -6,11 +6,12 @@ def launchBrowser(context, url):
     file = open("config.ini",'r')
     config = configparser.RawConfigParser(allow_no_value=True)
     config.read_file(file)
-    if config.get("drivers_config","auto_download_driver"):
-        driver = webdriver.Chrome(executable_path=config.get("drivers_config","driver_version"))
+    if config.get("drivers_config","auto_download_driver") == 'True':
+        context.driver = webdriver.Chrome(executable_path=config.get("drivers_config","driver_version"))
     else:
-        driver = webdriver.Chrome()
-    driver.get(url)
+        context.driver = webdriver.Chrome()
+    context.driver.maximize_window()
+    context.driver.get(url)
     print("done")
 
 # @given(u'I change the page spec to {page}')

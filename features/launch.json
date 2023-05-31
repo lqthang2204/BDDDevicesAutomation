@@ -1,0 +1,12 @@
+{
+    "name": "Python: all",
+    "type": "python",
+    "request": "launch",
+    "module": "behave",
+    "console": "integratedTerminal",
+    "args": [
+        "--no-capture",
+        "--no-capture-stderr",
+        "${workspaceFolder}/features"
+    ]
+}
