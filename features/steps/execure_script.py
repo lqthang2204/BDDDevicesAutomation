@@ -1,6 +1,8 @@
 import configparser
 from behave import *
 from selenium import webdriver
+from common import common_test
+
 @given(u'I navigate to "{url}"')
 def launchBrowser(context, url):
     file = open("config.ini",'r')
@@ -14,9 +16,12 @@ def launchBrowser(context, url):
     context.driver.get(url)
     print("done")
 
-# @given(u'I change the page spec to {page}')
-# def readFileYaml(context, page):
-#     print("testtt   "+ page)
+@given(u'I change the page spec to "{page}"')
+def change_page(context, page):
+    dict_yaml = common_test().get_dict_yaml()
+    print("change page")
+    print(dict_yaml)
+
 
 
 
