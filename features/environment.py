@@ -1,4 +1,4 @@
-from Utilities.ReadFileYaml import read_file_yaml
+from Utilities.ReadFileYaml import ManagementFile
 import configparser
 from selenium import webdriver
 def before_all(context):
@@ -10,4 +10,4 @@ def before_all(context):
     else:
         context.driver = webdriver.Chrome()
     print("----------------------Reading file config-----------------------------")
-    context.dict_yaml = read_file_yaml.get_dict_path_yaml()
+    context.dict_yaml = ManagementFile.get_dict_path_yaml()
