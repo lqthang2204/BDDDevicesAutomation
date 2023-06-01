@@ -1,7 +1,13 @@
 from Utilities.ReadFileYaml import read_file_yaml
-from steps.common import common_test
+import configparser
+from selenium import webdriver
 def before_all(context):
+    file = open("config.ini", 'r')
+    config = configparser.RawConfigParser(allow_no_value=True)
+    config.read_file(file)
+    if config.get("drivers_config", "auto_download_driver") == 'True':
+        context.driver = webdriver.Chrome(executable_path=config.get("drivers_config", "driver_version"))
+    else:
+        context.driver = webdriver.Chrome()
     print("----------------------Reading file config-----------------------------")
-    dict_yaml = read_file_yaml.get_dict_path_yaml()
-    obj = common_test()
-    obj.set_dict_yaml(dict_yaml)
+    context.dict_yaml = read_file_yaml.get_dict_path_yaml()
