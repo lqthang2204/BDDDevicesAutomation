@@ -8,8 +8,9 @@ def launchBrowser(context, url):
     context.driver.get(url)
     print("done")
 
-@given(u'I change the page spec to "{page}"')
+@given(u'I change the page spec to {page}')
 def change_page(context, page):
+    print("page = "+ page)
     print(context.dict_yaml)
 
 
