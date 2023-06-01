@@ -12,6 +12,7 @@ def launchBrowser(context, url):
 def change_page(context, page):
     print("page = "+ page)
     print(context.dict_yaml)
+    print("change branch")
 
 
 
