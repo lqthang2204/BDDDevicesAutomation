@@ -16,10 +16,10 @@ def launchBrowser(context, url):
 def change_page(context, page):
     dict_yaml = context.dict_yaml
     path_file = dict_yaml[page+".yaml"]
-    read_yaml = ManagementFile.read_yaml_file(path_file+"\\"+page+".yaml")
-    print("after read yaml")
-    print(read_yaml)
-    ManagementFile.parse_yaml_file(read_yaml)
+    ManagementFile.read_yaml_file(path_file+"\\"+page+".yaml")
+    # print("after read yaml")
+    # print(read_yaml)
+    # ManagementFile.parse_yaml_file(read_yaml)
 
 
 

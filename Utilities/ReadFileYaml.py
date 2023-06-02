@@ -5,6 +5,8 @@ import glob
 from typing import Dict, Any, List
 from pathlib import Path
 import yaml
+from yaml import SafeLoader
+import json
 
 
 class ManagementFile:
@@ -20,8 +22,12 @@ class ManagementFile:
     def read_yaml_file(path):
         with open(path) as page:
             print("read file")
-            print(page.read())
-            return page.read()
+            json_string = page.read()
+            python_dict = yaml.load(json_string, Loader=SafeLoader)
+            json_result = json.dumps(python_dict)
+            # print(json_result)
+            json_object = json.loads(json_result)
+            print ("type of final_dictionary", json_object["elements"])
     def parse_yaml_file(yaml_string) -> Dict[Any, Any]:  # NEW CONCEPT: Any can be any type. Could be string, integer or anything
         print("parse")
         print(yaml.safe_load(yaml_string))
