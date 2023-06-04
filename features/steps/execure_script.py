@@ -2,10 +2,16 @@ import configparser
 from behave import *
 from selenium import webdriver
 from Utilities.ReadFileYaml import ManagementFile
+from ManagementElements.Page import Page
+from ManagementElements.Elements import Elements
+from ManagementElements.Locator import Locator
 
-dict_yaml = dict()
-dict_page = dict()
+dict_yaml = {}
+dict_page = {}
 read_yaml: str
+page_present = Page
+element_page = Elements
+locator = Locator
 @given(u'I navigate to "{url}"')
 def launchBrowser(context, url):
     context.driver.maximize_window()
@@ -16,10 +22,26 @@ def launchBrowser(context, url):
 def change_page(context, page):
     dict_yaml = context.dict_yaml
     path_file = dict_yaml[page+".yaml"]
-    ManagementFile.read_yaml_file(path_file+"\\"+page+".yaml")
-    # print("after read yaml")
-    # print(read_yaml)
-    # ManagementFile.parse_yaml_file(read_yaml)
+    page = ManagementFile.read_yaml_file(path_file+"\\"+page+".yaml", dict_page, page)
+    context.page_present = page
+    return context.page_present
+
+
+@given(u'I click element {element}')
+def click_action(context, element):
+    context.element_page = ManagementFile().get_element(context.page_present, element)
+    ManagementFile().action_page(context.element_page, "click",context.driver,"")
+@given(u'I type "{text}" into element {element}')
+def type_action(context, text, element):
+    context.element_page = ManagementFile().get_element(context.page_present, element)
+    if context.element_page.__eq__("None"):
+        raise Exception("Not found element ", element)
+    ManagementFile().action_page(context.element_page, "type", context.driver, text)
+
+
+
+
+
 
 
 

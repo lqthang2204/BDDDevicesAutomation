@@ -1,16 +1,16 @@
-from typing import Any, Dict, List
-import Elements, ActionTest
+
+from ManagementElements import Elements, ActionTest
 class Page:
-    actions: Dict[str, ActionTest]
-    elements: List[Elements]
+    dict_action = dict[str, ActionTest]
+    list_element = [Elements]
     def get_list_element(self):
-        return self.elements
+        return self.list_element
     def get_dict(self):
-        return self.actions
+        return self.dict_action
     def set_list_element(self, list):
-        self.elements = list
+        self.list_element = list
     def set_dict_action(self, dict):
-        self.actions = dict
+        self.dict_action = dict
 
 
 

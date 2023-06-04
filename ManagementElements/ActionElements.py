@@ -1,10 +1,5 @@
 class ActionElements:
-    def __int__(self, element, condition, timeout, inputType, infoType):
-        self.element = element
-        self.condition = condition
-        self.timeout = timeout
-        self.inputType = inputType
-        self.infoType = infoType
+
 
     def get_element(self):
         return self.element

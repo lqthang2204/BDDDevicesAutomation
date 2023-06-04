@@ -1,5 +1,5 @@
 elements:
-  - id: segmentation-name-input
+  - id: segmentation-name-input-test
     description: Segmentation name input
     locators:
       - device: WEB
