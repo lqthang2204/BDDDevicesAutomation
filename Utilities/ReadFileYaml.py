@@ -11,7 +11,8 @@ from ManagementElements.Page import Page
 from ManagementElements.Elements import Elements
 from ManagementElements.Locator import Locator
 from selenium.webdriver.common.by import By
-
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class ManagementFile:
     def get_dict_path_yaml():
@@ -61,7 +62,7 @@ class ManagementFile:
             if element_yaml.id.__eq__(element):
                 return element_yaml
             break
-    def action_page(self, element_page, action, driver, value):
+    def action_page(self, element_page, action, driver, value,wait):
         locator = self.get_locator(element_page, "WEB")
         element = self.get_element_by(locator.type, driver, locator.value)
         if action.__eq__("click"):
@@ -88,9 +89,40 @@ class ManagementFile:
         else:
             raise Exception("Not support type in framework")
         return element
+    def get_locator_for_wait(self,type, value):
+        if type.__eq__("ID"):
+            locator = (By.ID, value)
+        elif type.__eq__("NAME"):
+            locator = (By.NAME, value)
+        elif type.__eq__("XPATH"):
+            locator = (By.XPATH, value)
+        elif type.__eq__("LINK TEXT"):
+            locator = (By.LINK_TEXT, value)
+        elif type.__eq__("PARTIAL LINK TEXT"):
+            locator = (By.PARTIAL_LINK_TEXT, value)
+        elif type.__eq__("CLASS NAME"):
+            locator = (By.CLASS_NAME, value)
+        elif type.__eq__("CSS"):
+            locator = (By.CSS_SELECTOR, value)
+        else:
+            raise Exception("Not support type in framework", type)
+        return locator
     def get_locator(self, element_page,device):
         arr_locator = element_page.get_list_locator()
         for locator in arr_locator:
             if locator.get_device().__eq__(device):
                 return locator
             break
+    def wait_element_for_status(self, element_page, status, driver, wait):
+        locator = self.get_locator(element_page, "WEB")
+        locator_from_wait = self.get_locator_for_wait(locator.type,locator.value)
+        if status == "DISPLAYED":
+            element = WebDriverWait(driver, wait).until(EC.presence_of_element_located((locator_from_wait)))
+        elif status == "NOT_DISPLAYED":
+            WebDriverWait(driver, wait).until(EC.invisibility_of_element_located(locator_from_wait))
+        elif status == "ENABLED":
+            WebDriverWait(driver, wait).until(EC.element_to_be_clickable(locator_from_wait))
+        elif status == "NOT_ENABLED":
+            WebDriverWait(driver, wait).until(EC.element_to_be_clickable(locator_from_wait))
+        else:
+            raise Exception("Not support status ", status)

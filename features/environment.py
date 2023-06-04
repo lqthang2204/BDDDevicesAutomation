@@ -11,6 +11,8 @@ def before_all(context):
         context.driver = webdriver.Chrome()
     print("----------------------Reading file config-----------------------------")
     context.dict_yaml = ManagementFile.get_dict_path_yaml()
+    context.wait = config.get("drivers_config", "wait")
+    context.time_page_load = config.get("drivers_config", "time_page_load")
 # def before_scenario(context, scenario):
 #     for tag in scenario.tags:
 #         (platform, browser, browserVersion) = tag.split('_')
