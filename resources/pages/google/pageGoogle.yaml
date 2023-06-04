@@ -1,5 +1,5 @@
 elements:
-  - id: search-field
+  - id:
     description: field search google
     locators:
       - device: WEB

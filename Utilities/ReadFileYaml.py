@@ -24,9 +24,10 @@ class ManagementFile:
         # dict_yaml_path = dict(dict_yaml)
         return dict_yaml
     def read_yaml_file(path, dict_yaml, page_name):
-        if bool(dict_yaml):
-            print("check")
-            print(dict_yaml)
+        if page_name in dict_yaml.keys():
+            obj_page = Page()
+            obj_page = dict_yaml[page_name]
+            return obj_page
         else:
             obj_page = Page()
             dict_yaml[page_name] = obj_page

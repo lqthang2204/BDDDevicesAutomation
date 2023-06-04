@@ -34,9 +34,12 @@ def click_action(context, element):
 @given(u'I type "{text}" into element {element}')
 def type_action(context, text, element):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    if context.element_page.__eq__("None"):
+    try:
+        ManagementFile().action_page(context.element_page, "type", context.driver, text)
+    except:
         raise Exception("Not found element ", element)
-    ManagementFile().action_page(context.element_page, "type", context.driver, text)
+
+
 
 
 

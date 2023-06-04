@@ -11,3 +11,13 @@ def before_all(context):
         context.driver = webdriver.Chrome()
     print("----------------------Reading file config-----------------------------")
     context.dict_yaml = ManagementFile.get_dict_path_yaml()
+# def before_scenario(context, scenario):
+#     for tag in scenario.tags:
+#         (platform, browser, browserVersion) = tag.split('_')
+#
+#         if browser == "Chrome":
+#             # Initialize the browser with platform, browser, etc.
+#             context.browser = webdriver.Chrome()
+#         elif browser == "Firefox":
+#             # Initialize the browser with platform, browser, etc.
+#             context.browser = webdriver.Firefox()
