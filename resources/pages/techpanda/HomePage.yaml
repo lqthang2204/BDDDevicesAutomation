@@ -1,0 +1,66 @@
+elements:
+  - &page-title
+    id: page-title
+    description: Page title
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[@class='page-title']
+  - &mobile-button
+    id: mobile-button
+    description: Mobile button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //a[text()='Mobile']
+  - &tv-button
+    id: tv-button
+    description: Mobile button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //a[text()='TV']
+  - &product-iphone
+    id: product-iphone
+    description: Iphone
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class='product-image'])[1]
+  - &search-input
+    id: search-input
+    description: Iphone
+    locators:
+      - device: WEB
+        type: ID
+        value: search
+  - id: link-text
+    description: Link text
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class='block-title'])[1]
+  - id: product-one
+    description: Product one
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class='product-name'])[1]
+  - id: dropdown-search
+    description: Product one
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(text(),'Iphone 6')]
+actions:
+  - id: buy-one-mobile
+    description: action buy one mobile
+    actionElements:
+      - element: *mobile-button
+        inputType: click
+      - element: *search-input
+        inputType: text
+      - element: *tv-button
+        condition: NOT_DISPLAYED
+        timeout: 1000
+        inputType: click

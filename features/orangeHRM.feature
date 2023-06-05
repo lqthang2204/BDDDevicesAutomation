@@ -7,10 +7,8 @@ Feature: navigate URL
     And I wait for element search-field to be DISPLAYED
     And I click element search-field
     And I type "lqthang" into element search-field
-    And I navigate to "https://demo.guru99.com/test/guru99home/"
-    And I change the page spec to index_guru
-    And I click element selenium-icon
-    And I wait for element header-tutorial to be DISPLAYED
-    And I navigate to "https://www.google.com/"
-    And I change the page spec to pageGoogle
-    And I type "dsds" into element search-field
+    And I navigate to "http://live.techpanda.org/index.php/"
+    And I change the page spec to HomePage
+    And I wait for element mobile-button to be DISPLAYED
+    And I click element mobile-button
+    And I type "test" into element search-input

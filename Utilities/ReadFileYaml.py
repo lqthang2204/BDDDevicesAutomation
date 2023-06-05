@@ -16,7 +16,8 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class ManagementFile:
     def get_dict_path_yaml():
-        file_path = os.getcwd().replace("Utilities","")+"\\resources\\pages\\*\\*.yaml"
+        # config_file_path = os.path.join(os.path.dirname(), 'config.ini')
+        file_path = os.path.dirname(os.path.dirname(__file__))+"\\resources\\pages\\*\\*.yaml"
         dict_yaml = {}
         files = glob.glob(file_path)
         for file in files:
@@ -61,7 +62,6 @@ class ManagementFile:
         for element_yaml in arr_element:
             if element_yaml.id.__eq__(element):
                 return element_yaml
-            break
     def action_page(self, element_page, action, driver, value,wait):
         locator = self.get_locator(element_page, "WEB")
         element = self.get_element_by(locator.type, driver, locator.value)
