@@ -4,7 +4,7 @@ Feature: navigate URL
   Scenario: negative to url
     Given I navigate to "https://www.google.com/"
     And I change the page spec to pageGoogle
-    And I wait for element search-field to be DISPLAYED
+    And I wait for element search-field to be NOT_DISPLAYED
     And I click element search-field
     And I type "lqthang" into element search-field
     And I navigate to "http://live.techpanda.org/index.php/"
