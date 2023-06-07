@@ -10,5 +10,7 @@ Feature: navigate URL
     And I navigate to "http://live.techpanda.org/index.php/"
     And I change the page spec to HomePage
     And I wait for element mobile-button to be DISPLAYED
+    And I wait for element mobile-button to be ENABLED
+    And I wait for element mobile-button to be EXISTED
     And I click element mobile-button
     And I type "test" into element search-input

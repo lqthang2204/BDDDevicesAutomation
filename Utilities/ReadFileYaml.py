@@ -13,11 +13,13 @@ from ManagementElements.Locator import Locator
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+
 
 class ManagementFile:
     def get_dict_path_yaml():
         # config_file_path = os.path.join(os.path.dirname(), 'config.ini')
-        file_path = os.path.dirname(os.path.dirname(__file__))+"\\resources\\pages\\*\\*.yaml"
+        file_path = os.path.dirname(os.path.dirname(__file__)) + "\\resources\\pages\\*\\*.yaml"
         dict_yaml = {}
         files = glob.glob(file_path)
         for file in files:
@@ -25,6 +27,7 @@ class ManagementFile:
             dict_yaml[file_name] = path
         # dict_yaml_path = dict(dict_yaml)
         return dict_yaml
+
     def read_yaml_file(path, dict_yaml, page_name):
         if page_name in dict_yaml.keys():
             obj_page = Page()
@@ -38,7 +41,7 @@ class ManagementFile:
                 python_dict = yaml.load(page.read(), Loader=SafeLoader)
                 json_result = json.dumps(python_dict)
                 json_object = json.loads(json_result)
-                arr_element  = json_object["elements"]
+                arr_element = json_object["elements"]
                 for element in arr_element:
                     obj_element = Elements()
                     obj_element.set_id(element["id"])
@@ -62,7 +65,8 @@ class ManagementFile:
         for element_yaml in arr_element:
             if element_yaml.id.__eq__(element):
                 return element_yaml
-    def action_page(self, element_page, action, driver, value,wait):
+
+    def action_page(self, element_page, action, driver, value, wait):
         locator = self.get_locator(element_page, "WEB")
         element = self.get_element_by(locator.type, driver, locator.value)
         if action.__eq__("click"):
@@ -71,6 +75,7 @@ class ManagementFile:
             element.send_keys(value)
         else:
             raise Exception("Not support action in framework")
+
     def get_element_by(self, type, driver, value):
         if type.__eq__("ID"):
             element = driver.find_element(By.ID, value)
@@ -89,7 +94,8 @@ class ManagementFile:
         else:
             raise Exception("Not support type in framework")
         return element
-    def get_locator_for_wait(self,type, value):
+
+    def get_locator_for_wait(self, type, value):
         if type.__eq__("ID"):
             locator = (By.ID, value)
         elif type.__eq__("NAME"):
@@ -107,22 +113,48 @@ class ManagementFile:
         else:
             raise Exception("Not support type in framework", type)
         return locator
-    def get_locator(self, element_page,device):
+
+    def get_locator(self, element_page, device):
         arr_locator = element_page.get_list_locator()
         for locator in arr_locator:
             if locator.get_device().__eq__(device):
                 return locator
             break
+
     def wait_element_for_status(self, element_page, status, driver, wait):
         locator = self.get_locator(element_page, "WEB")
-        locator_from_wait = self.get_locator_for_wait(locator.type,locator.value)
-        if status == "DISPLAYED":
-            element = WebDriverWait(driver, wait).until(EC.presence_of_element_located((locator_from_wait)))
-        elif status == "NOT_DISPLAYED":
-            WebDriverWait(driver, wait).until(EC.invisibility_of_element_located(locator_from_wait))
-        elif status == "ENABLED":
-            WebDriverWait(driver, wait).until(EC.element_to_be_clickable(locator_from_wait))
-        elif status == "NOT_ENABLED":
-            WebDriverWait(driver, wait).until(EC.element_to_be_clickable(locator_from_wait))
-        else:
-            raise Exception("Not support status ", status)
+        locator_from_wait = self.get_locator_for_wait(locator.type, locator.value)
+        try:
+            if status == "DISPLAYED":
+                WebDriverWait(driver, wait).until(EC.presence_of_element_located(locator_from_wait))
+            elif status == "NOT_DISPLAYED":
+                WebDriverWait(driver, wait).until(EC.invisibility_of_element_located(locator_from_wait))
+            elif status == "ENABLED":
+                WebDriverWait(driver, wait).until(EC.all_of(
+                    EC.element_to_be_clickable(locator_from_wait)),
+                    EC.presence_of_element_located(locator_from_wait)
+                )
+            elif status == "NOT_ENABLED":
+                WebDriverWait(driver, wait).until_not(EC.element_to_be_clickable(locator_from_wait))
+            elif status == "EXISTED":
+                elements = self.get_element_by(locator.type, driver, locator.value)
+                WebDriverWait(driver, wait).until(lambda driver: len(driver.find_elements(By.XPATH,locator.value )) > int(0))
+            elif status == "NOT_EXISTED":
+                WebDriverWait(driver, wait).until_not(EC.presence_of_all_elements_located(locator_from_wait))
+            else:
+                raise Exception("Not support status ", status)
+        except TimeoutException as ex:
+            raise Exception("fail due to % with timeout is % ", ex, wait)
+
+
+    # def __check_wait_element__(self,status, locator_from_wait):
+    #     if status == "ENABLED":
+    #         element = EC.presence_of_element_located(locator_from_wait)
+    #         visibility = EC.visibility_of_element_located(locator_from_wait)
+    #         if element
+    #             try:
+    #                 return True
+    #             except:
+    #                 return False
+    #         else:
+    #             return False
