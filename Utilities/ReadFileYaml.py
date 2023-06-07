@@ -69,8 +69,16 @@ class ManagementFile:
     def action_page(self, element_page, action, driver, value, wait):
         locator = self.get_locator(element_page, "WEB")
         element = self.get_element_by(locator.type, driver, locator.value)
+        WebDriverWait(driver, wait).until(EC.all_of(
+            EC.element_to_be_clickable(element)),
+            EC.presence_of_element_located(element)
+        )
         if action.__eq__("click"):
-            element.click()
+            if element.get_attribute("disabled") is None:
+                element.click()
+            else:
+                WebDriverWait(driver, wait).until_not(EC.element_attribute_to_include(self.get_locator_for_wait(locator.type, locator.value),"disabled"))
+                element.click()
         elif action.__eq__("type"):
             element.send_keys(value)
         else:
@@ -94,6 +102,24 @@ class ManagementFile:
         else:
             raise Exception("Not support type in framework")
         return element
+    def get_list_element_by(self, type, driver, value):
+        if type.__eq__("ID"):
+            elements = driver.find_elements(By.ID, value)
+        elif type.__eq__("NAME"):
+            elements = driver.find_elements(By.NAME, value)
+        elif type.__eq__("XPATH"):
+            elements = driver.find_elements(By.XPATH, value)
+        elif type.__eq__("LINK TEXT"):
+            elements = driver.find_elements(By.LINK_TEXT, value)
+        elif type.__eq__("PARTIAL LINK TEXT"):
+            elements = driver.find_elements(By.PARTIAL_LINK_TEXT, value)
+        elif type.__eq__("CLASS NAME"):
+            elements = driver.find_elements(By.CLASS_NAME, value)
+        elif type.__eq__("CSS"):
+            elements = driver.find_elements(By.CSS_SELECTOR, value)
+        else:
+            raise Exception("Not support type in framework")
+        return elements
 
     def get_locator_for_wait(self, type, value):
         if type.__eq__("ID"):
@@ -124,6 +150,7 @@ class ManagementFile:
     def wait_element_for_status(self, element_page, status, driver, wait):
         locator = self.get_locator(element_page, "WEB")
         locator_from_wait = self.get_locator_for_wait(locator.type, locator.value)
+
         try:
             if status == "DISPLAYED":
                 WebDriverWait(driver, wait).until(EC.presence_of_element_located(locator_from_wait))
@@ -137,14 +164,19 @@ class ManagementFile:
             elif status == "NOT_ENABLED":
                 WebDriverWait(driver, wait).until_not(EC.element_to_be_clickable(locator_from_wait))
             elif status == "EXISTED":
-                elements = self.get_element_by(locator.type, driver, locator.value)
-                WebDriverWait(driver, wait).until(lambda driver: len(driver.find_elements(By.XPATH,locator.value )) > int(0))
+                elements = self.get_list_element_by(locator.type, driver, locator.value)
+                WebDriverWait(driver, wait).until(lambda driver: len(elements) > int(0))
             elif status == "NOT_EXISTED":
-                WebDriverWait(driver, wait).until_not(EC.presence_of_all_elements_located(locator_from_wait))
+                elements = self.get_list_element_by(locator.type, driver, locator.value)
+                WebDriverWait(driver, wait).until_not(lambda driver: len(elements) > int(0))
+            elif status == "SELECTED":
+                WebDriverWait(driver, wait).until(EC.element_located_to_be_selected(locator_from_wait))
+            elif status == "NOT_SELECTED":
+                WebDriverWait(driver, wait).until_not(EC.element_located_to_be_selected(locator_from_wait))
             else:
                 raise Exception("Not support status ", status)
         except TimeoutException as ex:
-            raise Exception("fail due to % with timeout is % ", ex, wait)
+            raise Exception("failed due to  timeout is ", wait)
 
 
     # def __check_wait_element__(self,status, locator_from_wait):

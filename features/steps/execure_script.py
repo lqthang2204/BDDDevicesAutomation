@@ -44,13 +44,12 @@ def type_action(context, text, element):
 @given(u'I wait for element {element} to be {status}')
 def wait_element(context, element, status):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    try:
-        ManagementFile().wait_element_for_status(context.element_page, status, context.driver, context.wait)
-    except:
-        raise Exception("Not found element ", element)
+    ManagementFile().wait_element_for_status(context.element_page, status, context.driver, context.wait)
 
 
-
+@given(u'I wait 5 seconds')
+def step_impl(context):
+    print("wait")
 
 
 
