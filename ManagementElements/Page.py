@@ -1,4 +1,3 @@
-
 from ManagementElements import Elements, ActionTest
 class Page:
     dict_action = dict[str, ActionTest]
