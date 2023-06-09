@@ -1,7 +1,13 @@
 elements:
-  - id:
+  - id: selenium-icon
     description: selenium icon
     locators:
       - device: WEB
         type: XPATH
         value: //a[text()='Selenium']
+  - id: header-tutorial
+    description: header selenium tutorial
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //h1[text()="Selenium Tutorial"]
