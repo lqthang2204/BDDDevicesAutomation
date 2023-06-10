@@ -22,7 +22,7 @@ class ManagementFile:
         file_path = os.path.dirname(os.path.dirname(__file__)) + "\\resources\\pages\\*\\*.yaml"
         print("file path =======================", file_path)
         dict_yaml = {}
-        files = glob.glob(file_path)
+        files = glob.glob(file_path, recursive=True)
         print("glob = ", files)
         for file in files:
             print("lopp file ", file)
