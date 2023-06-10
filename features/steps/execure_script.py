@@ -20,7 +20,7 @@ def launchBrowser(context, url):
 
 @given(u'I change the page spec to {page}')
 def change_page(context, page):
-    if len(context.dict_yaml) < 0:
+    if len(context.dict_yaml) == 0:
         print("vaooooooooooooooooooooooooooooooooooo")
         context.dict_yaml = ManagementFile().get_dict_path_yaml()
     print("context = ", context.dict_yaml)
