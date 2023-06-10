@@ -19,7 +19,7 @@ from selenium.common.exceptions import TimeoutException
 class ManagementFile:
     def get_dict_path_yaml(self):
         # config_file_path = os.path.join(os.path.dirname(), 'config.ini')
-        file_path = os.path.dirname(os.path.dirname(__file__)) + "\\resources\\pages\\*\\*.yaml"
+        file_path = os.path.dirname(os.path.dirname(__file__)) + "/resources/pages/*/*.yaml"
         print("file path =======================", file_path)
         dict_yaml = {}
         files = glob.glob(file_path, recursive=True)
