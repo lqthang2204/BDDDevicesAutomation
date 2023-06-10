@@ -11,8 +11,8 @@ def before_all(context):
     config = configparser.RawConfigParser(allow_no_value=True)
     chrome_option = Options()
     chrome_option.add_argument("--headless")
-    chrome_option.add_argument("--no-sandbox")
-    chrome_option.add_argument("--disable-dev-shm-usage")
+    # chrome_option.add_argument("--no-sandbox")
+    # chrome_option.add_argument("--disable-dev-shm-usage")
     config.read_file(file)
     chromedriver_autoinstaller.install()
     if config.get("drivers_config", "auto_download_driver") == 'False':
