@@ -23,6 +23,7 @@ class ManagementFile:
         print("file path =======================", file_path)
         dict_yaml = {}
         files = glob.glob(file_path)
+        print("glob = ", files)
         for file in files:
             print("lopp file ", file)
             path, file_name = os.path.split(file)
