@@ -17,12 +17,15 @@ from selenium.common.exceptions import TimeoutException
 
 
 class ManagementFile:
-    def get_dict_path_yaml():
+    def get_dict_path_yaml(self):
         # config_file_path = os.path.join(os.path.dirname(), 'config.ini')
-        file_path = os.path.dirname(os.path.dirname(__file__)) + "\\resources\\pages\\*\\*.yaml"
+        file_path = os.path.dirname(os.path.dirname(__file__)) + "/resources/pages/*/*.yaml"
+        print("file path =======================", file_path)
         dict_yaml = {}
-        files = glob.glob(file_path)
+        files = glob.glob(file_path, recursive=True)
+        print("glob = ", files)
         for file in files:
+            print("lopp file ", file)
             path, file_name = os.path.split(file)
             dict_yaml[file_name] = path
         # dict_yaml_path = dict(dict_yaml)
