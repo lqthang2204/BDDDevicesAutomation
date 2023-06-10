@@ -5,3 +5,4 @@ PyYAML==6.0
 selenium==4.9.1
 webdriver-manager
 configparser
+glob2
