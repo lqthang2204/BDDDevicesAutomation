@@ -10,12 +10,13 @@ def before_all(context):
     file = open(config_file_path, 'r')
     config = configparser.RawConfigParser(allow_no_value=True)
     chrome_option = Options()
-    chrome_option.add_argument("--headless")
+    config.read_file(file)
+    if config.get("drivers_config", "is_headless") == 'true':
+        chrome_option.add_argument("--headless")
     # chrome_option.add_argument("--no-sandbox")
     # chrome_option.add_argument("--disable-dev-shm-usage")
-    config.read_file(file)
     chromedriver_autoinstaller.install()
-    if config.get("drivers_config", "auto_download_driver") == 'False':
+    if config.get("drivers_config", "auto_download_driver") == 'false':
         context.driver = webdriver.Chrome(executable_path=os.path.dirname(os.path.dirname(__file__))+"\\"+config.get("drivers_config", "driver_version"), options=chrome_option)
     else:
         context.driver = webdriver.Chrome(options=chrome_option)
