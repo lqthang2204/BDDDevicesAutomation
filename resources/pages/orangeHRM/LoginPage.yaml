@@ -1,10 +1,4 @@
 elements:
-  - id: search-field
-    description: field search google
-    locators:
-      - device: WEB
-        type: NAME
-        value: q
   - &user-field
     id: user-field
     description: User field
@@ -43,24 +37,16 @@ actions:
   - id: login-page
     description: login page
     actionElements:
-      - element: *user-field
-        condition: NOT_DISPLAYED
-        timeout: 5000
-        inputType: click
-      - element: *pass-field
-        condition: NOT_DISPLAYED
-        timeout: 5000
-        inputType: click
       - element: *location-option-inpatient
-        condition: NOT_DISPLAYED
+        condition: ENABLED
         timeout: 5000
         inputType: click
       - element: *login-button
-        condition: NOT_DISPLAYED
+        condition: ENABLED
         timeout: 5000
         inputType: click
   - id: login-page2
-    description: login page2
+    description: login page
     actionElements:
       - element: *user-field
         condition: NOT_DISPLAYED

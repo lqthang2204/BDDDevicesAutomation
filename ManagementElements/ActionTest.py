@@ -1,5 +1,16 @@
+from ManagementElements.ActionElements import ActionElements
 class ActionTest:
-    def __int__(self, action_id, description):
-        self.action_id = action_id
+    list_action = [ActionElements]
+    def get_id(self):
+        return self.id
+    def set_id(self,id):
+        self.id = id
+    def get_description(self):
+        return self.id
+    def set_description(self,description):
         self.description = description
-        self.list_action_elelemt
+    def set_list_action(self, list_action):
+        self.list_action = list_action
+    def get_list_action(self):
+        return self.list_action
+
