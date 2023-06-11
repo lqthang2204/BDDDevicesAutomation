@@ -65,32 +65,32 @@ class ManagementFile:
                 obj_page.set_list_element(list_element)
                 dict_action = {}
                 arr_action = self.check_attribute_is_exist(json_object,"actions")
-                for action in arr_action:
-                    obj_action = ActionTest()
-                    obj_action.set_id(action["id"])
-                    obj_action.set_description(action["description"])
-                    arr_action_elements = action["actionElements"]
-                    list_action_element = list()
-                    for action_elements in arr_action_elements:
-                        obj_action_elements = ActionElements()
-                        obj_locator = action_elements["element"]
-                        arr_locator = obj_locator["locators"]
-                        list_locator = list()
-                        for locator_action in arr_locator:
-                            obj_locator = Locator()
-                            obj_locator.set_device(locator_action["device"])
-                            obj_locator.set_type(locator_action["type"])
-                            obj_locator.set_value(locator_action["value"])
-                            list_locator.append(obj_locator)
-                        obj_action_elements.set_element(list_locator)
-                        obj_action_elements.set_condition(self.check_attribute_is_exist(action_elements,"condition"))
-                        obj_action_elements.set_timeout(self.check_attribute_is_exist(action_elements,"timeout"))
-                        obj_action_elements.set_inputType(self.check_attribute_is_exist(action_elements,"inputType"))
-                        obj_action_elements.set_info_type(self.check_attribute_is_exist(action_elements,"infoType"))
-                        list_action_element.append(obj_action_elements)
-                        obj_action.set_list_action(list_action_element)
-                    dict_action[action["id"]] = obj_action
-                    # obj_action.set_list_action(list_action_element)
+                if arr_action is not None:
+                    for action in arr_action:
+                        obj_action = ActionTest()
+                        obj_action.set_id(action["id"])
+                        obj_action.set_description(action["description"])
+                        arr_action_elements = action["actionElements"]
+                        list_action_element = list()
+                        for action_elements in arr_action_elements:
+                            obj_action_elements = ActionElements()
+                            obj_locator = action_elements["element"]
+                            arr_locator = obj_locator["locators"]
+                            list_locator = list()
+                            for locator_action in arr_locator:
+                                obj_locator = Locator()
+                                obj_locator.set_device(locator_action["device"])
+                                obj_locator.set_type(locator_action["type"])
+                                obj_locator.set_value(locator_action["value"])
+                                list_locator.append(obj_locator)
+                            obj_action_elements.set_element(list_locator)
+                            obj_action_elements.set_condition(self.check_attribute_is_exist(action_elements,"condition"))
+                            obj_action_elements.set_timeout(self.check_attribute_is_exist(action_elements,"timeout"))
+                            obj_action_elements.set_inputType(self.check_attribute_is_exist(action_elements,"inputType"))
+                            obj_action_elements.set_info_type(self.check_attribute_is_exist(action_elements,"infoType"))
+                            list_action_element.append(obj_action_elements)
+                            obj_action.set_list_action(list_action_element)
+                        dict_action[action["id"]] = obj_action
                 obj_page.set_dict_action(dict_action)
                 dict_yaml[page_name] = obj_page
             return obj_page
