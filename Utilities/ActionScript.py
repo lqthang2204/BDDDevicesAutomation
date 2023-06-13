@@ -14,6 +14,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from ManagementElements.ActionTest import  ActionTest
+from ManagementElements.ActionElements import ActionElements
 
 
 class ManagementFile:
@@ -31,7 +33,7 @@ class ManagementFile:
         # dict_yaml_path = dict(dict_yaml)
         return dict_yaml
 
-    def read_yaml_file(path, dict_yaml, page_name):
+    def read_yaml_file(self,path, dict_yaml, page_name):
         if page_name in dict_yaml.keys():
             obj_page = Page()
             obj_page = dict_yaml[page_name]
@@ -44,6 +46,7 @@ class ManagementFile:
                 python_dict = yaml.load(page.read(), Loader=SafeLoader)
                 json_result = json.dumps(python_dict)
                 json_object = json.loads(json_result)
+                print("json =", json_object)
                 arr_element = json_object["elements"]
                 for element in arr_element:
                     obj_element = Elements()
@@ -60,6 +63,35 @@ class ManagementFile:
                     obj_element.set_list_locator(list_locator)
                     list_element.append(obj_element)
                 obj_page.set_list_element(list_element)
+                dict_action = {}
+                arr_action = self.check_attribute_is_exist(json_object,"actions")
+                if arr_action is not None:
+                    for action in arr_action:
+                        obj_action = ActionTest()
+                        obj_action.set_id(action["id"])
+                        obj_action.set_description(action["description"])
+                        arr_action_elements = action["actionElements"]
+                        list_action_element = list()
+                        for action_elements in arr_action_elements:
+                            obj_action_elements = ActionElements()
+                            obj_locator = action_elements["element"]
+                            arr_locator = obj_locator["locators"]
+                            list_locator = list()
+                            for locator_action in arr_locator:
+                                obj_locator = Locator()
+                                obj_locator.set_device(locator_action["device"])
+                                obj_locator.set_type(locator_action["type"])
+                                obj_locator.set_value(locator_action["value"])
+                                list_locator.append(obj_locator)
+                            obj_action_elements.set_element(list_locator)
+                            obj_action_elements.set_condition(self.check_attribute_is_exist(action_elements,"condition"))
+                            obj_action_elements.set_timeout(self.check_attribute_is_exist(action_elements,"timeout"))
+                            obj_action_elements.set_inputType(self.check_attribute_is_exist(action_elements,"inputType"))
+                            obj_action_elements.set_info_type(self.check_attribute_is_exist(action_elements,"infoType"))
+                            list_action_element.append(obj_action_elements)
+                            obj_action.set_list_action(list_action_element)
+                        dict_action[action["id"]] = obj_action
+                obj_page.set_dict_action(dict_action)
                 dict_yaml[page_name] = obj_page
             return obj_page
 
@@ -68,7 +100,71 @@ class ManagementFile:
         for element_yaml in arr_element:
             if element_yaml.id.__eq__(element):
                 return element_yaml
-
+    def execute_action(self, page, action_id, driver, wait,value):
+        dict_action = page.get_dict_action()
+        obj_action = ActionTest()
+        if dict_action[action_id] is not None:
+            list_action_element = [ActionElements]
+            obj_action = dict_action[action_id]
+            arr_list_action = obj_action.get_list_action()
+            for action_elements in arr_list_action:
+                element_page = action_elements.get_element()
+                type_action = action_elements.get_inputType()
+                locator = self.get_locator_from_action(element_page, "WEB")
+                element = self.get_element_by(locator.type, driver, locator.value)
+                if action_elements.get_condition() is not None and action_elements.get_timeout() is not None:
+                    try:
+                        if action_elements.get_condition() == "ENABLED":
+                                WebDriverWait(driver, action_elements.get_timeout()).until(EC.element_to_be_clickable(element))
+                        elif action_elements.get_condition() == "NOT_ENABLED":
+                                WebDriverWait(driver, action_elements.get_timeout()).until_not(
+                                EC.element_to_be_clickable(element))
+                        elif action_elements.get_condition() == "DISPLAYED":
+                                WebDriverWait(driver, action_elements.get_timeout()).until(
+                                EC.presence_of_element_located(element))
+                        elif action_elements.get_condition() == "NOT_DISPLAYED":
+                                WebDriverWait(driver, action_elements.get_timeout()).until(
+                                EC.presence_of_element_located(element))
+                        elif action_elements.get_condition() == "EXISTED":
+                                elements = self.get_list_element_by(locator.type, driver, locator.value)
+                                WebDriverWait(driver, action_elements.get_timeout()).until(lambda driver: len(elements) > int(0))
+                        elif action_elements.get_condition() == "NOT_EXISTED":
+                                elements = self.get_list_element_by(locator.type, driver, locator.value)
+                                WebDriverWait(driver, action_elements.get_timeout()).until_not(lambda driver: len(elements) > int(0))
+                        elif action_elements.get_condition() == "SELECTED":
+                                WebDriverWait(driver, action_elements.get_timeout()).until(EC.element_located_to_be_selected(element))
+                        elif action_elements.get_condition() == "NOT_SELECTED":
+                                WebDriverWait(driver, action_elements.get_timeout()).until_not(
+                                EC.element_located_to_be_selected(element))
+                        else:
+                            assert False, "Not support condition"
+                        if type_action.__eq__("click"):
+                            if element.get_attribute("disabled") is None:
+                                element.click()
+                            else:
+                                WebDriverWait(driver, action_elements.get_timeout).until_not(EC.element_attribute_to_include(
+                                    self.get_locator_for_wait(locator.type, locator.value), "disabled"))
+                                element.click()
+                        elif type.__eq__("type"):
+                            element.send_keys(value)
+                    except:
+                        assert True, "due to Condition and time out by pass step"
+                else:
+                    try:
+                        WebDriverWait(driver, wait).until(EC.element_to_be_clickable(element))
+                        if type_action.__eq__("click"):
+                            if element.get_attribute("disabled") is None:
+                                element.click()
+                            else:
+                                WebDriverWait(driver, wait).until_not(
+                                    EC.element_attribute_to_include(
+                                        self.get_locator_for_wait(locator.type, locator.value), "disabled"))
+                                element.click()
+                        elif type.__eq__("type"):
+                            element.send_keys(value)
+                    except:
+                        assert False, "Failed at action step"
+                        
     def action_page(self, element_page, action, driver, value, wait):
         locator = self.get_locator(element_page, "WEB")
         element = self.get_element_by(locator.type, driver, locator.value)
@@ -149,11 +245,15 @@ class ManagementFile:
             if locator.get_device().__eq__(device):
                 return locator
             break
-
+    def get_locator_from_action(self, element_page, device):
+        print(element_page)
+        for locator in element_page:
+            if locator.get_device().__eq__(device):
+                return locator
+            break
     def wait_element_for_status(self, element_page, status, driver, wait):
         locator = self.get_locator(element_page, "WEB")
         locator_from_wait = self.get_locator_for_wait(locator.type, locator.value)
-
         try:
             if status == "DISPLAYED":
                 WebDriverWait(driver, wait).until(EC.presence_of_element_located(locator_from_wait))
@@ -180,6 +280,14 @@ class ManagementFile:
                 raise Exception("Not support status ", status)
         except TimeoutException as ex:
             raise Exception("failed due to  timeout is ", wait)
+
+    def check_attribute_is_exist(self,obj_action_elements, key):
+        if obj_action_elements.get(key) is None:
+            return None
+        else:
+            return obj_action_elements.get(key)
+
+
 
 
     # def __check_wait_element__(self,status, locator_from_wait):

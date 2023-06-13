@@ -17,8 +17,8 @@ class ActionElements:
         self.condition = condition
     def set_timeout(self,timeout):
         self.timeout = timeout
-    def set_input_type(self,input_type):
-        self.infoType = input_type
+    def set_inputType(self,inputType):
+        self.inputType = inputType
     def set_info_type(self, info_type):
         self.infoType = info_type
 

@@ -1,7 +1,7 @@
 import configparser
 from behave import *
 from selenium import webdriver
-from Utilities.ReadFileYaml import ManagementFile
+from Utilities.ActionScript import ManagementFile
 from ManagementElements.Page import Page
 from ManagementElements.Elements import Elements
 from ManagementElements.Locator import Locator
@@ -22,7 +22,7 @@ def launchBrowser(context, url):
 def change_page(context, page):
     print("context = ", context.dict_yaml)
     path_file = context.dict_yaml[page+".yaml"]
-    page = ManagementFile.read_yaml_file(path_file+"/"+page+".yaml", dict_page, page)
+    page = ManagementFile().read_yaml_file(path_file+"/"+page+".yaml", dict_page, page)
     context.page_present = page
     return context.page_present
 
@@ -46,6 +46,9 @@ def wait_element(context, element, status):
     context.element_page = ManagementFile().get_element(context.page_present, element)
     ManagementFile().wait_element_for_status(context.element_page, status, context.driver, context.wait)
 
+@given(u'I perform {action} action')
+def step_impl(context,action):
+    ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, "")
 
 @given(u'I wait 5 seconds')
 def step_impl(context):

@@ -1,0 +1,13 @@
+elements:
+  - id: welcome-user
+    description: Welcome
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(text(),'Logged in as')]
+  - id: log-out
+    description: Log out
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(text(),'Logout')]
