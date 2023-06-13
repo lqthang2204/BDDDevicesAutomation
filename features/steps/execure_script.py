@@ -30,17 +30,11 @@ def change_page(context, page):
 @given(u'I click element {element}')
 def click_action(context, element):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    try:
-        ManagementFile().action_page(context.element_page, "click",context.driver,"", context.wait)
-    except:
-        raise Exception("Not found element ", element)
+    ManagementFile().action_page(context.element_page, "click",context.driver,"", context.wait)
 @given(u'I type "{text}" into element {element}')
 def type_action(context, text, element):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    try:
-        ManagementFile().action_page(context.element_page, "type", context.driver, text,context.wait)
-    except:
-        raise Exception("Not found element ", element)
+    ManagementFile().action_page(context.element_page, "type", context.driver, text,context.wait)
 @given(u'I wait for element {element} to be {status}')
 def wait_element(context, element, status):
     context.element_page = ManagementFile().get_element(context.page_present, element)
