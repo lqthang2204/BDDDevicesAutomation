@@ -1,3 +1,4 @@
+@parallel
 Feature: test web page techpanda
 @mc-guru6
   Scenario Outline: test Search function
