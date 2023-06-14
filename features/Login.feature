@@ -1,3 +1,4 @@
+@test
 Feature: navigate URL
   Scenario: test login page
     Given I navigate to "https://demo.openmrs.org/openmrs/login.htm"
