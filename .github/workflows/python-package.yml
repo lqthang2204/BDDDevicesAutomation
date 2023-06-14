@@ -39,7 +39,7 @@ jobs:
       id: html_preview
       uses: pavi2410/html-preview-action@v2
       with:
-        message: ${{ format('[Click here to preview HTML page in browser]({0})', steps.html_preview.outputs.url) }}
+        html_file: 'report.html'
     - name: Test with pytest
       run: |
           behave ./features/orangeHRM.feature
