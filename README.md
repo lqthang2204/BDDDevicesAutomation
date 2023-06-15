@@ -66,3 +66,7 @@ there is scripts use to test in framework
     And I change the page spec to pageGoogle
 =>use to get element that store in file yaml
 
+And I save text for element pass-field with key "Pass"
+
+=> use to save text of element in web page
+
