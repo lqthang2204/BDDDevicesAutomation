@@ -1,8 +1,5 @@
 # Selenium-with-python-behave
 
-:toc: macro
-:toclevels: 4
-toc::[]
 // Automatic Table of contents for github pages only possible with .adoc format
 // AsciiDoc format is better format than markdown
 // https://asciidoctor.org/docs/asciidoc-vs-markdown/=comparison-by-example
