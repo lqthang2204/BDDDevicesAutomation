@@ -183,6 +183,16 @@ class ManagementFile:
             element.clear()
         else:
             assert False, "Not support action in framework"
+    def save_text_from_element(self, element_page, driver, key, dict_save_value, wait):
+        locator = self.get_locator(element_page, "WEB")
+        WebDriverWait(driver, wait).until(ec.presence_of_element_located(self.get_locator_for_wait(locator.type, locator.value)))
+        element = self.get_element_by(locator.type, driver, locator.value)
+        if element.get_attribute("value") is None:
+            value = element.text
+        else:
+            value = element.get_attribute('value')
+        dict_save_value["KEY."+key] = value
+        return dict_save_value
 
     def get_element_by(self, type, driver, value):
         if type.__eq__("ID"):
@@ -289,7 +299,6 @@ class ManagementFile:
             return None
         else:
             return obj_action_elements.get(key)
-
     # def __check_wait_element__(self,status, locator_from_wait):
     #     if status == "ENABLED":
     #         element = EC.presence_of_element_located(locator_from_wait)
