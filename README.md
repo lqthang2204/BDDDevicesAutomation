@@ -1,17 +1,14 @@
 # Selenium-with-python-behave
-// Automatic Table of contents for github pages only possible with .adoc format
-// AsciiDoc format is better format than markdown
-// https://asciidoctor.org/docs/asciidoc-vs-markdown/=comparison-by-example
 
 == About this project
-* The project holds all automation tests for multi project by browser
+* The project holds all automation tests for multi-project by browser
 
 
 == Why do I need this project?
-This project is for multi browser (chrome)
+This project is for chrome
 
 * This project will provide tests specific to performing various browser UI actions and verifications.
-* The project will provide use of the same steps for Web.
+* The project will provide the use of the same steps for Web.
 
 == When and why would I need to modify this project?
 Any QA or Developer can contribute to this project for valid acceptable scenarios as below:
@@ -21,7 +18,7 @@ Any QA or Developer can contribute to this project for valid acceptable scenario
 . There is missing documentation.
 . Any other case that should be brought up to QA leads.
 
-== How do I setup Pychamr?
+== How do I set up Pychamr?
 Review the https://www.jetbrains.com/idea/download/#section=windows, which addresses
 questions such as:
 
@@ -36,7 +33,7 @@ Follow https://github.com/lqthang2204/Selenium-with-python-behave for cloning a 
 
 == Test execution
 
-=== How do I run a automation test?
+=== How do I run an automation test?
 . VM options : behave ./features/orangeHRM.feature
 to run parallel with command behavex -t @TAGS regression --parallel-processes 2
 with regression is the tag in file feature
@@ -63,7 +60,8 @@ there is scripts use to test in framework
     And I type "test" into element search-input
 
     Given I navigate to "url"
-=> use to open broswer and navigate to url
+=> use to open broswer and navigate to URL
+
 
     And I change the page spec to pageGoogle
 =>use to get element that store in file yaml
