@@ -43,24 +43,11 @@ Follow https://github.com/lqthang2204/Selenium-with-python-behave for cloning a 
 === How do I run a automation test?
 . VM options : behave ./features/orangeHRM.feature
 to run parallel with command behavex -t @TAGS regression --parallel-processes 2
-with regression is tag in file feature
+with regression is the tag in file feature
 
-
-=== How do I search for a feature file or a test?
-For searching a specific feature, you can navigate along the path,
-----
-src => test => resources => features => FeatureName.feature
 ----
 
-In the below image,
 
-. Click on *features*
-.. Select the desired feature you are looking for. A single feature file holds *_multiple tests for all platforms_* (Web) as per the requirement.
-Here Login.feature.
-
-.Understanding feature file, tests, and it's tags
-
-You can also use `Ctrl+Shift+f` on Windows and `Cmd+Shift+f` on Mac to search for a feature name, test name or a certain test tag.
 
 Config to run
 
