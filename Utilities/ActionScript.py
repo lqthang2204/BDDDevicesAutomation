@@ -179,6 +179,8 @@ class ManagementFile:
                 element.click()
         elif action.__eq__("type"):
             element.send_keys(value)
+        elif action.__eq__("clear"):
+            element.clear()
         else:
             assert False, "Not support action in framework"
 

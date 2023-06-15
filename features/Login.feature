@@ -7,10 +7,12 @@ Feature: navigate URL
     And I wait for element pass-field to be DISPLAYED
     And I type "Admin" into element user-field
     And I type "Admin123" into element pass-field
+    And I clear text from element pass-field
     And I perform login-page action
     And I change the page spec to IndexPage
     And I wait for element welcome-user to be DISPLAYED
     And I wait for element log-out to be DISPLAYED
+#    And I clear text from element field-search
 #    And I type "Admidsdsdsn" into element user-field
 #    And I type "Admin12dsdsds3" into element pass-field
 #    And I click element location-option-inpatient
