@@ -1,0 +1,13 @@
+elements:
+  - id: find-patient-button
+    description: Patient button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(@id,'coreapps-activeVisitsHomepageLink')][1]
+  - id: search-input
+    description: Search Input
+    locators:
+      - device: WEB
+        type: ID
+        value: patient-search

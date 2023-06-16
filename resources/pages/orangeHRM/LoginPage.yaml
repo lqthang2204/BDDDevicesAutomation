@@ -33,6 +33,12 @@ elements:
       - device: WEB
         type: ID
         value: error-message
+  - id: login-form-title
+    description: title login form
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[@class='w-auto']
 actions:
   - id: login-page
     description: login page

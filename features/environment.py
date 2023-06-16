@@ -6,6 +6,7 @@ import chromedriver_autoinstaller
 from selenium.webdriver.chrome.options import Options
 
 def before_all(context):
+    context.dict_save_value = {}
     config_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config.ini')
     file = open(config_file_path, 'r')
     config = configparser.RawConfigParser(allow_no_value=True)
