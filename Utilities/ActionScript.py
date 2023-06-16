@@ -163,7 +163,7 @@ class ManagementFile:
                     except:
                         assert False, "Failed at action step"
 
-    def action_page(self, element_page, action, driver, value, wait):
+    def action_page(self, element_page, action, driver, value, wait, dict_save_value):
         locator = self.get_locator(element_page, "WEB")
         element = self.get_element_by(locator.type, driver, locator.value)
         WebDriverWait(driver, wait).until(ec.all_of(
@@ -178,7 +178,14 @@ class ManagementFile:
                     ec.element_attribute_to_include(self.get_locator_for_wait(locator.type, locator.value), "disabled"))
                 element.click()
         elif action.__eq__("type"):
-            element.send_keys(value)
+            if len(dict_save_value) == int(0):
+                element.send_keys(value)
+            else:
+                if dict_save_value[value] is not None:
+                    value = dict_save_value[value]
+                    element.send_keys(value)
+                else:
+                    assert False, "Not key in map save text"
         elif action.__eq__("clear"):
             element.clear()
         else:

@@ -25,16 +25,14 @@ def change_page(context, page):
     page = ManagementFile().read_yaml_file(path_file+"/"+page+".yaml", dict_page, page)
     context.page_present = page
     return context.page_present
-
-
 @given(u'I click element {element}')
 def click_action(context, element):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    ManagementFile().action_page(context.element_page, "click",context.driver,"", context.wait)
+    ManagementFile().action_page(context.element_page, "click",context.driver,"", context.wait, context.dict_save_value)
 @given(u'I type "{text}" into element {element}')
 def type_action(context, text, element):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    ManagementFile().action_page(context.element_page, "type", context.driver, text,context.wait)
+    ManagementFile().action_page(context.element_page, "type", context.driver, text, context.wait, context.dict_save_value)
 @given(u'I wait for element {element} to be {status}')
 def wait_element(context, element, status):
     context.element_page = ManagementFile().get_element(context.page_present, element)
@@ -50,8 +48,8 @@ def step_impl(context, element):
 @given(u'I save text for element {element} with key "{key}"')
 def step_impl(context, element, key):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    context.dict_save_value = ManagementFile().save_text_from_element(context.element_page, context.driver, key, dict_save_value, context.wait)
-    print('dict save value = ', context.dict_save_value)
+    context.dict_save_value = ManagementFile().save_text_from_element(context.element_page, context.driver, key, context.dict_save_value, context.wait)
+    return context.dict_save_value
 @given(u'I wait 5 seconds')
 def step_impl(context):
     print("wait")

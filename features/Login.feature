@@ -17,7 +17,7 @@ Feature: navigate URL
     And I wait for element find-patient-button to be ENABLED
     And I click element find-patient-button
     And I wait for element search-input to be DISPLAYED
-#    And I type "KEY.Pass" into element search-input
+    And I type "KEY.Pass" into element search-input
 
 #    And I clear text from element field-search
 #    And I type "Admidsdsdsn" into element user-field
