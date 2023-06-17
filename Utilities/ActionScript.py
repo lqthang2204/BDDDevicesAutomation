@@ -70,6 +70,7 @@ class ManagementFile:
                             obj_action_elements = ActionElements()
                             obj_locator = action_elements["element"]
                             arr_locator = obj_locator["locators"]
+                            obj_action_elements.set_id(obj_locator["id"])
                             list_locator = list()
                             for locator_action in arr_locator:
                                 obj_locator = Locator()
@@ -95,73 +96,80 @@ class ManagementFile:
             if element_yaml.id.__eq__(element):
                 return element_yaml
 
-    def execute_action(self, page, action_id, driver, wait, value):
+    def execute_action(self, page, action_id, driver, wait, table, dict_save_value):
         dict_action = page.get_dict_action()
         if dict_action[action_id] is not None:
             obj_action = dict_action[action_id]
             arr_list_action = obj_action.get_list_action()
             for action_elements in arr_list_action:
-                element_page = action_elements.get_element()
-                type_action = action_elements.get_inputType()
-                locator = self.get_locator_from_action(element_page, "WEB")
-                element = self.get_element_by(locator.type, driver, locator.value)
-                if action_elements.get_condition() is not None and action_elements.get_timeout() is not None:
-                    try:
-                        if action_elements.get_condition() == "ENABLED":
-                            WebDriverWait(driver, action_elements.get_timeout()).until(
-                                ec.element_to_be_clickable(element))
-                        elif action_elements.get_condition() == "NOT_ENABLED":
-                            WebDriverWait(driver, action_elements.get_timeout()).until_not(
-                                ec.element_to_be_clickable(element))
-                        elif action_elements.get_condition() == "DISPLAYED":
-                            WebDriverWait(driver, action_elements.get_timeout()).until(
-                                ec.presence_of_element_located(element))
-                        elif action_elements.get_condition() == "NOT_DISPLAYED":
-                            WebDriverWait(driver, action_elements.get_timeout()).until(
-                                ec.presence_of_element_located(element))
-                        elif action_elements.get_condition() == "EXISTED":
-                            elements = self.get_list_element_by(locator.type, driver, locator.value)
-                            WebDriverWait(driver, action_elements.get_timeout()).until(
-                                lambda driver: len(elements) > int(0))
-                        elif action_elements.get_condition() == "NOT_EXISTED":
-                            elements = self.get_list_element_by(locator.type, driver, locator.value)
-                            WebDriverWait(driver, action_elements.get_timeout()).until_not(
-                                lambda driver: len(elements) > int(0))
-                        elif action_elements.get_condition() == "SELECTED":
-                            WebDriverWait(driver, action_elements.get_timeout()).until(
-                                ec.element_located_to_be_selected(element))
-                        elif action_elements.get_condition() == "NOT_SELECTED":
-                            WebDriverWait(driver, action_elements.get_timeout()).until_not(
-                                ec.element_located_to_be_selected(element))
-                        else:
-                            assert False, "Not support condition"
-                        if type_action.__eq__("click"):
-                            if element.get_attribute("disabled") is None:
-                                element.click()
+                if table is not None:
+                    for row in table:
+                        if action_elements.get_id() == row["Field"]:
+                            if dict_save_value is not None and row["Value"] in dict_save_value.keys():
+                               value = dict_save_value[row["Value"]]
                             else:
-                                WebDriverWait(driver, action_elements.get_timeout).until_not(
-                                    ec.element_attribute_to_include(
-                                        self.get_locator_for_wait(locator.type, locator.value), "disabled"))
-                                element.click()
-                        elif type.__eq__("type"):
-                            element.send_keys(value)
-                    except:
-                        assert True, "due to Condition and time out by pass step"
-                else:
-                    try:
-                        WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
-                        if type_action.__eq__("click"):
-                            if element.get_attribute("disabled") is None:
-                                element.click()
+                                value = row["Value"]
+                            break
+                    element_page = action_elements.get_element()
+                    type_action = action_elements.get_inputType()
+                    locator = self.get_locator_from_action(element_page, "WEB")
+                    element = self.get_element_by(locator.type, driver, locator.value)
+                    if action_elements.get_condition() is not None and action_elements.get_timeout() is not None:
+                        try:
+                            if action_elements.get_condition() == "ENABLED":
+                                WebDriverWait(driver, action_elements.get_timeout()).until(
+                                    ec.element_to_be_clickable(element))
+                            elif action_elements.get_condition() == "NOT_ENABLED":
+                                WebDriverWait(driver, action_elements.get_timeout()).until_not(
+                                    ec.element_to_be_clickable(element))
+                            elif action_elements.get_condition() == "DISPLAYED":
+                                WebDriverWait(driver, action_elements.get_timeout()).until(
+                                    ec.presence_of_element_located(element))
+                            elif action_elements.get_condition() == "NOT_DISPLAYED":
+                                WebDriverWait(driver, action_elements.get_timeout()).until(
+                                    ec.presence_of_element_located(element))
+                            elif action_elements.get_condition() == "EXISTED":
+                                elements = self.get_list_element_by(locator.type, driver, locator.value)
+                                WebDriverWait(driver, action_elements.get_timeout()).until(
+                                    lambda driver: len(elements) > int(0))
+                            elif action_elements.get_condition() == "NOT_EXISTED":
+                                elements = self.get_list_element_by(locator.type, driver, locator.value)
+                                WebDriverWait(driver, action_elements.get_timeout()).until_not(
+                                    lambda driver: len(elements) > int(0))
+                            elif action_elements.get_condition() == "SELECTED":
+                                WebDriverWait(driver, action_elements.get_timeout()).until(
+                                    ec.element_located_to_be_selected(element))
+                            elif action_elements.get_condition() == "NOT_SELECTED":
+                                WebDriverWait(driver, action_elements.get_timeout()).until_not(
+                                    ec.element_located_to_be_selected(element))
                             else:
-                                WebDriverWait(driver, wait).until_not(
-                                    ec.element_attribute_to_include(
-                                        self.get_locator_for_wait(locator.type, locator.value), "disabled"))
-                                element.click()
-                        elif type.__eq__("type"):
-                            element.send_keys(value)
-                    except:
-                        assert False, "Failed at action step"
+                                assert False, "Not support condition"
+                            if type_action.__eq__("click"):
+                                if element.get_attribute("disabled") is None:
+                                    element.click()
+                                else:
+                                    WebDriverWait(driver, action_elements.get_timeout).until_not(
+                                        ec.element_attribute_to_include(
+                                            self.get_locator_for_wait(locator.type, locator.value), "disabled"))
+                                    element.click()
+                            elif type.__eq__("text"):
+                                element.send_keys(value)
+                        except:
+                            assert True, "due to have Condition and time out by pass step"
+                    elif action_elements.get_condition() is not None and action_elements.get_timeout() is None:
+                        try:
+                            self.process_execute_action(driver, wait, element, type_action, value,
+                                                        locator)
+                        except:
+                            assert False, "Failed at action step"
+                    else:
+                        try:
+                            self.process_execute_action(driver, wait, element, type_action, value,
+                                                        locator)
+                        except:
+                            assert False, "Failed at action step"
+        else:
+            assert False, "Not Found Action in page yaml"
 
     def action_page(self, element_page, action, driver, value, wait, dict_save_value):
         locator = self.get_locator(element_page, "WEB")
@@ -306,6 +314,19 @@ class ManagementFile:
             return None
         else:
             return obj_action_elements.get(key)
+
+    def process_execute_action(self, driver, wait, element, type_action, value, locator):
+        WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
+        if type_action.__eq__("click"):
+            if element.get_attribute("disabled") is None:
+                element.click()
+            else:
+                WebDriverWait(driver, wait).until_not(
+                    ec.element_attribute_to_include(
+                        self.get_locator_for_wait(locator.type, locator.value), "disabled"))
+                element.click()
+        elif type_action.__eq__("text"):
+            element.send_keys(value)
     # def __check_wait_element__(self,status, locator_from_wait):
     #     if status == "ENABLED":
     #         element = EC.presence_of_element_located(locator_from_wait)

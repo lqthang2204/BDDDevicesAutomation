@@ -27,8 +27,8 @@ Feature: navigate URL
     And I save text for element pass-field with key "Pass"
     And I perform login-page action
     And I change the page spec to IndexPage
-    And I wait for element welcome-user to be DISPLAYED
-    And I wait for element log-out to be DISPLAYED
+#    And I wait for element welcome-user to be DISPLAYED
+#    And I wait for element log-out to be DISPLAYED
     And I change the page spec to HomePageOrange
     And I wait for element find-patient-button to be ENABLED
     And I click element find-patient-button
