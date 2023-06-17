@@ -43,6 +43,17 @@ actions:
   - id: login-page
     description: login page
     actionElements:
+      - element: *location-option-inpatient
+        condition: ENABLED
+        timeout: 10
+        inputType: click
+      - element: *login-button
+        condition: ENABLED
+        timeout: 5
+        inputType: click
+  - id: login-page-two
+    description: login page
+    actionElements:
       - element: *user-field
         condition: DISPLAYED
         inputType: text

@@ -6,12 +6,12 @@ Feature: navigate URL
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
     And I save text for element login-form-title with key "title"
-    And I perform login-page action with override values
+    And I perform login-page-two action with override values
       | Field      | Value    |
       | user-field | Admin    |
       | pass-field | KEY.title |
     And I wait for element error-message to be DISPLAYED
-    And I perform login-page action with override values
+    And I perform login-page-two action with override values
       | Field      | Value    |
       | user-field | Admin    |
       | pass-field | Admin123 |
