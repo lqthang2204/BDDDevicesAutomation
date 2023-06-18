@@ -1,6 +1,7 @@
 class ActionElements:
 
-
+    def get_id(self):
+        return self.id
     def get_element(self):
         return self.element
     def get_condition(self):
@@ -21,6 +22,9 @@ class ActionElements:
         self.inputType = inputType
     def set_info_type(self, info_type):
         self.infoType = info_type
+
+    def set_id(self, id):
+        self.id = id
 
 
 

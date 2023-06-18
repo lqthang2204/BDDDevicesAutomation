@@ -40,7 +40,11 @@ def wait_element(context, element, status):
 
 @given(u'I perform {action} action')
 def step_impl(context,action):
-    ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, "")
+    ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, None, None)
+
+@given(u'I perform {action} action with override values')
+def step_impl(context, action):
+    ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, context.table, context.dict_save_value)
 @given(u'I clear text from element {element}')
 def step_impl(context, element):
     context.element_page = ManagementFile().get_element(context.page_present, element)

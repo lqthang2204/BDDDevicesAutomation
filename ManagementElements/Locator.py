@@ -1,6 +1,5 @@
 class Locator:
 
-
     def set_device(self,device):
         self.device = device
     def set_value(self, value):

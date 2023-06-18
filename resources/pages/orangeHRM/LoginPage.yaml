@@ -45,28 +45,26 @@ actions:
     actionElements:
       - element: *location-option-inpatient
         condition: ENABLED
-        timeout: 5
+        timeout: 10
         inputType: click
       - element: *login-button
         condition: ENABLED
         timeout: 5
         inputType: click
-  - id: login-page2
+  - id: login-page-two
     description: login page
     actionElements:
       - element: *user-field
-        condition: NOT_DISPLAYED
-        timeout: 5
-        inputType: click
+        condition: DISPLAYED
+        inputType: text
       - element: *pass-field
-        condition: NOT_DISPLAYED
-        timeout: 5000
-        inputType: click
+        condition: DISPLAYED
+        inputType: text
       - element: *location-option-inpatient
-        condition: NOT_DISPLAYED
-        timeout: 5
+        condition: ENABLED
+        timeout: 10
         inputType: click
       - element: *login-button
-        condition: NOT_DISPLAYED
-        timeout: 5000
+        condition: ENABLED
+        timeout: 5
         inputType: click
