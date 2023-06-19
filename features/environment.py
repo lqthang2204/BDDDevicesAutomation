@@ -58,7 +58,7 @@ def before_all(context):
                 # chrome_option.add_argument("--no-sandbox")
                 # chrome_option.add_argument("--disable-dev-shm-usage")
                     if device.get_auto_download_driver() == 'False':
-                        context.driver = webdriver.Chrome(executable_path=os.path.dirname(os.path.dirname(__file__)) + "\\" + dev.get_driver_from_path(), options=chrome_option)
+                        context.driver = webdriver.Chrome(executable_path=os.path.dirname(os.path.dirname(__file__)) + "\\" + device.get_driver_from_path(), options=chrome_option)
                     else:
                         context.driver = webdriver.Chrome(options=chrome_option)
                 wait = device.get_wait()
