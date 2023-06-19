@@ -6,6 +6,17 @@ elements:
       - device: WEB
         type: NAME
         value: username
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Next
+      - device: IOS
+        type: NAME
+        value: Next
+    values:
+      - lang: EN
+        value: Next
+      - lang: ES
+        value: Continuar
   - &pass-field
     id: pass-field
     description: Pass field
@@ -13,6 +24,17 @@ elements:
       - device: WEB
         type: NAME
         value: password
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Next
+      - device: IOS
+        type: NAME
+        value: Next
+    values:
+      - lang: EN
+        value: Next
+      - lang: ES
+        value: Continuar
   - &location-option-inpatient
     id: location-option-inpatient
     description: Location
@@ -20,6 +42,17 @@ elements:
       - device: WEB
         type: ID
         value: Inpatient Ward
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Next
+      - device: IOS
+        type: NAME
+        value: Next
+    values:
+      - lang: EN
+        value: Next
+      - lang: ES
+        value: Continuar
   - &login-button
     id: login-button
     description: Login button
@@ -27,18 +60,51 @@ elements:
       - device: WEB
         type: ID
         value: loginButton
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Next
+      - device: IOS
+        type: NAME
+        value: Next
+    values:
+      - lang: EN
+        value: Next
+      - lang: ES
+        value: Continuar
   - id: error-message
     description: Error message
     locators:
       - device: WEB
         type: ID
         value: error-message
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Next
+      - device: IOS
+        type: NAME
+        value: Next
+    values:
+      - lang: EN
+        value: Next
+      - lang: ES
+        value: Continuar
   - id: login-form-title
     description: title login form
     locators:
       - device: WEB
         type: XPATH
         value: //*[@class='w-auto']
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Next
+      - device: IOS
+        type: NAME
+        value: Next
+    values:
+      - lang: EN
+        value: Next
+      - lang: ES
+        value: Continuar
 actions:
   - id: login-page
     description: login page

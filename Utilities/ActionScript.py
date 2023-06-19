@@ -12,6 +12,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import TimeoutException
 from ManagementElements.ActionTest import ActionTest
 from ManagementElements.ActionElements import ActionElements
+from Utilities.common import check_att_is_exist
 
 
 class ManagementFile:
@@ -58,7 +59,7 @@ class ManagementFile:
                     list_element.append(obj_element)
                 obj_page.set_list_element(list_element)
                 dict_action = {}
-                arr_action = self.check_att_is_exist(json_object, "actions")
+                arr_action = check_att_is_exist(json_object, "actions")
                 if arr_action is not None:
                     for action in arr_action:
                         obj_action = ActionTest()
@@ -79,10 +80,10 @@ class ManagementFile:
                                 obj_locator.set_value(locator_action["value"])
                                 list_locator.append(obj_locator)
                             obj_action_elements.set_element(list_locator)
-                            obj_action_elements.set_condition(self.check_att_is_exist(action_elements, "condition"))
-                            obj_action_elements.set_timeout(self.check_att_is_exist(action_elements, "timeout"))
-                            obj_action_elements.set_inputType(self.check_att_is_exist(action_elements, "inputType"))
-                            obj_action_elements.set_info_type(self.check_att_is_exist(action_elements, "infoType"))
+                            obj_action_elements.set_condition(check_att_is_exist(action_elements, "condition"))
+                            obj_action_elements.set_timeout(check_att_is_exist(action_elements, "timeout"))
+                            obj_action_elements.set_inputType(check_att_is_exist(action_elements, "inputType"))
+                            obj_action_elements.set_info_type(check_att_is_exist(action_elements, "infoType"))
                             list_action_element.append(obj_action_elements)
                             obj_action.set_list_action(list_action_element)
                         dict_action[action["id"]] = obj_action
@@ -309,11 +310,11 @@ class ManagementFile:
         except TimeoutException as ex:
             assert False, "failed due to wait time out element"
 
-    def check_att_is_exist(self, obj_action_elements, key):
-        if obj_action_elements.get(key) is None:
-            return None
-        else:
-            return obj_action_elements.get(key)
+    # def check_att_is_exist(self, obj_action_elements, key):
+    #     if obj_action_elements.get(key) is None:
+    #         return None
+    #     else:
+    #         return obj_action_elements.get(key)
 
     def process_execute_action(self, driver, wait, element, type_action, value, locator):
         WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
