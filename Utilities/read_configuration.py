@@ -17,8 +17,8 @@ class read_configuration:
             arr_config = json_object["env"]
             list_env = []
             env = environment()
-            stage_env = stage()
             for config in arr_config:
+                stage_env = stage()
                 stage_env.set_stage(config["stage"])
                 stage_env.set_link(config["link"])
                 list_device = list()
@@ -35,14 +35,14 @@ class read_configuration:
                     device.set_app_activity(check_att_is_exist(dev, "appActivity"))
                     list_device.append(device)
                 stage_env.set_list_devices(list_device)
-            list_env.append(stage_env)
+                list_env.append(stage_env)
         env.set_list_env(list_env)
         return env
 
 te = read_configuration()
 env = te.read()
 listss = env.get_list_env()
-env_1 = list[0]
-arr_list = env_1.get_list_devices
+env_1 = listss[1 ]
+arr_list = env_1.get_list_devices()
 for arr in arr_list:
-    print(arr)
+    print(arr.get_platform_name())
