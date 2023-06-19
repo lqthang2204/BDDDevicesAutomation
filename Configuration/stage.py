@@ -1,9 +1,9 @@
 class stage:
-    def get_stage(self):
-        return self.get_stage
+    def get_stage_name(self):
+        return self.stage_name
 
-    def set_stage(self, stage):
-        self.stage = stage
+    def set_stage_name(self, stage_name):
+        self.stage_name = stage_name
 
     def set_link(self, link):
         self.link = link

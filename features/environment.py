@@ -31,37 +31,43 @@ from Configuration.configuration_env import environment_config
 #     context.time_page_load = config.get("drivers_config", "time_page_load")
 
 def before_all(context):
+    global wait, page_load_time
     context.dict_save_value = {}
+    env = environment_config()
     stage_config = stage()
+    device = devices()
     config_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config_env.ini')
     file = open(config_file_path, 'r')
     config = configparser.RawConfigParser(allow_no_value=True)
     chrome_option = Options()
     config.read_file(file)
-    device = config.get("drivers_config", "device")
+    platform = config.get("drivers_config", "platform")
     stage_name = config.get("drivers_config", "stage")
-    stage_config = read_configuration().read()
-    print("stage config === ", stage_config)
-    arr_config = stage_config.get_list_env()
-    for config in arr_config:
-        if stage_config.get_stage() == stage_name:
-
-            if config == 'true':
-                chrome_option.add_argument("--headless")
+    env = read_configuration().read()
+    arr_stage = env.get_list_stage()
+    for stage_config in arr_stage:
+        print(stage_config.get_stage_name())
+        if stage_config.get_stage_name() == stage_name:
+            arr_device = stage_config.get_list_devices()
+            for device in arr_device:
+                if device.get_platform_name() == platform:
+                    chrome_option = Options()
+                    chromedriver_autoinstaller.install()
+                    if device.get_is_headless() == 'true':
+                        chrome_option.add_argument("--headless")
                 # chrome_option.add_argument("--no-sandbox")
                 # chrome_option.add_argument("--disable-dev-shm-usage")
-            chromedriver_autoinstaller.install()
-            if config.get("drivers_config", "auto_download_driver") == 'false':
-                context.driver = webdriver.Chrome(
-                    executable_path=os.path.dirname(os.path.dirname(__file__)) + "\\" + config.get("drivers_config",
-                                                                                                   "driver_version"),
-                    options=chrome_option)
-            else:
-                context.driver = webdriver.Chrome(options=chrome_option)
+                    if device.get_auto_download_driver() == 'False':
+                        context.driver = webdriver.Chrome(executable_path=os.path.dirname(os.path.dirname(__file__)) + "\\" + dev.get_driver_from_path(), options=chrome_option)
+                    else:
+                        context.driver = webdriver.Chrome(options=chrome_option)
+                wait = device.get_wait()
+                page_load_time = device .get_time_page_load()
+                break
             print("----------------------Reading file config-----------------------------")
             context.dict_yaml = ManagementFile().get_dict_path_yaml()
-            context.wait = config.get("drivers_config", "wait")
-            context.time_page_load = config.get("drivers_config", "time_page_load")
+            context.wait = wait
+            context.time_page_load = page_load_time
 
 
     # listss = stage_config.get_list_env()
@@ -95,9 +101,3 @@ def before_all(context):
 #         elif browser == "Firefox":
 #             # Initialize the browser with platform, browser, etc.
 #             context.browser = webdriver.Firefox()
-def run_browser():
-
-
-
-
-

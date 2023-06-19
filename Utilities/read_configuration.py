@@ -15,18 +15,18 @@ class read_configuration:
             json_object = json.loads(json_result)
             # print(json_object)
             arr_config = json_object["env"]
-            list_env = []
+            list_stage = []
             env = environment_config()
             for config in arr_config:
                 stage_env = stage()
-                stage_env.set_stage(config["stage"])
+                stage_env.set_stage_name(config["stage"])
                 stage_env.set_link(config["link"])
                 list_device = list()
                 arr_device = config["devices"]
                 for dev in arr_device:
                     device = devices()
                     device.set_platform_name(check_att_is_exist(dev, "platformName"))
-                    device.set_is_headless((dev, "is_headless"))
+                    device.set_is_headless(check_att_is_exist(dev, "is_headless"))
                     device.set_wait(check_att_is_exist(dev, "wait"))
                     device.set_time_page_load(check_att_is_exist(dev, "time_page_load"))
                     device.set_auto_download_driver(check_att_is_exist(dev, "auto_download_driver"))
@@ -35,8 +35,8 @@ class read_configuration:
                     device.set_app_activity(check_att_is_exist(dev, "appActivity"))
                     list_device.append(device)
                 stage_env.set_list_devices(list_device)
-                list_env.append(stage_env)
-        env.set_list_env(list_env)
+                list_stage.append(stage_env)
+            env.set_list_stage(list_stage)
         return env
 # te = read_configuration()
 # env = te.read()

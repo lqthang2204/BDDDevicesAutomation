@@ -3,7 +3,7 @@ env:
     link: https://demo.openmrs.org/openmrs/login.htm, https://www.google.com/, http://live.techpanda.org/index.php/
     devices:
     - platformName: WEB
-      is_headless: false
+      is_headless: true
       wait: 30
       time_page_load:
       auto_download_driver: false
