@@ -2,7 +2,7 @@ import yaml
 import os
 from yaml import SafeLoader
 import json
-from Configuration.configuration_env import environment
+from Configuration.configuration_env import environment_config
 from Configuration.devices import devices
 from Utilities.common import check_att_is_exist
 from Configuration.stage import stage
@@ -16,7 +16,7 @@ class read_configuration:
             # print(json_object)
             arr_config = json_object["env"]
             list_env = []
-            env = environment()
+            env = environment_config()
             for config in arr_config:
                 stage_env = stage()
                 stage_env.set_stage(config["stage"])
@@ -38,11 +38,10 @@ class read_configuration:
                 list_env.append(stage_env)
         env.set_list_env(list_env)
         return env
-
-te = read_configuration()
-env = te.read()
-listss = env.get_list_env()
-env_1 = listss[1 ]
-arr_list = env_1.get_list_devices()
-for arr in arr_list:
-    print(arr.get_platform_name())
+# te = read_configuration()
+# env = te.read()
+# listss = env.get_list_env()
+# env_1 = listss[1 ]
+# arr_list = env_1.get_list_devices()
+# for arr in arr_list:
+#     print(arr.get_platform_name())
