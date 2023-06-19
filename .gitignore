@@ -1,0 +1,8 @@
+# created by virtualenv automatically
+*.pyc
+.DS_Store
+.env
+.venv
+venv
+idea
+*.css
