@@ -1,7 +1,7 @@
 @testMobile
 Feature: navigate URL
   Scenario: test login page
-    Given I navigate to "https://demo.openmrs.org/openmrs/login.htmdsdsds"
+    Given I navigate to "https://demo.openmrs.org/openmrs/login.htm"
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
