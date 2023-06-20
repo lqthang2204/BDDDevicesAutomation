@@ -53,11 +53,11 @@ def before_all(context):
                 if device.get_platform_name() == platform:
                     chrome_option = Options()
                     chromedriver_autoinstaller.install()
-                    if device.get_is_headless() == 'True':
+                    if device.get_is_headless():
                         chrome_option.add_argument("--headless")
                 # chrome_option.add_argument("--no-sandbox")
                 # chrome_option.add_argument("--disable-dev-shm-usage")
-                    if device.get_auto_download_driver() == 'False':
+                    if device.get_auto_download_driver() is False:
                         context.driver = webdriver.Chrome(executable_path=os.path.dirname(os.path.dirname(__file__)) + "\\" + device.get_driver_from_path(), options=chrome_option)
                     else:
                         context.driver = webdriver.Chrome(options=chrome_option)
