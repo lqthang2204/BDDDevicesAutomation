@@ -327,14 +327,6 @@ class ManagementFile:
                 element.click()
         elif type_action.__eq__("text"):
             element.send_keys(value)
-    # def __check_wait_element__(self,status, locator_from_wait):
-    #     if status == "ENABLED":
-    #         element = EC.presence_of_element_located(locator_from_wait)
-    #         visibility = EC.visibility_of_element_located(locator_from_wait)
-    #         if element
-    #             try:
-    #                 return True
-    #             except:
-    #                 return False
-    #         else:
-    #             return False
+
+
+

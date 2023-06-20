@@ -13,11 +13,11 @@ page_present = Page
 element_page = Elements
 locator = Locator
 dict_save_value = {}
-@given(u'I navigate to "{url}"')
-def launchBrowser(context, url):
+@given(u'I navigate to url have index {index}')
+def launchBrowser(context, index):
+    array_url = context.url.split(",")
     context.driver.maximize_window()
-    context.driver.get(url)
-    print("done")
+    context.driver.get(array_url[int(index)-1])
 
 @given(u'I change the page spec to {page}')
 def change_page(context, page):
