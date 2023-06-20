@@ -8,7 +8,7 @@ Feature: navigate URL
     And I wait for element search-field to be DISPLAYED
     And I click element search-field
     And I type "lqthang" into element search-field
-    And I navigate to "http://live.techpanda.org/index.php/"
+    And II navigate to url have index 3
     And I change the page spec to HomePage
     And I wait for element mobile-button to be DISPLAYED
     And I wait for element mobile-button to be ENABLED
