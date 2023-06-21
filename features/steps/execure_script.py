@@ -16,7 +16,7 @@ dict_save_value = {}
 @given(u'I navigate to url have index {index}')
 def launchBrowser(context, index):
     array_url = context.url.split(",")
-    context.driver.maximize_window()
+    #
     context.driver.get(array_url[int(index)-1])
 
 @given(u'I change the page spec to {page}')

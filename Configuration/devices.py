@@ -31,3 +31,7 @@ class devices:
         self.app_activity = app_activity
     def get_app_activity(self):
         return self.app_activity
+    def get_udid(self):
+        return self.udid
+    def set_udid(self, udid):
+        self.udid = udid

@@ -1,3 +1,5 @@
+import appium
+
 from Utilities.ActionScript import ManagementFile
 import configparser
 from selenium import webdriver
@@ -8,8 +10,9 @@ from Utilities.read_configuration import read_configuration
 from Configuration.stage import stage
 from Configuration.devices import devices
 from Configuration.configuration_env import environment_config
-
-
+from appium.options.android import UiAutomator2Options
+from appium.webdriver.appium_service import AppiumService
+# import pytest
 def before_all(context):
     context.dict_save_value = {}
     env = environment_config()
@@ -29,20 +32,11 @@ def before_all(context):
             arr_device = stage_config.get_list_devices()
             for device in arr_device:
                 if platform == "WEB" and device.get_platform_name() == platform:
-                    # chrome_option = Options()
-                    # chromedriver_autoinstaller.install()
-                    # if device.get_is_headless():
-                    #     chrome_option.add_argument("--headless")
-                    # if device.get_auto_download_driver() is False:
-                    #     context.driver = webdriver.Chrome(executable_path=os.path.dirname(os.path.dirname(__file__)) + "\\" + device.get_driver_from_path(), options=chrome_option)
-                    # else:
-                    #     context.driver = webdriver.Chrome(options=chrome_option)
-                    # wait = device.get_wait()
-                    # time_page_load = device.get_time_page_load()
                     launch_browser(context, device)
                     break
                 elif platform == "ANDROID" and device.get_platform_name() == platform:
                     print("android")
+                    launch_android(context, device, config)
                     context.wait = device.get_wait()
                     context.time_page_load = device.get_time_page_load()
                     break
@@ -54,6 +48,7 @@ def before_all(context):
             context.url = stage_config.get_link()
             break
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
+
 def launch_browser(context, device):
     chrome_option = Options()
     chromedriver_autoinstaller.install()
@@ -67,3 +62,15 @@ def launch_browser(context, device):
         context.driver = webdriver.Chrome(options=chrome_option)
     context.wait = device.get_wait()
     context.time_page_load = device.get_time_page_load()
+    context.driver.maximize_window()
+def launch_android(context, device, config):
+    # service = AppiumService()
+    # service.start(args=['--address',config.get("drivers_config", "APPIUM_HOST"), '-P', str(config.get("drivers_config", "APPIUM_PORT"))], timeout_ms=20000)
+    desired_caps = {
+        'platformName': device.get_platform_name(),
+        'deviceName': device.get_udid(),
+        'browserName': 'Chrome'
+    }
+    context.driver = appium.webdriver.Remote("http://127.0.0.1:4723/wd/hub", desired_caps, strict_ssl=False)
+    # context.driver = appium.webdriver.Remote("http://" + config.get("drivers_config", "APPIUM_HOST") + ":" + str(
+    #     config.get("drivers_config", "APPIUM_PORT")) + "/wd/hub", desired_caps)

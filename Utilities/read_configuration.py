@@ -33,6 +33,7 @@ class read_configuration:
                     device.set_driver_from_path(check_att_is_exist(dev, "driver_version"))
                     device.set_app_package(check_att_is_exist(dev, "appPackage"))
                     device.set_app_activity(check_att_is_exist(dev, "appActivity"))
+                    device.set_udid(check_att_is_exist(dev, "udid"))
                     list_device.append(device)
                 stage_env.set_list_devices(list_device)
                 list_stage.append(stage_env)
