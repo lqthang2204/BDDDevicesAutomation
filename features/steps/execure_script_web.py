@@ -28,11 +28,11 @@ def change_page(context, page):
 @given(u'I click element {element}')
 def click_action(context, element):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    ManagementFile().action_page(context.element_page, "click",context.driver,"", context.wait, context.dict_save_value)
+    ManagementFile().action_page(context.element_page, "click",context.driver,"", context.wait, context.dict_save_value, context.device)
 @given(u'I type "{text}" into element {element}')
 def type_action(context, text, element):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    ManagementFile().action_page(context.element_page, "type", context.driver, text, context.wait, context.dict_save_value)
+    ManagementFile().action_page(context.element_page, "type", context.driver, text, context.wait, context.dict_save_value, context.device)
 @given(u'I wait for element {element} to be {status}')
 def wait_element(context, element, status):
     context.element_page = ManagementFile().get_element(context.page_present, element)
@@ -48,7 +48,7 @@ def step_impl(context, action):
 @given(u'I clear text from element {element}')
 def step_impl(context, element):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    ManagementFile().action_page(context.element_page, "clear", context.driver, "", context.wait)
+    ManagementFile().action_page(context.element_page, "clear", context.driver, "", context.wait, context.device)
 @given(u'I save text for element {element} with key "{key}"')
 def step_impl(context, element, key):
     context.element_page = ManagementFile().get_element(context.page_present, element)

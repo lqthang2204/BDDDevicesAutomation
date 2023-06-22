@@ -61,6 +61,7 @@ def launch_browser(context, device):
     else:
         context.driver = webdriver.Chrome(options=chrome_option)
     context.wait = device.get_wait()
+    context.device = device
     context.time_page_load = device.get_time_page_load()
     context.driver.maximize_window()
 def launch_android(context, device, config):
@@ -69,8 +70,10 @@ def launch_android(context, device, config):
     desired_caps = {
         'platformName': device.get_platform_name(),
         'deviceName': device.get_udid(),
-        'browserName': 'Chrome'
+        'appPackage': device.get_app_package(),
+        "appActivity": device.get_app_activity()
     }
-    context.driver = appium.webdriver.Remote("http://127.0.0.1:4723/wd/hub", desired_caps, strict_ssl=False)
+    context.driver = appium.webdriver.Remote("http://127.0.0.1:4723/wd/hub", desired_caps)
+    context.device = device
     # context.driver = appium.webdriver.Remote("http://" + config.get("drivers_config", "APPIUM_HOST") + ":" + str(
     #     config.get("drivers_config", "APPIUM_PORT")) + "/wd/hub", desired_caps)
