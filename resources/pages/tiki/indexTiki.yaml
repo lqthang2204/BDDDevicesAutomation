@@ -1,0 +1,37 @@
+elements:
+  - id: seach-input
+    description: Page title
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+  - id: field-search
+    description: Page title
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+  - id: icon-cart
+    description: Icon cart
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //*[@content-desc="icon cart"]
+  - id: result-search
+    description: result search
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.View[@content-desc="keyword icon quạt tích điện"]

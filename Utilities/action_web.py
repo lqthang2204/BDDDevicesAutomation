@@ -36,7 +36,7 @@ class ManagementFile:
             obj_page = Page()
             dict_yaml[page_name] = obj_page
             list_element = list()
-            with open(path) as page:
+            with open(path,encoding='utf-8') as page:
                 python_dict = yaml.load(page.read(), Loader=SafeLoader)
                 json_result = json.dumps(python_dict)
                 json_object = json.loads(json_result)

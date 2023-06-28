@@ -1,10 +1,11 @@
 import configparser
 from behave import *
 from selenium import webdriver
-from Utilities.ActionScript import ManagementFile
+from Utilities.action_web import ManagementFile
 from ManagementElements.Page import Page
 from ManagementElements.Elements import Elements
 from ManagementElements.Locator import Locator
+from Utilities.action_android import ManagementFileAndroid
 
 dict_yaml = {}
 dict_page = {}
@@ -17,7 +18,7 @@ dict_save_value = {}
 def launchBrowser(context, index):
     array_url = context.url.split(",")
     #
-    context.driver.get(array_url[int(index)-1])
+    context.driver.get(array_url[int(index)-1].strip())
 
 @given(u'I change the page spec to {page}')
 def change_page(context, page):
@@ -28,15 +29,26 @@ def change_page(context, page):
 @given(u'I click element {element}')
 def click_action(context, element):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    ManagementFile().action_page(context.element_page, "click",context.driver,"", context.wait, context.dict_save_value, context.device)
+    if context.device.get_platform_name() == "WEB":
+        ManagementFile().action_page(context.element_page, "click",context.driver,"", context.wait, context.dict_save_value, context.device)
+    elif context.device.get_platform_name() == "ANDROID":
+        ManagementFileAndroid().action_page(context.element_page, "click", context.driver, "", context.wait,
+                                     context.dict_save_value, context.device)
 @given(u'I type "{text}" into element {element}')
 def type_action(context, text, element):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    ManagementFile().action_page(context.element_page, "type", context.driver, text, context.wait, context.dict_save_value, context.device)
+    if context.device.get_platform_name() == "WEB":
+        ManagementFile().action_page(context.element_page, "type",context.driver,text, context.wait, context.dict_save_value, context.device)
+    elif context.device.get_platform_name() == "ANDROID":
+        ManagementFileAndroid().action_page(context.element_page, "type", context.driver, text, context.wait,
+                                     context.dict_save_value, context.device)
 @given(u'I wait for element {element} to be {status}')
 def wait_element(context, element, status):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    ManagementFile().wait_element_for_status(context.element_page, status, context.driver, context.wait)
+    if context.device.get_platform_name() == "WEB":
+        ManagementFile().wait_element_for_status(context.element_page, status, context.driver, context.wait)
+    elif context.device.get_platform_name() == "ANDROID":
+        ManagementFileAndroid().wait_element_for_status(context.element_page, status, context.driver, context.device)
 
 @given(u'I perform {action} action')
 def step_impl(context,action):
@@ -48,7 +60,13 @@ def step_impl(context, action):
 @given(u'I clear text from element {element}')
 def step_impl(context, element):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    ManagementFile().action_page(context.element_page, "clear", context.driver, "", context.wait, context.device)
+    if context.device.get_platform_name() == "WEB":
+        ManagementFile().action_page(context.element_page, "clear",context.driver,"", context.wait, context.dict_save_value, context.device)
+    elif context.device.get_platform_name() == "ANDROID":
+        ManagementFileAndroid().action_page(context.element_page, "clear", context.driver, "", context.wait,
+                                     context.dict_save_value, context.device)
+
+    # ManagementFile().action_page(context.element_page, "clear", context.driver, "", context.wait, context.dict_save_value, context.device)
 @given(u'I save text for element {element} with key "{key}"')
 def step_impl(context, element, key):
     context.element_page = ManagementFile().get_element(context.page_present, element)

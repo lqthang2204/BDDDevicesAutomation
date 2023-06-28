@@ -1,6 +1,6 @@
 import appium
 
-from Utilities.ActionScript import ManagementFile
+from Utilities.action_web import ManagementFile
 import configparser
 from selenium import webdriver
 import os
@@ -71,7 +71,8 @@ def launch_android(context, device, config):
         'platformName': device.get_platform_name(),
         'deviceName': device.get_udid(),
         'appPackage': device.get_app_package(),
-        "appActivity": device.get_app_activity()
+        "appActivity": device.get_app_activity(),
+        "appium:automationName": "uiautomator2",
     }
     context.driver = appium.webdriver.Remote("http://127.0.0.1:4723/wd/hub", desired_caps)
     context.device = device

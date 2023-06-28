@@ -6,6 +6,9 @@ elements:
       - device: WEB
         type: NAME
         value: username
+      - device: ANDROID
+        type: XPATH
+        value: //*[@resource-id="username"]
   - &pass-field
     id: pass-field
     description: Pass field
@@ -13,6 +16,9 @@ elements:
       - device: WEB
         type: NAME
         value: password
+      - device: ANDROID
+        type: XPATH
+        value: //*[@resource-id="password"]
   - &location-option-inpatient
     id: location-option-inpatient
     description: Location
@@ -27,6 +33,9 @@ elements:
       - device: WEB
         type: ID
         value: loginButton
+      - device: ANDROID
+        type: XPATH
+        value: //*[@resource-id="loginButton"]
   - id: error-message
     description: Error message
     locators:
