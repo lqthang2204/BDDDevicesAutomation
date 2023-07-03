@@ -71,10 +71,10 @@ def launch_android(context, device, config):
         'platformName': device.get_platform_name(),
         'deviceName': device.get_udid(),
         'appPackage': device.get_app_package(),
-        "appActivity": device.get_app_activity(),
-        "appium:automationName": "uiautomator2",
+        "appActivity": device.get_app_activity()
     }
     context.driver = appium.webdriver.Remote("http://127.0.0.1:4723/wd/hub", desired_caps)
     context.device = device
+    context.wait = device.get_wait()
     # context.driver = appium.webdriver.Remote("http://" + config.get("drivers_config", "APPIUM_HOST") + ":" + str(
     #     config.get("drivers_config", "APPIUM_PORT")) + "/wd/hub", desired_caps)

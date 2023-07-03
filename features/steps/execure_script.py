@@ -17,7 +17,6 @@ dict_save_value = {}
 @given(u'I navigate to url have index {index}')
 def launchBrowser(context, index):
     array_url = context.url.split(",")
-    #
     context.driver.get(array_url[int(index)-1].strip())
 
 @given(u'I change the page spec to {page}')
@@ -32,7 +31,7 @@ def click_action(context, element):
     if context.device.get_platform_name() == "WEB":
         ManagementFile().action_page(context.element_page, "click",context.driver,"", context.wait, context.dict_save_value, context.device)
     elif context.device.get_platform_name() == "ANDROID":
-        ManagementFileAndroid().action_page(context.element_page, "click", context.driver, "", context.wait,
+        ManagementFileAndroid().action_page(context.element_page, "click", context.driver, "",
                                      context.dict_save_value, context.device)
 @given(u'I type "{text}" into element {element}')
 def type_action(context, text, element):
@@ -52,7 +51,10 @@ def wait_element(context, element, status):
 
 @given(u'I perform {action} action')
 def step_impl(context,action):
-    ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, None, None)
+    if context.device.get_platform_name() == "WEB":
+        ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, None, None)
+    elif context.device.get_platform_name() == "ANDROID":
+        ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver, context.device.get_wait(), None, None)
 
 @given(u'I perform {action} action with override values')
 def step_impl(context, action):
@@ -63,14 +65,15 @@ def step_impl(context, element):
     if context.device.get_platform_name() == "WEB":
         ManagementFile().action_page(context.element_page, "clear",context.driver,"", context.wait, context.dict_save_value, context.device)
     elif context.device.get_platform_name() == "ANDROID":
-        ManagementFileAndroid().action_page(context.element_page, "clear", context.driver, "", context.wait,
-                                     context.dict_save_value, context.device)
-
-    # ManagementFile().action_page(context.element_page, "clear", context.driver, "", context.wait, context.dict_save_value, context.device)
+        ManagementFileAndroid().action_page(context.element_page, "clear", context.driver, "", context.wait, context.dict_save_value, context.device)
 @given(u'I save text for element {element} with key "{key}"')
 def step_impl(context, element, key):
     context.element_page = ManagementFile().get_element(context.page_present, element)
-    context.dict_save_value = ManagementFile().save_text_from_element(context.element_page, context.driver, key, context.dict_save_value, context.wait)
+    if context.device.get_platform_name() == "WEB":
+        context.dict_save_value = ManagementFile().save_text_from_element(context.element_page, context.driver, key, context.dict_save_value, context.wait)
+    elif context.device.get_platform_name() == "ANDROID":
+        context.dict_save_value = ManagementFileAndroid().save_text_from_element_android(context.element_page, context.driver, key, context.dict_save_value, context.wait)
+        print(context.dict_save_value)
     return context.dict_save_value
 @given(u'I wait 5 seconds')
 def step_impl(context):

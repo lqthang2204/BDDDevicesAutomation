@@ -152,22 +152,22 @@ class ManagementFile:
                                     ec.element_attribute_to_include(
                                         self.get_locator_for_wait(locator.type, locator.value), "disabled"))
                                 element.click()
-                        elif type.__eq__("text"):
+                        elif type_action.__eq__("text"):
                             element.send_keys(value)
-                    except:
-                        assert True, "due to have Condition and time out by pass step"
+                    except Exception as e:
+                        assert True, e
                 elif action_elements.get_condition() is not None and action_elements.get_timeout() is None:
                     try:
                         self.process_execute_action(driver, wait, element, type_action, value,
                                                     locator)
-                    except:
-                        assert False, "Failed at action step"
+                    except Exception as e:
+                        assert False, e
                 else:
                     try:
                         self.process_execute_action(driver, wait, element, type_action, value,
                                                     locator)
-                    except:
-                        assert False, "Failed at action step"
+                    except Exception as e:
+                        assert False, e
         else:
             assert False, "Not Found Action in page yaml"
 
@@ -277,7 +277,6 @@ class ManagementFile:
         for locator in element_page:
             if locator.get_device().__eq__(device):
                 return locator
-            break
 
     def wait_element_for_status(self, element_page, status, driver, wait):
         locator = self.get_locator(element_page, "WEB")

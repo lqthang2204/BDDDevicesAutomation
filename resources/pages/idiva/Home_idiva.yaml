@@ -1,0 +1,63 @@
+elements:
+  - id: menu-toogle
+    description: menu page
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //*[@resource-id="menu-toggle"]
+  - &fashion-female
+    id: fashion-female
+    description: Fashion female
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.View[@content-desc="THỜI TRANG NỮ"]
+  - &fashion-male
+    id: fashion-male
+    description: Fashion male
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.View[@content-desc="THỜI TRANG TRUNG NIÊN +"]
+  - &sneaker-product
+    id: sneaker-product
+    description: Fashion male
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.View[@content-desc="GIÀY TẬP ĐI +"]/android.widget.TextView
+  - &bag-product
+    id: bag-product
+    description: Fashion male
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.View[@content-desc="TÚI XÁCH"]
+actions:
+  - id: verify-menu
+    description: action buy one mobile
+    actionElements:
+      - element: *fashion-female
+        condition: DISPLAYED
+      - element: *fashion-male
+        condition: DISPLAYED
+      - element: *sneaker-product
+        condition: ENABLED
+        inputType: click
+#      - element: *bag-product
+#        condition: DISPLAYED

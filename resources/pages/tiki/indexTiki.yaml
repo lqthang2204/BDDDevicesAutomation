@@ -35,3 +35,12 @@ elements:
       - device: ANDROID
         type: XPATH
         value: //android.view.View[@content-desc="keyword icon quạt tích điện"]
+  - id: menu-danh-muc
+    description: option Danh muc
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: (//*[contains(@text,"Danh Mục")])[2]
