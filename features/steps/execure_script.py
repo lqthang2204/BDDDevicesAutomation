@@ -39,8 +39,7 @@ def type_action(context, text, element):
     if context.device.get_platform_name() == "WEB":
         ManagementFile().action_page(context.element_page, "type",context.driver,text, context.wait, context.dict_save_value, context.device)
     elif context.device.get_platform_name() == "ANDROID":
-        ManagementFileAndroid().action_page(context.element_page, "type", context.driver, text, context.wait,
-                                     context.dict_save_value, context.device)
+        ManagementFileAndroid().action_page(context.element_page, "type", context.driver, text, context.dict_save_value, context.device)
 @given(u'I wait for element {element} to be {status}')
 def wait_element(context, element, status):
     context.element_page = ManagementFile().get_element(context.page_present, element)

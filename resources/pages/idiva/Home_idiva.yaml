@@ -1,5 +1,6 @@
 elements:
-  - id: menu-toogle
+  - &menu-toogle
+    id: menu-toogle
     description: menu page
     locators:
       - device: WEB
@@ -27,7 +28,7 @@ elements:
         value: (//*[@class="android.widget.EditText"])[1]
       - device: ANDROID
         type: XPATH
-        value: //android.view.View[@content-desc="THỜI TRANG TRUNG NIÊN +"]
+        value: //android.widget.TextView[contains(@text,"THỜI TRANG TRUNG NIÊN")]
   - &sneaker-product
     id: sneaker-product
     description: Fashion male
@@ -37,7 +38,7 @@ elements:
         value: (//*[@class="android.widget.EditText"])[1]
       - device: ANDROID
         type: XPATH
-        value: //android.view.View[@content-desc="GIÀY TẬP ĐI +"]/android.widget.TextView
+        value: //android.widget.TextView[contains(@text,"GIÀY TẬP ĐI")]
   - &bag-product
     id: bag-product
     description: Fashion male
@@ -47,8 +48,35 @@ elements:
         value: (//*[@class="android.widget.EditText"])[1]
       - device: ANDROID
         type: XPATH
-        value: //android.view.View[@content-desc="TÚI XÁCH"]
+        value: //android.widget.TextView[contains(@text,"TÚI XÁCH")]
+  - &search-product
+    id: search-product
+    description: Fashion male
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+  - &btn-search
+    id: btn-search
+    description: button search
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //*[@class="android.widget.Button"]
 actions:
+  - id: click-menu-if-exist
+    description: click menu toogle if exist
+    actionElements:
+      - element: *menu-toogle
+        condition: ENABLED
+        inputType: click
+        timeout: 20
   - id: verify-menu
     description: action buy one mobile
     actionElements:

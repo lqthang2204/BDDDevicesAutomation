@@ -69,12 +69,17 @@ def launch_android(context, device, config):
     # service.start(args=['--address',config.get("drivers_config", "APPIUM_HOST"), '-P', str(config.get("drivers_config", "APPIUM_PORT"))], timeout_ms=20000)
     desired_caps = {
         'platformName': device.get_platform_name(),
-        'deviceName': device.get_udid(),
+        'udid': device.get_udid(),
         'appPackage': device.get_app_package(),
         "appActivity": device.get_app_activity()
     }
-    context.driver = appium.webdriver.Remote("http://127.0.0.1:4723/wd/hub", desired_caps)
+    url = "http://" + config.get("drivers_config", "APPIUM_HOST") + ":" + str(config.get("drivers_config", "APPIUM_PORT")) + "/wd/hub"
+    print(url)
     context.device = device
     context.wait = device.get_wait()
-    # context.driver = appium.webdriver.Remote("http://" + config.get("drivers_config", "APPIUM_HOST") + ":" + str(
-    #     config.get("drivers_config", "APPIUM_PORT")) + "/wd/hub", desired_caps)
+    context.driver = appium.webdriver.Remote(url, desired_caps)
+
+# def after_all(context, tag):
+#     if context.driver is not None and tag is not None:
+#         context.driver.close()
+#         context.driver.quit()

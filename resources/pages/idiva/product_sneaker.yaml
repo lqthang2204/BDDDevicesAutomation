@@ -8,3 +8,12 @@ elements:
       - device: ANDROID
         type: XPATH
         value: //*[@resource-id="sortControl"]
+  - id: item-sneaker
+    description: item product
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: (//*[contains(@text,"Giày tập")])[1]
