@@ -1,0 +1,19 @@
+elements:
+  - &not-use-account
+    id: not-use-account
+    description: field search google
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+actions:
+  - id: by-pass-launch
+    description: not-use-account
+    actionElements:
+      - element: *not-use-account
+        condition: DISPLAYED
+        timeout: 10
+        inputType: click

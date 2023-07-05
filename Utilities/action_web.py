@@ -36,7 +36,7 @@ class ManagementFile:
             obj_page = Page()
             dict_yaml[page_name] = obj_page
             list_element = list()
-            with open(path) as page:
+            with open(path,encoding='utf-8') as page:
                 python_dict = yaml.load(page.read(), Loader=SafeLoader)
                 json_result = json.dumps(python_dict)
                 json_object = json.loads(json_result)
@@ -152,27 +152,27 @@ class ManagementFile:
                                     ec.element_attribute_to_include(
                                         self.get_locator_for_wait(locator.type, locator.value), "disabled"))
                                 element.click()
-                        elif type.__eq__("text"):
+                        elif type_action.__eq__("text"):
                             element.send_keys(value)
-                    except:
-                        assert True, "due to have Condition and time out by pass step"
+                    except Exception as e:
+                        assert True, e
                 elif action_elements.get_condition() is not None and action_elements.get_timeout() is None:
                     try:
                         self.process_execute_action(driver, wait, element, type_action, value,
                                                     locator)
-                    except:
-                        assert False, "Failed at action step"
+                    except Exception as e:
+                        assert False, e
                 else:
                     try:
                         self.process_execute_action(driver, wait, element, type_action, value,
                                                     locator)
-                    except:
-                        assert False, "Failed at action step"
+                    except Exception as e:
+                        assert False, e
         else:
             assert False, "Not Found Action in page yaml"
 
-    def action_page(self, element_page, action, driver, value, wait, dict_save_value):
-        locator = self.get_locator(element_page, "WEB")
+    def action_page(self, element_page, action, driver, value, wait, dict_save_value, device):
+        locator = self.get_locator(element_page, device.get_platform_name())
         element = self.get_element_by(locator.type, driver, locator.value)
         WebDriverWait(driver, wait).until(ec.all_of(
             ec.element_to_be_clickable(element)),
@@ -271,14 +271,12 @@ class ManagementFile:
         for locator in arr_locator:
             if locator.get_device().__eq__(device):
                 return locator
-            break
 
     def get_locator_from_action(self, element_page, device):
         print(element_page)
         for locator in element_page:
             if locator.get_device().__eq__(device):
                 return locator
-            break
 
     def wait_element_for_status(self, element_page, status, driver, wait):
         locator = self.get_locator(element_page, "WEB")
@@ -327,14 +325,6 @@ class ManagementFile:
                 element.click()
         elif type_action.__eq__("text"):
             element.send_keys(value)
-    # def __check_wait_element__(self,status, locator_from_wait):
-    #     if status == "ENABLED":
-    #         element = EC.presence_of_element_located(locator_from_wait)
-    #         visibility = EC.visibility_of_element_located(locator_from_wait)
-    #         if element
-    #             try:
-    #                 return True
-    #             except:
-    #                 return False
-    #         else:
-    #             return False
+
+
+

@@ -6,3 +6,4 @@ selenium==4.9.1
 webdriver-manager
 configparser
 behavex
+Appium-Python-Client==2.11.1

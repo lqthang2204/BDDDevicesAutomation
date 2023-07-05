@@ -1,0 +1,100 @@
+elements:
+  - &menu-toogle
+    id: menu-toogle
+    description: menu page
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //*[@resource-id="menu-toggle"]
+  - &fashion-female
+    id: fashion-female
+    description: Fashion female
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.View[@content-desc="THỜI TRANG NỮ"]
+  - &fashion-male
+    id: fashion-male
+    description: Fashion male
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //android.widget.TextView[contains(@text,"THỜI TRANG TRUNG NIÊN")]
+  - &sneaker-product
+    id: sneaker-product
+    description: Fashion male
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //android.widget.TextView[contains(@text,"GIÀY TẬP ĐI")]
+  - &bag-product
+    id: bag-product
+    description: Fashion male
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //android.widget.TextView[contains(@text,"TÚI XÁCH")]
+  - &search-product
+    id: search-product
+    description: Fashion male
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+  - &btn-search
+    id: btn-search
+    description: button search
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //*[@class="android.widget.Button"]
+actions:
+  - id: click-menu-if-exist
+    description: click menu toogle if exist
+    actionElements:
+      - element: *menu-toogle
+        condition: ENABLED
+        inputType: click
+        timeout: 20
+  - id: verify-menu
+    description: action buy one mobile
+    actionElements:
+      - element: *fashion-female
+        condition: DISPLAYED
+      - element: *fashion-male
+        condition: DISPLAYED
+      - element: *sneaker-product
+        condition: ENABLED
+        inputType: click
+#      - element: *bag-product
+#        condition: DISPLAYED
+  - id: search-sneaker
+    description: search neaker
+    actionElements:
+      - element: *search-product
+        condition: DISPLAYED
+        inputType: text
+      - element: *btn-search
+        condition: ENABLED
+        inputType: click

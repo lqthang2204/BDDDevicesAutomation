@@ -5,6 +5,15 @@ elements:
       - device: WEB
         type: NAME
         value: q
+  - id: welcome-chrome
+    description: field search google
+    locators:
+      - device: WEB
+        type: NAME
+        value: q
+      - device: ANDROID
+        type: XPATH
+        value: //*[@resource-id="com.android.chrome:id/terms_accept"]
   - &user-field
     id: user-field
     description: User field
