@@ -49,7 +49,7 @@ def wait_element(context, element, status):
         ManagementFileAndroid().wait_element_for_status(context.element_page, status, context.driver, context.device)
 
 @given(u'I perform {action} action')
-def step_impl(context,action):
+def step_impl(context, action):
     if context.device.get_platform_name() == "WEB":
         ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, None, None)
     elif context.device.get_platform_name() == "ANDROID":
@@ -57,7 +57,10 @@ def step_impl(context,action):
 
 @given(u'I perform {action} action with override values')
 def step_impl(context, action):
-    ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, context.table, context.dict_save_value)
+    if context.device.get_platform_name() == "WEB":
+        ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, context.table, context.dict_save_value)
+    elif context.device.get_platform_name() == "ANDROID":
+        ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver, context.device.get_wait(), context.table, context.dict_save_value)
 @given(u'I clear text from element {element}')
 def step_impl(context, element):
     context.element_page = ManagementFile().get_element(context.page_present, element)

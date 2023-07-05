@@ -89,3 +89,12 @@ actions:
         inputType: click
 #      - element: *bag-product
 #        condition: DISPLAYED
+  - id: search-sneaker
+    description: search neaker
+    actionElements:
+      - element: *search-product
+        condition: DISPLAYED
+        inputType: text
+      - element: *btn-search
+        condition: ENABLED
+        inputType: click

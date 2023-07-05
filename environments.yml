@@ -16,8 +16,8 @@ env:
       driver_version: WebDriver\\chromedriver_114.exe
       appPackage: com.android.chrome
       appActivity: com.google.android.apps.chrome.Main
-#      udid: HVA222NA
-      udid: emulator-5554
+      udid: HVA222NA
+#      udid: emulator-5554
     - platformName: IOS
       is_headless: false
       wait: 32
