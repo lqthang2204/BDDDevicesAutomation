@@ -1,3 +1,4 @@
+import allure
 import appium
 
 from Utilities.action_web import ManagementFile
@@ -78,8 +79,6 @@ def launch_android(context, device, config):
     context.device = device
     context.wait = device.get_wait()
     context.driver = appium.webdriver.Remote(url, desired_caps)
-
-# def after_all(context, tag):
-#     if context.driver is not None and tag is not None:
-#         context.driver.close()
-#         context.driver.quit()
+def after_step(context, step):
+    if step.status == "failed":
+        context.driver.get_screenshot_as_file(context.evidence_path + '/'+step.name+".png")
