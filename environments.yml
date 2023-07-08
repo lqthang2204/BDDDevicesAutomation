@@ -10,7 +10,7 @@ env:
       driver_version: WebDriver\\chromedriver_114.exe
     - platformName: ANDROID
       is_headless: true
-      wait: 120
+      wait: 30
       time_page_load: 31
       auto_download_driver: false
       driver_version: WebDriver\\chromedriver_114.exe

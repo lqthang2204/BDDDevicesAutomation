@@ -304,8 +304,8 @@ class ManagementFile:
                 WebDriverWait(driver, wait).until_not(ec.element_located_to_be_selected(locator_from_wait))
             else:
                 raise Exception("Not support status ", status)
-        except TimeoutException as ex:
-            assert False, "failed due to wait time out element"
+        except Exception as e:
+            assert False, e
 
     def check_att_is_exist(self, obj_action_elements, key):
         if obj_action_elements.get(key) is None:

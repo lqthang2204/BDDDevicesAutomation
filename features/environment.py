@@ -12,7 +12,9 @@ from Configuration.devices import devices
 from Configuration.configuration_env import environment_config
 from appium.options.android import UiAutomator2Options
 from appium.webdriver.appium_service import AppiumService
-# import pytest
+import datetime
+
+
 def before_all(context):
     context.dict_save_value = {}
     env = environment_config()
@@ -49,6 +51,7 @@ def before_all(context):
             break
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
 
+
 def launch_browser(context, device):
     chrome_option = Options()
     chromedriver_autoinstaller.install()
@@ -64,6 +67,8 @@ def launch_browser(context, device):
     context.device = device
     context.time_page_load = device.get_time_page_load()
     context.driver.maximize_window()
+
+
 def launch_android(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get("drivers_config", "APPIUM_HOST"), '-P', str(config.get("drivers_config", "APPIUM_PORT"))], timeout_ms=20000)
@@ -73,13 +78,18 @@ def launch_android(context, device, config):
         'appPackage': device.get_app_package(),
         "appActivity": device.get_app_activity()
     }
-    url = "http://" + config.get("drivers_config", "APPIUM_HOST") + ":" + str(config.get("drivers_config", "APPIUM_PORT")) + "/wd/hub"
+    url = "http://" + config.get("drivers_config", "APPIUM_HOST") + ":" + str(
+        config.get("drivers_config", "APPIUM_PORT")) + "/wd/hub"
     print(url)
     context.device = device
     context.wait = device.get_wait()
     context.driver = appium.webdriver.Remote(url, desired_caps)
 
-# def after_all(context, tag):
-#     if context.driver is not None and tag is not None:
-#         context.driver.close()
-#         context.driver.quit()
+
+def after_step(context, step):
+    if step.status == "failed":
+        current_time = datetime.datetime.now()
+        date_time = str(current_time.year) + "_" + str(current_time.month) + "_" + str(current_time.day) + "_" + str(current_time.microsecond)
+        context.driver.get_screenshot_as_file(context.evidence_path + '/' + step.name + "_" + date_time + ".png")
+
+

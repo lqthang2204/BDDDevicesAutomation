@@ -1,4 +1,4 @@
-@test
+@testLogin
 Feature: navigate URL
   Scenario: test login page
     Given I navigate to url have index 1
