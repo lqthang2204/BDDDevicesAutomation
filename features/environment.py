@@ -1,4 +1,3 @@
-import allure
 import appium
 
 from Utilities.action_web import ManagementFile
@@ -13,7 +12,6 @@ from Configuration.devices import devices
 from Configuration.configuration_env import environment_config
 from appium.options.android import UiAutomator2Options
 from appium.webdriver.appium_service import AppiumService
-# import pytest
 import datetime
 
 
