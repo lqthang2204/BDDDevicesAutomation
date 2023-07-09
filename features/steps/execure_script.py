@@ -18,7 +18,9 @@ dict_save_value = {}
 def launchBrowser(context, index):
     array_url = context.url.split(",")
     context.driver.get(array_url[int(index)-1].strip())
-
+@given(u'I open application')
+def step_impl(context):
+    print("run application")
 @given(u'I change the page spec to {page}')
 def change_page(context, page):
     path_file = context.dict_yaml[page+".yaml"]

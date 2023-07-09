@@ -1,0 +1,76 @@
+elements:
+  - id: icon-at-page-home
+    description: User icon on UI
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[contains(text(),"Grandparent")]
+      - device: ANDROID
+        type: XPATH
+        value: //android.widget.FrameLayout[@content-desc="{text}"]/android.widget.ImageView
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeOther[contains(@name,"Grandparent")]
+  - &search-field
+    id: search-field
+    description: User icon on UI
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[contains(text(),"Grandparent")]
+      - device: ANDROID
+        type: XPATH
+        value: //*[@resource-id= "vn.tiki.app.tikiandroid.homeV3:id/searchBar"]
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeOther[contains(@name,"Grandparent")]
+  - id: title-suggestion
+    description: User icon on UI
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[contains(text(),"Grandparent")]
+      - device: ANDROID
+        type: ID
+        value: vn.tiki.app.tikiandroid.searchInput:id/tvTitle
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeOther[contains(@name,"Grandparent")]
+  - &search-product
+    id: search-product
+    description: User icon on UI
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[contains(text(),"Grandparent")]
+      - device: ANDROID
+        type: XPATH
+        value: //*[@resource-id="vn.tiki.app.tikiandroid:id/etQuery"]
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeOther[contains(@name,"Grandparent")]
+actions:
+  - id: action-search-product
+    description: click into element if displayed
+    actionElements:
+      - element: *search-field
+        condition: DISPLAYED
+        inputType: click
+      - element: *search-product
+        condition: DISPLAYED
+        inputType: click
+      - element: *search-product
+        condition: DISPLAYED
+        inputType: text
+  - id: action-search-product-with-email
+    description: click into element if displayed
+    actionElements:
+      - element: *search-field
+        condition: DISPLAYED
+        inputType: click
+      - element: *search-product
+        condition: DISPLAYED
+        inputType: click
+      - element: *search-product
+        condition: DISPLAYED
+        inputType: text

@@ -35,5 +35,9 @@
   #    And I type "Admin123" into element pass-field
   #    And I click element login-button
 
+      @test-tiki-3
+      Scenario: test tiki 3
+      Given I open application
+      And I change the page spec to HomeTiki
 
 
