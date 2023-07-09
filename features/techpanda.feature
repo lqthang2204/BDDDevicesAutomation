@@ -1,5 +1,5 @@
-@parallel
-Feature: test web page techpanda
+@parallel @web
+Feature: test web page techpanda web
 @mc-guru6
   Scenario Outline: test Search function
     Given I navigate to url have index 3

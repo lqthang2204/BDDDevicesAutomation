@@ -69,6 +69,7 @@ def launch_browser(context, device):
     context.driver.maximize_window()
 
 
+
 def launch_android(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get("drivers_config", "APPIUM_HOST"), '-P', str(config.get("drivers_config", "APPIUM_PORT"))], timeout_ms=20000)
@@ -84,6 +85,7 @@ def launch_android(context, device, config):
     context.device = device
     context.wait = device.get_wait()
     context.driver = appium.webdriver.Remote(url, desired_caps)
+
 
 
 def after_step(context, step):

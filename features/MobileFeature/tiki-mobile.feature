@@ -1,8 +1,8 @@
-@test-tiki-total
-    Feature: navigate URL
+@test-tiki-total @mobile
+    Feature: tiki mobile
 
       @test-tiki-1
-      Scenario: test login page
+      Scenario: test login page3
         Given I navigate to url have index 4
         And I change the page spec to indexTiki
         And I wait for element icon-cart to be DISPLAYED

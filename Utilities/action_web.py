@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import TimeoutException
 from ManagementElements.ActionTest import ActionTest
 from ManagementElements.ActionElements import ActionElements
-
+import logging
 
 class ManagementFile:
     def get_dict_path_yaml(self):
@@ -143,6 +143,7 @@ class ManagementFile:
                             WebDriverWait(driver, action_elements.get_timeout()).until_not(
                                 ec.element_located_to_be_selected(element))
                         else:
+                            logging.error("Not support condition %s in framework", action_elements.get_condition())
                             assert False, "Not support condition"
                         if type_action.__eq__("click"):
                             if element.get_attribute("disabled") is None:
@@ -155,25 +156,32 @@ class ManagementFile:
                         elif type_action.__eq__("text"):
                             element.send_keys(value)
                     except Exception as e:
-                        assert True, e
+                        logging.info("can not execute action with element have value  %s in framework", locator.value)
+                        assert True, "can not execute action with element have value" + locator.value + "in framework"
                 elif action_elements.get_condition() is not None and action_elements.get_timeout() is None:
                     try:
                         self.process_execute_action(driver, wait, element, type_action, value,
                                                     locator)
                     except Exception as e:
-                        assert False, e
+                        logging.error("can not execute action % with element have value  %s in framework", type_action,
+                                      locator.value)
+                        assert False, "can not execute action " + type_action + " with element have value" + locator.value + "in framework"
                 else:
                     try:
                         self.process_execute_action(driver, wait, element, type_action, value,
                                                     locator)
                     except Exception as e:
-                        assert False, e
+                        logging.error("can not execute action % with element have value  %s in framework", type_action,
+                                      locator.value)
+                        assert False, "can not execute action " + type_action + " with element have value" + locator.value + "in framework"
         else:
-            assert False, "Not Found Action in page yaml"
+            logging.error("Not Found Action %s in page yaml", action_id)
+            assert False, "Not Found Action " + action_id + " in page yaml"
 
     def action_page(self, element_page, action, driver, value, wait, dict_save_value, device):
         locator = self.get_locator(element_page, device.get_platform_name())
         element = self.get_element_by(locator.type, driver, locator.value)
+        logging.info("execute %s with element have is %s", action, locator.value)
         WebDriverWait(driver, wait).until(ec.all_of(
             ec.element_to_be_clickable(element)),
             ec.presence_of_element_located(element)
@@ -197,19 +205,28 @@ class ManagementFile:
         elif action.__eq__("clear"):
             element.clear()
         else:
+            logging.error("Can not execute %s with element have is %s", action, locator.value)
             assert False, "Not support action in framework"
     def save_text_from_element(self, element_page, driver, key, dict_save_value, wait):
-        locator = self.get_locator(element_page, "WEB")
-        WebDriverWait(driver, wait).until(ec.presence_of_element_located(self.get_locator_for_wait(locator.type, locator.value)))
-        element = self.get_element_by(locator.type, driver, locator.value)
-        if element.get_attribute("value") is None:
-            value = element.text
-        else:
-            value = element.get_attribute('value')
-        dict_save_value["KEY."+key] = value
-        return dict_save_value
+        try:
+            locator = self.get_locator(element_page, "WEB")
+            logging.info("save text for element  %s with key is %s", locator.value, key);
+            WebDriverWait(driver, wait).until(
+                ec.presence_of_element_located(self.get_locator_for_wait(locator.type, locator.value)))
+            element = self.get_element_by(locator.type, driver, locator.value)
+            if element.get_attribute("value") is None:
+                value = element.text
+            else:
+                value = element.get_attribute('value')
+            dict_save_value["KEY." + key] = value
+            return dict_save_value
+        except Exception as e:
+            logging.error("Can not save text for element  %s with key is %s", locator.value, key);
+            assert False, "Can not save text for element " + locator.value
+
 
     def get_element_by(self, type, driver, value):
+        logging.info("Get element by %s with value is %s", type, value);
         if type.__eq__("ID"):
             element = driver.find_element(By.ID, value)
         elif type.__eq__("NAME"):
@@ -225,10 +242,12 @@ class ManagementFile:
         elif type.__eq__("CSS"):
             element = driver.find_element(By.CSS_SELECTOR, value)
         else:
+            logging.error("Can not get  element by %s with value is %s", type, value);
             raise Exception("Not support type in framework")
         return element
 
     def get_list_element_by(self, type, driver, value):
+        logging.info("Get list element by %s with value is %s", type, value);
         if type.__eq__("ID"):
             elements = driver.find_elements(By.ID, value)
         elif type.__eq__("NAME"):
@@ -244,10 +263,12 @@ class ManagementFile:
         elif type.__eq__("CSS"):
             elements = driver.find_elements(By.CSS_SELECTOR, value)
         else:
+            logging.error("Can not get  element by %s with value is %s", type, value);
             raise Exception("Not support type in framework")
         return elements
 
     def get_locator_for_wait(self, type, value):
+        logging.info("get locator for wait with type %s and value is %s ", type, value)
         if type.__eq__("ID"):
             locator = (By.ID, value)
         elif type.__eq__("NAME"):
@@ -263,6 +284,7 @@ class ManagementFile:
         elif type.__eq__("CSS"):
             locator = (By.CSS_SELECTOR, value)
         else:
+            logging.error("Not support type %s in framework", type)
             raise Exception("Not support type in framework", type)
         return locator
 
@@ -281,6 +303,7 @@ class ManagementFile:
     def wait_element_for_status(self, element_page, status, driver, wait):
         locator = self.get_locator(element_page, "WEB")
         locator_from_wait = self.get_locator_for_wait(locator.type, locator.value)
+        logging.info("wait element have value  %s with the status %s", locator.value, status);
         try:
             if status == "DISPLAYED":
                 WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
@@ -305,6 +328,7 @@ class ManagementFile:
             else:
                 raise Exception("Not support status ", status)
         except Exception as e:
+            logging.error("The status %s is not currently.", status);
             assert False, e
 
     def check_att_is_exist(self, obj_action_elements, key):
@@ -315,6 +339,7 @@ class ManagementFile:
 
     def process_execute_action(self, driver, wait, element, type_action, value, locator):
         WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
+        logging.info("execute action  %s with element have value %s", type_action, locator.value);
         if type_action.__eq__("click"):
             if element.get_attribute("disabled") is None:
                 element.click()
