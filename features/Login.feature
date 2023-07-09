@@ -1,5 +1,5 @@
-@testLogin
-Feature: navigate URL
+@testLogin @web @regression
+Feature: login web
   Scenario: test login page
     Given I navigate to url have index 1
     And I change the page spec to LoginPage

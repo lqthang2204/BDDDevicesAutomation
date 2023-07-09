@@ -9,7 +9,7 @@ from appium.webdriver.common.appiumby import AppiumBy
 from selenium.common.exceptions import ElementNotVisibleException, ElementNotSelectableException, \
     NoSuchElementException, TimeoutException
 from appium.webdriver.appium_service import AppiumService
-
+import logging
 
 class ManagementFileAndroid:
 
@@ -23,6 +23,7 @@ class ManagementFileAndroid:
         try:
             locator = self.get_locator(element_page, device.get_platform_name())
             locator_from_wait = self.get_locator_for_wait(locator.type, locator.value)
+            logging.info("execute %s with element have is %s", action, locator.value)
             WebDriverWait(driver, device.get_wait()).until(expected_conditions.presence_of_element_located(locator_from_wait))
             element = self.get_by_android(locator.type, driver, locator.value)
             if action.__eq__("click"):
@@ -41,8 +42,10 @@ class ManagementFileAndroid:
             elif action.__eq__("clear"):
                 element.clear()
             else:
+                logging.error("Can not execute %s with element have is %s", action, locator.value)
                 assert False, "Not support action in framework"
         except Exception as e:
+            logging.error("Can not execute %s with element have is %s", action, locator.value)
             assert False, e
 
     def save_text_from_element(self, element_page, driver, key, dict_save_value, wait):
@@ -56,6 +59,7 @@ class ManagementFileAndroid:
         return dict_save_value
 
     def get_by_android(self, type_element, driver, value):
+        logging.info("Get element by %s with value is %s", type_element, value);
         if type_element.__eq__("ID"):
             element = driver.find_element(AppiumBy.ID, value)
         elif type_element.__eq__("NAME"):
@@ -73,10 +77,12 @@ class ManagementFileAndroid:
         elif type_element.__eq__("ACCESSIBILITY_ID"):
             element = driver.find_elemen(AppiumBy.ACCESSIBILITY_ID, value)
         else:
+            logging.error("Can not get  element by %s with value is %s", type_element, value);
             raise Exception("Not support type in framework")
         return element
 
     def get_list_element_by(self, type_element, driver, value):
+        logging.info("Get list element by %s with value is %s", type_element, value);
         if type_element.__eq__("ID"):
             elements = driver.find_elements(AppiumBy.ID, value)
         elif type_element.__eq__("NAME"):
@@ -94,6 +100,7 @@ class ManagementFileAndroid:
         elif type_element.__eq__("ACCESSIBILITY_ID"):
             elements = driver.find_elemen(AppiumBy.ACCESSIBILITY_ID, value)
         else:
+            logging.error("Can not get  element by %s with value is %s", type_element, value);
             raise Exception("Not support type in framework")
         return elements
 
@@ -118,6 +125,7 @@ class ManagementFileAndroid:
     def wait_element_for_status(self, element_page, status, driver, device):
         locator = self.get_locator(element_page, device.get_platform_name())
         locator_from_wait = self.get_locator_for_wait(locator.type, locator.value)
+        logging.info("wait element have value  %s with the status %s", locator.value, status);
         try:
             if status == "DISPLAYED":
                 print("locator = ", locator_from_wait)
@@ -148,9 +156,11 @@ class ManagementFileAndroid:
             else:
                 raise Exception("Not support status ", status)
         except TimeoutException as ex:
+            logging.error("The status %s is not currently.", status);
             assert False, "failed due to wait time out element"
 
     def get_locator_for_wait(self, type, value):
+        logging.info("get locator for wait with type %s and value is %s ", type, value)
         if type.__eq__("ID"):
             locator = (AppiumBy.ID, value)
         elif type.__eq__("NAME"):
@@ -168,6 +178,7 @@ class ManagementFileAndroid:
         elif type.__eq__("ACCESSIBILITY_ID"):
             locator = (AppiumBy.ACCESSIBILITY_ID, value)
         else:
+            logging.error("Not support type %s in framework", type)
             raise Exception("Not support type in framework", type)
         return locator
 
@@ -220,6 +231,7 @@ class ManagementFileAndroid:
                             WebDriverWait(driver, action_elements.get_timeout()).until_not(
                                 expected_conditions.element_located_to_be_selected(locator_from_wait))
                         else:
+                            logging.error("Not support condition %s in framework", action_elements.get_condition())
                             assert False, "Not support condition"
                         if type_action.__eq__("click"):
                             WebDriverWait(driver, action_elements.get_timeout()).until(expected_conditions.element_to_be_clickable(locator_from_wait))
@@ -230,25 +242,30 @@ class ManagementFileAndroid:
                             element = self.get_by_android(locator.type, driver, locator.value)
                             element.send_keys(value)
                     except Exception as e:
-                        assert True, e
+                        logging.info("can not execute action with element have value  %s in framework", locator.value)
+                        assert True, "can not execute action with element have value" + locator.value + "in framework"
                 elif action_elements.get_condition() is not None and action_elements.get_timeout() is None:
                     try:
                         self.process_execute_action(driver, wait, type_action, value, locator_from_wait,locator)
                     except Exception as e:
-                        assert False, e
+                        logging.error("can not execute action % with element have value  %s in framework", type_action, locator.value)
+                        assert False, "can not execute action " + type_action+" with element have value" + locator.value+ "in framework"
                 else:
                     try:
                         self.process_execute_action(driver, wait, type_action, value, locator_from_wait,locator)
                     except Exception as e:
-                        assert False, e
+                        logging.error("can not execute action % with element have value  %s in framework", type_action,
+                                      locator.value)
+                        assert False, "can not execute action " + type_action + " with element have value" + locator.value + "in framework"
         else:
-            assert False, "Not Found Action in page yaml"
+            logging.error("Not Found Action %s in page yaml", action_id)
+            assert False, "Not Found Action " + action_id + " in page yaml"
 
     def process_execute_action(self, driver, wait, type_action, value, locator_from_wait, locator):
         WebDriverWait(driver, wait).until(expected_conditions.presence_of_element_located(locator_from_wait))
         element = self.get_by_android(locator.type, driver, locator.value)
+        logging.info("execute action  %s with element have value %s", type_action, locator.value);
         if type_action is not None:
-            print("process_execute_action")
             WebDriverWait(driver, wait).until(expected_conditions.element_to_be_clickable(element))
             if type_action.__eq__("click"):
                 element.click()
@@ -258,13 +275,21 @@ class ManagementFileAndroid:
         #     locator_from_wait = self.get_locator_for_wait(locator.type, locator.value)
         #     WebDriverWait(driver, wait).until(expected_conditions.presence_of_element_located(locator_from_wait))
     def save_text_from_element_android(self, element_page, driver, key, dict_save_value, wait):
-        locator = self.get_locator(element_page, "ANDROID")
-        WebDriverWait(driver, wait).until(expected_conditions.presence_of_element_located(self.get_locator_for_wait(locator.type, locator.value)))
-        element = self.get_by_android(locator.type, driver, locator.value)
-        if element.get_attribute("content-desc") is None:
-            value = element.text
-        else:
-            value = element.get_attribute('content-desc')
-        dict_save_value["KEY."+key] = value
-        return dict_save_value
+        try:
+            locator = self.get_locator(element_page, "ANDROID")
+            logging.info("save text for element  %s with key is %s", locator.value, key);
+            WebDriverWait(driver, wait).until(
+                expected_conditions.presence_of_element_located(self.get_locator_for_wait(locator.type, locator.value)))
+            element = self.get_by_android(locator.type, driver, locator.value)
+            if element.get_attribute("content-desc") is None:
+                value = element.text
+            else:
+                value = element.get_attribute('content-desc')
+            dict_save_value["KEY." + key] = value
+            return dict_save_value
+        except Exception as e:
+            logging.error("Can not save text for element  %s with key is %s", locator.value, key);
+            assert False, "Can not save text for element " + locator.value
+
+
 

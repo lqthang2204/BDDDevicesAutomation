@@ -1,5 +1,5 @@
-@test-idiva-total
-    Feature: navigate URL
+@test-idiva-total @mobile
+    Feature: idiva mobile
       @test-idiva-1
       Scenario: idiva-1
         Given I change the page spec to Common
@@ -11,14 +11,14 @@
         And I wait for element fashion-male to be DISPLAYED
         And I wait for element sneaker-product to be DISPLAYED
         And I wait for element sneaker-product to be DISPLAYED
-        And I wait for element bag-product to be NOT_DISPLAYED
+        And I wait for element bag-product to be DISPLAYED
         And I save text for element fashion-female with key "pr-bag"
         And I click element sneaker-product
         And I change the page spec to product_sneaker
         And I wait for element sort-product to be DISPLAYED
 
-      @test-idiva-2
-      Scenario: idiva-2
+      @test-idiva-2 @MUTE
+      Scenario: idiva-2 mobile
         Given I change the page spec to Common
         And I perform by-pass-launch action
         And I navigate to url have index 5
@@ -32,7 +32,7 @@
         And I wait for element sort-product to be DISPLAYED
 
       @test-idiva-3
-      Scenario: search product
+      Scenario: search productmobile
         Given I change the page spec to Common
         And I perform by-pass-launch action
         And I navigate to url have index 5
