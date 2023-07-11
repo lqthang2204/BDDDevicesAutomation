@@ -90,11 +90,25 @@ class ManagementFile:
                 dict_yaml[page_name] = obj_page
             return obj_page
 
-    def get_element(self, page, element):
+    def get_element(self, page, element, platform_name):
+        text = ""
+        if "with text" in element:
+            arr_value = element.split("with text")
+            # remove blank in array
+            arr_value = [i.lstrip() for i in arr_value]
+            element = arr_value[0].strip()
+            # remove double quote
+            text = arr_value[1].replace("\"", "")
         arr_element = page.list_element
         for element_yaml in arr_element:
             if element_yaml.id.__eq__(element):
-                return element_yaml
+                arr_locator = element_yaml.list_locator
+                for index, loc in enumerate(arr_locator):
+                    if loc.device != platform_name:
+                        del arr_locator[index]
+                if len(arr_locator) == 1:
+                    arr_locator[0].value = arr_locator[0].value.replace("{text}", text)
+            return element_yaml
 
     def execute_action(self, page, action_id, driver, wait, table, dict_save_value):
         dict_action = page.get_dict_action()
@@ -350,4 +364,13 @@ class ManagementFile:
             element.send_keys(value)
 
 
+    # def get_text_from_element(self, element_begin, element_updated):
+    #     if element_begin.__eq__(element_updated):
+    #         return element_begin
+    #     else:
+    #         text = ""
+    #         if "with text" in element:
+    #         arr_value = element.split("with text")
+    #         text = arr_value[1].strip().lstrip("\"")
+    #         return text
 

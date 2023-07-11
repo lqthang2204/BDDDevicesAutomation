@@ -5,7 +5,6 @@ Feature: login web
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
-    And I save text for element login-form-title with key "title"
     And I perform login-page-two action with override values
       | Field      | Value    |
       | user-field | Admin    |
@@ -22,7 +21,6 @@ Feature: login web
     And I wait for element find-patient-button to be ENABLED
     And I click element find-patient-button
     And I wait for element search-input to be DISPLAYED
-    And I type "KEY.title" into element search-input
 
     @test-2
   Scenario: test page
