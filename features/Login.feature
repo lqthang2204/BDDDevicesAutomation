@@ -24,6 +24,21 @@ Feature: login web
     And I wait for element search-input to be DISPLAYED
     And I type "KEY.title" into element search-input
 
+    @test-2
+  Scenario: test page
+    Given I navigate to url have index 1
+    When I change the page spec to LoginPage
+    Then I wait for element user-field to be DISPLAYED
+    And I wait for element pass-field to be DISPLAYED
+    Then I save text for element login-form-title with key "title"
+    And I type "KEY.title" into element user-field
+    And I clear text from element user-field
+    And I perform login-page-two action with override values
+    | Field | Value |
+    | user-field | Admin |
+    | pass-field | KEY.title |
+    And I wait for element error-message to be DISPLAYED
+
 #    And I clear text from element field-search
 #    And I type "Admidsdsdsn" into element user-field
 #    And I type "Admin12dsdsds3" into element pass-field
