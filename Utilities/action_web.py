@@ -108,7 +108,8 @@ class ManagementFile:
                         del arr_locator[index]
                 if len(arr_locator) == 1:
                     arr_locator[0].value = arr_locator[0].value.replace("{text}", text)
-            return element_yaml
+                    break
+        return element_yaml
 
     def execute_action(self, page, action_id, driver, wait, table, dict_save_value):
         dict_action = page.get_dict_action()
