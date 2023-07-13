@@ -106,7 +106,7 @@ class ManagementFile:
                     for row in table:
                         if action_elements.get_id() == row["Field"]:
                             if dict_save_value is not None and row["Value"] in dict_save_value.keys():
-                               value = dict_save_value[row["Value"]]
+                                value = dict_save_value.get(row["Value"], row["Value"])
                             else:
                                 value = row["Value"]
                             break
@@ -194,14 +194,12 @@ class ManagementFile:
                     ec.element_attribute_to_include(self.get_locator_for_wait(locator.type, locator.value), "disabled"))
                 element.click()
         elif action.__eq__("type"):
-            if len(dict_save_value) == int(0):
+            if not dict_save_value:
                 element.send_keys(value)
             else:
-                if dict_save_value[value] is not None:
-                    value = dict_save_value[value]
-                    element.send_keys(value)
-                else:
-                    assert False, "Not key in map save text"
+                value = dict_save_value.get(value, value)
+                element.send_keys(value)
+        #   else:  No need to fail because a runtime Key wasnt created by tester
         elif action.__eq__("clear"):
             element.clear()
         else:

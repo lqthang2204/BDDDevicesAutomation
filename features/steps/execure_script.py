@@ -69,7 +69,7 @@ def step_impl(context, element):
     if context.device.get_platform_name() == "WEB":
         ManagementFile().action_page(context.element_page, "clear",context.driver,"", context.wait, context.dict_save_value, context.device)
     elif context.device.get_platform_name() == "ANDROID":
-        ManagementFileAndroid().action_page(context.element_page, "clear", context.driver, "", context.wait, context.dict_save_value, context.device)
+        ManagementFileAndroid().action_page(context.element_page, "clear", context.driver, "", context.dict_save_value, context.device)
 @step(u'I save text for element {element} with key "{key}"')
 def step_impl(context, element, key):
     context.element_page = ManagementFile().get_element(context.page_present, element)

@@ -34,10 +34,16 @@ Follow https://github.com/lqthang2204/Selenium-with-python-behave for cloning a 
 == Test execution
 
 === How do I run an automation test?
-. VM options : behave ./features/orangeHRM.feature
-to run parallel with command behavex -t @TAGS regression --parallel-processes 2
-with regression is the tag in file feature
-
+* Recommended VM options :
+  * To run parallel with command
+    * ```behavex -t @regression --parallel-processes 2```
+    * ```behavex -t @regression --parallel-processes 2 --parallel-scheme scenario```
+      * paralle-sheme can have values scenario or feature
+      * @regression is the tag in feature files
+  * To generate Allure report (if you have Allure package)
+    * ```behave -f allure_behave.formatter:AllureFormatter -o allure/results ./features```
+    * ```behave -f allure_behave.formatter:AllureFormatter -o allure/results ./features/Login.feature```
+    * Sample code you can use to execute in Debug mode is located at: ```/Selenium-with-python-behave/launch/Run_Test.py```
 ----
 
 

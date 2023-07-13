@@ -60,7 +60,7 @@ actions:
         condition: ENABLED
         timeout: 5
         inputType: click
-  - id: login-page-two
+  - id: login-page-three
     description: login page
     actionElements:
       - element: *user-field
@@ -69,11 +69,3 @@ actions:
       - element: *pass-field
         condition: DISPLAYED
         inputType: text
-      - element: *location-option-inpatient
-        condition: ENABLED
-        timeout: 10
-        inputType: click
-      - element: *login-button
-        condition: ENABLED
-        timeout: 5
-        inputType: click

@@ -30,15 +30,12 @@ class ManagementFileAndroid:
                 WebDriverWait(driver, device.get_wait()).until(expected_conditions.element_to_be_clickable(locator_from_wait))
                 element.click()
             elif action.__eq__("type"):
-                if len(dict_save_value) == int(0):
+                if not dict_save_value:
                     element.click()
                     element.send_keys(value)
                 else:
-                    if dict_save_value[value] is not None:
-                        value = dict_save_value[value]
-                        element.send_keys(value)
-                    else:
-                        assert False, "Not key in map save text"
+                    value = dict_save_value.get(value, value)
+                    element.send_keys(value)
             elif action.__eq__("clear"):
                 element.clear()
             else:
