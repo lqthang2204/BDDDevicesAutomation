@@ -36,6 +36,14 @@ Feature: login web
     | user-field | Admin |
     | pass-field | KEY.title |
     And I wait for element error-message to be DISPLAYED
+    And I perform input-data action with override values
+      | Field      | Value    |
+      | user-field | Admin    |
+      | pass-field | Admin123 |
+    And I wait for element location-option-session with text "Inpatient Ward" to be DISPLAYED
+    And I click element location-option-session with text "Inpatient Ward"
+    When I click element login-button
+    Then I wait for element error-message to be NOT_DISPLAYED
 
 #    And I clear text from element field-search
 #    And I type "Admidsdsdsn" into element user-field

@@ -214,7 +214,6 @@ class ManagementFile:
             else:
                 value = dict_save_value.get(value, value)
                 element.send_keys(value)
-        #   else:  No need to fail because a runtime Key wasnt created by tester
         elif action.__eq__("clear"):
             element.clear()
         else:
@@ -363,15 +362,3 @@ class ManagementFile:
                 element.click()
         elif type_action.__eq__("text"):
             element.send_keys(value)
-
-
-    # def get_text_from_element(self, element_begin, element_updated):
-    #     if element_begin.__eq__(element_updated):
-    #         return element_begin
-    #     else:
-    #         text = ""
-    #         if "with text" in element:
-    #         arr_value = element.split("with text")
-    #         text = arr_value[1].strip().lstrip("\"")
-    #         return text
-
