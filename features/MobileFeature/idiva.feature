@@ -57,7 +57,7 @@
 #        And I click element btn-search
 
         @test-idiva-3
-      Scenario: search productmobile
+      Scenario: search productmobile2
         Given I change the page spec to Common
         And I perform by-pass-launch action
         And I navigate to url have index 5
