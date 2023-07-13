@@ -48,15 +48,15 @@
         And I change the page spec to Home_idiva
         And I wait for element menu-toogle to be ENABLED
         And I click element menu-toogle
+        And I wait for element search-product to be DISPLAYED
+        And I type "test" into element search-product
+        And I clear text from element search-product
         And I perform search-sneaker action with override values
           | Field          | Value       |
           | search-product | KEY.sneaker |
-#        And I wait for element search-product to be DISPLAYED
-#        And I type "KEY.sneaker" into element search-product
-#        And I wait for element btn-search to be ENABLED
-#        And I click element btn-search
 
-        @test-idiva-3
+
+        @test-idiva-4
       Scenario: search productmobile2
         Given I change the page spec to Common
         And I perform by-pass-launch action
