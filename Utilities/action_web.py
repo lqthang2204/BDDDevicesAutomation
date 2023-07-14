@@ -90,7 +90,7 @@ class ManagementFile:
                 dict_yaml[page_name] = obj_page
             return obj_page
 
-    def get_element(self, page, element, platform_name):
+    def get_element(self, page, element, platform_name, dict_save_value):
         text = ""
         if "with text" in element:
             arr_value = element.split("with text")
@@ -99,6 +99,8 @@ class ManagementFile:
             element = arr_value[0].strip()
             # remove double quote
             text = arr_value[1].replace("\"", "")
+            if dict_save_value is not None and dict_save_value.get(text) != None:
+                text = dict_save_value.get(text, text)
         arr_element = page.list_element
         for element_yaml in arr_element:
             if element_yaml.id.__eq__(element):
@@ -226,10 +228,10 @@ class ManagementFile:
             WebDriverWait(driver, wait).until(
                 ec.presence_of_element_located(self.get_locator_for_wait(locator.type, locator.value)))
             element = self.get_element_by(locator.type, driver, locator.value)
-            if element.get_attribute("value") is None:
-                value = element.text
-            else:
+            if element.get_attribute("value") is not None and element.tag_name == "input":
                 value = element.get_attribute('value')
+            else:
+                value = element.text
             dict_save_value["KEY." + key] = value
             return dict_save_value
         except Exception as e:

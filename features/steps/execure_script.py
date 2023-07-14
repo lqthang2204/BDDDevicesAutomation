@@ -29,7 +29,7 @@ def change_page(context, page):
     return context.page_present
 @step(u'I click element {element}')
 def click_action(context, element):
-    context.element_page = ManagementFile().get_element(context.page_present, element,context.device.get_platform_name())
+    context.element_page = ManagementFile().get_element(context.page_present, element,context.device.get_platform_name(), context.dict_save_value)
     if context.device.get_platform_name() == "WEB":
         ManagementFile().action_page(context.element_page, "click",context.driver,"", context.wait, context.dict_save_value, context.device)
     elif context.device.get_platform_name() == "ANDROID":
@@ -37,19 +37,22 @@ def click_action(context, element):
                                      context.dict_save_value, context.device)
 @step(u'I type "{text}" into element {element}')
 def type_action(context, text, element):
-    context.element_page = ManagementFile().get_element(context.page_present, element,context.device.get_platform_name())
+    context.element_page = ManagementFile().get_element(context.page_present, element,context.device.get_platform_name(), context.dict_save_value)
     if context.device.get_platform_name() == "WEB":
         ManagementFile().action_page(context.element_page, "type",context.driver,text, context.wait, context.dict_save_value, context.device)
     elif context.device.get_platform_name() == "ANDROID":
         ManagementFileAndroid().action_page(context.element_page, "type", context.driver, text, context.dict_save_value, context.device)
 @step(u'I wait for element {element} to be {status}')
 def wait_element(context, element, status):
-    context.element_page = ManagementFile().get_element(context.page_present, element, context.device.get_platform_name())
+    context.element_page = ManagementFile().get_element(context.page_present, element, context.device.get_platform_name(), context.dict_save_value)
     if context.device.get_platform_name() == "WEB":
         ManagementFile().wait_element_for_status(context.element_page, status, context.driver, context.wait)
     elif context.device.get_platform_name() == "ANDROID":
         ManagementFileAndroid().wait_element_for_status(context.element_page, status, context.driver, context.device)
-
+@step(u'I wait for elements with below status')
+def step_impl(context):
+    print(context.table)
+    # context.element_page = ManagementFile().get_element(context.page_present, element, context.device.get_platform_name())
 @step(u'I perform {action} action')
 def step_impl(context, action):
     if context.device.get_platform_name() == "WEB":
@@ -65,14 +68,14 @@ def step_impl(context, action):
         ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver, context.device.get_wait(), context.table, context.dict_save_value)
 @step(u'I clear text from element {element}')
 def step_impl(context, element):
-    context.element_page = ManagementFile().get_element(context.page_present, element, context.device.get_platform_name())
+    context.element_page = ManagementFile().get_element(context.page_present, element, context.device.get_platform_name(), context.dict_save_value)
     if context.device.get_platform_name() == "WEB":
         ManagementFile().action_page(context.element_page, "clear",context.driver,"", context.wait, context.dict_save_value, context.device)
     elif context.device.get_platform_name() == "ANDROID":
         ManagementFileAndroid().action_page(context.element_page, "clear", context.driver, "", context.dict_save_value, context.device)
 @step(u'I save text for element {element} with key "{key}"')
 def step_impl(context, element, key):
-    context.element_page = ManagementFile().get_element(context.page_present, element, context.device.get_platform_name())
+    context.element_page = ManagementFile().get_element(context.page_present, element, context.device.get_platform_name(), context.dict_save_value)
     if context.device.get_platform_name() == "WEB":
         context.dict_save_value = ManagementFile().save_text_from_element(context.element_page, context.driver, key, context.dict_save_value, context.wait)
     elif context.device.get_platform_name() == "ANDROID":
