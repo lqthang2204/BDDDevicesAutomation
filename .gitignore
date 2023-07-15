@@ -5,8 +5,9 @@
 .env
 .venv
 venv
-idea
+.idea
 *.css
 */outputs
 */outputs/logs
 output
+*/WebDriver
