@@ -24,11 +24,12 @@ Feature: login web
 
     @test-2
   Scenario: test page
-      Given I wait for elements with below status
+    Given I navigate to url have index 1
+    And I change the page spec to LoginPage
+    Given I wait for elements with below status
         | Field                   | Value          | Status    |
         | location-option-session | Inpatient Ward | DISPLAYED |
-      Given I navigate to url have index 1
-    And I change the page spec to LoginPage
+        | location-option-session | Inpatient Ward | ENABLED   |
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
     And I save text for element login-form-title with key "title"

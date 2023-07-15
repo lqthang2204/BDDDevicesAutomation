@@ -113,6 +113,20 @@ class ManagementFile:
                     arr_locator[0].value = arr_locator[0].value.replace("{text}", text)
                     break
         return element_yaml
+    def get_element_from_data_table(self, page, table, platform_name, dict_save_value):
+        arr_element = page.list_element
+        status = ""
+        if table is not None:
+            for row in table:
+                for element_yaml in arr_element:
+                    if element_yaml.id.__eq__(row["Field"]):
+                        if dict_save_value is not None and row["Value"] in dict_save_value.keys():
+                            value = dict_save_value.get(row["Value"], row["Value"])
+                        else:
+                            value = row["Value"]
+                        status = row["status"]
+
+
 
     def execute_action(self, page, action_id, driver, wait, table, dict_save_value):
         dict_action = page.get_dict_action()
