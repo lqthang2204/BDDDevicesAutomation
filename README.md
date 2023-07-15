@@ -40,6 +40,9 @@ Follow https://github.com/lqthang2204/Selenium-with-python-behave for cloning a 
     * ```behavex -t @regression --parallel-processes 2 --parallel-scheme scenario```
       * paralle-sheme can have values scenario or feature
       * @regression is the tag in feature files
+    * To execute from a Feaure file folder 
+      * ```behavex -ip features  --parallel-processes 2  --parallel-scheme scenario```
+        * where -ip features => to include the folder path named features
   * To generate Allure report (if you have Allure package)
     * ```behave -f allure_behave.formatter:AllureFormatter -o allure/results ./features```
     * ```behave -f allure_behave.formatter:AllureFormatter -o allure/results ./features/Login.feature```
