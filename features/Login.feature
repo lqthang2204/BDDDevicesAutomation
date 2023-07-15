@@ -26,11 +26,15 @@ Feature: login web
   Scenario: test page
     Given I navigate to url have index 1
     And I change the page spec to LoginPage
-    Given I wait for elements with below status
-        | Field                   | Value          | Status    |
-        | location-option-session | Inpatient Ward | DISPLAYED |
-        | location-option-session | Inpatient Ward | ENABLED   |
-    And I wait for element user-field to be DISPLAYED
+    And I save text for element location-option-inpatient with key "btn-location"
+    And I wait for elements with below status
+      | Field                     | Value              | Status    |
+      | location-option-session   | "Inpatient Ward"   | DISPLAYED |
+      | location-option-session   | "Inpatient Ward"   | ENABLED   |
+      | location-option-session   | "KEY.btn-location" | DISPLAYED |
+      | location-option-inpatient | ""                 | ENABLED   |
+      | location-option-inpatient | ""                 | EXISTED   |
+      And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
     And I save text for element login-form-title with key "title"
     And I type "KEY.title" into element user-field
