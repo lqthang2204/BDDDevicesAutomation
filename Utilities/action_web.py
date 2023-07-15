@@ -309,7 +309,7 @@ class ManagementFile:
                 return locator
 
     def get_locator_from_action(self, element_page, device):
-        print(element_page)
+        # print(element_page)
         for locator in element_page:
             if locator.get_device().__eq__(device):
                 return locator

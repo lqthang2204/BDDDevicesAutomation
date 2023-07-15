@@ -15,6 +15,7 @@ from appium.webdriver.appium_service import AppiumService
 import datetime
 
 
+
 def before_all(context):
     context.dict_save_value = {}
     env = environment_config()
@@ -69,7 +70,6 @@ def launch_browser(context, device):
     context.driver.maximize_window()
 
 
-
 def launch_android(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get("drivers_config", "APPIUM_HOST"), '-P', str(config.get("drivers_config", "APPIUM_PORT"))], timeout_ms=20000)
@@ -87,11 +87,9 @@ def launch_android(context, device, config):
     context.driver = appium.webdriver.Remote(url, desired_caps)
 
 
-
 def after_step(context, step):
     if step.status == "failed":
         current_time = datetime.datetime.now()
-        date_time = str(current_time.year) + "_" + str(current_time.month) + "_" + str(current_time.day) + "_" + str(current_time.microsecond)
+        date_time = str(current_time.year) + "_" + str(current_time.month) + "_" + str(current_time.day) + "_" + str(
+            current_time.microsecond)
         context.driver.get_screenshot_as_file(context.evidence_path + '/' + step.name + "_" + date_time + ".png")
-
-
