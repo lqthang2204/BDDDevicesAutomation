@@ -15,7 +15,6 @@ from appium.webdriver.appium_service import AppiumService
 import datetime
 
 
-
 def before_all(context):
     context.dict_save_value = {}
     env = environment_config()
