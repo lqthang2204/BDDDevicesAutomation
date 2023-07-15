@@ -48,6 +48,12 @@ elements:
       - device: WEB
         type: XPATH
         value: //*[@class='w-auto']
+  - id: location-option-session
+    description: Location session
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(text(), "{text}")]
 actions:
   - id: login-page
     description: login page
@@ -77,3 +83,12 @@ actions:
         condition: ENABLED
         timeout: 5
         inputType: click
+  - id: input-data
+    description: login page
+    actionElements:
+      - element: *user-field
+        condition: DISPLAYED
+        inputType: text
+      - element: *pass-field
+        condition: DISPLAYED
+        inputType: text

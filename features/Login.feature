@@ -5,7 +5,6 @@ Feature: login web
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
-    And I save text for element login-form-title with key "title"
     And I perform login-page-two action with override values
       | Field      | Value    |
       | user-field | Admin    |
@@ -22,22 +21,35 @@ Feature: login web
     And I wait for element find-patient-button to be ENABLED
     And I click element find-patient-button
     And I wait for element search-input to be DISPLAYED
-    And I type "KEY.title" into element search-input
 
     @test-2
   Scenario: test page
-    Given I navigate to url have index 1
-    When I change the page spec to LoginPage
-    Then I wait for element user-field to be DISPLAYED
+      Given I wait for elements with below status
+        | Field                   | Value          | Status    |
+        | location-option-session | Inpatient Ward | DISPLAYED |
+      Given I navigate to url have index 1
+    And I change the page spec to LoginPage
+    And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
-    Then I save text for element login-form-title with key "title"
+    And I save text for element login-form-title with key "title"
     And I type "KEY.title" into element user-field
     And I clear text from element user-field
+    And I save text for element location-option-inpatient with key "btn-location"
+    And I click element location-option-session with text "KEY.btn-location"
     And I perform login-page-two action with override values
     | Field | Value |
     | user-field | Admin |
     | pass-field | KEY.title |
     And I wait for element error-message to be DISPLAYED
+    And I perform input-data action with override values
+      | Field      | Value    |
+      | user-field | Admin    |
+      | pass-field | Admin123 |
+    And I wait for element location-option-session with text "Inpatient Ward" to be DISPLAYED
+    And I wait for elements with below status
+      | location-option-session | Inpatient Ward | DISPLAYED |
+    When I click element location-option-session with text "Inpatient Ward"
+    Then I click element login-button
 
 #    And I clear text from element field-search
 #    And I type "Admidsdsdsn" into element user-field

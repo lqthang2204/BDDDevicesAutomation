@@ -1,43 +1,14 @@
 @test-tiki-total @mobile
     Feature: tiki mobile
 
-      @test-tiki-1
-      Scenario: test login page3
-        Given I navigate to url have index 4
-        And I change the page spec to indexTiki
-        And I wait for element icon-cart to be DISPLAYED
-        And I wait for element seach-input to be DISPLAYED
-        And I click element seach-input
-        And I wait for element field-search to be DISPLAYED
-        And I type "quat tich dien" into element field-search
-        And I wait for element result-search to be DISPLAYED
-  #    And I clear text from element seach-input
-  #    And I wait for element pass-field to be DISPLAYED
-  #    And I type "Admin" into element user-field
-  #    And I type "Admin123" into element pass-field
-  #    And I click element login-button
-
-    @test-tiki-2
-      Scenario: test login page
-      Given I navigate to url have index 4
-      And I change the page spec to indexTiki
-      And I wait for element icon-cart to be DISPLAYED
-      And I wait for element menu-danh-muc to be ENABLED
-      And I click element menu-danh-muc
-#      And I wait for element seach-input to be DISPLAYED
-#      And I click element seach-input
-#      And I wait for element field-search to be DISPLAYED
-#      And I type "quat tich dien" into element field-search
-#      And I wait for element result-search to be DISPLAYED
-  #    And I clear text from element seach-input
-  #    And I wait for element pass-field to be DISPLAYED
-  #    And I type "Admin" into element user-field
-  #    And I type "Admin123" into element pass-field
-  #    And I click element login-button
 
       @test-tiki-3
       Scenario: test tiki 3
-      Given I open application
-      And I change the page spec to HomeTiki
-
+#      Given I open application
+      Given I change the page spec to HomeTiki
+      And I wait for element icon-at-page-home with text "Trang chủ" to be DISPLAYED
+      And I wait for element icon-at-page-home with text "Danh mục" to be DISPLAYED
+      And I wait for element icon-at-page-home with text "Tin mới" to be DISPLAYED
+      And I wait for element icon-at-page-home with text "navigation_navigate_profile" to be DISPLAYED
+      And I wait for element icon-at-page-home with text "Astra" to be DISPLAYED
 

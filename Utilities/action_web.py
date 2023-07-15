@@ -90,11 +90,28 @@ class ManagementFile:
                 dict_yaml[page_name] = obj_page
             return obj_page
 
-    def get_element(self, page, element):
+    def get_element(self, page, element, platform_name, dict_save_value):
+        text = ""
+        if "with text" in element:
+            arr_value = element.split("with text")
+            # remove blank in array
+            arr_value = [i.lstrip() for i in arr_value]
+            element = arr_value[0].strip()
+            # remove double quote
+            text = arr_value[1].replace("\"", "")
+            if dict_save_value is not None and dict_save_value.get(text) != None:
+                text = dict_save_value.get(text, text)
         arr_element = page.list_element
         for element_yaml in arr_element:
             if element_yaml.id.__eq__(element):
-                return element_yaml
+                arr_locator = element_yaml.list_locator
+                for index, loc in enumerate(arr_locator):
+                    if loc.device != platform_name:
+                        del arr_locator[index]
+                if len(arr_locator) == 1:
+                    arr_locator[0].value = arr_locator[0].value.replace("{text}", text)
+                    break
+        return element_yaml
 
     def execute_action(self, page, action_id, driver, wait, table, dict_save_value):
         dict_action = page.get_dict_action()
@@ -199,7 +216,6 @@ class ManagementFile:
             else:
                 value = dict_save_value.get(value, value)
                 element.send_keys(value)
-        #   else:  No need to fail because a runtime Key wasnt created by tester
         elif action.__eq__("clear"):
             element.clear()
         else:
@@ -212,10 +228,10 @@ class ManagementFile:
             WebDriverWait(driver, wait).until(
                 ec.presence_of_element_located(self.get_locator_for_wait(locator.type, locator.value)))
             element = self.get_element_by(locator.type, driver, locator.value)
-            if element.get_attribute("value") is None:
-                value = element.text
-            else:
+            if element.get_attribute("value") is not None and element.tag_name == "input":
                 value = element.get_attribute('value')
+            else:
+                value = element.text
             dict_save_value["KEY." + key] = value
             return dict_save_value
         except Exception as e:
@@ -348,6 +364,3 @@ class ManagementFile:
                 element.click()
         elif type_action.__eq__("text"):
             element.send_keys(value)
-
-
-
