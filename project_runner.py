@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 
 def validate_tags(ctx, param, value):
     if not value.startswith('@'):
-        raise click.BadParameter("Tags should not start with '@'")
+        raise click.BadParameter(f"Tags {value} should start with '@'")
     return value
 
 
