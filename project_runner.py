@@ -28,14 +28,14 @@ def main(context):
 @click.option('--tags', '-tg', callback=validate_tags, default='@web', help='specify behave tags to run')
 @click.option('--forks', '-fk', type=click.IntRange(1, 10), default=5, show_default=True,
               help='number of processes')
-@click.option('--parallel-scheme', '-ps', 'parallel_scheme', type=click.Choice(['feature', 'scenario']),
-              default='scenario',
-              help='specify the stage to run')
 @click.option('--stage', '-sg', 'stage_name', type=click.Choice(['QA', 'SIT', 'UAT', 'PROD']), default='QA',
               help='specify the stage to run')
 @click.option('--platform', '-pl', 'platform_name', type=click.Choice(['WEB', 'ANDROID', 'iOS', 'API']), default='WEB',
               help='specify platform to run')
-def run(feature_dir, forks, tags, stage_name, platform_name, parallel_scheme):
+@click.option('--parallel-scheme', '-ps', 'parallel_scheme', type=click.Choice(['feature', 'scenario']),
+              default='scenario',
+              help='specify the stage to run')
+def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
     params = []
     if feature_dir:
         params.append(f"-ip {feature_dir}")
