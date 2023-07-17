@@ -1,5 +1,5 @@
 env:
-  - stage: testing
+  - stage: QA
     link: https://demo.openmrs.org/openmrs/login.htm, https://www.google.com/, http://live.techpanda.org/index.php/,  https://tiki.vn/, https://idiva.vn/
     devices:
     - platformName: WEB
@@ -27,7 +27,7 @@ env:
       appPackage: com.android.chrome
       appActivity: com.google.android.apps.chrome.Main
       udid: emulator-5554
-  - stage: non-prod
+  - stage: SIT
     link: https://demo.openmrs.org/openmrs/login.htm, https://www.google.com/, http://live.techpanda.org/index.php/
     devices:
     - platformName: WEB

@@ -14,6 +14,7 @@ from ManagementElements.ActionTest import ActionTest
 from ManagementElements.ActionElements import ActionElements
 import logging
 
+
 class ManagementFile:
     def get_dict_path_yaml(self):
         file_path = os.path.dirname(os.path.dirname(__file__)) + "/resources/pages/*/*.yaml"
@@ -36,7 +37,7 @@ class ManagementFile:
             obj_page = Page()
             dict_yaml[page_name] = obj_page
             list_element = list()
-            with open(path,encoding='utf-8') as page:
+            with open(path, encoding='utf-8') as page:
                 python_dict = yaml.load(page.read(), Loader=SafeLoader)
                 json_result = json.dumps(python_dict)
                 json_object = json.loads(json_result)
@@ -221,6 +222,7 @@ class ManagementFile:
         else:
             logging.error("Can not execute %s with element have is %s", action, locator.value)
             assert False, "Not support action in framework"
+
     def save_text_from_element(self, element_page, driver, key, dict_save_value, wait):
         try:
             locator = self.get_locator(element_page, "WEB")
@@ -237,7 +239,6 @@ class ManagementFile:
         except Exception as e:
             logging.error("Can not save text for element  %s with key is %s", locator.value, key);
             assert False, "Can not save text for element " + locator.value
-
 
     def get_element_by(self, type, driver, value):
         logging.info("Get element by %s with value is %s", type, value);
@@ -309,7 +310,7 @@ class ManagementFile:
                 return locator
 
     def get_locator_from_action(self, element_page, device):
-        print(element_page)
+        # print(element_page)
         for locator in element_page:
             if locator.get_device().__eq__(device):
                 return locator
