@@ -26,7 +26,7 @@ Feature: login web
   Scenario: test page
     Given I navigate to url have index 1
     And I change the page spec to LoginPage
-    And I save text for element location-option-inpatient with key "btn-location"
+    And I save text for element location-option-session with key "btn-location"
     And I wait for elements with below status
       | Field                     | Value              | Status    |
       | location-option-session   | "Inpatient Ward"   | DISPLAYED |

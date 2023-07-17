@@ -106,13 +106,12 @@ class ManagementFile:
         for element_yaml in arr_element:
             if element_yaml.id.__eq__(element):
                 arr_locator = element_yaml.list_locator
-                for index, loc in enumerate(arr_locator):
-                    if loc.device == platform_name:
-                        # del arr_locator[ar]
-                if len(arr_locator) == 1:
-                    arr_locator[0].value = arr_locator[0].value.replace("{text}", text)
-                    break
-        return element_yaml
+                for loc in arr_locator:
+                    if loc.device != platform_name:
+                        arr_locator.remove(loc)
+                    else:
+                        arr_locator[0].value = arr_locator[0].value.replace("{text}", text)
+                return element_yaml
     def get_element_from_data_table(self, page, table, platform_name, dict_save_value, driver, wait):
         arr_element = page.list_element
         if table is not None:
