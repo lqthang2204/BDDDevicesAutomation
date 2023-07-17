@@ -59,10 +59,10 @@ elements:
     locators:
       - device: ANDROID
         type: XPATH
-        value: //*[contains(text(), "{text}")]
+        value: //*[contains(text(), "android")]
       - device: IOS
         type: XPATH
-        value: //*[contains(text(), "{text}")]
+        value: //*[contains(text(), "ios")]
       - device: WEB
         type: XPATH
         value: //*[contains(text(), "{text}")]
