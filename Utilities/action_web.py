@@ -120,11 +120,10 @@ class ManagementFile:
                 for element_yaml in arr_element:
                     if element_yaml.id.__eq__(row["Field"]):
                         logging.info("Verifying for %s have value %s and status %s", row["Field"], row["Value"], row["Status"])
-                        value = row["Value"]
-                        if dict_save_value and value in dict_save_value.keys():
-                            value = dict_save_value.get(value).replace("\"", "")
+                        if dict_save_value and row["Value"] in dict_save_value.keys():
+                            value = dict_save_value.get(row["Value"]).replace("\"", "")
                         else:
-                            value = row["Value"].replace("\"", "")
+                            value = row["Value"]
                         element_yaml = self.get_element(page, element_yaml.id+" with text " + value, platform_name, dict_save_value)
                         self.wait_element_for_status(element_yaml,row["Status"], driver, wait)
                         logging.info("Verified for %s have value %s and status %s", row["Field"], row["Value"],
