@@ -71,11 +71,10 @@ def wait_element(context, element, status):
 
 @step(u'I wait for elements with below status')
 def step_impl(context):
-    # print(context.table)
-    # context.element_page = ManagementFile().get_element(context.page_present, element, context.device.get_platform_name())
-    pass
-
-
+    if context.device.get_platform_name() == "WEB":
+        context.element_page = ManagementFile().get_element_from_data_table(context.page_present, context.table, context.device.get_platform_name(), context.dict_save_value, context.driver, context.wait)
+    elif context.device.get_platform_name() == "ANDROID":
+        ManagementFileAndroid().wait_element_for_status(context.element_page, context.table, context.driver, context.device)
 @step(u'I perform {action} action')
 def step_impl(context, action):
     if context.device.get_platform_name() == "WEB":

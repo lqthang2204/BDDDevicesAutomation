@@ -23,6 +23,12 @@ elements:
     id: location-option-inpatient
     description: Location
     locators:
+      - device: IOS
+        type: XPATH
+        value: //*[contains(@id, 'Inpatient')]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(@id, 'Inpatient')]
       - device: WEB
         type: XPATH
         value: //*[contains(@id, 'Inpatient')]
@@ -51,6 +57,12 @@ elements:
   - id: location-option-session
     description: Location session
     locators:
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
       - device: WEB
         type: XPATH
         value: //*[contains(text(), "{text}")]
