@@ -1,5 +1,6 @@
 @regression @web
 Feature: orange HRM 2 web
+
 #  @Windows10_Chrome_76.0
 #  @Windows10_Firefox_68.0
   Scenario: negative to url
@@ -16,6 +17,13 @@ Feature: orange HRM 2 web
     And I click element mobile-button
     And I type "test" into element search-input
 
+#  Scenario: This will not be included
+#    Given I navigate to url have index 1
+#    And I change the page spec to LoginPage
+#    And I wait for element user-field to be DISPLAYED
+#    And I wait for element pass-field to be DISPLAYED
+#    And I type "Admin" into element user-field
+
   Scenario: test login page
     Given I navigate to url have index 1
     And I change the page spec to LoginPage
@@ -27,3 +35,10 @@ Feature: orange HRM 2 web
     And I change the page spec to IndexPage
 #    And I wait for element welcome-user to be DISPLAYED
 #    And I wait for element log-out to be DISPLAYED
+
+#  Scenario: This will not be included
+#    Given I navigate to url have index 1
+#    And I change the page spec to LoginPage
+#    And I wait for element user-field to be DISPLAYED
+#    And I wait for element pass-field to be DISPLAYED
+#    And I type "Admin" into element user-field

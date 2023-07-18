@@ -1,6 +1,7 @@
 @parallel @web
 Feature: test web page techpanda web
-@mc-guru6
+
+  @mc-guru6
   Scenario Outline: test Search function
     Given I navigate to url have index 3
     And I change the page spec to HomePage
@@ -8,8 +9,7 @@ Feature: test web page techpanda web
     And I click element <product>
     And I type "test " into element search-input
     And I wait 5 seconds
-
     Examples:
-      | product        |
-      | mobile-button  |
-      | tv-button  |
+      | product       |
+      | mobile-button |
+      | tv-button     |
