@@ -100,7 +100,7 @@ class ManagementFile:
             element = arr_value[0].strip()
             # remove double quote
             text = arr_value[1].replace("\"", "")
-            if dict_save_value is not None and dict_save_value.get(text) != None:
+            if dict_save_value and text in dict_save_value.keys():
                 text = dict_save_value.get(text, text)
         arr_element = page.list_element
         for element_yaml in arr_element:
@@ -120,8 +120,8 @@ class ManagementFile:
                 for element_yaml in arr_element:
                     if element_yaml.id.__eq__(row["Field"]):
                         logging.info("Verifying for %s have value %s and status %s", row["Field"], row["Value"], row["Status"])
-                        value = row["Value"].replace("\"", "")
-                        if dict_save_value is not None and value in dict_save_value.keys():
+                        value = row["Value"]
+                        if dict_save_value and value in dict_save_value.keys():
                             value = dict_save_value.get(value).replace("\"", "")
                         else:
                             value = row["Value"].replace("\"", "")
@@ -144,7 +144,7 @@ class ManagementFile:
                 if table is not None:
                     for row in table:
                         if action_elements.get_id() == row["Field"]:
-                            if dict_save_value is not None and row["Value"] in dict_save_value.keys():
+                            if dict_save_value and row["Value"] in dict_save_value.keys():
                                 value = dict_save_value.get(row["Value"], row["Value"])
                             else:
                                 value = row["Value"]
