@@ -99,8 +99,8 @@ class ManagementFile:
             arr_value = [i.lstrip() for i in arr_value]
             element = arr_value[0].strip()
             # remove double quote
-            text = arr_value[1].replace("\"", "")
-            if dict_save_value and text in dict_save_value.keys():
+            text = arr_value[1]
+            if dict_save_value:
                 text = dict_save_value.get(text, text)
         arr_element = page.list_element
         for element_yaml in arr_element:
@@ -113,26 +113,26 @@ class ManagementFile:
                 if len(arr_locator) == 1:
                     arr_locator[0].value = arr_locator[0].value.replace("{text}", text)
                     return element_yaml
+
     def get_element_from_data_table(self, page, table, platform_name, dict_save_value, driver, wait):
         arr_element = page.list_element
         if table is not None:
             for row in table:
                 for element_yaml in arr_element:
                     if element_yaml.id.__eq__(row["Field"]):
-                        logging.info("Verifying for %s have value %s and status %s", row["Field"], row["Value"], row["Status"])
-                        if dict_save_value and row["Value"] in dict_save_value.keys():
-                            value = dict_save_value.get(row["Value"]).replace("\"", "")
-                        else:
-                            value = row["Value"]
-                        element_yaml = self.get_element(page, element_yaml.id+" with text " + value, platform_name, dict_save_value)
-                        self.wait_element_for_status(element_yaml,row["Status"], driver, wait)
+                        logging.info("Verifying for %s have value %s and status %s", row["Field"], row["Value"],
+                                     row["Status"])
+                        value = row["Value"]
+                        if dict_save_value:
+                            value = dict_save_value.get(value, value)
+                        element_yaml = self.get_element(page, element_yaml.id + " with text " + value, platform_name,
+                                                        dict_save_value)
+                        self.wait_element_for_status(element_yaml, row["Status"], driver, wait)
                         logging.info("Verified for %s have value %s and status %s", row["Field"], row["Value"],
                                      row["Value"])
         else:
             logging.error("user must set data table for elements")
             assert False, "can not execute verify status for elements"
-
-
 
     def execute_action(self, page, action_id, driver, wait, table, dict_save_value):
         dict_action = page.get_dict_action()
@@ -143,10 +143,9 @@ class ManagementFile:
                 if table is not None:
                     for row in table:
                         if action_elements.get_id() == row["Field"]:
-                            if dict_save_value and row["Value"] in dict_save_value.keys():
-                                value = dict_save_value.get(row["Value"], row["Value"])
-                            else:
-                                value = row["Value"]
+                            value = row["Value"]
+                            if dict_save_value:
+                                value = dict_save_value.get(value, value)
                             break
                 element_page = action_elements.get_element()
                 type_action = action_elements.get_inputType()
@@ -232,11 +231,9 @@ class ManagementFile:
                     ec.element_attribute_to_include(self.get_locator_for_wait(locator.type, locator.value), "disabled"))
                 element.click()
         elif action.__eq__("type"):
-            if not dict_save_value:
-                element.send_keys(value)
-            else:
+            if dict_save_value:
                 value = dict_save_value.get(value, value)
-                element.send_keys(value)
+            element.send_keys(value)
         elif action.__eq__("clear"):
             element.clear()
         else:
