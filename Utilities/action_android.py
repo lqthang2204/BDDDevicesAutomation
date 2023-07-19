@@ -1,14 +1,6 @@
-import os
-import glob
-import yaml
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from yaml import SafeLoader
-import json
 from appium.webdriver.common.appiumby import AppiumBy
-from selenium.common.exceptions import ElementNotVisibleException, ElementNotSelectableException, \
-    NoSuchElementException, TimeoutException
-from appium.webdriver.appium_service import AppiumService
 import logging
 
 
@@ -192,23 +184,3 @@ class ManagementFileAndroid:
                 element.click()
             elif type_action.__eq__("text"):
                 element.send_keys(value)
-        # else:
-        #     locator_from_wait = self.get_locator_for_wait(locator.type, locator.value)
-        #     WebDriverWait(driver, wait).until(expected_conditions.presence_of_element_located(locator_from_wait))
-
-    def save_text_from_element_android(self, element_page, driver, key, dict_save_value, wait):
-        try:
-            locator = self.get_locator(element_page, "ANDROID")
-            logging.info("save text for element  %s with key is %s", locator.value, key);
-            WebDriverWait(driver, wait).until(
-                ec.presence_of_element_located(self.get_locator_for_wait(locator.type, locator.value)))
-            element = self.get_by_android(locator.type, driver, locator.value)
-            if element.get_attribute("content-desc") is None:
-                value = element.text
-            else:
-                value = element.get_attribute('content-desc')
-            dict_save_value["KEY." + key] = value
-            return dict_save_value
-        except Exception as e:
-            logging.error("Can not save text for element  %s with key is %s", locator.value, key);
-            assert False, "Can not save text for element " + locator.value

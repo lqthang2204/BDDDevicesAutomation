@@ -171,24 +171,6 @@ class ManagementFile:
             logging.error("Not Found Action %s in page yaml", action_id)
             assert False, "Not Found Action " + action_id + " in page yaml"
 
-    def save_text_from_element(self, element_page, driver, key, dict_save_value, wait):
-        try:
-            locator = self.get_locator(element_page, "WEB")
-            logging.info("save text for element  %s with key is %s", locator.value, key);
-            WebDriverWait(driver, wait).until(
-                ec.presence_of_element_located(self.get_locator_for_wait(locator.type, locator.value)))
-            element = self.get_element_by(locator.type, driver, locator.value)
-            if element.get_attribute("value") is not None and element.tag_name == "input":
-                value = element.get_attribute('value')
-            else:
-                value = element.text
-            dict_save_value["KEY." + key] = value
-            return dict_save_value
-        except Exception as e:
-            logging.error("Can not save text for element  %s with key is %s", locator.value, key);
-            assert False, "Can not save text for element " + locator.value
-
-
     def get_element_by(self, type, driver, value):
         logging.info("Get element by %s with value is %s", type, value);
         if type.__eq__("ID"):
