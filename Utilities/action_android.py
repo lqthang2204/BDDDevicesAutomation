@@ -1,7 +1,7 @@
 import os
 import glob
 import yaml
-from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from yaml import SafeLoader
 import json
@@ -20,33 +20,6 @@ class ManagementFileAndroid:
             if element_yaml.id.__eq__(element):
                 return element_yaml
 
-    def action_page(self, element_page, action, driver, value, dict_save_value, device):
-        try:
-            locator = self.get_locator(element_page, device.get_platform_name())
-            locator_from_wait = self.get_locator_for_wait(locator.type, locator.value)
-            logging.info("execute %s with element have is %s", action, locator.value)
-            WebDriverWait(driver, device.get_wait()).until(
-                expected_conditions.presence_of_element_located(locator_from_wait))
-            element = self.get_by_android(locator.type, driver, locator.value)
-            if action.__eq__("click"):
-                WebDriverWait(driver, device.get_wait()).until(
-                    expected_conditions.element_to_be_clickable(locator_from_wait))
-                element.click()
-            elif action.__eq__("type"):
-                if not dict_save_value:
-                    element.click()
-                    element.send_keys(value)
-                else:
-                    value = dict_save_value.get(value, value)
-                    element.send_keys(value)
-            elif action.__eq__("clear"):
-                element.clear()
-            else:
-                logging.error("Can not execute %s with element have is %s", action, locator.value)
-                assert False, "Not support action in framework"
-        except Exception as e:
-            logging.error("Can not execute %s with element have is %s", action, locator.value)
-            assert False, e
 
     def save_text_from_element(self, element_page, driver, key, dict_save_value, wait):
         locator = self.get_locator(element_page, "WEB")
@@ -130,17 +103,17 @@ class ManagementFileAndroid:
             if status == "DISPLAYED":
                 print("locator = ", locator_from_wait)
                 WebDriverWait(driver, device.get_wait()).until(
-                    expected_conditions.presence_of_element_located(locator_from_wait))
+                    ec.presence_of_element_located(locator_from_wait))
             elif status == "NOT_DISPLAYED":
                 WebDriverWait(driver, device.get_wait()).until(
-                    expected_conditions.invisibility_of_element_located(locator_from_wait))
+                    ec.invisibility_of_element_located(locator_from_wait))
             elif status == "ENABLED":
-                WebDriverWait(driver, device.get_wait()).until(expected_conditions.all_of(
-                    expected_conditions.element_to_be_clickable(locator_from_wait)),
-                    expected_conditions.presence_of_element_located(locator_from_wait))
+                WebDriverWait(driver, device.get_wait()).until(ec.all_of(
+                    ec.element_to_be_clickable(locator_from_wait)),
+                    ec.presence_of_element_located(locator_from_wait))
             elif status == "NOT_ENABLED":
                 WebDriverWait(driver, device.get_wait()).until_not(
-                    expected_conditions.element_to_be_clickable(locator_from_wait))
+                    ec.element_to_be_clickable(locator_from_wait))
             elif status == "EXISTED":
                 elements = self.get_list_element_by(locator.type, driver, locator.value)
                 WebDriverWait(driver, device.get_wait()).until(lambda driver: len(elements) > int(0))
@@ -149,10 +122,10 @@ class ManagementFileAndroid:
                 WebDriverWait(driver, device.get_wait()).until_not(lambda driver: len(elements) > int(0))
             elif status == "SELECTED":
                 WebDriverWait(driver, device.get_wait()).until(
-                    expected_conditions.element_located_to_be_selected(locator_from_wait))
+                    ec.element_located_to_be_selected(locator_from_wait))
             elif status == "NOT_SELECTED":
                 WebDriverWait(driver, device.get_wait()).until_not(
-                    expected_conditions.element_located_to_be_selected(locator_from_wait))
+                    ec.element_located_to_be_selected(locator_from_wait))
             else:
                 raise Exception("Not support status ", status)
         except TimeoutException as ex:
@@ -206,16 +179,16 @@ class ManagementFileAndroid:
                     try:
                         if action_elements.get_condition() == "ENABLED":
                             WebDriverWait(driver, action_elements.get_timeout()).until(
-                                expected_conditions.element_to_be_clickable(locator_from_wait))
+                                ec.element_to_be_clickable(locator_from_wait))
                         elif action_elements.get_condition() == "NOT_ENABLED":
                             WebDriverWait(driver, action_elements.get_timeout()).until_not(
-                                expected_conditions.element_to_be_clickable(locator_from_wait))
+                                ec.element_to_be_clickable(locator_from_wait))
                         elif action_elements.get_condition() == "DISPLAYED":
                             WebDriverWait(driver, action_elements.get_timeout()).until(
-                                expected_conditions.presence_of_element_located(locator_from_wait))
+                                ec.presence_of_element_located(locator_from_wait))
                         elif action_elements.get_condition() == "NOT_DISPLAYED":
                             WebDriverWait(driver, action_elements.get_timeout()).until(
-                                expected_conditions.presence_of_element_located(locator_from_wait))
+                                ec.presence_of_element_located(locator_from_wait))
                         elif action_elements.get_condition() == "EXISTED":
                             elements = self.get_list_element_by(locator.type, driver, locator.value)
                             WebDriverWait(driver, action_elements.get_timeout()).until(
@@ -226,21 +199,21 @@ class ManagementFileAndroid:
                                 lambda driver: len(elements) > int(0))
                         elif action_elements.get_condition() == "SELECTED":
                             WebDriverWait(driver, action_elements.get_timeout()).until(
-                                expected_conditions.element_located_to_be_selected(locator_from_wait))
+                                ec.element_located_to_be_selected(locator_from_wait))
                         elif action_elements.get_condition() == "NOT_SELECTED":
                             WebDriverWait(driver, action_elements.get_timeout()).until_not(
-                                expected_conditions.element_located_to_be_selected(locator_from_wait))
+                                ec.element_located_to_be_selected(locator_from_wait))
                         else:
                             logging.error("Not support condition %s in framework", action_elements.get_condition())
                             assert False, "Not support condition"
                         if type_action.__eq__("click"):
                             WebDriverWait(driver, action_elements.get_timeout()).until(
-                                expected_conditions.element_to_be_clickable(locator_from_wait))
+                                ec.element_to_be_clickable(locator_from_wait))
                             element = self.get_by_android(locator.type, driver, locator.value)
                             element.click()
                         elif type_action.__eq__("text"):
                             WebDriverWait(driver, action_elements.get_timeout()).until(
-                                expected_conditions.presence_of_element_located(locator_from_wait))
+                                ec.presence_of_element_located(locator_from_wait))
                             element = self.get_by_android(locator.type, driver, locator.value)
                             element.send_keys(value)
                     except Exception as e:
@@ -265,11 +238,11 @@ class ManagementFileAndroid:
             assert False, "Not Found Action " + action_id + " in page yaml"
 
     def process_execute_action(self, driver, wait, type_action, value, locator_from_wait, locator):
-        WebDriverWait(driver, wait).until(expected_conditions.presence_of_element_located(locator_from_wait))
+        WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
         element = self.get_by_android(locator.type, driver, locator.value)
         logging.info("execute action  %s with element have value %s", type_action, locator.value);
         if type_action is not None:
-            WebDriverWait(driver, wait).until(expected_conditions.element_to_be_clickable(element))
+            WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
             if type_action.__eq__("click"):
                 element.click()
             elif type_action.__eq__("text"):
@@ -283,7 +256,7 @@ class ManagementFileAndroid:
             locator = self.get_locator(element_page, "ANDROID")
             logging.info("save text for element  %s with key is %s", locator.value, key);
             WebDriverWait(driver, wait).until(
-                expected_conditions.presence_of_element_located(self.get_locator_for_wait(locator.type, locator.value)))
+                ec.presence_of_element_located(self.get_locator_for_wait(locator.type, locator.value)))
             element = self.get_by_android(locator.type, driver, locator.value)
             if element.get_attribute("content-desc") is None:
                 value = element.text

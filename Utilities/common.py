@@ -20,12 +20,7 @@ class common_device:
             ec.presence_of_element_located(element)
         )
         if action.__eq__("click"):
-            if element.get_attribute("disabled") is None:
-                element.click()
-            else:
-                WebDriverWait(driver, wait).until_not(
-                    ec.element_attribute_to_include(ManagementFile().get_locator_for_wait(locator.type, locator.value), "disabled"))
-                element.click()
+            self.click_action(element, wait, locator, device, driver)
         elif action.__eq__("type"):
             if dict_save_value:
                 value = dict_save_value.get(value, value)
@@ -35,3 +30,17 @@ class common_device:
         else:
             logging.error("Can not execute %s with element have is %s", action, locator.value)
             assert False, "Not support action in framework"
+
+    def click_action(self, element, wait, locator, device, driver):
+        if device.get_platform_name() == "WEB":
+            if element.get_attribute("disabled") is None:
+                element.click()
+            else:
+                WebDriverWait(driver, wait).until_not(
+                    ec.element_attribute_to_include(ManagementFile().get_locator_for_wait(locator.type, locator.value), "disabled"))
+                element.click()
+        else:
+            locator_from_wait = ManagementFileAndroid().get_locator_for_wait(locator.type, locator.value)
+            WebDriverWait(driver, wait).until(
+                ec.element_to_be_clickable(locator_from_wait))
+            element.click()
