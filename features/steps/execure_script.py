@@ -40,12 +40,8 @@ def change_page(context, page):
 def click_action(context, element):
     context.element_page = ManagementFile().get_element(context.page_present, element,
                                                         context.device.get_platform_name(), context.dict_save_value)
-    if context.device.get_platform_name() == "WEB":
-        common_device().action_page(context.element_page, "click", context.driver, "", context.wait,
+    common_device().action_page(context.element_page, "click", context.driver, "", context.wait,
                                     context.dict_save_value, context.device)
-    elif context.device.get_platform_name() == "ANDROID":
-        ManagementFileAndroid().action_page(context.element_page, "click", context.driver, "",
-                                            context.dict_save_value, context.device)
 
 
 
@@ -53,12 +49,8 @@ def click_action(context, element):
 def type_action(context, text, element):
     context.element_page = ManagementFile().get_element(context.page_present, element,
                                                         context.device.get_platform_name(), context.dict_save_value)
-    if context.device.get_platform_name() == "WEB":
-        common_device().action_page(context.element_page, "type", context.driver, text, context.wait,
+    common_device().action_page(context.element_page, "type", context.driver, text, context.wait,
                                     context.dict_save_value, context.device)
-    elif context.device.get_platform_name() == "ANDROID":
-        ManagementFileAndroid().action_page(context.element_page, "type", context.driver, text, context.dict_save_value,
-                                            context.device)
 
 
 @step(u'I wait for element {element} to be {status}')
@@ -101,12 +93,8 @@ def step_impl(context, action):
 def step_impl(context, element):
     context.element_page = ManagementFile().get_element(context.page_present, element,
                                                         context.device.get_platform_name(), context.dict_save_value)
-    if context.device.get_platform_name() == "WEB":
-        common_device().action_page(context.element_page, "clear", context.driver, "", context.wait,
+    common_device().action_page(context.element_page, "clear", context.driver, "", context.wait,
                                     context.dict_save_value, context.device)
-    elif context.device.get_platform_name() == "ANDROID":
-        ManagementFileAndroid().action_page(context.element_page, "clear", context.driver, "", context.dict_save_value,
-                                            context.device)
 
 
 @step(u'I save text for element {element} with key "{key}"')
