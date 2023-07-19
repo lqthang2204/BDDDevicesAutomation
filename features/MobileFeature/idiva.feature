@@ -13,6 +13,13 @@
         And I wait for element sneaker-product to be DISPLAYED
         And I wait for element bag-product to be DISPLAYED
         And I save text for element fashion-female with key "pr-bag"
+        And I wait for elements with below status
+          | Field                 | Value      | Status    |
+          | fashion-female        |            | DISPLAYED |
+          | fashion-male          |            | ENABLED   |
+          | sneaker-product       |            | EXISTED   |
+          | bag-product           |            | ENABLED   |
+          | fashion-female-option | KEY.pr-bag | DISPLAYED |
         And I click element sneaker-product
         And I change the page spec to product_sneaker
         And I wait for element sort-product to be DISPLAYED
