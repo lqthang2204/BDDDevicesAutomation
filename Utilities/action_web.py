@@ -14,7 +14,6 @@ from ManagementElements.ActionTest import ActionTest
 from ManagementElements.ActionElements import ActionElements
 import logging
 
-
 class ManagementFile:
     def get_dict_path_yaml(self):
         file_path = os.path.dirname(os.path.dirname(__file__)) + "/resources/pages/*/*.yaml"
@@ -215,31 +214,6 @@ class ManagementFile:
             logging.error("Not Found Action %s in page yaml", action_id)
             assert False, "Not Found Action " + action_id + " in page yaml"
 
-    def action_page(self, element_page, action, driver, value, wait, dict_save_value, device):
-        locator = self.get_locator(element_page, device.get_platform_name())
-        element = self.get_element_by(locator.type, driver, locator.value)
-        logging.info("execute %s with element have is %s", action, locator.value)
-        WebDriverWait(driver, wait).until(ec.all_of(
-            ec.element_to_be_clickable(element)),
-            ec.presence_of_element_located(element)
-        )
-        if action.__eq__("click"):
-            if element.get_attribute("disabled") is None:
-                element.click()
-            else:
-                WebDriverWait(driver, wait).until_not(
-                    ec.element_attribute_to_include(self.get_locator_for_wait(locator.type, locator.value), "disabled"))
-                element.click()
-        elif action.__eq__("type"):
-            if dict_save_value:
-                value = dict_save_value.get(value, value)
-            element.send_keys(value)
-        elif action.__eq__("clear"):
-            element.clear()
-        else:
-            logging.error("Can not execute %s with element have is %s", action, locator.value)
-            assert False, "Not support action in framework"
-
     def save_text_from_element(self, element_page, driver, key, dict_save_value, wait):
         try:
             locator = self.get_locator(element_page, "WEB")
@@ -256,6 +230,7 @@ class ManagementFile:
         except Exception as e:
             logging.error("Can not save text for element  %s with key is %s", locator.value, key);
             assert False, "Can not save text for element " + locator.value
+
 
     def get_element_by(self, type, driver, value):
         logging.info("Get element by %s with value is %s", type, value);

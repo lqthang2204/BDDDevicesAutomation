@@ -4,7 +4,7 @@ from yaml import SafeLoader
 import json
 from Configuration.configuration_env import environment_config
 from Configuration.devices import devices
-from Utilities.common import check_att_is_exist
+from Utilities.common import common_device
 from Configuration.stage import stage
 
 
@@ -27,15 +27,15 @@ class read_configuration:
                 arr_device = config["devices"]
                 for dev in arr_device:
                     device = devices()
-                    device.set_platform_name(check_att_is_exist(dev, "platformName"))
-                    device.set_is_headless(check_att_is_exist(dev, "is_headless"))
-                    device.set_wait(check_att_is_exist(dev, "wait"))
-                    device.set_time_page_load(check_att_is_exist(dev, "time_page_load"))
-                    device.set_auto_download_driver(check_att_is_exist(dev, "auto_download_driver"))
-                    device.set_driver_from_path(check_att_is_exist(dev, "driver_version"))
-                    device.set_app_package(check_att_is_exist(dev, "appPackage"))
-                    device.set_app_activity(check_att_is_exist(dev, "appActivity"))
-                    device.set_udid(check_att_is_exist(dev, "udid"))
+                    device.set_platform_name(common_device().check_att_is_exist(dev, "platformName"))
+                    device.set_is_headless(common_device().check_att_is_exist(dev, "is_headless"))
+                    device.set_wait(common_device().check_att_is_exist(dev, "wait"))
+                    device.set_time_page_load(common_device().check_att_is_exist(dev, "time_page_load"))
+                    device.set_auto_download_driver(common_device().check_att_is_exist(dev, "auto_download_driver"))
+                    device.set_driver_from_path(common_device().check_att_is_exist(dev, "driver_version"))
+                    device.set_app_package(common_device().check_att_is_exist(dev, "appPackage"))
+                    device.set_app_activity(common_device().check_att_is_exist(dev, "appActivity"))
+                    device.set_udid(common_device().check_att_is_exist(dev, "udid"))
                     list_device.append(device)
                 stage_env.set_list_devices(list_device)
                 list_stage.append(stage_env)
