@@ -72,7 +72,10 @@ def filter_feature_and_scenarios(features_dir, result_dir, tags):
     total_features = 0
     total_scenarios = 0
 
-    feature_files = [os.path.normpath(feature_path) for feature_path in glob(features_dir + '/*.feature')]
+    if features_dir.endswith('.feature'):
+        feature_files = [os.path.normpath(feature_path) for feature_path in glob(features_dir)]
+    else:
+        feature_files = [os.path.normpath(feature_path) for feature_path in glob(features_dir + '/*.feature')]
 
     for feature_file in feature_files:
         with open(feature_file, 'r') as f:
@@ -90,37 +93,23 @@ def filter_feature_and_scenarios(features_dir, result_dir, tags):
         sequence_cases.append(feature_header)
         found_cases = 0
         for case in feature_cases:
-            if case.strip().startswith('@'):
-                case_as_list = case.split('\n')
-                case_tags = set(case_as_list[0].strip().split())
-                buffer_tags = case_as_list[0].strip()
-                buffer_case = '\n'.join(case_as_list[1:])
-            else:
-                case_tags = set()
-                buffer_tags = ''
-                buffer_case = case
+            case_as_list = case.split('\n')
+            case_tags = set(case_as_list[0].strip().split())
+
+            buffer_tags = case_as_list[0].strip() if case.strip().startswith('@') else ''
+            buffer_case = '\n'.join(case_as_list[1:]) if case.strip().startswith('@') else case
 
             all_tags = feature_tags | case_tags
 
-            if user_ands and user_ors:
-                if set(user_ands).issubset(all_tags) and any((feature_tags.intersection(user_ors), case_tags.intersection(user_ors))):
-                    sequence_cases.append(buffer_tags + ' @final\n')
-                    sequence_cases.append(buffer_case + ' \n\n')
-                    found_cases += 1
-            elif user_ands:
-                if set(user_ands).issubset(all_tags) :
-                    sequence_cases.append(buffer_tags + ' @final\n')
-                    sequence_cases.append(buffer_case + ' \n\n')
-                    found_cases += 1
-            elif user_ors:
-                if any((feature_tags.intersection(user_ors), case_tags.intersection(user_ors))):
-                    sequence_cases.append(buffer_tags + ' @final\n')
-                    sequence_cases.append(buffer_case + ' \n\n')
-                    found_cases += 1
-            else:
-                sequence_cases.append(buffer_tags + ' @final\n')
-                sequence_cases.append(buffer_case + ' \n\n')
-                found_cases += 1
+            if user_ands and not set(user_ands).issubset(all_tags):
+                continue
+
+            if user_ors and not (feature_tags.intersection(user_ors) or case_tags.intersection(user_ors)):
+                continue
+
+            sequence_cases.append(buffer_tags + ' @final\n')
+            sequence_cases.append(buffer_case + ' \n\n')
+            found_cases += 1
 
         if found_cases > 0:
             total_features += 1
@@ -130,36 +119,38 @@ def filter_feature_and_scenarios(features_dir, result_dir, tags):
 
     logging.info(f'{total_scenarios} Scenarios found in {total_features} Features files')
 
+    return total_scenarios
+
 
 if __name__ == '__main__':
     process_tags_expression('{~@norun}')
     print(has_no_run, user_ands, user_ors)
-    #
-    # process_tags_expression('{@web and @browser and @sanity and ~@norun}')
-    # print(has_no_run, user_ands, user_ors)
-    #
-    # process_tags_expression('{@web and @browser and ~@norun and (@regression or @Sanity)}')
-    # print(has_no_run, user_ands, user_ors)
-    #
-    # process_tags_expression('{@web and @browser and @checkout and ~@norun and (@regression or @Sanity)}')
-    # print(has_no_run, user_ands, user_ors)
-    #
-    # process_tags_expression('{@web}')
-    # print(has_no_run, user_ands, user_ors)
-    #
-    # process_tags_expression('{~@norun}')
-    # print(has_no_run, user_ands, user_ors)
-    #
-    # process_tags_expression('{@sanity or @regression}')
-    # print(has_no_run, user_ands, user_ors)
-    #
-    # process_tags_expression('{@web and ~@norun and (@p1)}')
-    # print(has_no_run, user_ands, user_ors)
-    #
-    # process_tags_expression('@web')
-    # print(has_no_run, user_ands, user_ors)
-    #
-    # process_tags_expression('')
-    # print(has_no_run, user_ands, user_ors)
+
+    process_tags_expression('{@web and @browser and @sanity and ~@norun}')
+    print(has_no_run, user_ands, user_ors)
+
+    process_tags_expression('{@sanity or @regression}')
+    print(has_no_run, user_ands, user_ors)
+
+    process_tags_expression('{@web and @browser and ~@norun and (@regression or @Sanity)}')
+    print(has_no_run, user_ands, user_ors)
+
+    process_tags_expression('{@web and @browser and @checkout and ~@norun and (@regression or @Sanity)}')
+    print(has_no_run, user_ands, user_ors)
+
+    process_tags_expression('{@web}')
+    print(has_no_run, user_ands, user_ors)
+
+    process_tags_expression('{~@norun}')
+    print(has_no_run, user_ands, user_ors)
+
+    process_tags_expression('{@web and ~@norun and (@p1)}')
+    print(has_no_run, user_ands, user_ors)
+
+    process_tags_expression('@web')
+    print(has_no_run, user_ands, user_ors)
+
+    process_tags_expression('')
+    print(has_no_run, user_ands, user_ors)
 
     # filter_feature_and_scenarios('features', 'features/final', "{@web}")

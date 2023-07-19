@@ -3,7 +3,7 @@ Feature: orange HRM 2 web
 
 #  @Windows10_Chrome_76.0
 #  @Windows10_Firefox_68.0
-  Scenario: negative to url
+  Scenario: negative to url2
     Given I navigate to url have index 2
     And I change the page spec to pageGoogle
     And I wait for element search-field to be DISPLAYED
@@ -24,7 +24,8 @@ Feature: orange HRM 2 web
 #    And I wait for element pass-field to be DISPLAYED
 #    And I type "Admin" into element user-field
 
-  Scenario: test login page
+  @test2
+  Scenario: test login page2
     Given I navigate to url have index 1
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED

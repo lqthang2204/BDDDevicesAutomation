@@ -1,5 +1,3 @@
-import appium
-
 from Utilities.action_web import ManagementFile
 import configparser
 from selenium import webdriver
@@ -13,7 +11,8 @@ from Configuration.configuration_env import environment_config
 from appium.options.android import UiAutomator2Options
 from appium.webdriver.appium_service import AppiumService
 import datetime
-
+import appium
+import logging
 
 def before_all(context):
     context.dict_save_value = {}
@@ -92,3 +91,6 @@ def after_step(context, step):
         date_time = str(current_time.year) + "_" + str(current_time.month) + "_" + str(current_time.day) + "_" + str(
             current_time.microsecond)
         context.driver.get_screenshot_as_file(context.evidence_path + '/' + step.name + "_" + date_time + ".png")
+
+def before_scenario(context, scenario):
+    logging.info(f'Scenario Name started: {scenario.name}')

@@ -1,9 +1,10 @@
 @regression @web
 Feature: orange HRM web
 
+  @test1
 #  @Windows10_Chrome_76.0
 #  @Windows10_Firefox_68.0
-  Scenario: negative to url
+  Scenario: negative to url1
     Given I navigate to url have index 2
     And I change the page spec to pageGoogle
     And I wait for element search-field to be DISPLAYED
@@ -17,7 +18,7 @@ Feature: orange HRM web
     And I click element mobile-button
     And I type "test" into element search-input
 
-  Scenario: test login page
+  Scenario: test login page1
     Given I navigate to url have index 1
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED

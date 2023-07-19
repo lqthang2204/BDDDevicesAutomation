@@ -8,18 +8,6 @@ import click
 
 logging.basicConfig(level=logging.INFO)
 
-
-# has_no_run = False
-# user_ands = []
-# user_ors = []
-
-#
-# def validate_tags(ctx, param, value):
-#     if not value.startswith('@'):
-#         raise click.BadParameter(f"Tags {value} should start with '@'")
-#     return value
-#
-
 # @click.group()
 # @click.pass_context
 # def main(context):
@@ -29,21 +17,21 @@ logging.basicConfig(level=logging.INFO)
 #
 # @main.command(short_help='run test scenarios ')
 # @click.option('--feature-dir', '-fd', 'feature_dir', type=str, default='features', show_default=True,
-#               help='feature directory')
-# @click.option('--tags', '-tg', default='{@web}', help='specify behave tags to run')
+#               help='feature directory. Default value is the folder named features')
+# @click.option('--tags', '-tg', default='{~@norun}', help='specify behave tags to run. Default value ~@norun signifies All')
 # @click.option('--forks', '-fk', type=click.IntRange(1, 10), default=5, show_default=True,
-#               help='number of processes')
+#               help='number of processes. Default value is 5')
 # @click.option('--stage', '-sg', 'stage_name', type=click.Choice(['QA', 'SIT', 'UAT', 'PROD']), default='QA',
-#               help='specify the stage to run')
+#               help='specify the stage to run. Default value is QA')
 # @click.option('--platform', '-pl', 'platform_name', type=click.Choice(['WEB', 'ANDROID', 'iOS', 'API']), default='WEB',
-#               help='specify platform to run')
+#               help='specify platform to run. Default value is WEB')
 # @click.option('--parallel-scheme', '-ps', 'parallel_scheme', type=click.Choice(['feature', 'scenario']),
-#               default='scenario',
-#               help='specify the stage to run')
+#               default='scenario', help='specify the stage to run. Default value is scenario')
 def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
     params = []
     if feature_dir:
         params.append(f"-ip 'features/final'")
+
     if tags:
         params.append(f"-t @final")
     if forks:
@@ -55,8 +43,9 @@ def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
         "params": ' '.join(params)
     }
 
-    filter_feature_and_scenarios(feature_dir, 'features/final', tags)
-    _run_feature(args, stage_name, platform_name)
+    total_scenarios = filter_feature_and_scenarios(feature_dir, 'features/final', tags)
+    if total_scenarios > 0:
+        _run_feature(args, stage_name, platform_name)
 
 
 def config_from_command_line(stage_name, platform_name):
@@ -106,6 +95,9 @@ def _run_feature(args, stage_name, platform_name):
 
 
 if __name__ == '__main__':
-    # To DEBUG use:
-    run("features", "{~@norun}", 2, 'QA', 'WEB', 'scenario')
+    # To DEBUG do the following:
+    # 1. disable the @click definition mentioned above main() and run()
+    # 2. disable main() below
+    # 3. enabled the statement below
+    run("features", "{@test1 or @test2}", 2, 'QA', 'WEB', 'scenario')
     # main()
