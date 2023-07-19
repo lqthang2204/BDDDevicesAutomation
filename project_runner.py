@@ -1,102 +1,51 @@
 import configparser
 import datetime
 import logging
-import os
 import subprocess
 import time
-from glob import glob
-from pathlib import Path
-
+from tags_expr_processor import filter_feature_and_scenarios
 import click
 
 logging.basicConfig(level=logging.INFO)
 
 
-def validate_tags(ctx, param, value):
-    if not value.startswith('@'):
-        raise click.BadParameter(f"Tags {value} should start with '@'")
-    return value
+# has_no_run = False
+# user_ands = []
+# user_ors = []
 
+#
+# def validate_tags(ctx, param, value):
+#     if not value.startswith('@'):
+#         raise click.BadParameter(f"Tags {value} should start with '@'")
+#     return value
+#
 
-def split(features_dir, result_dir, tags):
-    Path(result_dir).mkdir(parents=True, exist_ok=True)
-    for f in os.listdir(result_dir):
-        os.remove(os.path.join(result_dir, f))
-
-    required_tags = tags.replace(' ', '').split(',')
-
-    total_features = 0
-    total_scenarios = 0
-
-    feature_files = [os.path.normpath(feature_path) for feature_path in glob(features_dir + '/*.feature')]
-
-    for feature_file in feature_files:
-        with open(feature_file, 'r') as f:
-            feature_content = f.read().strip()
-        if not any(tag in feature_content for tag in required_tags):
-            continue
-
-        filename_head = f"{result_dir}/par_{os.path.splitext(os.path.basename(feature_file))[0]}_"
-        feature_blocks = feature_content.split('\n\n')
-
-        feature_header = feature_blocks[0] + '\n\n\n'
-        feature_tags = set(feature_header.split('\n')[0].strip().split())
-        all_cases = [case.strip() for case in feature_blocks[1:]]
-        feature_cases = [case for case in all_cases if not case.startswith('#  Scenario') or case.startswith('#  @')]
-        sequence_cases = []
-
-        sequence_cases.append(feature_header)
-        found_cases = 0
-        for case in feature_cases:
-            if case.strip().startswith('@'):
-                case_as_list = case.split('\n')
-                case_tags = set(case_as_list[0].strip().split())
-                buffer_tags = case_as_list[0].strip()
-                buffer_case = '\n'.join(case_as_list[1:])
-            else:
-                case_tags = set()
-                buffer_tags = ''
-                buffer_case = case
-            if any((feature_tags.intersection(required_tags), case_tags.intersection(required_tags))):
-                sequence_cases.append(buffer_tags + ' @final\n')
-                sequence_cases.append(buffer_case + ' \n\n')
-                found_cases += 1
-
-        if found_cases > 0:
-            total_features += 1
-            total_scenarios += found_cases
-            with open(f"{filename_head}.feature", 'w', encoding='utf-8') as result:
-                result.writelines(sequence_cases)
-
-    logging.info(f'{total_scenarios} Scenarios found in {total_features} Features files')
-
-
-@click.group()
-@click.pass_context
-def main(context):
-    print(context)
-    pass
-
-
-@main.command(short_help='run test scenarios ')
-@click.option('--feature-dir', '-fd', 'feature_dir', type=str, default='features', show_default=True,
-              help='feature directory')
-@click.option('--tags', '-tg', callback=validate_tags, default='@web', help='specify behave tags to run')
-@click.option('--forks', '-fk', type=click.IntRange(1, 10), default=5, show_default=True,
-              help='number of processes')
-@click.option('--stage', '-sg', 'stage_name', type=click.Choice(['QA', 'SIT', 'UAT', 'PROD']), default='QA',
-              help='specify the stage to run')
-@click.option('--platform', '-pl', 'platform_name', type=click.Choice(['WEB', 'ANDROID', 'iOS', 'API']), default='WEB',
-              help='specify platform to run')
-@click.option('--parallel-scheme', '-ps', 'parallel_scheme', type=click.Choice(['feature', 'scenario']),
-              default='scenario',
-              help='specify the stage to run')
+# @click.group()
+# @click.pass_context
+# def main(context):
+#     print(context)
+#     pass
+#
+#
+# @main.command(short_help='run test scenarios ')
+# @click.option('--feature-dir', '-fd', 'feature_dir', type=str, default='features', show_default=True,
+#               help='feature directory')
+# @click.option('--tags', '-tg', default='{@web}', help='specify behave tags to run')
+# @click.option('--forks', '-fk', type=click.IntRange(1, 10), default=5, show_default=True,
+#               help='number of processes')
+# @click.option('--stage', '-sg', 'stage_name', type=click.Choice(['QA', 'SIT', 'UAT', 'PROD']), default='QA',
+#               help='specify the stage to run')
+# @click.option('--platform', '-pl', 'platform_name', type=click.Choice(['WEB', 'ANDROID', 'iOS', 'API']), default='WEB',
+#               help='specify platform to run')
+# @click.option('--parallel-scheme', '-ps', 'parallel_scheme', type=click.Choice(['feature', 'scenario']),
+#               default='scenario',
+#               help='specify the stage to run')
 def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
     params = []
     if feature_dir:
         params.append(f"-ip 'features/final'")
     if tags:
-        params.append(f"-t {tags}")
+        params.append(f"-t @final")
     if forks:
         params.append(f'--parallel-processes {forks}')
     if parallel_scheme:
@@ -106,7 +55,7 @@ def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
         "params": ' '.join(params)
     }
 
-    split(feature_dir, 'features/final', tags)
+    filter_feature_and_scenarios(feature_dir, 'features/final', tags)
     _run_feature(args, stage_name, platform_name)
 
 
@@ -158,6 +107,5 @@ def _run_feature(args, stage_name, platform_name):
 
 if __name__ == '__main__':
     # To DEBUG use:
-    # run("features", 2, "@test-2", 'QA', 'WEB')
-    main()
-    # split('features', 'features/final', "@web")
+    run("features", "{~@norun}", 2, 'QA', 'WEB', 'scenario')
+    # main()
