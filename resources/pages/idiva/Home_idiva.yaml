@@ -69,6 +69,15 @@ elements:
       - device: ANDROID
         type: XPATH
         value: //*[@class="android.widget.Button"]
+  - id: fashion-female-option
+    description: Fashion female option
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="android.widget.EditText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.View[@content-desc="{text}"]
 actions:
   - id: click-menu-if-exist
     description: click menu toogle if exist

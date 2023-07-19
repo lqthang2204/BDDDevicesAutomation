@@ -44,3 +44,86 @@ class common_device:
             WebDriverWait(driver, wait).until(
                 ec.element_to_be_clickable(locator_from_wait))
             element.click()
+    def wait_element_for_status(self, element_page, status, driver, device):
+        locator = ManagementFile().get_locator(element_page, device.get_platform_name())
+        locator_from_wait = self.get_locator_for_wait_from_device(locator, device)
+        logging.info("wait element have value  %s with the status %s", locator.value, status);
+        try:
+            if status == "DISPLAYED":
+                WebDriverWait(driver, device.get_wait()).until(ec.presence_of_element_located(locator_from_wait))
+            elif status == "NOT_DISPLAYED":
+                WebDriverWait(driver, device.get_wait()).until(ec.invisibility_of_element_located(locator_from_wait))
+            elif status == "ENABLED":
+                WebDriverWait(driver, device.get_wait()).until(ec.all_of(
+                    ec.element_to_be_clickable(locator_from_wait)),
+                    ec.presence_of_element_located(locator_from_wait))
+            elif status == "NOT_ENABLED":
+                WebDriverWait(driver, device.get_wait()).until_not(ec.element_to_be_clickable(locator_from_wait))
+            elif status == "EXISTED":
+                elements = self.get_list_element_by_from_device(locator, device, driver)
+                WebDriverWait(driver, device.get_wait()).until(lambda ele: len(elements) > int(0))
+            elif status == "NOT_EXISTED":
+                elements = self.get_list_element_by_from_device(locator, device, driver)
+                WebDriverWait(driver, device.get_wait()).until_not(lambda ele: len(elements) > int(0))
+            elif status == "SELECTED":
+                WebDriverWait(driver, device.get_wait()).until(ec.element_located_to_be_selected(locator_from_wait))
+            elif status == "NOT_SELECTED":
+                WebDriverWait(driver, device.get_wait()).until_not(ec.element_located_to_be_selected(locator_from_wait))
+            else:
+                raise Exception("Not support status ", status)
+        except Exception as e:
+            logging.error("The status %s is not currently.", status);
+            assert False, e
+
+    def get_locator_for_wait_from_device(self,locator, device):
+        if device.get_platform_name() == "WEB":
+            return ManagementFile().get_locator_for_wait(locator.type, locator.value)
+        else:
+            return ManagementFileAndroid().get_locator_for_wait(locator.type, locator.value)
+    def get_list_element_by_from_device(self,locator, device, driver):
+        if device.get_platform_name() == "WEB":
+            return ManagementFile().get_list_element_by(locator.type, driver, locator.value)
+        else:
+            return ManagementFileAndroid().get_list_element_by(locator.type, driver, locator.value)
+    def get_element(self, page, element, platform_name, dict_save_value):
+        text = ""
+        if "with text" in element:
+            arr_value = element.split("with text")
+            # remove blank in array
+            arr_value = [i.lstrip() for i in arr_value]
+            element = arr_value[0].strip()
+            # remove double quote
+            text = arr_value[1]
+            if dict_save_value:
+                text = dict_save_value.get(text, text)
+        arr_element = page.list_element
+        for element_yaml in arr_element:
+            if element_yaml.id.__eq__(element):
+                arr_locator = element_yaml.list_locator
+                arr_locator = list(filter(
+                    lambda loc: loc.device == platform_name,
+                    arr_locator
+                ))
+                if len(arr_locator) == 1:
+                    arr_locator[0].value = arr_locator[0].value.replace("{text}", text)
+                    return element_yaml
+
+    def verify_elements_with_status(self, page, table, platform_name, dict_save_value, driver, device):
+        arr_element = page.list_element
+        if table is not None:
+            for row in table:
+                for element_yaml in arr_element:
+                    if element_yaml.id.__eq__(row["Field"]):
+                        logging.info("Verifying for %s have value %s and status %s", row["Field"], row["Value"],
+                                     row["Status"])
+                        value = row["Value"]
+                        if dict_save_value:
+                            value = dict_save_value.get(value, value)
+                        element_yaml = self.get_element(page, element_yaml.id + " with text " + value, platform_name,
+                                                        dict_save_value)
+                        self.wait_element_for_status(element_yaml, row["Status"], driver, device)
+                        logging.info("Verified for %s have value %s and status %s", row["Field"], row["Value"],
+                                     row["Value"])
+        else:
+            logging.error("user must set data table for elements")
+            assert False, "can not execute verify status for elements"
