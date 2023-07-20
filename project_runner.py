@@ -5,6 +5,8 @@ import subprocess
 import time
 from tags_expr_processor import filter_feature_and_scenarios
 import click
+import platform
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -28,10 +30,14 @@ def main(context):
 @click.option('--parallel-scheme', '-ps', 'parallel_scheme', type=click.Choice(['feature', 'scenario']),
               default='scenario', help='specify the stage to run. Default value is scenario')
 def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
+    total_scenarios = filter_feature_and_scenarios(feature_dir, 'features/final', tags)
+    arr_total_scenarios = total_scenarios.split("hyphen")
     params = []
     if feature_dir:
-        params.append(f"-ip 'features/final'")
-
+        if platform.system() == "Windows":
+            params.append(arr_total_scenarios[1]+".feature")
+        else:
+            params.append(f"-ip 'features/final'")
     if tags:
         params.append(f"-t @final")
     if forks:
@@ -43,8 +49,7 @@ def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
         "params": ' '.join(params)
     }
 
-    total_scenarios = filter_feature_and_scenarios(feature_dir, 'features/final', tags)
-    if total_scenarios > 0:
+    if int(arr_total_scenarios[0]) > 0:
         _run_feature(args, stage_name, platform_name)
 
 
