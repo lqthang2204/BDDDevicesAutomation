@@ -32,35 +32,40 @@ def process_tags_expression(user_tag_expression):
     if " and (" in copyUserArgs:
         andBracket = copyUserArgs.split(" and (")
         andAry = andBracket[0].split(" and ")
-        for strItm in andAry:
-            if len(strItm.strip()) > 0 and not strItm.strip().startswith("@"):
-                print("Incorrect Expression in ANDs")
-                sys.exit(1)
-            user_ands.append(strItm.strip())
-
-        orAry = andBracket[1].split(" or ")
-        for strItm in orAry:
-            if not strItm.strip().startswith("@"):
-                print("Incorrect Expression in ORs")
-                sys.exit(1)
-            user_ors.append(strItm.strip())
-
-    elif " or" in copyUserArgs:
-        orAry = copyUserArgs.split(" or ")
-        for strItm in orAry:
-            if len(strItm.strip()) > 0 and not strItm.strip().startswith("@"):
-                print("Incorrect Expression in ORs")
-                sys.exit(1)
-            user_ors.append(strItm.strip())
-
-    else:
-        if copyUserArgs is not '':
-            andAry = copyUserArgs.split(" and ")
+        if andAry[0] != '':
             for strItm in andAry:
                 if len(strItm.strip()) > 0 and not strItm.strip().startswith("@"):
                     print("Incorrect Expression in ANDs")
                     sys.exit(1)
                 user_ands.append(strItm.strip())
+
+        orAry = andBracket[1].split(" or ")
+        if orAry[0] != '':
+            for strItm in orAry:
+                if not strItm.strip().startswith("@"):
+                    print("Incorrect Expression in ORs")
+                    sys.exit(1)
+                user_ors.append(strItm.strip())
+
+    elif " or" in copyUserArgs:
+        orAry = copyUserArgs.split(" or ")
+        if orAry[0] != '':
+            for strItm in orAry:
+                if len(strItm.strip()) > 0 and not strItm.strip().startswith("@"):
+                    print("Incorrect Expression in ORs")
+                    sys.exit(1)
+                user_ors.append(strItm.strip())
+
+    else:
+        if copyUserArgs != '':
+            andAry = copyUserArgs.split(" and ")
+            if andAry[0] != '':
+                for strItm in andAry:
+                    if len(strItm.strip()) > 0 and not strItm.strip().startswith("@"):
+                        print("Incorrect Expression in ANDs")
+                        sys.exit(1)
+                    user_ands.append(strItm.strip())
+
 
 def filter_feature_and_scenarios(features_dir, result_dir, tags):
     Path(result_dir).mkdir(parents=True, exist_ok=True)
@@ -123,6 +128,9 @@ def filter_feature_and_scenarios(features_dir, result_dir, tags):
 
 
 if __name__ == '__main__':
+    process_tags_expression('{~@norun and (@test1 or @test2)}')
+    print(has_no_run, user_ands, user_ors)
+
     process_tags_expression('{~@norun}')
     print(has_no_run, user_ands, user_ors)
 
@@ -153,4 +161,4 @@ if __name__ == '__main__':
     process_tags_expression('')
     print(has_no_run, user_ands, user_ors)
 
-    # filter_feature_and_scenarios('features', 'features/final', "{@web}")
+    filter_feature_and_scenarios('features', 'features/final', "{@web}")

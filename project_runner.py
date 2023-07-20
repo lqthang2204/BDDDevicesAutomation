@@ -8,25 +8,25 @@ import click
 
 logging.basicConfig(level=logging.INFO)
 
-# @click.group()
-# @click.pass_context
-# def main(context):
-#     print(context)
-#     pass
-#
-#
-# @main.command(short_help='run test scenarios ')
-# @click.option('--feature-dir', '-fd', 'feature_dir', type=str, default='features', show_default=True,
-#               help='feature directory. Default value is the folder named features')
-# @click.option('--tags', '-tg', default='{~@norun}', help='specify behave tags to run. Default value ~@norun signifies All')
-# @click.option('--forks', '-fk', type=click.IntRange(1, 10), default=5, show_default=True,
-#               help='number of processes. Default value is 5')
-# @click.option('--stage', '-sg', 'stage_name', type=click.Choice(['QA', 'SIT', 'UAT', 'PROD']), default='QA',
-#               help='specify the stage to run. Default value is QA')
-# @click.option('--platform', '-pl', 'platform_name', type=click.Choice(['WEB', 'ANDROID', 'iOS', 'API']), default='WEB',
-#               help='specify platform to run. Default value is WEB')
-# @click.option('--parallel-scheme', '-ps', 'parallel_scheme', type=click.Choice(['feature', 'scenario']),
-#               default='scenario', help='specify the stage to run. Default value is scenario')
+@click.group()
+@click.pass_context
+def main(context):
+    print(context)
+    pass
+
+
+@main.command(short_help='run test scenarios ')
+@click.option('--feature-dir', '-fd', 'feature_dir', type=str, default='features', show_default=True,
+              help='feature directory. Default value is the folder named features')
+@click.option('--tags', '-tg', default='{~@norun}', help='specify behave tags to run. Default value ~@norun signifies All')
+@click.option('--forks', '-fk', type=click.IntRange(1, 10), default=5, show_default=True,
+              help='number of processes. Default value is 5')
+@click.option('--stage', '-sg', 'stage_name', type=click.Choice(['QA', 'SIT', 'UAT', 'PROD']), default='QA',
+              help='specify the stage to run. Default value is QA')
+@click.option('--platform', '-pl', 'platform_name', type=click.Choice(['WEB', 'ANDROID', 'iOS', 'API']), default='WEB',
+              help='specify platform to run. Default value is WEB')
+@click.option('--parallel-scheme', '-ps', 'parallel_scheme', type=click.Choice(['feature', 'scenario']),
+              default='scenario', help='specify the stage to run. Default value is scenario')
 def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
     params = []
     if feature_dir:
@@ -99,5 +99,5 @@ if __name__ == '__main__':
     # 1. disable the @click definition mentioned above main() and run()
     # 2. disable main() below
     # 3. enabled the statement below
-    run("features", "{@test1 or @test2}", 2, 'QA', 'WEB', 'scenario')
-    # main()
+    # run("features/orangeHRM*.feature", "{~@norun and (@test1 or @test2)}", 2, 'QA', 'WEB', 'scenario')
+    main()
