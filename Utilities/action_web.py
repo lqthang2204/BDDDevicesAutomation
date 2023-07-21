@@ -89,7 +89,6 @@ class ManagementFile:
                 obj_page.set_dict_action(dict_action)
                 dict_yaml[page_name] = obj_page
             return obj_page
-
     def execute_action(self, page, action_id, driver, wait, table, dict_save_value):
         dict_action = page.get_dict_action()
         if dict_action[action_id] is not None:
