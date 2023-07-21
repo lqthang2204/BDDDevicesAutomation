@@ -32,7 +32,6 @@ def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
     arr_total_scenarios = total_scenarios.split("hyphen")
     params = []
     if feature_dir:
-        params.append(f"-ip {feature_dir}")
         if platform.system() == "Windows":
             params.append(arr_total_scenarios[1] + ".feature")
         else:
