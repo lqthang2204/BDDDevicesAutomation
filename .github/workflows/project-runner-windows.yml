@@ -37,6 +37,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with project_runner.py
       run: |
-          python project_runner.py run -fd features -fk 3 -sg QA -pl WEB -ps scenario
+#          python project_runner.py run -fd features -fk 3 -sg QA -pl WEB -ps scenario
+          python3 project_runner.py run -fd 'features' -tg '{@web and ~@norun}' -fk 3 -sg QA -pl WEB -ps scenario
 #          python ./launch/RunTest.py
 #         run with default tag "final"
