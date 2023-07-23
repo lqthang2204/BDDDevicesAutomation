@@ -147,7 +147,7 @@ class ManagementFile:
                         elif type_action.__eq__("text"):
                             element.send_keys(value)
                     except Exception as e:
-                        logging.info("can not execute action with element have value  %s in framework", locator.value)
+                        logging.info(f'can not execute action with element have value  {locator.value} in framework')
                         assert True, "can not execute action with element have value" + locator.value + "in framework"
                 elif action_elements.get_condition() is not None and action_elements.get_timeout() is None:
                     try:
@@ -166,11 +166,11 @@ class ManagementFile:
                                       locator.value)
                         assert False, "can not execute action " + type_action + " with element have value" + locator.value + "in framework"
         else:
-            logging.error("Not Found Action %s in page yaml", action_id)
+            logging.error(f'Not Found Action {action_id} in page yaml')
             assert False, "Not Found Action " + action_id + " in page yaml"
 
     def get_element_by(self, type, driver, value):
-        logging.info("Get element by %s with value is %s", type, value);
+        logging.info(f'Get element by {type} with value is {value}')
         if type.__eq__("ID"):
             element = driver.find_element(By.ID, value)
         elif type.__eq__("NAME"):
@@ -186,12 +186,12 @@ class ManagementFile:
         elif type.__eq__("CSS"):
             element = driver.find_element(By.CSS_SELECTOR, value)
         else:
-            logging.error("Can not get  element by %s with value is %s", type, value);
+            logging.error(f'Can not get  element by {type} with value is {value}')
             raise Exception("Not support type in framework")
         return element
 
     def get_list_element_by(self, type, driver, value):
-        logging.info("Get list element by %s with value is %s", type, value);
+        logging.info(f'Get list element by {type} with value is {value}')
         if type.__eq__("ID"):
             elements = driver.find_elements(By.ID, value)
         elif type.__eq__("NAME"):
@@ -207,12 +207,12 @@ class ManagementFile:
         elif type.__eq__("CSS"):
             elements = driver.find_elements(By.CSS_SELECTOR, value)
         else:
-            logging.error("Can not get  element by %s with value is %s", type, value);
+            logging.error(f'Can not get  element by {type} with value is {value}')
             raise Exception("Not support type in framework")
         return elements
 
     def get_locator_for_wait(self, type, value):
-        logging.info("get locator for wait with type %s and value is %s ", type, value)
+        logging.info(f'get locator for wait with type {type} with value is {value}')
         if type.__eq__("ID"):
             locator = (By.ID, value)
         elif type.__eq__("NAME"):
@@ -228,8 +228,8 @@ class ManagementFile:
         elif type.__eq__("CSS"):
             locator = (By.CSS_SELECTOR, value)
         else:
-            logging.error("Not support type %s in framework", type)
-            raise Exception("Not support type in framework", type)
+            logging.error(f'Not support type {type} in framework')
+            raise Exception(f'Not support type {type} in framework')
         return locator
 
     def get_locator(self, element_page, device):
@@ -252,7 +252,7 @@ class ManagementFile:
 
     def process_execute_action(self, driver, wait, element, type_action, value, locator):
         WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
-        logging.info("execute action  %s with element have value %s", type_action, locator.value);
+        logging.info(f'execute action  {type_action} with element have value {locator.value}')
         if type_action.__eq__("click"):
             if element.get_attribute("disabled") is None:
                 element.click()
