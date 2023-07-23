@@ -31,13 +31,9 @@ def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
     total_scenarios = filter_feature_and_scenarios(feature_dir, 'features/final', tags)
     arr_total_scenarios = total_scenarios.split("hyphen")
     params = []
-    if feature_dir:
-        if platform.system() == "Windows":
-            params.append(arr_total_scenarios[1] + ".feature")
-        else:
-            params.append(f"-ip 'features/final'")
+
     if tags:
-        params.append(f"-t @final")
+        params.append('-t @final')
     if forks:
         params.append(f'--parallel-processes {forks}')
     if parallel_scheme:
