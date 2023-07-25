@@ -15,7 +15,7 @@ locator = Locator
 dict_save_value = {}
 
 
-@step(u'I navigate to {link}')
+@step(u'I navigate to url {link}')
 def launchBrowser(context, link):
     context.driver.get(context.url[link])
 
@@ -36,69 +36,69 @@ def change_page(context, page):
 @step(u'I click element {element}')
 def click_action(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
-                                                       context.device.get_platform_name(), context.dict_save_value)
+                                                       context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "click", context.driver, "", context.wait,
-                                context.dict_save_value, context.device)
+                                context.dict_save_value, context.device['platformName'])
 
 
 @step(u'I type "{text}" into element {element}')
 def type_action(context, text, element):
     context.element_page = common_device().get_element(context.page_present, element,
-                                                       context.device.get_platform_name(), context.dict_save_value)
+                                                       context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "type", context.driver, text, context.wait,
-                                context.dict_save_value, context.device)
+                                context.dict_save_value, context.device['platformName'])
 
 
 @step(u'I wait for element {element} to be {status}')
 def wait_element(context, element, status):
     context.element_page = common_device().get_element(context.page_present, element,
-                                                       context.device.get_platform_name(), context.dict_save_value)
-    common_device().wait_element_for_status(context.element_page, status, context.driver, context.device)
+                                                       context.device['platformName'], context.dict_save_value)
+    common_device().wait_element_for_status(context.element_page, status, context.driver, context.device['platformName'], context.wait)
 
 
 @step(u'I wait for elements with below status')
 def step_impl(context):
     context.element_page = common_device().verify_elements_with_status(context.page_present, context.table,
-                                                                       context.device.get_platform_name(),
+                                                                       context.device['platformName'],
                                                                        context.dict_save_value, context.driver,
-                                                                       context.device)
+                                                                       context.wait)
 
 
 @step(u'I perform {action} action')
 def step_impl(context, action):
-    if context.device.get_platform_name() == "WEB":
+    if context.device['platformName'] == "WEB":
         ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, None, None)
-    elif context.device.get_platform_name() == "ANDROID":
+    elif context.device['platformName'] == "ANDROID":
         ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver,
-                                                       context.device.get_wait(), None, None)
+                                                       context.wait, None, None)
 
 
 @step(u'I perform {action} action with override values')
 def step_impl(context, action):
-    if context.device.get_platform_name() == "WEB":
+    if context.device['platformName'] == "WEB":
         ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, context.table,
                                         context.dict_save_value)
-    elif context.device.get_platform_name() == "ANDROID":
+    elif context.device['platformName'] == "ANDROID":
         ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver,
-                                                       context.device.get_wait(), context.table,
+                                                       context.wait, context.table,
                                                        context.dict_save_value)
 
 
 @step(u'I clear text from element {element}')
 def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
-                                                       context.device.get_platform_name(), context.dict_save_value)
+                                                       context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "clear", context.driver, "", context.wait,
-                                context.dict_save_value, context.device)
+                                context.dict_save_value, context.device['platformName'])
 
 
 @step(u'I save text for element {element} with key "{key}"')
 def step_impl(context, element, key):
     context.element_page = common_device().get_element(context.page_present, element,
-                                                       context.device.get_platform_name(), context.dict_save_value)
+                                                       context.device['platformName'], context.dict_save_value)
     context.dict_save_value = common_device().save_text_from_element(context.element_page, context.driver, key,
                                                                      context.dict_save_value, context.wait,
-                                                                     context.device)
+                                                                     context.device['platformName'])
     return context.dict_save_value
 
 

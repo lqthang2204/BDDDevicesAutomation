@@ -20,26 +20,17 @@ class read_configuration:
             arr_config = json_object["env"]
             list_stage = []
             env = environment_config()
+            list_device = list()
+            # stage_env = [config for config in arr_config]
+            # arr_device = stage_env[0]['devices']
             for config in arr_config:
                 stage_env = stage()
                 stage_env.set_stage_name(config["stage"])
                 stage_env.set_list_link(config["link"])
-                list_device = list()
                 arr_device = config["devices"]
                 arr_link_api = config["api-facets"]
                 stage_env.set_api_facets(arr_link_api)
-                for dev in arr_device:
-                    device = devices()
-                    device.set_platform_name(common_device().check_att_is_exist(dev, "platformName"))
-                    device.set_is_headless(common_device().check_att_is_exist(dev, "is_headless"))
-                    device.set_wait(common_device().check_att_is_exist(dev, "wait"))
-                    device.set_time_page_load(common_device().check_att_is_exist(dev, "time_page_load"))
-                    device.set_auto_download_driver(common_device().check_att_is_exist(dev, "auto_download_driver"))
-                    device.set_driver_from_path(common_device().check_att_is_exist(dev, "driver_version"))
-                    device.set_app_package(common_device().check_att_is_exist(dev, "appPackage"))
-                    device.set_app_activity(common_device().check_att_is_exist(dev, "appActivity"))
-                    device.set_udid(common_device().check_att_is_exist(dev, "udid"))
-                    list_device.append(device)
+                list_device = [dev for dev in arr_device]
                 stage_env.set_list_devices(list_device)
                 list_stage.append(stage_env)
             env.set_list_stage(list_stage)

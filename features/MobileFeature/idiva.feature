@@ -4,7 +4,7 @@
       Scenario: idiva-1
         Given I change the page spec to Common
         And I perform by-pass-launch action
-        And I navigate to IDIVA
+        And I navigate to url IDIVA
         And I change the page spec to Home_idiva
         And I perform click-menu-if-exist action
         And I wait for element fashion-female to be DISPLAYED
@@ -28,7 +28,7 @@
       Scenario: idiva-2 mobile
         Given I change the page spec to Common
         And I perform by-pass-launch action
-        And I navigate to IDIVA
+        And I navigate to url IDIVA
         And I change the page spec to Home_idiva
         And I wait for element menu-toogle to be DISPLAYED
         And I wait for element menu-toogle to be ENABLED
@@ -42,7 +42,7 @@
       Scenario: search productmobile
         Given I change the page spec to Common
         And I perform by-pass-launch action
-        And I navigate to IDIVA
+        And I navigate to url IDIVA
         And I change the page spec to Home_idiva
         And I wait for element menu-toogle to be DISPLAYED
         And I wait for element menu-toogle to be ENABLED
@@ -67,7 +67,7 @@
       Scenario: search productmobile2
         Given I change the page spec to Common
         And I perform by-pass-launch action
-        And I navigate to IDIVA
+        And I navigate to url IDIVA
         And I change the page spec to Home_idiva
         And I wait for element menu-toogle to be DISPLAYED
         And I wait for element menu-toogle to be ENABLED

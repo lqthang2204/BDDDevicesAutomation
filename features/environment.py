@@ -32,19 +32,19 @@ def before_all(context):
         if stage_config.get_stage_name() == stage_name:
             arr_device = stage_config.get_list_devices()
             for device in arr_device:
-                if platform == "WEB" and device.get_platform_name() == platform:
+                if platform == "WEB" and device["platformName"] == platform:
                     launch_browser(context, device)
                     break
-                elif platform == "ANDROID" and device.get_platform_name() == platform:
+                elif platform == "ANDROID" and device["platformName"] == platform:
                     print("android")
                     launch_android(context, device, config)
-                    context.wait = device.get_wait()
-                    context.time_page_load = device.get_time_page_load()
+                    context.wait = device["wait"]
+                    context.time_page_load = device["time_page_load"]
                     break
-                elif platform == "IOS" and device.get_platform_name() == platform:
+                elif platform == "IOS" and device["platformName"] == platform:
                     print("IOS")
-                    context.wait = device.get_wait()
-                    context.time_page_load = device.get_time_page_load()
+                    context.wait = device["wait"]
+                    context.time_page_load = device["time_page_load"]
                     break
             context.url = stage_config.get_list_link()
             break
@@ -54,17 +54,17 @@ def before_all(context):
 def launch_browser(context, device):
     chrome_option = Options()
     chromedriver_autoinstaller.install()
-    if device.get_is_headless():
+    if device["is_headless"]:
         chrome_option.add_argument("--headless")
-    if device.get_auto_download_driver() is False:
+    if device["auto_download_driver"] is False:
         context.driver = webdriver.Chrome(
-            executable_path=os.path.dirname(os.path.dirname(__file__)) + "\\" + device.get_driver_from_path(),
+            executable_path=os.path.dirname(os.path.dirname(__file__)) + "\\" + device["driver_version"],
             options=chrome_option)
     else:
         context.driver = webdriver.Chrome(options=chrome_option)
-    context.wait = device.get_wait()
+    context.wait = device['wait']
     context.device = device
-    context.time_page_load = device.get_time_page_load()
+    context.time_page_load = device['time_page_load']
     context.driver.maximize_window()
 
 
@@ -72,16 +72,16 @@ def launch_android(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get("drivers_config", "APPIUM_HOST"), '-P', str(config.get("drivers_config", "APPIUM_PORT"))], timeout_ms=20000)
     desired_caps = {
-        'platformName': device.get_platform_name(),
-        'udid': device.get_udid(),
-        'appPackage': device.get_app_package(),
-        "appActivity": device.get_app_activity()
+        'platformName': device['platformName'],
+        'udid': device["udid"],
+        'appPackage': device["appPackage"],
+        "appActivity": device["appActivity"]
     }
     url = "http://" + config.get("drivers_config", "APPIUM_HOST") + ":" + str(
         config.get("drivers_config", "APPIUM_PORT")) + "/wd/hub"
     print(url)
     context.device = device
-    context.wait = device.get_wait()
+    context.wait = device["wait"]
     context.driver = appium.webdriver.Remote(url, desired_caps)
 
 

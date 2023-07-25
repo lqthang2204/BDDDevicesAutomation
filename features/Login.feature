@@ -3,7 +3,7 @@ Feature: login web
 
   @test-1
   Scenario: test login page
-    Given I navigate to OPEN_MRS
+    Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
@@ -26,7 +26,7 @@ Feature: login web
 
   @test-2
   Scenario: test page
-    Given I navigate to OPEN_MRS
+    Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage
     And I save text for element location-option-inpatient with key "btn-location"
     And I wait for elements with below status
@@ -78,7 +78,7 @@ Feature: login web
 
   @login-variant
   Scenario: Variation of Login script. Keeping only overriding values while actions provided in Scenario
-    Given I navigate to OPEN_MRS
+    Given I navigate to url OPEN_MRS
     When I change the page spec to LoginPage-Variant
     Then I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
