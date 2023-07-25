@@ -6,6 +6,7 @@ from Configuration.configuration_env import environment_config
 from Configuration.devices import devices
 from Utilities.common import common_device
 from Configuration.stage import stage
+from Configuration.api_facets import api
 
 
 class read_configuration:
@@ -25,6 +26,8 @@ class read_configuration:
                 stage_env.set_list_link(config["link"])
                 list_device = list()
                 arr_device = config["devices"]
+                arr_link_api = config["api-facets"]
+                stage_env.set_api_facets(arr_link_api)
                 for dev in arr_device:
                     device = devices()
                     device.set_platform_name(common_device().check_att_is_exist(dev, "platformName"))

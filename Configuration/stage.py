@@ -16,3 +16,7 @@ class stage:
 
     def get_list_devices(self):
         return self.list_devices
+    def set_api_facets(self, api_facets):
+        self.api_facets = api_facets
+    def get_api_facets(self):
+        return self.api_facets
