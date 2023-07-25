@@ -46,7 +46,7 @@ def before_all(context):
                     context.wait = device.get_wait()
                     context.time_page_load = device.get_time_page_load()
                     break
-            context.url = stage_config.get_link()
+            context.url = stage_config.get_list_link()
             break
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
 

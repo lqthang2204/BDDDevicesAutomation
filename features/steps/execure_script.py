@@ -15,10 +15,9 @@ locator = Locator
 dict_save_value = {}
 
 
-@step(u'I navigate to url have index {index}')
-def launchBrowser(context, index):
-    array_url = context.url.split(",")
-    context.driver.get(array_url[int(index) - 1].strip())
+@step(u'I navigate to {link}')
+def launchBrowser(context, link):
+    context.driver.get(context.url[link])
 
 
 @step(u'I open application')

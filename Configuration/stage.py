@@ -5,11 +5,11 @@ class stage:
     def set_stage_name(self, stage_name):
         self.stage_name = stage_name
 
-    def set_link(self, link):
-        self.link = link
+    def set_list_link(self, list_link):
+        self.list_link = list_link
 
-    def get_link(self):
-        return self.link
+    def get_list_link(self):
+        return self.list_link
 
     def set_list_devices(self, list_devices):
         self.list_devices = list_devices

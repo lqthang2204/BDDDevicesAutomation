@@ -1,7 +1,8 @@
 @testLogin @web @regression
 Feature: login web
 
-  @test-1
+
+@test-1 @final
   Scenario: test login page
     Given I navigate to OPEN_MRS
     And I change the page spec to LoginPage
@@ -22,9 +23,9 @@ Feature: login web
     And I change the page spec to HomePageOrange
     And I wait for element find-patient-button to be ENABLED
     And I click element find-patient-button
-    And I wait for element search-input to be DISPLAYED
+    And I wait for element search-input to be DISPLAYED 
 
-  @test-2
+@test-2 @final
   Scenario: test page
     Given I navigate to OPEN_MRS
     And I change the page spec to LoginPage
@@ -67,16 +68,15 @@ Feature: login web
 #    And I click element login-button
 #    And I wait for element error-message to be DISPLAYED
 #    And I verify the text for element error-message is "Invalid username/password. Please try again."
-#    And I verify the text for element error-message is "Usuario/contraseña inválida. Por favor inténtelo nuevamente."
+#    And I verify the text for element error-message is "Usuario/contraseÃ±a invÃ¡lida. Por favor intÃ©ntelo nuevamente."
 #    And I navigate to refresh-page
 #    And I type "Admin" into element user-field
 #    And I type "Admin123" into element pass-field
 #    And I save text for element location-option-inpatient with key "location"
 #    And I click element location-option-inpatient
-#    And I click element login-button
+#    And I click element login-button 
 
-
-  @login-variant
+@login-variant @final
   Scenario: Variation of Login script. Keeping only overriding values while actions provided in Scenario
     Given I navigate to OPEN_MRS
     When I change the page spec to LoginPage-Variant
@@ -104,4 +104,5 @@ Feature: login web
     And I click element location-option-inpatient
     Then I wait for element login-button to be ENABLED
     And I click element login-button
-#    ------------------------
+#    ------------------------ 
+

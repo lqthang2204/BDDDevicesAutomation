@@ -1,7 +1,8 @@
 @regression @web
 Feature: orange HRM web
 
-  @test1
+
+@test1 @final
 #  @Windows10_Chrome_76.0
 #  @Windows10_Firefox_68.0
   Scenario: negative to url1
@@ -16,9 +17,10 @@ Feature: orange HRM web
     And I wait for element mobile-button to be ENABLED
     And I wait for element mobile-button to be EXISTED
     And I click element mobile-button
-    And I type "test" into element search-input
+    And I type "test" into element search-input 
 
-  Scenario: test login page1
+ @final
+Scenario: test login page1
     Given I navigate to OPEN_MRS
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
@@ -34,4 +36,5 @@ Feature: orange HRM web
     And I change the page spec to HomePageOrange
     And I wait for element find-patient-button to be ENABLED
     And I click element find-patient-button
-    And I wait for element search-input to be DISPLAYED
+    And I wait for element search-input to be DISPLAYED 
+

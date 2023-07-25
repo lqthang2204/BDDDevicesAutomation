@@ -22,7 +22,7 @@ class read_configuration:
             for config in arr_config:
                 stage_env = stage()
                 stage_env.set_stage_name(config["stage"])
-                stage_env.set_link(config["link"])
+                stage_env.set_list_link(config["link"])
                 list_device = list()
                 arr_device = config["devices"]
                 for dev in arr_device:

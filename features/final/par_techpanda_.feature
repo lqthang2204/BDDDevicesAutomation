@@ -1,7 +1,8 @@
 @parallel @web
 Feature: test web page techpanda web
 
-  @mc-guru6
+
+@mc-guru6 @final
   Scenario Outline: test Search function
     Given I navigate to TECHPANDA
     And I change the page spec to HomePage
@@ -12,4 +13,5 @@ Feature: test web page techpanda web
     Examples:
       | product       |
       | mobile-button |
-      | tv-button     |
+      | tv-button     | 
+
