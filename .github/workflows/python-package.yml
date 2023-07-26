@@ -42,5 +42,5 @@ jobs:
         html_file: './Selenium-with-python-behave/output/report.html'
     - name: Test with pytest
       run: |
-          behave ./features/orangeHRM.feature
+          behave ./features//scenarios/web/orangeHRM.feature
 #          python ./launch/RunTest.py
