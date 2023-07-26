@@ -29,7 +29,6 @@ def main(context):
               default='scenario', help='specify the stage to run. Default value is scenario')
 def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
     total_scenarios = filter_feature_and_scenarios(feature_dir, 'features/final', tags)
-    arr_total_scenarios = total_scenarios.split("hyphen")
     params = []
 
     if tags:
@@ -43,7 +42,7 @@ def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
         "params": ' '.join(params)
     }
 
-    if int(arr_total_scenarios[0]) > 0:
+    if total_scenarios > 0:
         _run_feature(args, stage_name, platform_name)
 
 

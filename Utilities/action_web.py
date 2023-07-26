@@ -14,6 +14,7 @@ from ManagementElements.ActionTest import ActionTest
 from ManagementElements.ActionElements import ActionElements
 import logging
 
+
 class ManagementFile:
     def get_dict_path_yaml(self):
         file_path = os.path.dirname(os.path.dirname(__file__)) + "/resources/pages/*/*.yaml"
@@ -89,6 +90,7 @@ class ManagementFile:
                 obj_page.set_dict_action(dict_action)
                 dict_yaml[page_name] = obj_page
             return obj_page
+
     def execute_action(self, page, action_id, driver, wait, table, dict_save_value):
         dict_action = page.get_dict_action()
         if dict_action[action_id] is not None:
