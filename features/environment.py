@@ -27,10 +27,10 @@ def before_all(context):
     platform = config.get("drivers_config", "platform")
     stage_name = config.get("drivers_config", "stage")
     env = read_configuration().read()
-    arr_stage = env.get_list_stage()
-    for stage_config in arr_stage:
-        if stage_config.get_stage_name() == stage_name:
-            arr_device = stage_config.get_list_devices()
+    # arr_stage = env.get_list_stage()
+    for stage_config in env:
+        if stage_config['stage'] == stage_name:
+            arr_device = stage_config['devices']
             for device in arr_device:
                 if platform == "WEB" and device["platformName"] == platform:
                     launch_browser(context, device)
@@ -46,7 +46,7 @@ def before_all(context):
                     context.wait = device["wait"]
                     context.time_page_load = device["time_page_load"]
                     break
-            context.url = stage_config.get_list_link()
+            context.url = stage_config['link']
             break
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
 

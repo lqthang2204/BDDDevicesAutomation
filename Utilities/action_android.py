@@ -52,13 +52,12 @@ class ManagementFileAndroid:
         return elements
 
     def get_locator(self, element_page, device):
-        arr_locator = element_page.get_list_locator()
+        arr_locator = element_page['locators']
         for locator in arr_locator:
             if locator['device'].__eq__(device):
                 return locator
 
     def get_locator_from_action(self, element_page, device):
-        print(element_page)
         for locator in element_page:
             if locator['device'].__eq__(device):
                 return locator
@@ -94,14 +93,14 @@ class ManagementFileAndroid:
 
     def execute_action_android(self, page, action_id, driver, wait, table, dict_save_value):
         value = None
-        dict_action = page.get_dict_action()
-        if dict_action[action_id] is not None:
-            obj_action = dict_action[action_id]
-            arr_list_action = obj_action.get_list_action()
+        dict_action = page['actions']
+        if dict_action['id'] is not None:
+            obj_action = dict_action['id']
+            arr_list_action = obj_action['actionElements']
             for action_elements in arr_list_action:
                 if table is not None:
                     for row in table:
-                        if action_elements.get_id() == row["Field"]:
+                        if action_elements['id'] == row["Field"]:
                             if dict_save_value is not None and row["Value"] in dict_save_value.keys():
                                 value = dict_save_value[row["Value"]]
                             else:

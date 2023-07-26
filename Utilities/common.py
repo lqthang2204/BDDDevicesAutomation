@@ -89,10 +89,10 @@ class common_device:
             text = arr_value[1]
             if dict_save_value:
                 text = dict_save_value.get(text, text)
-        arr_element = page.list_element
+        arr_element = page['elements']
         for element_yaml in arr_element:
-            if element_yaml.id.__eq__(element):
-                arr_locator = element_yaml.list_locator
+            if element_yaml['id'].__eq__(element):
+                arr_locator = element_yaml['locators']
                 arr_locator = list(filter(
                     lambda loc: loc['device'] == platform_name,
                     arr_locator
