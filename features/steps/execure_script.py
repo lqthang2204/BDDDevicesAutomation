@@ -9,7 +9,7 @@ from Utilities.common import common_device
 dict_yaml = {}
 dict_page = {}
 read_yaml: str
-page_present = Page
+# page_present = Page
 element_page = Elements
 locator = Locator
 dict_save_value = {}
@@ -28,9 +28,9 @@ def step_impl(context):
 @step(u'I change the page spec to {page}')
 def change_page(context, page):
     path_file = context.dict_yaml[page + ".yaml"]
-    page = ManagementFile().read_yaml_file(path_file + "/" + page + ".yaml", dict_page, page)
-    context.page_present = page
-    return context.page_present
+    context.page_present = ManagementFile().read_yaml_file(path_file + "/" + page + ".yaml", dict_page, page)
+    # context.page_present = page
+    # return context.page_present
 
 
 @step(u'I click element {element}')
@@ -67,21 +67,21 @@ def step_impl(context):
 @step(u'I perform {action} action')
 def step_impl(context, action):
     if context.device['platformName'] == "WEB":
-        ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, None, None)
+        ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, None, None, context.device['platformName'])
     elif context.device['platformName'] == "ANDROID":
         ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver,
-                                                       context.wait, None, None)
+                                                       context.wait, None, None, context.device['platformName'])
 
 
 @step(u'I perform {action} action with override values')
 def step_impl(context, action):
     if context.device['platformName'] == "WEB":
         ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, context.table,
-                                        context.dict_save_value)
+                                        context.dict_save_value, context.device['platformName'])
     elif context.device['platformName'] == "ANDROID":
         ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver,
                                                        context.wait, context.table,
-                                                       context.dict_save_value)
+                                                       context.dict_save_value, context.device['platformName'])
 
 
 @step(u'I clear text from element {element}')

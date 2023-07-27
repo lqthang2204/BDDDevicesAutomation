@@ -102,17 +102,17 @@ class common_device:
                     return element_yaml
 
     def verify_elements_with_status(self, page, table, platform_name, dict_save_value, driver, wait):
-        arr_element = page.list_element
+        arr_element = page['elements']
         if table is not None:
             for row in table:
                 for element_yaml in arr_element:
-                    if element_yaml.id.__eq__(row["Field"]):
+                    if element_yaml['id'].__eq__(row["Field"]):
                         logging.info("Verifying for %s have value %s and status %s", row["Field"], row["Value"],
                                      row["Status"])
                         value = row["Value"]
                         if dict_save_value:
                             value = dict_save_value.get(value, value)
-                        element_yaml = self.get_element(page, element_yaml.id + " with text " + value, platform_name,
+                        element_yaml = self.get_element(page, element_yaml['id'] + " with text " + value, platform_name,
                                                         dict_save_value)
                         self.wait_element_for_status(element_yaml, row["Status"], driver, platform_name, wait)
                         logging.info("Verified for %s have value %s and status %s", row["Field"], row["Value"],
