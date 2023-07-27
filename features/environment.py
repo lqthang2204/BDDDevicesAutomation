@@ -43,7 +43,10 @@ def before_all(context):
             arr_device = stage_config.get_list_devices()
             for device in arr_device:
                 if platform == "WEB" and device.get_platform_name() == platform:
-                    launch_browser(context, device, browser)
+                    if config.get("drivers_config", "remote-saucelabs").lower() == "true":
+                        cross_browser_with_saucelabs(context, device)
+                    else:
+                        launch_browser(context, device, browser)
                     break
                 elif platform == "ANDROID" and device.get_platform_name() == platform:
                     print("android")
@@ -153,3 +156,23 @@ def get_option_from_browser(browser, device):
         option.add_argument("--headless")
 
     return option
+def cross_browser_with_saucelabs(context, device):
+    config_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'remote_config.ini')
+    file = open(config_file_path, 'r')
+    config = configparser.RawConfigParser(allow_no_value=True)
+    config.read_file(file)
+    options = get_option_from_browser(config.get("remote", "browser"), device)
+    options.browser_version = 'latest'
+    options.platform_name = config.get("remote", "platform_name")
+    sauce_options = {}
+    sauce_options['username'] = config.get("remote", "username")
+    sauce_options['accessKey'] = config.get("remote", "accessKey")
+    sauce_options['build'] = config.get("remote", "build")
+    sauce_options['name'] = config.get("remote", "name")
+    options.set_capability('sauce:options', sauce_options)
+    url = config.get("remote", "url")
+    context.driver = webdriver.Remote(command_executor=url, options=options)
+    context.wait = device.get_wait()
+    context.device = device
+    context.time_page_load = device.get_time_page_load()
+    context.driver.maximize_window()
