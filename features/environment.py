@@ -5,9 +5,6 @@ import os
 import chromedriver_autoinstaller
 from selenium.webdriver.chrome.options import Options
 from Utilities.read_configuration import read_configuration
-from Configuration.stage import stage
-from Configuration.devices import devices
-from Configuration.configuration_env import environment_config
 from appium.options.android import UiAutomator2Options
 from appium.webdriver.appium_service import AppiumService
 import datetime
@@ -16,9 +13,6 @@ import logging
 
 def before_all(context):
     context.dict_save_value = {}
-    env = environment_config()
-    stage_config = stage()
-    device = devices()
     config_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config_env.ini')
     file = open(config_file_path, 'r')
     config = configparser.RawConfigParser(allow_no_value=True)

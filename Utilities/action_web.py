@@ -3,15 +3,10 @@ import glob
 import yaml
 from yaml import SafeLoader
 import json
-from ManagementElements.Page import Page
-from ManagementElements.Elements import Elements
-from ManagementElements.Locator import Locator
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import TimeoutException
-from ManagementElements.ActionTest import ActionTest
-from ManagementElements.ActionElements import ActionElements
 import logging
 
 class ManagementFile:
@@ -29,10 +24,9 @@ class ManagementFile:
         return dict_yaml
 
     def read_yaml_file(self, path, dict_yaml, page_name):
-        if dict_yaml:
-            if page_name in dict_yaml.keys() and len(dict_yaml[page_name])>0:
-                obj_page = dict_yaml[page_name]
-                return obj_page
+        if page_name in dict_yaml.keys():
+            obj_page = dict_yaml[page_name]
+            return obj_page
         else:
             obj_page = Page()
             dict_yaml[page_name] = obj_page
@@ -40,6 +34,7 @@ class ManagementFile:
                 python_dict = yaml.load(page.read(), Loader=SafeLoader)
                 json_result = json.dumps(python_dict)
                 json_object = json.loads(json_result)
+                dict_yaml[page_name] = json_object
             return json_object
     def execute_action(self, page, action_id, driver, wait, table, dict_save_value, platformName):
         dict_action = page['actions']
@@ -60,7 +55,9 @@ class ManagementFile:
                 element_page = list(filter(
                     lambda loc: loc['device'] == platformName, element_page
                 ))
-                type_action = action_elements['inputType']
+                type_action = None
+                if 'inputType' in action_elements:
+                    type_action = action_elements['inputType']
                 locator = self.get_locator_from_action(element_page, platformName)
                 element = self.get_element_by(locator['type'], driver, locator['value'])
                 if self.check_field_exist(action_elements,'condition') and self.check_field_exist(action_elements, 'timeout'):
@@ -78,11 +75,11 @@ class ManagementFile:
                             WebDriverWait(driver, action_elements['timeout']).until(
                                 ec.presence_of_element_located(element))
                         elif action_elements['condition'] == "EXISTED":
-                            elements = self.get_list_element_by(locator.type, driver, locator.value)
+                            elements = self.get_list_element_by(locator['type'], driver, locator['value'])
                             WebDriverWait(driver, action_elements['timeout']).until(
                                 lambda driver: len(elements) > int(0))
                         elif action_elements['condition'] == "NOT_EXISTED":
-                            elements = self.get_list_element_by(locator.type, driver, locator.value)
+                            elements = self.get_list_element_by(locator['type'], driver, locator['value'])
                             WebDriverWait(driver, action_elements['timeout']).until_not(
                                 lambda driver: len(elements) > int(0))
                         elif action_elements['condition'] == "SELECTED":
@@ -100,7 +97,7 @@ class ManagementFile:
                             else:
                                 WebDriverWait(driver, action_elements['timeout']).until_not(
                                     ec.element_attribute_to_include(
-                                        self.get_locator_for_wait(locator.type, locator.value), "disabled"))
+                                        self.get_locator_for_wait(locator['type'], locator['value']), "disabled"))
                                 element.click()
                         elif type_action.__eq__("text"):
                             element.send_keys(value)
@@ -113,16 +110,16 @@ class ManagementFile:
                                                     locator)
                     except Exception as e:
                         logging.error("can not execute action % with element have value  %s in framework", type_action,
-                                      locator.value)
-                        assert False, "can not execute action " + type_action + " with element have value" + locator.value + "in framework"
+                                      locator['value'])
+                        assert False, "can not execute action " + type_action + " with element have value" + locator['value'] + "in framework"
                 else:
                     try:
                         self.process_execute_action(driver, wait, element, type_action, value,
                                                     locator)
                     except Exception as e:
                         logging.error("can not execute action % with element have value  %s in framework", type_action,
-                                      locator.value)
-                        assert False, "can not execute action " + type_action + " with element have value" + locator.value + "in framework"
+                                      locator['value'])
+                        assert False, "can not execute action " + type_action + " with element have value" + locator['value'] + "in framework"
         else:
             logging.error(f'Not Found Action {action_id} in page yaml')
             assert False, "Not Found Action " + action_id + " in page yaml"

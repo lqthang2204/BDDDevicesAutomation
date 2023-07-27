@@ -2,12 +2,6 @@ import yaml
 import os
 from yaml import SafeLoader
 import json
-from Configuration.configuration_env import environment_config
-from Configuration.devices import devices
-from Utilities.common import common_device
-from Configuration.stage import stage
-from Configuration.api_facets import api
-
 
 class read_configuration:
     def read(self):

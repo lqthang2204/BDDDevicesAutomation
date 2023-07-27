@@ -112,11 +112,13 @@ class ManagementFileAndroid:
                 element_page = list(filter(
                     lambda loc: loc['device'] == platformName, element_page
                 ))
-                type_action = action_elements['inputType']
+                type_action = None
+                if 'inputType' in action_elements:
+                    type_action = action_elements['inputType']
                 locator = self.get_locator_from_action(element_page, platformName)
                 # element = self.get_by_android(locator['type'], driver, locator['value'])
                 locator_from_wait = self.get_locator_for_wait(locator['type'], locator['value'])
-                if action_elements['condition']() is not None and action_elements['timeout']() is not None:
+                if 'condition' in action_elements and 'timeout' in action_elements:
                     try:
                         if action_elements['condition'] == "ENABLED":
                             WebDriverWait(driver, action_elements['timeout']).until(
@@ -160,7 +162,7 @@ class ManagementFileAndroid:
                     except Exception as e:
                         logging.info("can not execute action with element have value  %s in framework", locator['value'])
                         assert True, "can not execute action with element have value" + locator['value'] + "in framework"
-                elif action_elements['condition']() is not None and action_elements['timeout'] is None:
+                elif 'condition' in action_elements and self.check_attribute_has_object(action_elements,'timeout') is False:
                     try:
                         self.process_execute_action(driver, wait, type_action, value, locator_from_wait, locator)
                     except Exception as e:
@@ -188,3 +190,9 @@ class ManagementFileAndroid:
                 element.click()
             elif type_action.__eq__("text"):
                 element.send_keys(value)
+    def check_attribute_has_object(self,obj, key):
+        try:
+            if getattr(obj, key):
+                return True
+        except:
+                return False
