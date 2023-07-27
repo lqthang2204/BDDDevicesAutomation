@@ -35,23 +35,24 @@ Follow https://github.com/lqthang2204/Selenium-with-python-behave for cloning a 
 
 === How do I run an automation test?
 * Recommended VM options :
-  * To run parallel with command
-    * ```behavex -t @regression --parallel-processes 2```
-    * ```behavex -t @regression --parallel-processes 2 --parallel-scheme scenario```
-      * paralle-sheme can have values scenario or feature
-      * @regression is the tag in feature files
-    * To execute from a Feature file folder 
-      * ```behavex -ip features  --parallel-processes 2  --parallel-scheme scenario```
-        * where -ip features => to include the folder path named features
-    * To Execute using project_runner CLI
+    * Recommended Command for CLI
       * HELP : ```python project_runner.py run --help```
       * RUN  :
-          *   ```python project_runner.py run -fd features -tg @test-2 -fk 3 -sg QA -pl WEB -ps scenario```
-          *   ```python project_runner.py run -fd features -tg @test-2 -fk 3```
-  * To generate Allure report (if you have Allure package)
-    * ```behave -f allure_behave.formatter:AllureFormatter -o allure/results ./features```
-    * ```behave -f allure_behave.formatter:AllureFormatter -o allure/results ./features/Login.feature```
-    * Sample code you can use to execute in Debug mode is located at: ```/Selenium-with-python-behave/launch/Run_Test.py```
+          *   ```python project_runner.py run -fd 'features/scenarios/web' -tg '{@web}' -fk 3 -sg SIT -pl WEB -ps scenario```
+          *   ```project_runner.py run -fd 'features/scenarios/web/orange*.feature' -tg '{@test2}' -fk 3 -sg SIT -pl WEB -ps scenario``` 
+          *   ```python project_runner.py run -fd features/scenarios/web -tg {@test-2} -fk 3```
+    * To run parallel with command
+      * ```behavex -t @regression --parallel-processes 2```
+      * ```behavex -t @regression --parallel-processes 2 --parallel-scheme scenario```
+        * paralle-sheme can have values scenario or feature
+        * @regression is the tag in feature files
+      * To execute from a Feature file folder 
+        * ```behavex -ip features  --parallel-processes 2  --parallel-scheme scenario```
+          * where -ip features => to include the folder path named features
+    * To generate Allure report (if you have Allure package)
+      * ```behave -f allure_behave.formatter:AllureFormatter -o allure/results ./features```
+      * ```behave -f allure_behave.formatter:AllureFormatter -o allure/results ./features/Login.feature```
+      * Sample code you can use to execute in Debug mode is located at: ```/Selenium-with-python-behave/launch/Run_Test.py```
 ----
 
 

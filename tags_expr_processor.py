@@ -124,7 +124,7 @@ def filter_feature_and_scenarios(features_dir, result_dir, tags):
 
     logging.info(f'{total_scenarios} Scenarios found in {total_features} Features files')
 
-    return str(total_scenarios)+"hyphen"+filename_head
+    return total_scenarios
 
 
 if __name__ == '__main__':

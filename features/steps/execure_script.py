@@ -4,7 +4,7 @@ from ManagementElements.Page import Page
 from ManagementElements.Elements import Elements
 from ManagementElements.Locator import Locator
 from Utilities.action_android import ManagementFileAndroid
-from Utilities.common import common_device
+from Utilities.common_ui import common_device
 
 dict_yaml = {}
 dict_page = {}

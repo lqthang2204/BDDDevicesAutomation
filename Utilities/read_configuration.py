@@ -4,7 +4,7 @@ from yaml import SafeLoader
 import json
 from Configuration.configuration_env import environment_config
 from Configuration.devices import devices
-from Utilities.common import common_device
+from Utilities.common_ui import common_device
 from Configuration.stage import stage
 
 
