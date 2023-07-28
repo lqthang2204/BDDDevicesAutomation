@@ -1,11 +1,9 @@
-@testLogin @web @regression @tanuj
+@testLogin @web @regression @norun
 Feature: login web
-
-  Background: Some background
-    Given I navigate to url have index 1
 
 #  @test-1
   Scenario: test login page
+    Given I navigate to url have index 1
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
@@ -28,6 +26,7 @@ Feature: login web
 
   @test-2
   Scenario: test page
+    Given I navigate to url have index 1
     And I change the page spec to LoginPage
     And I save text for element location-option-inpatient with key "btn-location"
     And I wait for elements with below status
