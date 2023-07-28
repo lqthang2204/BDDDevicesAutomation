@@ -1,5 +1,5 @@
 @testLogin @web @regression @norun
-Feature: login web
+Feature: login web for norun
 
 #  @test-1
   Scenario: test login page

@@ -83,7 +83,7 @@ def _run_feature(args, stage_name, platform_name):
         status = 'ok' if completed_process.returncode == 0 else 'failed'
 
         if status == 'failed':
-            logging.error('Executing the behaveX command failed')
+            logging.error('There are FAILED Scenarios that need investigation')
             exit(1)
     except subprocess.CalledProcessError as e:
         logging.error('Executing the behaveX command failed')

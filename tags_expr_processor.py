@@ -162,15 +162,14 @@ def filter_feature_and_scenarios(features_dir, result_dir, tags):
 
 if __name__ == '__main__':
 
-    # test_expressions = ['{@web}', '  {  @web    and @regression    and ~@norun}', '{~@norun and @web and (@test1 or @test2)}',
-    #                     '{~@norun and (@test1 or @test2)}', '{@web and ~@browser and @sanity and ~@norun}', '{~@norun}', '{@sanity or @regression}',
-    #                     '{@web and @browser and ~@norun and (@regression or @Sanity)}', '{@web and ~@norun and (@regression or @Sanity)}',
-    #                     '{  ~@web   and   @browser   and   @checkout   and    ~@norun and (  @regression   or   @Sanity    )}',
-    #                     '{  ~@web   and   @browser   and   @checkout   and    @norun and (  @test1   or   @test2    )}',
-    #                     '{  @web   and   @regression   and    @norun and (  @test1   or   @test2    )}', '{@web and (@regression or @Sanity)}',
-    #                     '{  @web   and   ~@browser   and   ~@checkout   and    @norun and (  @regression   or   @Sanity    )}',
-    #                     '{@web and ~@norun and (@p1)}', '@web', '', '{~@test-2}']
-    test_expressions = ['{@web}']
+    test_expressions = ['{@web}', '  {  @web    and @regression    and ~@norun}', '{~@norun and @web and (@test1 or @test2)}',
+                        '{~@norun and (@test1 or @test2)}', '{@web and ~@browser and @sanity and ~@norun}', '{~@norun}', '{@sanity or @regression}',
+                        '{@web and @browser and ~@norun and (@regression or @Sanity)}', '{@web and ~@norun and (@regression or @Sanity)}',
+                        '{  ~@web   and   @browser   and   @checkout   and    ~@norun and (  @regression   or   @Sanity    )}',
+                        '{  ~@web   and   @browser   and   @checkout   and    @norun and (  @test1   or   @test2    )}',
+                        '{  @web   and   @regression   and    @norun and (  @test1   or   @test2    )}', '{@web and (@regression or @Sanity)}',
+                        '{  @web   and   ~@browser   and   ~@checkout   and    @norun and (  @regression   or   @Sanity    )}',
+                        '{@web and ~@norun and (@p1)}', '@web', '', '{~@test-2}']
 
 
     def verify_only_tag_process_output():
@@ -185,7 +184,5 @@ if __name__ == '__main__':
             print(f' {expression} ... completed.. please check')
 
 
-    # verify_only_tag_process_output()
+    verify_only_tag_process_output()
     verify_extracted_files()
-
-    # filter_feature_and_scenarios('features/scenarios/web', 'features/final', "{~@test-2}")
