@@ -25,7 +25,7 @@ Feature: login web for norun
     And I wait for element search-input to be DISPLAYED
 
   @test-2
-  Scenario: test page
+  Scenario: test page test-2
     Given I navigate to url have index 1
     And I change the page spec to LoginPage
     And I save text for element location-option-inpatient with key "btn-location"

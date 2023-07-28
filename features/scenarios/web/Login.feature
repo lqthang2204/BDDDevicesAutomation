@@ -27,7 +27,7 @@ Feature: login web
     And I wait for element search-input to be DISPLAYED
 
   @test-2
-  Scenario: test page
+  Scenario: test page test-2
     And I change the page spec to LoginPage
     And I save text for element location-option-inpatient with key "btn-location"
     And I wait for elements with below status
