@@ -25,7 +25,7 @@ def process_tags_expression(user_tag_expression):
     copyUserArgs = re.sub(r'\s+', ' ', copyUserArgs)
 
     # Extract tags containing '~@' or 'and ~@' or '~@norun'
-    no_run_list = re.findall(r'(?:and )?~@(?:\w+|norun)', copyUserArgs)
+    no_run_list = re.findall(r'(?:and )?~@(?:[-_\w]*|norun)', copyUserArgs)
 
     # Remove extracted tags from the expression
     for tag in no_run_list:
@@ -102,13 +102,26 @@ def filter_feature_and_scenarios(features_dir, result_dir, tags):
         with open(feature_file, 'r') as f:
             feature_content = f.read().strip()
 
-        filename_head = f'{result_dir}/par_{os.path.splitext(os.path.basename(feature_file))[0]}_'
+        # Replace multiple blank lines with a single blank line
+        feature_content = re.sub(r'\n\s*\n', '\n\n', feature_content)
+        # Remove lines starting with #
+        feature_content = re.sub(r'^#.*\n', '', feature_content, flags=re.MULTILINE)
+        feature_content = re.sub(r'\n\s*\n', '\n\n', feature_content)
+
+        filename_head = f'{result_dir}/par_{os.path.splitext(os.path.basename(feature_file))[0]}'
         feature_blocks = feature_content.split('\n\n')
 
-        feature_header = feature_blocks[0] + '\n\n\n'
-        feature_tags = set(feature_header.split('\n')[0].strip().split())
-        all_cases = [case.strip() for case in feature_blocks[1:]]
-        feature_cases = [case for case in all_cases if not case.startswith('#  Scenario') or case.startswith('#  @')]
+        if 'Background: ' in feature_blocks[1]:
+            feature_header = feature_blocks[0] + '\n\n' + feature_blocks[1] + '\n\n\n'
+            feature_blocks.pop(1)
+        else:
+            feature_header = feature_blocks[0] + '\n\n\n'
+
+        feature_tags = feature_header.split('\n')[0].split()
+        if no_run_list and set(no_run_list).issubset(set(feature_tags)):
+            continue
+        feature_cases = [case for case in feature_blocks[1:]]
+        # feature_cases = [case for case in all_cases if not case.startswith('#  Scenario') or case.startswith('#  @')]
 
         # re-initialize the feature file buffer
         sequence_cases = []
@@ -117,21 +130,21 @@ def filter_feature_and_scenarios(features_dir, result_dir, tags):
         found_cases = 0
         for case in feature_cases:
             case_as_list = case.split('\n')
-            case_tags = set(case_as_list[0].strip().split())
+            case_tags = case_as_list[0].split()
 
             buffer_tags = case_as_list[0].strip() if case.strip().startswith('@') else ''
             buffer_case = '\n'.join(case_as_list[1:]) if case.strip().startswith('@') else case
 
-            all_tags = feature_tags | case_tags
+            all_tags = case_tags + feature_tags
 
-            if no_run_list and set(no_run_list).issubset(all_tags):
+            if no_run_list and set(no_run_list).issubset(set(all_tags)):
                 continue
-            if user_ands and not set(user_ands).issubset(all_tags):
+            if user_ands and not set(user_ands).issubset(set(all_tags)):
                 continue
-            if user_ors and not (feature_tags.intersection(user_ors) or case_tags.intersection(user_ors)):
+            if user_ors and not set(all_tags).intersection(set(user_ors)):
                 continue
 
-            sequence_cases.append(buffer_tags + ' @final\n')
+            sequence_cases.append(' ' + buffer_tags + ' @final\n')
             sequence_cases.append(buffer_case + ' \n\n')
             found_cases += 1
 
@@ -149,13 +162,15 @@ def filter_feature_and_scenarios(features_dir, result_dir, tags):
 
 if __name__ == '__main__':
 
-    test_expressions = ['{~@norun and (@test1 or @test2)}', '{@web and ~@browser and @sanity and ~@norun}', '{~@norun}',
-                        '{@sanity or @regression}', '{@web and @browser and ~@norun and (@regression or @Sanity)}',
-                        '{  ~@web   and   @browser   and   @checkout   and    ~@norun and (  @regression   or   @Sanity    )}',
-                        '{  ~@web   and   @browser   and   @checkout   and    @norun and (  @regression   or   @Sanity    )}',
-                        '{  @web   and   ~@browser   and   ~@checkout   and    @norun and (  @regression   or   @Sanity    )}',
-                        '{@web}', '{~@norun}', '{@web and ~@norun and (@p1)}', '@web', '',
-                        '  {  @web    and @regression    and ~@norun}']
+    # test_expressions = ['{@web}', '  {  @web    and @regression    and ~@norun}', '{~@norun and @web and (@test1 or @test2)}',
+    #                     '{~@norun and (@test1 or @test2)}', '{@web and ~@browser and @sanity and ~@norun}', '{~@norun}', '{@sanity or @regression}',
+    #                     '{@web and @browser and ~@norun and (@regression or @Sanity)}', '{@web and ~@norun and (@regression or @Sanity)}',
+    #                     '{  ~@web   and   @browser   and   @checkout   and    ~@norun and (  @regression   or   @Sanity    )}',
+    #                     '{  ~@web   and   @browser   and   @checkout   and    @norun and (  @test1   or   @test2    )}',
+    #                     '{  @web   and   @regression   and    @norun and (  @test1   or   @test2    )}', '{@web and (@regression or @Sanity)}',
+    #                     '{  @web   and   ~@browser   and   ~@checkout   and    @norun and (  @regression   or   @Sanity    )}',
+    #                     '{@web and ~@norun and (@p1)}', '@web', '', '{~@test-2}']
+    test_expressions = ['{@web}']
 
 
     def verify_only_tag_process_output():
@@ -167,8 +182,10 @@ if __name__ == '__main__':
     def verify_extracted_files():
         for expression in test_expressions:
             filter_feature_and_scenarios('features/scenarios/web', 'features/final', expression)
-            print('completed.. please check')
+            print(f' {expression} ... completed.. please check')
 
 
     # verify_only_tag_process_output()
     verify_extracted_files()
+
+    # filter_feature_and_scenarios('features/scenarios/web', 'features/final', "{~@test-2}")
