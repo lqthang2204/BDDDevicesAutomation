@@ -1,7 +1,8 @@
+import logging
+
+from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from appium.webdriver.common.appiumby import AppiumBy
-import logging
 
 
 class ManagementFileAndroid:

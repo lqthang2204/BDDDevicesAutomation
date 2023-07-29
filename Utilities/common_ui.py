@@ -1,6 +1,8 @@
 import logging
-from selenium.webdriver.support.wait import WebDriverWait
+
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.wait import WebDriverWait
+
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 

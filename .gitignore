@@ -7,7 +7,6 @@
 venv
 .idea
 *.css
-*/outputs
-*/outputs/logs
+features/final
 output
-*/WebDriver
+WebDriver

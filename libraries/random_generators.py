@@ -16,7 +16,7 @@ format_mapping = {
     'zzz': '%z'  # Adjusted the format specifier for timezone offset
 }
 
-def when_sample_data_contains_dollar_symbol(sample_data):
+def when_sample_data_contains_reserved_symbol(sample_data):
     if sample_data is not None:
         if sample_data.startswith('random_'):
             return generate_random_numeric_alpha_string(sample_data)
@@ -236,4 +236,4 @@ if __name__ == '__main__':
     ]
 
     for format_str in formats:
-        print(f"Given-Format: {format_str}    Output: {when_sample_data_contains_dollar_symbol(format_str)}")
+        print(f"Given-Format: {format_str}    Output: {when_sample_data_contains_reserved_symbol(format_str)}")

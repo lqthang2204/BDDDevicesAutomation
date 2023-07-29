@@ -1,16 +1,16 @@
 # Selenium-with-python-behave
 
-== About this project
+### About this project
 * The project holds all automation tests for multi-project by browser
 
 
-== Why do I need this project?
+### Why do I need this project?
 This project is for chrome
 
 * This project will provide tests specific to performing various browser UI actions and verifications.
 * The project will provide the use of the same steps for Web.
 
-== When and why would I need to modify this project?
+### When and why would I need to modify this project?
 Any QA or Developer can contribute to this project for valid acceptable scenarios as below:
 
 . Add a new test or feature file of clubbing various tests.
@@ -18,7 +18,7 @@ Any QA or Developer can contribute to this project for valid acceptable scenario
 . There is missing documentation.
 . Any other case that should be brought up to QA leads.
 
-== How do I set up Pychamr?
+### How do I set up Pychamr?
 Review the https://www.jetbrains.com/idea/download/#section=windows, which addresses
 questions such as:
 
@@ -26,14 +26,14 @@ questions such as:
 . How do I check out and change GIT branches?
 . What are environment variables and how to configure them for running tests?
 
-== How do I get the code, afresh?
+### How do I get the code, afresh?
 . You can download code at https://github.com/lqthang2204/Selenium-with-python-behave
 . Clone this project to a working folder on your local machine.
 Follow https://github.com/lqthang2204/Selenium-with-python-behave for cloning a repository.
 
-== Test execution
+### Test execution
 
-=== How do I run an automation test?
+#### How do I run an automation test?
 * Recommended VM options :
     * Recommended Command for CLI
       * HELP : ```python project_runner.py run --help```
@@ -56,10 +56,16 @@ Follow https://github.com/lqthang2204/Selenium-with-python-behave for cloning a 
 ----
 
 
+### How to compose the Feature files ?
+- Ensure that you keep 1 line space between the major sections (Feature, Background, Scenario, Scenario Outline) of a Feature file
 
-Config to run
+### Tags to be used 
+    * ~@norun - can be used to ignore any Feature file or a Scenario
+    * ~@ANYTAGNAME - For eg. ~@web will ignore any Feature file or Scenario that has @web tag 
 
-there is scripts use to test in framework
+### Config to run
+
+There is scripts use to test in framework
 
     Given I navigate to "https://www.google.com/"
     And I change the page spec to pageGoogle
@@ -84,4 +90,3 @@ there is scripts use to test in framework
 And I save text for element pass-field with key "Pass"
 
 => use to save text of element in web page
-

@@ -74,7 +74,6 @@ def launch_browser(context, device, browser):
             context.driver = webdriver.Safari()
         else:
             logging.info("Framework only is support for chrome, firefox and safari..., trying open with chrome")
-            chromedriver_autoinstaller.install()
             context.driver = webdriver.Chrome(options=option)
     context.wait = device.get_wait()
     context.device = device
@@ -108,11 +107,14 @@ def after_step(context, step):
 
 
 def before_scenario(context, scenario):
-    logging.info(f'Scenario Name started {scenario.name}')
+    logging.info(f'Scenario {scenario.name} started')
+
+
+def after_scenario(context, scenario):
+    logging.info(f'Scenario {scenario.name} ended')
 
 
 def after_all(context):
-    logging.info('Scenario Name ended')
     if context.driver is not None:
         context.driver.close()
         context.driver.quit()
