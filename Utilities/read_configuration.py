@@ -1,11 +1,13 @@
-import yaml
-import os
-from yaml import SafeLoader
 import json
+import os
+
+import yaml
+from yaml import SafeLoader
+
 from Configuration.configuration_env import environment_config
 from Configuration.devices import devices
-from Utilities.common_ui import common_device
 from Configuration.stage import stage
+from Utilities.common_ui import common_device
 
 
 class read_configuration:
