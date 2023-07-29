@@ -7,8 +7,16 @@ Feature: login web
 #  @test-1
   Scenario: test login page
     And I change the page spec to LoginPage
+    And I create a set of keys with below attributes
+      | Pattern to create data from | Save into Key Name |
+      | random_alphabet_5           | randomAplhabetLen5 |
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
+    And I perform login-page-two action with override values
+      | Field      | Value                  |
+      | user-field | Admin                  |
+      | pass-field | KEY.randomAplhabetLen5 |
+    And I wait for element error-message to be DISPLAYED
     And I perform login-page-two action with override values
       | Field      | Value     |
       | user-field | Admin     |
@@ -25,6 +33,8 @@ Feature: login web
     And I wait for element find-patient-button to be ENABLED
     And I click element find-patient-button
     And I wait for element search-input to be DISPLAYED
+    And I print all the dictionary keys
+
 
   @test-2
   Scenario: test page test-2

@@ -1,9 +1,10 @@
 from behave import *
-from Utilities.action_web import ManagementFile
-from ManagementElements.Page import Page
+
 from ManagementElements.Elements import Elements
 from ManagementElements.Locator import Locator
+from ManagementElements.Page import Page
 from Utilities.action_android import ManagementFileAndroid
+from Utilities.action_web import ManagementFile
 from Utilities.common_ui import common_device
 
 dict_yaml = {}
@@ -101,8 +102,3 @@ def step_impl(context, element, key):
                                                                      context.dict_save_value, context.wait,
                                                                      context.device)
     return context.dict_save_value
-
-
-@step(u'I wait 5 seconds')
-def step_impl(context):
-    print("wait")

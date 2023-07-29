@@ -8,6 +8,5 @@ venv
 .idea
 *.css
 features/final
-outputs
 output
 WebDriver

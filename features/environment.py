@@ -74,7 +74,6 @@ def launch_browser(context, device, browser):
             context.driver = webdriver.Safari()
         else:
             logging.info("Framework only is support for chrome, firefox and safari..., trying open with chrome")
-            chromedriver_autoinstaller.install()
             context.driver = webdriver.Chrome(options=option)
     context.wait = device.get_wait()
     context.device = device
