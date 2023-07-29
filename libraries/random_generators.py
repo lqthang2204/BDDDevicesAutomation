@@ -236,4 +236,4 @@ if __name__ == '__main__':
     ]
 
     for format_str in formats:
-        print(f"Given-Format: {format_str}    Output: {when_sample_data_contains_dollar_symbol(format_str)}")
+        print(f"Given-Format: {format_str}    Output: {when_sample_data_contains_reserved_symbol(format_str)}")
