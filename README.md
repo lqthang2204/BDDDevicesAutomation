@@ -90,4 +90,3 @@ There is scripts use to test in framework
 And I save text for element pass-field with key "Pass"
 
 => use to save text of element in web page
-
