@@ -4,18 +4,18 @@ Feature: login web
   Background: Some background
     Given I navigate to url have index 1
 
-@test-p1
+  @test-p1
   Scenario: test login page
     And I change the page spec to LoginPage
     And I create a set of keys with below attributes
-      | Pattern to create data from | Save into Key Name |
-      | random_alphabet_5           | randomAplhabetLen5 |
+      | Pattern to create data from | Save into Key Name    |
+      | random_alphabet_5           | randomOneAplhabetLen5 |
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
     And I perform login-page-two action with override values
-      | Field      | Value                  |
-      | user-field | Admin                  |
-      | pass-field | KEY.randomAplhabetLen5 |
+      | Field      | Value                     |
+      | user-field | Admin                     |
+      | pass-field | KEY.randomOneAplhabetLen5 |
     And I wait for element error-message to be DISPLAYED
     And I perform login-page-two action with override values
       | Field      | Value     |
@@ -36,9 +36,12 @@ Feature: login web
     And I print all the dictionary keys
 
 
-  @test-2
+  @test-p2
   Scenario: test page test-2
     And I change the page spec to LoginPage
+    And I create a set of keys with below attributes
+      | Pattern to create data from | Save into Key Name    |
+      | random_alphabet_5           | randomTwoAplhabetLen5 |
     And I save text for element location-option-inpatient with key "btn-location"
     And I wait for elements with below status
       | Field                     | Value            | Status    |
@@ -57,6 +60,11 @@ Feature: login web
     And I save text for element location-option-inpatient with key "btn-location"
     And I click element location-option-session with text "KEY.btn-location"
     And I perform login-page-two action with override values
+      | Field      | Value                     |
+      | user-field | Admin                     |
+      | pass-field | KEY.randomTwoAplhabetLen5 |
+    And I wait for element error-message to be DISPLAYED
+    And I perform login-page-two action with override values
       | Field      | Value     |
       | user-field | Admin     |
       | pass-field | KEY.title |
@@ -70,6 +78,7 @@ Feature: login web
       | location-option-session | Inpatient Ward | DISPLAYED |
     When I click element location-option-session with text "Inpatient Ward"
     Then I click element login-button
+    And I print all the dictionary keys
 #    And I clear text from element field-search
 #    And I type "Admidsdsdsn" into element user-field
 #    And I type "Admin12dsdsds3" into element pass-field
