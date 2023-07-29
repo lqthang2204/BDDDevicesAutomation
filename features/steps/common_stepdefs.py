@@ -14,6 +14,8 @@ def step_impl(context):
             # saving the value to context
             context.dict_save_value['KEY.' + row[1]] = result
 
+    return context.dict_save_value
+
 
 # Only for Debugging purpose when you want to pring all the key-Values
 @step(u'I print all the dictionary keys')

@@ -4,7 +4,7 @@ Feature: login web
   Background: Some background
     Given I navigate to url have index 1
 
-#  @test-1
+@test-p1
   Scenario: test login page
     And I change the page spec to LoginPage
     And I create a set of keys with below attributes
