@@ -23,35 +23,36 @@ from Utilities.read_configuration import read_configuration
 
 def before_all(context):
     context.dict_save_value = {}
-    env = environment_config()
-    stage_config = stage()
-    device = devices()
+    context.driver = None
     config_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config_env.ini')
     file = open(config_file_path, 'r')
-    config = configparser.RawConfigParser(allow_no_value=True)
-    config.read_file(file)
-    platform = config.get("drivers_config", "platform")
-    stage_name = config.get("drivers_config", "stage")
-    if config.has_option("drivers_config", "browser"):
-        browser = config.get("drivers_config", "browser")
+    context.config = configparser.RawConfigParser(allow_no_value=True)
+    context.config.read_file(file)
+    context.platform = context.config.get("drivers_config", "platform")
+    context.stage_name = context.config.get("drivers_config", "stage")
+    if context.config.has_option("drivers_config", "browser"):
+        context.browser = context.config.get("drivers_config", "browser")
     else:
-        browser = "chrome"
-    env = read_configuration().read()
-    arr_stage = env.get_list_stage()
-    for stage_config in arr_stage:
-        if stage_config.get_stage_name() == stage_name:
+        context.browser = "chrome"
+    context.env = read_configuration().read()
+    context.arr_stage = context.env.get_list_stage()
+
+def before_scenario(context, scenario):
+    logging.info(f'Scenario {scenario.name} started')
+    for stage_config in context.arr_stage:
+        if stage_config.get_stage_name() == context.stage_name:
             arr_device = stage_config.get_list_devices()
             for device in arr_device:
-                if platform == "WEB" and device.get_platform_name() == platform:
-                    launch_browser(context, device, browser)
+                if context.platform == "WEB" and device.get_platform_name() == context.platform:
+                    launch_browser(context, device, context.browser)
                     break
-                elif platform == "ANDROID" and device.get_platform_name() == platform:
+                elif context.platform == "ANDROID" and device.get_platform_name() == context.platform:
                     print("android")
-                    launch_android(context, device, config)
+                    launch_android(context, device, context.config)
                     context.wait = device.get_wait()
                     context.time_page_load = device.get_time_page_load()
                     break
-                elif platform == "IOS" and device.get_platform_name() == platform:
+                elif context.platform == "IOS" and device.get_platform_name() == context.platform:
                     print("IOS")
                     context.wait = device.get_wait()
                     context.time_page_load = device.get_time_page_load()
@@ -59,6 +60,7 @@ def before_all(context):
             context.url = stage_config.get_link()
             break
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
+    context.logging_format = context.config.get('Logging', 'logging_format')
 
 
 def launch_browser(context, device, browser):
@@ -106,18 +108,23 @@ def after_step(context, step):
         context.driver.get_screenshot_as_file(context.evidence_path + '/' + step.name + "_" + date_time + ".png")
 
 
-def before_scenario(context, scenario):
-    logging.info(f'Scenario {scenario.name} started')
-
-
 def after_scenario(context, scenario):
+    if context.driver is not None:
+        print('Closing driver from After_Scenario')
+        context.driver.close()
+        context.driver.quit()
     logging.info(f'Scenario {scenario.name} ended')
 
 
 def after_all(context):
     if context.driver is not None:
+        print('Closing driver from After_ALL')
         context.driver.close()
         context.driver.quit()
+    print('------ Displaying Dictionary keys ------')
+    for keys, value in context.dict_save_value.items():
+        print(keys, value)
+    print('------ Printed Dictionary keys ------')
 
 
 def get_driver_from_path(context, browser, device, option):

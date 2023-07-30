@@ -33,7 +33,6 @@ Feature: login web
     And I wait for element find-patient-button to be ENABLED
     And I click element find-patient-button
     And I wait for element search-input to be DISPLAYED
-    And I print all the dictionary keys
 
 
   @test-p2
@@ -78,7 +77,6 @@ Feature: login web
       | location-option-session | Inpatient Ward | DISPLAYED |
     When I click element location-option-session with text "Inpatient Ward"
     Then I click element login-button
-    And I print all the dictionary keys
 #    And I clear text from element field-search
 #    And I type "Admidsdsdsn" into element user-field
 #    And I type "Admin12dsdsds3" into element pass-field

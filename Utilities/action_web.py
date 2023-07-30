@@ -22,7 +22,7 @@ class ManagementFile:
         print("file path =======================", file_path)
         dict_yaml = {}
         files = glob.glob(file_path, recursive=True)
-        print("glob = ", files)
+        # print("glob = ", files)
         for file in files:
             print("lopp file ", file)
             path, file_name = os.path.split(file)
@@ -42,7 +42,7 @@ class ManagementFile:
                 python_dict = yaml.load(page.read(), Loader=SafeLoader)
                 json_result = json.dumps(python_dict)
                 json_object = json.loads(json_result)
-                print("json =", json_object)
+                # print("json =", json_object)
                 arr_element = json_object["elements"]
                 for element in arr_element:
                     obj_element = Elements()

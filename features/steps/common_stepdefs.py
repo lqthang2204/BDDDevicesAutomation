@@ -18,15 +18,15 @@ def step_impl(context):
 
 
 # Only for Debugging purpose when you want to pring all the key-Values
-@step(u'I print all the dictionary keys')
-def step_impl(context):
-    print('------ Displaying Dictionary keys ------')
-    for keys, value in context.dict_save_value.items():
-        print(keys, value)
-    print('------ Printed Dictionary keys ------')
+# @step(u'I print all the dictionary keys')
+# def step_impl(context):
+#     print('------ Displaying Dictionary keys ------')
+#     for keys, value in context.dict_save_value.items():
+#         print(keys, value)
+#     print('------ Printed Dictionary keys ------')
 
 
 @step(u'I wait {wait_duration} seconds')
 def step_impl(context, wait_duration):
     print(f'waiting for {wait_duration} seconds')
-    sleep(wait_duration)
+    sleep(int(wait_duration))
