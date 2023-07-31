@@ -4,7 +4,6 @@ import logging
 import os
 
 import appium
-import chromedriver_autoinstaller
 from appium.webdriver.appium_service import AppiumService
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as chrome_option
@@ -14,9 +13,6 @@ from selenium.webdriver.firefox.service import Service as firefox_service
 from selenium.webdriver.safari.options import Options as safari_option
 from selenium.webdriver.safari.service import Service as safari_service
 
-from Configuration.configuration_env import environment_config
-from Configuration.devices import devices
-from Configuration.stage import stage
 from Utilities.action_web import ManagementFile
 from Utilities.read_configuration import read_configuration
 
@@ -26,16 +22,17 @@ def before_all(context):
     context.driver = None
     config_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config_env.ini')
     file = open(config_file_path, 'r')
-    context.config = configparser.RawConfigParser(allow_no_value=True)
-    context.config.read_file(file)
-    context.platform = context.config.get("drivers_config", "platform")
-    context.stage_name = context.config.get("drivers_config", "stage")
-    if context.config.has_option("drivers_config", "browser"):
-        context.browser = context.config.get("drivers_config", "browser")
+    context.config_env = configparser.RawConfigParser(allow_no_value=True)
+    context.config_env.read_file(file)
+    context.platform = context.config_env.get("drivers_config", "platform")
+    context.stage_name = context.config_env.get("drivers_config", "stage")
+    if context.config_env.has_option("drivers_config", "browser"):
+        context.browser = context.config_env.get("drivers_config", "browser")
     else:
         context.browser = "chrome"
     context.env = read_configuration().read()
     context.arr_stage = context.env.get_list_stage()
+
 
 def before_scenario(context, scenario):
     logging.info(f'Scenario {scenario.name} started')
@@ -60,7 +57,7 @@ def before_scenario(context, scenario):
             context.url = stage_config.get_link()
             break
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
-    context.logging_format = context.config.get('Logging', 'logging_format')
+    # context.logging_format = context.config_env.get('Logging', 'logging_format')
 
 
 def launch_browser(context, device, browser):
@@ -121,10 +118,6 @@ def after_all(context):
         print('Closing driver from After_ALL')
         context.driver.close()
         context.driver.quit()
-    print('------ Displaying Dictionary keys ------')
-    for keys, value in context.dict_save_value.items():
-        print(keys, value)
-    print('------ Printed Dictionary keys ------')
 
 
 def get_driver_from_path(context, browser, device, option):
