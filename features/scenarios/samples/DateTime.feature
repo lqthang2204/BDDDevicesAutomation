@@ -1,7 +1,7 @@
 @datetime
 Feature: How to get Data Time random data
 
-  @test-1
+  @dates
   Scenario: Get Random Date Time Data
     Given I create a set of keys with below attributes
       | Pattern to create data from | Save into Key Name       |
@@ -35,6 +35,7 @@ Feature: How to get Data Time random data
       | time_current_UTC            | timeUTC                  |
     And I print all the dictionary keys
 
+  @numbers
   Scenario: Get Random Number Data
     Given I create a set of keys with below attributes
       | Pattern to create data from             | Save into Key Name      |

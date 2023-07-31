@@ -19,7 +19,7 @@ from ManagementElements.Page import Page
 class ManagementFile:
     def get_dict_path_yaml(self):
         file_path = os.path.dirname(os.path.dirname(__file__)) + "/resources/pages/*/*.yaml"
-        print("file path =======================", file_path)
+        # print("file path =======================", file_path)
         dict_yaml = {}
         files = glob.glob(file_path, recursive=True)
         # print("glob = ", files)
@@ -27,7 +27,7 @@ class ManagementFile:
             # print("loop file ", file)
             path, file_name = os.path.split(file)
             dict_yaml[file_name] = path
-        # dict_yaml_path = dict(dict_yaml)
+        # dict_yaml_path = dict(dict_yaml)      # no needed
         return dict_yaml
 
     def read_yaml_file(self, path, dict_yaml, page_name):
