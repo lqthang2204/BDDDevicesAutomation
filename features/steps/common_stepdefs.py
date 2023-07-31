@@ -5,7 +5,7 @@ from behave import *
 
 from libraries.misc_operations import sanitize_datatable
 from libraries.number_string_operations import check_and_call_operator
-from libraries.random_generators import get_test_data_for
+from libraries.data_generators import get_test_data_for
 
 
 @step(u'I create a set of keys with below attributes')
@@ -13,7 +13,7 @@ def step_impl(context):
     if context.table:
         context_table = sanitize_datatable(context.table)
         for row in context_table:
-            result = get_test_data_for(row[0])
+            result = get_test_data_for(row[0], context.dict_save_value)
             # for DEBUG
             # print(f'{row[0].ljust(40)} {row[1].ljust(30)} {result}')
 
@@ -23,16 +23,22 @@ def step_impl(context):
     return context.dict_save_value
 
 
-@step(u'I perform comparison with below attributes')
+@step(u'I perform operations with below attributes')
 def step_impl(context):
     if context.table:
         context_table = sanitize_datatable(context.table)
         for row in context_table:
             operator_func = check_and_call_operator(row[1])
             if operator_func is not None:
-                result = operator_func(row[0], row[2])
+                left_data = get_test_data_for(row[0], context.dict_save_value)
+                right_data = get_test_data_for(row[2], context.dict_save_value)
+                result = operator_func(left_data, right_data)
                 if not result:
-                    raise AssertionError(f'Failing condition: {row[0]} {row[1]} {row[2]}')
+                    to_display_left, to_display_right = [(' as ' + left_data) if left_data != row[0] else '',
+                                                         (' as ' + right_data) if right_data != row[2] else '']
+                    raise AssertionError(f'Failing condition: {row[0]}{to_display_left} {row[1]} {row[2]}{to_display_right}')
+                else:
+                    logging.info(f'Success: {row[0]} {row[1]} {row[2]}')
                 # saving the value to context
                 if row[3]:
                     context.dict_save_value['KEY.' + row[3]] = result

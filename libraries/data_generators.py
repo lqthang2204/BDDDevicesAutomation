@@ -17,7 +17,7 @@ format_mapping = {
 }
 
 
-def get_test_data_for(sample_data):
+def get_test_data_for(sample_data, context_dict):
     if sample_data is not None:
         if sample_data in ['EMPTY', 'BLANK']:
             return ''
@@ -27,6 +27,16 @@ def get_test_data_for(sample_data):
             return generate_random_numeric_alpha_string(sample_data)
         elif sample_data.startswith('date') or sample_data.startswith('time'):
             return generate_date_time_zone(sample_data)
+        else:
+            if context_dict:
+                if not sample_data.startswith('KEY.'):
+                    srch_key = 'KEY.' + sample_data
+                else:
+                    srch_key = sample_data
+                return context_dict.get(srch_key, sample_data)
+            else:
+                return sample_data
+    # if this line return None is encountered it means we have condition umimplemented
     return None
 
 

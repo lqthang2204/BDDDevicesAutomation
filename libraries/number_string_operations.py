@@ -12,7 +12,6 @@ string_comparison = {
     'case-match': lambda x, y: x == y,
     'ignore-case': lambda x, y: x.lower() == y.lower(),
     'does-not-match': lambda x, y: x != y,
-
 }
 
 other_operations = {
