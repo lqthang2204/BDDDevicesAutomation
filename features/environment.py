@@ -2,9 +2,7 @@ import configparser
 import datetime
 import logging
 import os
-
 import appium
-import chromedriver_autoinstaller
 from appium.webdriver.appium_service import AppiumService
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as chrome_option
@@ -13,48 +11,45 @@ from selenium.webdriver.firefox.options import Options as firefox_option
 from selenium.webdriver.firefox.service import Service as firefox_service
 from selenium.webdriver.safari.options import Options as safari_option
 from selenium.webdriver.safari.service import Service as safari_service
-
-from Configuration.configuration_env import environment_config
-from Configuration.devices import devices
-from Configuration.stage import stage
 from Utilities.action_web import ManagementFile
 from Utilities.read_configuration import read_configuration
 
 
 def before_all(context):
     context.dict_save_value = {}
-    env = environment_config()
-    stage_config = stage()
-    device = devices()
+    context.driver = None
     config_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config_env.ini')
     file = open(config_file_path, 'r')
-    config = configparser.RawConfigParser(allow_no_value=True)
-    config.read_file(file)
-    platform = config.get("drivers_config", "platform")
-    stage_name = config.get("drivers_config", "stage")
-    if config.has_option("drivers_config", "browser"):
-        browser = config.get("drivers_config", "browser")
+    context.config_test = configparser.RawConfigParser(allow_no_value=True)
+    context.config_test.read_file(file)
+    context.platform = context.config_test.get("drivers_config", "platform")
+    context.stage_name = context.config_test.get("drivers_config", "stage")
+    if context.config_test.has_option("drivers_config", "browser"):
+        context.browser = context.config_test.get("drivers_config", "browser")
     else:
-        browser = "chrome"
-    env = read_configuration().read()
-    arr_stage = env.get_list_stage()
-    for stage_config in arr_stage:
-        if stage_config.get_stage_name() == stage_name:
+        context.browser = "chrome"
+    context.env = read_configuration().read()
+    context.arr_stage = context.env.get_list_stage()
+
+def before_scenario(context, scenario):
+    logging.info(f'Scenario {scenario.name} started')
+    for stage_config in context.arr_stage:
+        if stage_config.get_stage_name() == context.stage_name:
             arr_device = stage_config.get_list_devices()
             for device in arr_device:
-                if platform == "WEB" and device.get_platform_name() == platform:
-                    if config.get("drivers_config", "remote-saucelabs").lower() == "true":
+                if context.platform == "WEB" and device.get_platform_name() == context.platform:
+                    if context.config_test.get("drivers_config", "remote-saucelabs").lower() == "true":
                         cross_browser_with_saucelabs(context, device)
                     else:
-                        launch_browser(context, device, browser)
+                        launch_browser(context, device, context.browser)
                     break
-                elif platform == "ANDROID" and device.get_platform_name() == platform:
+                elif context.platform == "ANDROID" and device.get_platform_name() == context.platform:
                     print("android")
-                    launch_android(context, device, config)
+                    launch_android(context, device, context.config_test)
                     context.wait = device.get_wait()
                     context.time_page_load = device.get_time_page_load()
                     break
-                elif platform == "IOS" and device.get_platform_name() == platform:
+                elif context.platform == "IOS" and device.get_platform_name() == context.platform:
                     print("IOS")
                     context.wait = device.get_wait()
                     context.time_page_load = device.get_time_page_load()
@@ -62,6 +57,7 @@ def before_all(context):
             context.url = stage_config.get_link()
             break
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
+    context.logging_format = context.config_test.get('Logging', 'logging_format')
 
 
 def launch_browser(context, device, browser):
@@ -77,7 +73,6 @@ def launch_browser(context, device, browser):
             context.driver = webdriver.Safari()
         else:
             logging.info("Framework only is support for chrome, firefox and safari..., trying open with chrome")
-            chromedriver_autoinstaller.install()
             context.driver = webdriver.Chrome(options=option)
     context.wait = device.get_wait()
     context.device = device
@@ -110,15 +105,23 @@ def after_step(context, step):
         context.driver.get_screenshot_as_file(context.evidence_path + '/' + step.name + "_" + date_time + ".png")
 
 
-def before_scenario(context, scenario):
-    logging.info(f'Scenario Name started {scenario.name}')
+def after_scenario(context, scenario):
+    if context.driver is not None:
+        print('Closing driver from After_Scenario')
+        context.driver.close()
+        context.driver.quit()
+    logging.info(f'Scenario {scenario.name} ended')
 
 
 def after_all(context):
-    logging.info('Scenario Name ended')
     if context.driver is not None:
+        print('Closing driver from After_ALL')
         context.driver.close()
         context.driver.quit()
+    print('------ Displaying Dictionary keys ------')
+    for keys, value in context.dict_save_value.items():
+        print(keys, value)
+    print('------ Printed Dictionary keys ------')
 
 
 def get_driver_from_path(context, browser, device, option):
