@@ -24,7 +24,7 @@ class ManagementFile:
         files = glob.glob(file_path, recursive=True)
         # print("glob = ", files)
         for file in files:
-            print("lopp file ", file)
+            # print("loop file ", file)
             path, file_name = os.path.split(file)
             dict_yaml[file_name] = path
         # dict_yaml_path = dict(dict_yaml)
