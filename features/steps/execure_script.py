@@ -1,9 +1,10 @@
 from behave import *
-from Utilities.action_web import ManagementFile
-from ManagementElements.Page import Page
+
 from ManagementElements.Elements import Elements
 from ManagementElements.Locator import Locator
+from ManagementElements.Page import Page
 from Utilities.action_android import ManagementFileAndroid
+from Utilities.action_web import ManagementFile
 from Utilities.common_ui import common_device
 
 dict_yaml = {}

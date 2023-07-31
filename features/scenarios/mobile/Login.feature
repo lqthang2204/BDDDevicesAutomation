@@ -1,5 +1,6 @@
 @test @mobile
 Feature: login mobile
+
   Scenario: test login page2 mobile
     Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage

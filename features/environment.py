@@ -102,13 +102,11 @@ def after_step(context, step):
             current_time.microsecond)
         context.driver.get_screenshot_as_file(context.evidence_path + '/' + step.name + "_" + date_time + ".png")
 
-
 def after_scenario(context, scenario):
     if context.driver is not None:
         print('Closing driver from After_Scenario')
         context.driver.close()
         context.driver.quit()
-    logging.info(f'Scenario {scenario.name} ended')
 
 
 def after_all(context):
