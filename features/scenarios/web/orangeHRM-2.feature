@@ -4,12 +4,12 @@ Feature: orange HRM 2 web
 #  @Windows10_Chrome_76.0
 #  @Windows10_Firefox_68.0
   Scenario: negative to url2
-    Given I navigate to url have index 2
+    Given I navigate to url GOOGLE
     And I change the page spec to pageGoogle
     And I wait for element search-field to be DISPLAYED
     And I click element search-field
     And I type "lqthang" into element search-field
-    And I navigate to url have index 3
+    And I navigate to url TECHPANDA
     And I change the page spec to HomePage
     And I wait for element mobile-button to be DISPLAYED
     And I wait for element mobile-button to be ENABLED
@@ -26,7 +26,7 @@ Feature: orange HRM 2 web
 
   @test2
   Scenario: test login page2
-    Given I navigate to url have index 1
+    Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED

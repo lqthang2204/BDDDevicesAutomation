@@ -20,12 +20,12 @@ def before_all(context):
     context.driver = None
     config_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config_env.ini')
     file = open(config_file_path, 'r')
-    context.config_test = configparser.RawConfigParser(allow_no_value=True)
-    context.config_test.read_file(file)
-    context.platform = context.config_test.get("drivers_config", "platform")
-    context.stage_name = context.config_test.get("drivers_config", "stage")
-    if context.config_test.has_option("drivers_config", "browser"):
-        context.browser = context.config_test.get("drivers_config", "browser")
+    context.config_env = configparser.RawConfigParser(allow_no_value=True)
+    context.config_env.read_file(file)
+    context.platform = context.config_env.get("drivers_config", "platform")
+    context.stage_name = context.config_env.get("drivers_config", "stage")
+    if context.config_env.has_option("drivers_config", "browser"):
+        context.browser = context.config_env.get("drivers_config", "browser")
     else:
         context.browser = "chrome"
     context.env = read_configuration().read()
@@ -38,14 +38,14 @@ def before_scenario(context, scenario):
             arr_device = stage_config.get_list_devices()
             for device in arr_device:
                 if context.platform == "WEB" and device.get_platform_name() == context.platform:
-                    if context.config_test.get("drivers_config", "remote-saucelabs").lower() == "true":
+                    if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
                         cross_browser_with_saucelabs(context, device)
                     else:
                         launch_browser(context, device, context.browser)
                     break
                 elif context.platform == "ANDROID" and device.get_platform_name() == context.platform:
                     print("android")
-                    launch_android(context, device, context.config_test)
+                    launch_android(context, device, context.config_env)
                     context.wait = device.get_wait()
                     context.time_page_load = device.get_time_page_load()
                     break
@@ -54,10 +54,10 @@ def before_scenario(context, scenario):
                     context.wait = device.get_wait()
                     context.time_page_load = device.get_time_page_load()
                     break
-            context.url = stage_config.get_link()
+            context.url = stage_config.get_list_link()
             break
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
-    context.logging_format = context.config_test.get('Logging', 'logging_format')
+    context.logging_format = context.config_env.get('Logging', 'logging_format')
 
 
 def launch_browser(context, device, browser):
@@ -65,11 +65,11 @@ def launch_browser(context, device, browser):
     if device.get_auto_download_driver() is False:
         get_driver_from_path(context, browser, device, option)
     else:
-        if browser == "chrome":
+        if browser == 'chrome':
             context.driver = webdriver.Chrome(options=option)
-        elif browser == "firefox":
+        elif browser == 'firefox':
             context.driver = webdriver.Firefox(options=option)
-        elif browser == "safari":
+        elif browser == 'safari':
             context.driver = webdriver.Safari()
         else:
             logging.info("Framework only is support for chrome, firefox and safari..., trying open with chrome")
@@ -81,8 +81,6 @@ def launch_browser(context, device, browser):
 
 
 def launch_android(context, device, config):
-    # service = AppiumService()
-    # service.start(args=['--address',config.get("drivers_config", "APPIUM_HOST"), '-P', str(config.get("drivers_config", "APPIUM_PORT"))], timeout_ms=20000)
     desired_caps = {
         'platformName': device.get_platform_name(),
         'udid': device.get_udid(),
@@ -129,28 +127,28 @@ def get_driver_from_path(context, browser, device, option):
     # https://github.com/SeleniumHQ/selenium/commit/9f5801c82fb3be3d5850707c46c3f8176e3ccd8e
     if browser == "chrome":
         service = chrome_service(
-            executable_path=os.path.dirname(os.path.dirname(__file__)) + "\\" + device.get_driver_from_path())
+            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device.get_driver_from_path())
         context.driver = webdriver.Chrome(service=service, options=option)
     elif browser == "firefox":
         service = firefox_service(
-            executable_path=os.path.dirname(os.path.dirname(__file__)) + "\\" + device.get_driver_from_path())
+            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device.get_driver_from_path())
         context.driver = webdriver.Firefox(service=service, options=option)
     elif browser == "safari":
         service = safari_service(
-            executable_path=os.path.dirname(os.path.dirname(__file__)) + "\\" + device.get_driver_from_path())
+            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device.get_driver_from_path())
         context.driver = webdriver.Safari(service=service, options=option)
     else:
         logging.info("Framework only is support for chrome, firefox and safari..., trying open with chrome")
         service = chrome_service(
-            executable_path=os.path.dirname(os.path.dirname(__file__)) + "\\" + device.get_driver_from_path())
+            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device.get_driver_from_path())
         context.driver = webdriver.Chrome(service=service, options=option)
 
 
 def get_option_from_browser(browser, device):
     supported_browsers = {
-        "chrome": chrome_option,
-        "firefox": firefox_option,
-        "safari": safari_option,
+        'chrome': chrome_option,
+        'firefox': firefox_option,
+        'safari': safari_option,
     }
 
     option = supported_browsers.get(browser.lower(), chrome_option)()
