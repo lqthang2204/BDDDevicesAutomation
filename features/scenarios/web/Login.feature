@@ -1,8 +1,6 @@
 @testLogin @web @regression
 Feature: login web
 
-
-
   Background: Some background
     Given I navigate to url OPEN_MRS
     
