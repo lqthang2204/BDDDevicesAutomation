@@ -42,6 +42,6 @@ jobs:
     - name: Test - project_runner.py - fd features/scenarios/samples tg {~@norun}
       run: |
           python project_runner.py run -fd features/scenarios/samples -tg {~@norun} -fk 2 -sg QA -pl WEB -ps scenario
-    - name: Test - project_runner.py - fd features/scenarios/samples tg {@test-p1 or @test1}
+    - name: Test - project_runner.py - fd features/scenarios/web tg {@test-p1 or @test1}
       run: |
-          python project_runner.py run -fd features/scenarios/samples -tg '{@test-p1 or @test1}' -fk 2 -sg QA -pl WEB -ps scenario
+          python project_runner.py run -fd features/scenarios/web -tg '{@test-p1 or @test1}' -fk 2 -sg QA -pl WEB -ps scenario
