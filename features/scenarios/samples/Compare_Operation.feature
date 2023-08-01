@@ -71,3 +71,4 @@ Feature: Numerical, String Compare and Math Calculations
     Given I perform operations with below attributes
       | Left               | Operator | Right     | SaveAs |
       | randomAplhabetLen5 | equal-to | test-this |        |
+    
