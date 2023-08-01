@@ -37,7 +37,7 @@ Feature: Numerical, String Compare and Math Calculations
       | randomAplhabetLen5     | does-not-match | 15    |        |
       | KEY.randomAplhabetLen5 | does-not-match | 15    |        |
 
-  @string-failing
+  @string-failing @norun
   Scenario: Perform String comparison - failing Tests
     Given I create a set of keys with below attributes
       | Pattern to create data from | Save into Key Name |
