@@ -59,7 +59,7 @@ def process_tags_expression(user_tag_expression):
                 user_ors.append(strItm.strip())
 
     elif ' or' in copyUserArgs:
-        orAry = copyUserArgs.split(' or ')
+        orAry = copyUserArgs.split('or ')
         if len(orAry) == 1 and orAry[0] == '':
             pass
         else:
@@ -71,7 +71,7 @@ def process_tags_expression(user_tag_expression):
 
     else:
         if copyUserArgs.strip() != '':
-            andAry = copyUserArgs.split(' and ')
+            andAry = copyUserArgs.split('and ')
             if len(andAry) == 1 and andAry[0] == '':
                 pass
             else:
@@ -169,7 +169,7 @@ if __name__ == '__main__':
                         '{  ~@web   and   @browser   and   @checkout   and    @norun and (  @test1   or   @test2    )}',
                         '{  @web   and   @regression   and    @norun and (  @test1   or   @test2    )}', '{@web and (@regression or @Sanity)}',
                         '{  @web   and   ~@browser   and   ~@checkout   and    @norun and (  @regression   or   @Sanity    )}',
-                        '{@web and ~@norun and (@p1)}', '@web', '', '{~@test-2}']
+                        '{@web and ~@norun and (@p1)}', '@web', '', '{~@test-2}', '{~@norun and @web}']
 
 
     def verify_only_tag_process_output():
