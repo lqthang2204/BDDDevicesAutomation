@@ -16,13 +16,29 @@ format_mapping = {
     'zzz': '%z'  # Adjusted the format specifier for timezone offset
 }
 
-def when_sample_data_contains_reserved_symbol(sample_data):
+
+def get_test_data_for(sample_data, context_dict):
     if sample_data is not None:
-        if sample_data.startswith('random_'):
+        if sample_data in ['EMPTY', 'BLANK']:
+            return ''
+        elif sample_data == 'NULL':
+            return None
+        elif sample_data.startswith('random_'):
             return generate_random_numeric_alpha_string(sample_data)
         elif sample_data.startswith('date') or sample_data.startswith('time'):
             return generate_date_time_zone(sample_data)
+        else:
+            if context_dict:
+                if not sample_data.startswith('KEY.'):
+                    srch_key = 'KEY.' + sample_data
+                else:
+                    srch_key = sample_data
+                return context_dict.get(srch_key, sample_data)
+            else:
+                return sample_data
+    # if this line return None is encountered it means we have condition umimplemented
     return None
+
 
 def generate_random_numeric_alpha_string(value):
     value = value.replace('random_', '')
@@ -41,17 +57,21 @@ def generate_random_numeric_alpha_string(value):
         else:
             return for_rand_string_when_value_contains_else(value)
 
+
 def get_random_number_in_decimal(min_int, max_int, min_deci, max_deci):
     result_int = get_random_number_in_range(min_int, max_int)
     result_decimal = get_random_number_in_range(min_deci, max_deci)
     length_decimal = len(str(result_decimal))
     return result_int + result_decimal / 10 ** length_decimal
 
+
 def get_random_number(random_int_length):
     return ''.join(random.choices('0123456789', k=random_int_length))
 
+
 def get_random_number_in_range(min_num, max_num):
     return random.randint(min_num, max_num)
+
 
 def for_rand_string_when_value_contains_hyphen(value):
     result = ''
@@ -68,6 +88,7 @@ def for_rand_string_when_value_contains_hyphen(value):
         min_int, max_int = map(int, value.split('-'))
         result = str(get_random_number_in_range(min_int, max_int))
     return result
+
 
 def for_rand_string_when_value_contains_else(value):
     result = ''
@@ -86,11 +107,13 @@ def for_rand_string_when_value_contains_else(value):
 def get_random_alphanumeric(random_str_length):
     return ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=random_str_length))
 
+
 def date_accessor_mapper(user_format):
     if user_format:
         for key, value in format_mapping.items():
             user_format = user_format.replace(key, value)
     return user_format
+
 
 def find_value_with_pattern(text, regex):
     match = re.search(regex, text)
@@ -98,8 +121,10 @@ def find_value_with_pattern(text, regex):
         return match.group(0)
     return None
 
+
 def verify_text_using_regex(text_value, regex_pattern):
     return bool(re.search(regex_pattern, text_value))
+
 
 def get_desired_date_time(property_str):
     now = datetime.now()
@@ -128,6 +153,7 @@ def get_desired_date_time(property_str):
 
     return now
 
+
 def add_time_to_date(dt, years=0, months=0):
     try:
         return dt.replace(year=dt.year + years, month=dt.month + months)
@@ -135,6 +161,7 @@ def add_time_to_date(dt, years=0, months=0):
         # February 29 may become non-existent after adding years (e.g., 2020 + 1 = 2021)
         # In that case, set the date to February 28 of the target year
         return dt.replace(year=dt.year + years, month=dt.month + months, day=28)
+
 
 def generate_date_time_zone(value):
     now = get_desired_date_time(value)
@@ -162,6 +189,7 @@ def generate_date_time_zone(value):
             return now.strftime('%H:%M:%S')
     return ''
 
+
 def get_result_value(now, value):
     ret_matcher = re.search(r'(_[\dZ])', value)
     if ret_matcher:
@@ -173,6 +201,7 @@ def get_result_value(now, value):
         result = now.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
     return result
 
+
 def when_req_is_year_or_day_of_week(value, now):
     if 'year' in value:
         return str(now.year)
@@ -181,17 +210,21 @@ def when_req_is_year_or_day_of_week(value, now):
         return 'FRIDAY' if day_of_week == 0 else ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'][day_of_week - 1]
     return ''
 
+
 def get_random_alphabetic(random_str_length):
     return ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', k=random_str_length))
+
 
 def get_random_alphabetic_in_range(min_num, max_num):
     random_str_length = get_random_number_in_range(min_num, max_num)
     return ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', k=random_str_length))
 
+
 def get_random_alphanumeric_in_range(min_num, max_num):
     random_str_length = get_random_number_in_range(min_num, max_num)
     return ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
                                   k=random_str_length))
+
 
 # Example Usage:
 if __name__ == '__main__':
@@ -236,4 +269,4 @@ if __name__ == '__main__':
     ]
 
     for format_str in formats:
-        print(f"Given-Format: {format_str}    Output: {when_sample_data_contains_reserved_symbol(format_str)}")
+        print(f"Given-Format: {format_str}    Output: {get_test_data_for(format_str)}")

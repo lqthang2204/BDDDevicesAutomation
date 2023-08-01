@@ -4,11 +4,19 @@ Feature: login web
   Background: Some background
     Given I navigate to url OPEN_MRS
     
-#  @test-1
+  @test-p1
   Scenario: test login page
     And I change the page spec to LoginPage
+    And I create a set of keys with below attributes
+      | Pattern to create data from | Save into Key Name    |
+      | random_alphabet_5           | randomOneAplhabetLen5 |
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
+    And I perform login-page-two action with override values
+      | Field      | Value                     |
+      | user-field | Admin                     |
+      | pass-field | KEY.randomOneAplhabetLen5 |
+    And I wait for element error-message to be DISPLAYED
     And I perform login-page-two action with override values
       | Field      | Value     |
       | user-field | Admin     |
@@ -26,9 +34,13 @@ Feature: login web
     And I click element find-patient-button
     And I wait for element search-input to be DISPLAYED
 
-  @test-2
+
+  @test-p2
   Scenario: test page test-2
     And I change the page spec to LoginPage
+    And I create a set of keys with below attributes
+      | Pattern to create data from | Save into Key Name    |
+      | random_alphabet_5           | randomTwoAplhabetLen5 |
     And I save text for element location-option-inpatient with key "btn-location"
     And I wait for elements with below status
       | Field                     | Value            | Status    |
@@ -46,6 +58,11 @@ Feature: login web
     And I clear text from element user-field
     And I save text for element location-option-inpatient with key "btn-location"
     And I click element location-option-session with text "KEY.btn-location"
+    And I perform login-page-two action with override values
+      | Field      | Value                     |
+      | user-field | Admin                     |
+      | pass-field | KEY.randomTwoAplhabetLen5 |
+    And I wait for element error-message to be DISPLAYED
     And I perform login-page-two action with override values
       | Field      | Value     |
       | user-field | Admin     |

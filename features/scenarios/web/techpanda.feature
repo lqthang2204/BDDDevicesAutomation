@@ -10,7 +10,7 @@ Feature: test web page techpanda web
   Scenario Outline: test Search function
     And I click element <product>
     And I type "test " into element search-input
-    And I wait 5 seconds
+    And I wait 2 seconds
     Examples:
       | product       |
       | mobile-button |

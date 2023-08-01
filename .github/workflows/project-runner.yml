@@ -35,7 +35,13 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with project_runner.py
+    - name: Test project_runner.py - fd features/scenarios/web tg {@web}
       run: |
-          python project_runner.py run -fd features/scenarios/web -tg @web -fk 3 -sg QA -pl WEB -ps scenario
+          python project_runner.py run -fd features/scenarios/web -tg '{@web and ~@norun}' -fk 3 -sg QA -pl WEB -ps scenario
 #          python ./launch/RunTest.py
+    - name: Test - project_runner.py - fd features/scenarios/samples tg {~@norun}
+      run: |
+          python project_runner.py run -fd features/scenarios/samples -tg {~@norun} -fk 2 -sg QA -pl WEB -ps scenario
+    - name: Test - project_runner.py - fd features/scenarios/web tg {@test-p1 or @test1}
+      run: |
+          python project_runner.py run -fd features/scenarios/web -tg '{@test-p1 or @test1}' -fk 2 -sg QA -pl WEB -ps scenario

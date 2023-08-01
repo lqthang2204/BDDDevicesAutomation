@@ -1,32 +1,27 @@
 from behave import *
 
-from ManagementElements.Elements import Elements
-from ManagementElements.Locator import Locator
-from ManagementElements.Page import Page
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 from Utilities.common_ui import common_device
 
-dict_yaml = {}
-dict_page = {}
-read_yaml: str
-page_present = Page
-element_page = Elements
-locator = Locator
-dict_save_value = {}
+
+# dict_yaml = {}
+# dict_page = {}
+# read_yaml: str
+# page_present = Page
+# element_page = Elements
+# locator = Locator
+# dict_save_value = {}
 
 
 @step(u'I navigate to url {name}')
 def launchBrowser(context, name):
     context.driver.get(context.url[name])
-def launchBrowser(context, index):
-    array_url = context.url.split(",")
-    context.driver.get(array_url[int(index) - 1].strip())
 
 @step(u'I change the page spec to {page}')
 def change_page(context, page):
     path_file = context.dict_yaml[page + ".yaml"]
-    page = ManagementFile().read_yaml_file(path_file + "/" + page + ".yaml", dict_page, page, context.device.get_platform_name())
+    page = ManagementFile().read_yaml_file(path_file + "/" + page + ".yaml", context.dict_yaml, page, context.device.get_platform_name())
     context.page_present = page
     return context.page_present
 
@@ -98,8 +93,3 @@ def step_impl(context, element, key):
                                                                      context.dict_save_value, context.wait,
                                                                      context.device)
     return context.dict_save_value
-
-
-@step(u'I wait 5 seconds')
-def step_impl(context):
-    print("wait")

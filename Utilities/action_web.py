@@ -19,15 +19,15 @@ from ManagementElements.Page import Page
 class ManagementFile:
     def get_dict_path_yaml(self):
         file_path = os.path.dirname(os.path.dirname(__file__)) + "/resources/pages/*/*.yaml"
-        print("file path =======================", file_path)
+        # print("file path =======================", file_path)
         dict_yaml = {}
         files = glob.glob(file_path, recursive=True)
-        print("glob = ", files)
+        # print("glob = ", files)
         for file in files:
-            print("lopp file ", file)
+            # print("loop file ", file)
             path, file_name = os.path.split(file)
             dict_yaml[file_name] = path
-        # dict_yaml_path = dict(dict_yaml)
+        # dict_yaml_path = dict(dict_yaml)      # no needed
         return dict_yaml
 
     def read_yaml_file(self, path, dict_yaml, page_name, platform_name):
@@ -42,7 +42,7 @@ class ManagementFile:
                 python_dict = yaml.load(page.read(), Loader=SafeLoader)
                 json_result = json.dumps(python_dict)
                 json_object = json.loads(json_result)
-                print("json =", json_object)
+                # print("json =", json_object)
                 arr_element = json_object["elements"]
                 for element in arr_element:
                     obj_element = Elements()
