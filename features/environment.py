@@ -57,7 +57,6 @@ def before_scenario(context, scenario):
             context.url = stage_config.get_list_link()
             break
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
-    context.logging_format = context.config_env.get('Logging', 'logging_format')
 
 
 def launch_browser(context, device, browser):
