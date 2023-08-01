@@ -16,21 +16,17 @@ locator = Locator
 dict_save_value = {}
 
 
-@step(u'I navigate to url have index {index}')
+@step(u'I navigate to url {name}')
+def launchBrowser(context, name):
+    context.driver.get(context.url[name])
 def launchBrowser(context, index):
     array_url = context.url.split(",")
     context.driver.get(array_url[int(index) - 1].strip())
 
-
-@step(u'I open application')
-def step_impl(context):
-    print("run application")
-
-
 @step(u'I change the page spec to {page}')
 def change_page(context, page):
     path_file = context.dict_yaml[page + ".yaml"]
-    page = ManagementFile().read_yaml_file(path_file + "/" + page + ".yaml", dict_page, page)
+    page = ManagementFile().read_yaml_file(path_file + "/" + page + ".yaml", dict_page, page, context.device.get_platform_name())
     context.page_present = page
     return context.page_present
 

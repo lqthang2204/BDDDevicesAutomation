@@ -30,7 +30,7 @@ class ManagementFile:
         # dict_yaml_path = dict(dict_yaml)
         return dict_yaml
 
-    def read_yaml_file(self, path, dict_yaml, page_name):
+    def read_yaml_file(self, path, dict_yaml, page_name, platform_name):
         if page_name in dict_yaml.keys():
             obj_page = dict_yaml[page_name]
             return obj_page
@@ -50,12 +50,14 @@ class ManagementFile:
                     obj_element.set_description(element["description"])
                     arr_locator = element["locators"]
                     list_locator = list()
-                    for locator in arr_locator:
-                        obj_locator = Locator()
-                        obj_locator.set_device(locator["device"])
-                        obj_locator.set_type(locator["type"])
-                        obj_locator.set_value(locator["value"])
-                        list_locator.append(obj_locator)
+                    arr_locator = list(filter(
+                        lambda loc: loc['device'] == platform_name, arr_locator
+                    ))
+                    obj_locator = Locator()
+                    obj_locator.set_device(arr_locator[0]["device"])
+                    obj_locator.set_type(arr_locator[0]["type"])
+                    obj_locator.set_value(arr_locator[0]["value"])
+                    list_locator.append(obj_locator)
                     obj_element.set_list_locator(list_locator)
                     list_element.append(obj_element)
                 obj_page.set_list_element(list_element)
@@ -74,12 +76,14 @@ class ManagementFile:
                             arr_locator = obj_locator["locators"]
                             obj_action_elements.set_id(obj_locator["id"])
                             list_locator = list()
-                            for locator_action in arr_locator:
-                                obj_locator = Locator()
-                                obj_locator.set_device(locator_action["device"])
-                                obj_locator.set_type(locator_action["type"])
-                                obj_locator.set_value(locator_action["value"])
-                                list_locator.append(obj_locator)
+                            arr_locator = list(filter(
+                                lambda loc: loc['device'] == platform_name, arr_locator
+                            ))
+                            obj_locator = Locator()
+                            obj_locator.set_device(arr_locator[0]["device"])
+                            obj_locator.set_type(arr_locator[0]["type"])
+                            obj_locator.set_value(arr_locator[0]["value"])
+                            list_locator.append(obj_locator)
                             obj_action_elements.set_element(list_locator)
                             obj_action_elements.set_condition(self.check_att_is_exist(action_elements, "condition"))
                             obj_action_elements.set_timeout(self.check_att_is_exist(action_elements, "timeout"))
