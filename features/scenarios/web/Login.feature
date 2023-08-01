@@ -3,7 +3,14 @@ Feature: login web
 
   Background: Some background
     Given I navigate to url OPEN_MRS
-    
+
+  @accessibility
+  Scenario: perform accessibility testing on OPEN_MRS
+    And I change the page spec to LoginPage
+    And I wait for element user-field to be DISPLAYED
+    And I wait for element pass-field to be DISPLAYED
+    Then I run accessibilty test on OPEN_MRS
+
   @test-p1
   Scenario: test login page
     And I change the page spec to LoginPage
