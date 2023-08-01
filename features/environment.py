@@ -45,7 +45,7 @@ def before_scenario(context, scenario):
                     break
                 elif context.platform == 'ANDROID' and device.get_platform_name() == context.platform:
                     print('android')
-                    launch_android(context, device, context.config)
+                    launch_android(context, device, context.config_env)
                     context.wait = device.get_wait()
                     context.time_page_load = device.get_time_page_load()
                     break
