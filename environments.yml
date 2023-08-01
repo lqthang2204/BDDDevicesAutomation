@@ -1,6 +1,11 @@
 env:
   - stage: QA
-    link: https://demo.openmrs.org/openmrs/login.htm, https://www.google.com/, http://live.techpanda.org/index.php/,  https://tiki.vn/, https://idiva.vn/
+    link:
+      OPEN_MRS: https://demo.openmrs.org/openmrs/login.htm
+      GOOGLE: https://www.google.com/
+      TECHPANDA: http://live.techpanda.org/index.php/
+      TIKI: https://tiki.vn/
+      IDIVA: https://idiva.vn/
     devices:
     - platformName: WEB
       is_headless: true
@@ -27,30 +32,44 @@ env:
       appPackage: com.android.chrome
       appActivity: com.google.android.apps.chrome.Main
       udid: emulator-5554
+    api-facets:
+      - link:
+          REQRES: https://reqres:in/
+          SFCLOUD: https://some-api.salesforce.com/
   - stage: SIT
-    link: https://demo.openmrs.org/openmrs/login.htm, https://www.google.com/, http://live.techpanda.org/index.php/
+    link:
+      OPEN_MRS: https://demo.openmrs.org/openmrs/login.htm
+      GOOGLE: https://www.google.com/
+      TECHPANDA: http://live.techpanda.org/index.php/
+      TIKI: https://tiki.vn/
+      IDIVA: https://idiva.vn/
     devices:
-    - platformName: WEB
-      is_headless: false
-      wait: 30
-      time_page_load:
-      auto_download_driver: false
-      driver_version: WebDriver\\chromedriver_114.exe
-    - platformName: ANDROID
-      is_headless: true
-      wait: 30
-      time_page_load: 31
-      auto_download_driver: false
-      driver_version: WebDriver\\chromedriver_114.exe
-      appPackage: vn.tiki.app.tikiandroid
-      appActivity: vn.tiki.android.shopping.homeV3.HomeActivity
-      udid: HVA222NA
-    - platformName: IOS
-      is_headless: false
-      wait: 30
-      time_page_load:
-      auto_download_driver: false
-      driver_version: WebDriver\\chromedriver_114.exe
-      appPackage: vn.tiki.app.tikiandroid
-      appActivity: vn.tiki.android.shopping.homeV3.HomeActivity
-      udid: emulator-5554
+      - platformName: WEB
+        is_headless: true
+        wait: 30
+        time_page_load: 30
+        auto_download_driver: true
+        driver_version: WebDriver\\chromedriver_114.exe
+      - platformName: ANDROID
+        is_headless: true
+        wait: 30
+        time_page_load: 31
+        auto_download_driver: false
+        driver_version: WebDriver\\chromedriver_114.exe
+        appPackage: vn.tiki.app.tikiandroid
+        appActivity: vn.tiki.android.shopping.homeV3.HomeActivity
+        udid: HVA222NA
+      #      udid: emulator-5554
+      - platformName: IOS
+        is_headless: false
+        wait: 32
+        time_page_load: 32
+        auto_download_driver: false
+        driver_version: WebDriver\\chromedriver_114.exe
+        appPackage: com.android.chrome
+        appActivity: com.google.android.apps.chrome.Main
+        udid: emulator-5554
+    api-facets:
+      - link:
+          REQRES: https://reqres:in/
+          SFCLOUD: https://some-api.salesforce.com/

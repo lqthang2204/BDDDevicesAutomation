@@ -2,7 +2,6 @@ import configparser
 import datetime
 import logging
 import os
-
 import appium
 from appium.webdriver.appium_service import AppiumService
 from selenium import webdriver
@@ -12,7 +11,6 @@ from selenium.webdriver.firefox.options import Options as firefox_option
 from selenium.webdriver.firefox.service import Service as firefox_service
 from selenium.webdriver.safari.options import Options as safari_option
 from selenium.webdriver.safari.service import Service as safari_service
-
 from Utilities.action_web import ManagementFile
 from Utilities.read_configuration import read_configuration
 
@@ -24,15 +22,14 @@ def before_all(context):
     file = open(config_file_path, 'r')
     context.config_env = configparser.RawConfigParser(allow_no_value=True)
     context.config_env.read_file(file)
-    context.platform = context.config_env.get('drivers_config', 'platform')
-    context.stage_name = context.config_env.get('drivers_config', 'stage')
-    if context.config_env.has_option('drivers_config', 'browser'):
-        context.browser = context.config_env.get('drivers_config', 'browser')
+    context.platform = context.config_env.get("drivers_config", "platform")
+    context.stage_name = context.config_env.get("drivers_config", "stage")
+    if context.config_env.has_option("drivers_config", "browser"):
+        context.browser = context.config_env.get("drivers_config", "browser")
     else:
-        context.browser = 'chrome'
+        context.browser = "chrome"
     context.env = read_configuration().read()
     context.arr_stage = context.env.get_list_stage()
-
 
 def before_scenario(context, scenario):
     logging.info(f'Scenario {scenario.name} started')
@@ -40,21 +37,24 @@ def before_scenario(context, scenario):
         if stage_config.get_stage_name() == context.stage_name:
             arr_device = stage_config.get_list_devices()
             for device in arr_device:
-                if context.platform == 'WEB' and device.get_platform_name() == context.platform:
-                    launch_browser(context, device, context.browser)
+                if context.platform == "WEB" and device.get_platform_name() == context.platform:
+                    if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+                        cross_browser_with_saucelabs(context, device)
+                    else:
+                        launch_browser(context, device, context.browser)
                     break
-                elif context.platform == 'ANDROID' and device.get_platform_name() == context.platform:
-                    print('android')
+                elif context.platform == "ANDROID" and device.get_platform_name() == context.platform:
+                    print("android")
                     launch_android(context, device, context.config_env)
                     context.wait = device.get_wait()
                     context.time_page_load = device.get_time_page_load()
                     break
-                elif context.platform == 'IOS' and device.get_platform_name() == context.platform:
-                    print('IOS')
+                elif context.platform == "IOS" and device.get_platform_name() == context.platform:
+                    print("IOS")
                     context.wait = device.get_wait()
                     context.time_page_load = device.get_time_page_load()
                     break
-            context.url = stage_config.get_link()
+            context.url = stage_config.get_list_link()
             break
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
 
@@ -110,11 +110,15 @@ def after_scenario(context, scenario):
         context.driver.quit()
     logging.info(f'Scenario {scenario.name} Ended')
 
-
 def after_all(context):
     if context.driver is not None:
+        print('Closing driver from After_ALL')
         context.driver.close()
         context.driver.quit()
+    print('------ Displaying Dictionary keys ------')
+    for keys, value in context.dict_save_value.items():
+        print(keys, value)
+    print('------ Printed Dictionary keys ------')
 
 
 def get_driver_from_path(context, browser, device, option):
@@ -152,3 +156,23 @@ def get_option_from_browser(browser, device):
         option.add_argument('--headless')
 
     return option
+def cross_browser_with_saucelabs(context, device):
+    config_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'remote_config.ini')
+    file = open(config_file_path, 'r')
+    config = configparser.RawConfigParser(allow_no_value=True)
+    config.read_file(file)
+    options = get_option_from_browser(config.get("remote", "browser"), device)
+    options.browser_version = 'latest'
+    options.platform_name = config.get("remote", "platform_name")
+    sauce_options = {}
+    sauce_options['username'] = config.get("remote", "username")
+    sauce_options['accessKey'] = config.get("remote", "accessKey")
+    sauce_options['build'] = config.get("remote", "build")
+    sauce_options['name'] = config.get("remote", "name")
+    options.set_capability('sauce:options', sauce_options)
+    url = config.get("remote", "url")
+    context.driver = webdriver.Remote(command_executor=url, options=options)
+    context.wait = device.get_wait()
+    context.device = device
+    context.time_page_load = device.get_time_page_load()
+    context.driver.maximize_window()

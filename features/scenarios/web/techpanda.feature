@@ -2,7 +2,7 @@
 Feature: test web page techpanda web
 
   Background: Test Background here
-    Given I navigate to url have index 3
+    Given I navigate to url TECHPANDA
     And I change the page spec to HomePage
     And I wait for element mobile-button to be DISPLAYED
 

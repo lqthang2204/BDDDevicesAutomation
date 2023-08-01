@@ -7,6 +7,7 @@ from yaml import SafeLoader
 from Configuration.configuration_env import environment_config
 from Configuration.devices import devices
 from Configuration.stage import stage
+from Configuration.api_facets import api
 from Utilities.common_ui import common_device
 
 
@@ -24,9 +25,10 @@ class read_configuration:
             for config in arr_config:
                 stage_env = stage()
                 stage_env.set_stage_name(config["stage"])
-                stage_env.set_link(config["link"])
+                stage_env.set_list_link(config["link"])
                 list_device = list()
                 arr_device = config["devices"]
+                stage_env.set_api_facets(config['api-facets'])
                 for dev in arr_device:
                     device = devices()
                     device.set_platform_name(common_device().check_att_is_exist(dev, "platformName"))

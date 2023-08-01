@@ -2,8 +2,8 @@
 Feature: login web
 
   Background: Some background
-    Given I navigate to url have index 1
-
+    Given I navigate to url OPEN_MRS
+    
   @test-p1
   Scenario: test login page
     And I change the page spec to LoginPage
