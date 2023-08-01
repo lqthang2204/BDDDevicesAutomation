@@ -15,7 +15,7 @@ class common_device:
             return obj_action_elements.get(key)
 
     def action_page(self, element_page, action, driver, value, wait, dict_save_value, device):
-        locator = ManagementFile().get_locator(element_page, device.get_platform_name())
+        locator = ManagementFile().get_locator(element_page, device['platformName'])
         element = self.get_element_by_from_device(locator, device, driver)
         logging.info("execute %s with element have is %s", action, locator.value)
         WebDriverWait(driver, wait).until(ec.all_of(
@@ -35,7 +35,7 @@ class common_device:
             assert False, "Not support action in framework"
 
     def click_action(self, element, wait, locator, device, driver):
-        if device.get_platform_name() == "WEB":
+        if device['platformName'] == "WEB":
             if element.get_attribute("disabled") is None:
                 element.click()
             else:
@@ -49,31 +49,31 @@ class common_device:
                 ec.element_to_be_clickable(locator_from_wait))
             element.click()
 
-    def wait_element_for_status(self, element_page, status, driver, device):
-        locator = ManagementFile().get_locator(element_page, device.get_platform_name())
+    def wait_element_for_status(self, element_page, status, driver, device, wait):
+        locator = ManagementFile().get_locator(element_page, wait)
         locator_from_wait = self.get_locator_for_wait_from_device(locator, device)
         logging.info("wait element have value  %s with the status %s", locator.value, status);
         try:
             if status == "DISPLAYED":
-                WebDriverWait(driver, device.get_wait()).until(ec.presence_of_element_located(locator_from_wait))
+                WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
             elif status == "NOT_DISPLAYED":
-                WebDriverWait(driver, device.get_wait()).until(ec.invisibility_of_element_located(locator_from_wait))
+                WebDriverWait(driver, wait).until(ec.invisibility_of_element_located(locator_from_wait))
             elif status == "ENABLED":
-                WebDriverWait(driver, device.get_wait()).until(ec.all_of(
+                WebDriverWait(driver, wait).until(ec.all_of(
                     ec.element_to_be_clickable(locator_from_wait)),
                     ec.presence_of_element_located(locator_from_wait))
             elif status == "NOT_ENABLED":
-                WebDriverWait(driver, device.get_wait()).until_not(ec.element_to_be_clickable(locator_from_wait))
+                WebDriverWait(driver, wait).until_not(ec.element_to_be_clickable(locator_from_wait))
             elif status == "EXISTED":
                 elements = self.get_list_element_by_from_device(locator, device, driver)
-                WebDriverWait(driver, device.get_wait()).until(lambda ele: len(elements) > int(0))
+                WebDriverWait(driver, wait).until(lambda ele: len(elements) > int(0))
             elif status == "NOT_EXISTED":
                 elements = self.get_list_element_by_from_device(locator, device, driver)
-                WebDriverWait(driver, device.get_wait()).until_not(lambda ele: len(elements) > int(0))
+                WebDriverWait(driver, wait).until_not(lambda ele: len(elements) > int(0))
             elif status == "SELECTED":
-                WebDriverWait(driver, device.get_wait()).until(ec.element_located_to_be_selected(locator_from_wait))
+                WebDriverWait(driver, wait).until(ec.element_located_to_be_selected(locator_from_wait))
             elif status == "NOT_SELECTED":
-                WebDriverWait(driver, device.get_wait()).until_not(ec.element_located_to_be_selected(locator_from_wait))
+                WebDriverWait(driver, wait).until_not(ec.element_located_to_be_selected(locator_from_wait))
             else:
                 raise Exception("Not support status ", status)
         except Exception as e:
@@ -103,7 +103,7 @@ class common_device:
                     arr_locator[0].value = arr_locator[0].value.replace("{text}", text)
                     return element_yaml
 
-    def verify_elements_with_status(self, page, table, platform_name, dict_save_value, driver, device):
+    def verify_elements_with_status(self, page, table, platform_name, dict_save_value, driver, device, wait):
         arr_element = page.list_element
         if table is not None:
             for row in table:
@@ -116,7 +116,7 @@ class common_device:
                             value = dict_save_value.get(value, value)
                         element_yaml = self.get_element(page, element_yaml.id + " with text " + value, platform_name,
                                                         dict_save_value)
-                        self.wait_element_for_status(element_yaml, row["Status"], driver, device)
+                        self.wait_element_for_status(element_yaml, row["Status"], driver, device, wait)
                         logging.info("Verified for %s have value %s and status %s", row["Field"], row["Value"],
                                      row["Value"])
         else:
@@ -125,7 +125,7 @@ class common_device:
 
     def save_text_from_element(self, element_page, driver, key, dict_save_value, wait, device):
         try:
-            locator = ManagementFile().get_locator(element_page, device.get_platform_name())
+            locator = ManagementFile().get_locator(element_page, device['platformName'])
             logging.info("save text for element  %s with key is %s", locator.value, key);
             WebDriverWait(driver, wait).until(
                 ec.presence_of_element_located(self.get_locator_for_wait_from_device(locator, device)))
@@ -138,25 +138,25 @@ class common_device:
             assert False, "Can not save text for element " + locator.value
 
     def get_locator_for_wait_from_device(self, locator, device):
-        if device.get_platform_name() == "WEB":
+        if device['platformName'] == "WEB":
             return ManagementFile().get_locator_for_wait(locator.type, locator.value)
         else:
             return ManagementFileAndroid().get_locator_for_wait(locator.type, locator.value)
 
     def get_list_element_by_from_device(self, locator, device, driver):
-        if device.get_platform_name() == "WEB":
+        if device['platformName'] == "WEB":
             return ManagementFile().get_list_element_by(locator.type, driver, locator.value)
         else:
             return ManagementFileAndroid().get_list_element_by(locator.type, driver, locator.value)
 
     def get_element_by_from_device(self, locator, device, driver):
-        if device.get_platform_name() == "WEB":
+        if device['platformName'] == "WEB":
             return ManagementFile().get_element_by(locator.type, driver, locator.value)
         else:
             return ManagementFileAndroid().get_by_android(locator.type, driver, locator.value)
 
     def get_value_element_form_device(self, element, device):
-        if device.get_platform_name() == "WEB":
+        if device['platformName'] == "WEB":
             if element.get_attribute("value") is not None and element.tag_name == "input":
                 return element.get_attribute('value')
             else:

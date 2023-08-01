@@ -1,6 +1,6 @@
 @test-idiva-total @mobile
-
     Feature: idiva mobile
+
       @test-idiva-1
       Scenario: idiva-1
         Given I change the page spec to Common
