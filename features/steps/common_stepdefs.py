@@ -1,10 +1,9 @@
 import logging
-import re
 from time import sleep
 
-from axe_selenium_python import Axe
 from behave import *
-from Utilities.accessibility_report import parse_output_data
+
+from Utilities.accessibility_report import perform_accessibility_verification
 from libraries.data_generators import get_test_data_for
 from libraries.misc_operations import sanitize_datatable
 from libraries.number_string_operations import check_and_call_operator
@@ -27,16 +26,7 @@ def step_impl(context):
 
 @step(u'I run accessibilty test on {page_name}')
 def run_accessibility(context, page_name):
-    axe = Axe(context.driver)
-    axe.inject()
-    results = axe.run()
-    axe.write_results(results, 'a11y.json')
-    # print(results['violations'])  # << -- Results a JSON , which would need parsing
-    # print(f'VIOLATIONS FOR {page_name}')
-    axe_violations = axe.report(results['violations'])  # <<-- Results a User friendly readable text
-    axe_violations = re.sub(r'\n\s*\n', '\n\n', axe_violations)
-    print(axe_violations)
-    parse_output_data(axe_violations, page_name)
+    perform_accessibility_verification(context.driver, page_name)
 
 
 @step(u'I perform operations with below attributes')

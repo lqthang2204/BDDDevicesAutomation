@@ -1,8 +1,10 @@
 import os
 import re
 
+from axe_selenium_python import Axe
 
-def parse_output_data(output_data, out_file_name):
+
+def parse_violations_data(output_data, out_file_name):
     # Initialize variables to store data
     total_violations = 0
     critical_count = 0
@@ -93,6 +95,15 @@ def parse_output_data(output_data, out_file_name):
     with open(output_file_path, "w") as file:
         file.write(html_report)
 
+def perform_accessibility_verification(context_driver,page_name):
+    axe = Axe(context_driver)
+    axe.inject()
+    results = axe.run()
+    # axe.write_results(results, 'a11y.json')   # <<-- Output the JSON file
+    # print(results['violations'])  # << -- Results a JSON , which would need parsing
+    axe_violations = axe.report(results['violations'])  # <<-- Results a User friendly readable text
+    axe_violations = re.sub(r'\n\s*\n', '\n\n', axe_violations)
+    parse_violations_data(axe_violations, page_name)
 
 # Example Usage:
 if __name__ == '__main__':

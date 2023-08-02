@@ -19,10 +19,6 @@
         li {{
             margin-bottom: 15px;
         }}
-        h1, h2, p, pre, ul {{
-            margin-top: 0;
-            margin-bottom: 0;
-        }}
         h1 {{
             margin-bottom: 10px;
             font-size: 24px;
@@ -31,17 +27,11 @@
         h2 {{
             font-size: 16px;
         }}
-        pre {{
-            white-space: pre-wrap;
-            overflow: auto;
-        }}
-
         .page {{
             max-width: 800px;
             margin: 0 auto;
             padding: 25px;
         }}
-
         .counts {{
             margin-top: 30px;
             font-size: 20px;
@@ -52,7 +42,6 @@
             border-radius: 5px;
             border: 1px solid #eee;
         }}
-
         .clean-list {{
             margin-left: 0;
             padding-left: 0;
@@ -61,7 +50,6 @@
         .results-list {{
             margin-top: 30px;
         }}
-
         .result {{
             padding: 10px;
             border-radius: 5px;
@@ -86,9 +74,9 @@
 <body>
 
 <div class="page">
-    <h1>Accessibility - Summary Report {page_name}</h1>
+    <h1 class="h1">Accessibility - Summary Report {page_name}</h1>
     <p class="counts">
-    <H2>Total: {total_count} --> </H2> <br>
+    <h2 class="h2 count error">Total Issues: {total_count} </h2> <br>
     <span class="count error">Critical: {critical_count} </span> <span
         class="count error">Serious: {serious_count}</span> <span
         class="count warning">Moderate: {moderate_count}</span> <span

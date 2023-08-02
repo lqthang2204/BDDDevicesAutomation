@@ -5,11 +5,22 @@ Feature: login web
     Given I navigate to url OPEN_MRS
 
   @accessibility
-  Scenario: perform accessibility testing on OPEN_MRS
+  Scenario: perform accessibility testing on OPEN_MRS - Elements Default State
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
-    Then I run accessibilty test on OPEN_MRS
+    Then I run accessibilty test on OPEN_MRS_DEFAULT
+
+  @accessibility
+  Scenario: perform accessibility testing on OPEN_MRS - Invalid Credentials
+    And I change the page spec to LoginPage
+    And I wait for element user-field to be DISPLAYED
+    And I wait for element pass-field to be DISPLAYED
+    And I perform login-page-two action with override values
+      | Field      | Value                     |
+      | user-field | Admin                     |
+      | pass-field | KEY.randomOneAplhabetLen5 |
+    Then I run accessibilty test on OPEN_MRS_InvalidCreds
 
   @test-p1
   Scenario: test login page
