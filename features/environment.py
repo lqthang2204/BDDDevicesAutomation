@@ -115,10 +115,7 @@ def after_all(context):
         print('Closing driver from After_ALL')
         context.driver.close()
         context.driver.quit()
-    print('------ Displaying Dictionary keys ------')
-    for keys, value in context.dict_save_value.items():
-        print(keys, value)
-    print('------ Printed Dictionary keys ------')
+
 
 
 def get_driver_from_path(context, browser, device, option):

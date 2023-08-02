@@ -3,9 +3,10 @@ from time import sleep
 
 from behave import *
 
+from Utilities.accessibility_report import perform_accessibility_verification
+from libraries.data_generators import get_test_data_for
 from libraries.misc_operations import sanitize_datatable
 from libraries.number_string_operations import check_and_call_operator
-from libraries.data_generators import get_test_data_for
 
 
 @step(u'I create a set of keys with below attributes')
@@ -21,6 +22,11 @@ def step_impl(context):
             context.dict_save_value['KEY.' + row[1]] = result
 
     return context.dict_save_value
+
+
+@step(u'I run accessibilty test on {page_name}')
+def run_accessibility(context, page_name):
+    perform_accessibility_verification(context.driver, page_name)
 
 
 @step(u'I perform operations with below attributes')

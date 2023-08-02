@@ -1,6 +1,18 @@
 @regression @web
 Feature: orange HRM web
 
+  @accessibility
+  Scenario: perform accessibility testing on TECHPANDA
+    Given I navigate to url GOOGLE
+    And I change the page spec to pageGoogle
+    And I wait for element search-field to be DISPLAYED
+    And I click element search-field
+    And I type "lqthang" into element search-field
+    And I navigate to url TECHPANDA
+    And I change the page spec to HomePage
+    And I wait for element mobile-button to be DISPLAYED
+    Then I run accessibilty test on TECHPANDA
+
   @test1
 #  @Windows10_Chrome_76.0
 #  @Windows10_Firefox_68.0
