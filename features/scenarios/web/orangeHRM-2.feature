@@ -37,7 +37,7 @@ Feature: orange HRM 2 web
 #    And I wait for element welcome-user to be DISPLAYED
 #    And I wait for element log-out to be DISPLAYED
 
-#  Scenario: This will not be included
+#  Scenario: This is commented script
 #    Given I navigate to url have index 1
 #    And I change the page spec to LoginPage
 #    And I wait for element user-field to be DISPLAYED
@@ -45,7 +45,7 @@ Feature: orange HRM 2 web
 #    And I type "Admin" into element user-field
 
   @norun
-  Scenario: This will not be included
+  Scenario: This should not be included
     Given I navigate to url have index 1
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
