@@ -28,40 +28,36 @@ def before_all(context):
         context.browser = context.config_env.get("drivers_config", "browser")
     else:
         context.browser = "chrome"
-    context.env = read_configuration().read()
-    context.arr_stage = context.env.get_list_stage()
+    context.env = read_configuration().read(context.stage_name)
 
 def before_scenario(context, scenario):
+    device = context.env['devices']
+    context.device = list(filter(
+        lambda device: device['platformName'] == context.platform, device
+    ))
+    context.device = context.device[0]
     logging.info(f'Scenario {scenario.name} started')
-    for stage_config in context.arr_stage:
-        if stage_config.get_stage_name() == context.stage_name:
-            arr_device = stage_config.get_list_devices()
-            for device in arr_device:
-                if context.platform == "WEB" and device.get_platform_name() == context.platform:
-                    if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-                        cross_browser_with_saucelabs(context, device)
-                    else:
-                        launch_browser(context, device, context.browser)
-                    break
-                elif context.platform == "ANDROID" and device.get_platform_name() == context.platform:
-                    print("android")
-                    launch_android(context, device, context.config_env)
-                    context.wait = device.get_wait()
-                    context.time_page_load = device.get_time_page_load()
-                    break
-                elif context.platform == "IOS" and device.get_platform_name() == context.platform:
-                    print("IOS")
-                    context.wait = device.get_wait()
-                    context.time_page_load = device.get_time_page_load()
-                    break
-            context.url = stage_config.get_list_link()
-            break
+    if context.platform == "WEB" and context.device['platformName'] == context.platform:
+        if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+            cross_browser_with_saucelabs(context, context.device)
+        else:
+            launch_browser(context, context.device, context.browser)
+    elif context.platform == "ANDROID" and context.device['platformName'] == context.platform:
+        print("android")
+        launch_android(context, context.device, context.config_env)
+        context.wait = context.device['wait']
+        context.time_page_load = context.device['time_page_load']
+    elif context.platform == "IOS" and context.device['platformName'] == context.platform:
+        print("IOS")
+        context.wait = context.device['wait']
+        context.time_page_load = context.device['time_page_load']
+    context.url = context.env['link']
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
 
 
 def launch_browser(context, device, browser):
     option = get_option_from_browser(browser, device)
-    if device.get_auto_download_driver() is False:
+    if device['auto_download_driver'] is False:
         get_driver_from_path(context, browser, device, option)
     else:
         if browser == 'chrome':
@@ -73,9 +69,8 @@ def launch_browser(context, device, browser):
         else:
             logging.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
             context.driver = webdriver.Chrome(options=option)
-    context.wait = device.get_wait()
-    context.device = device
-    context.time_page_load = device.get_time_page_load()
+    context.wait = device['wait']
+    context.time_page_load = device['time_page_load']
     context.driver.maximize_window()
 
 
@@ -83,16 +78,14 @@ def launch_android(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get('drivers_config', 'APPIUM_HOST'), '-P', str(config.get('drivers_config', 'APPIUM_PORT'))], timeout_ms=20000)
     desired_caps = {
-        'platformName': device.get_platform_name(),
-        'udid': device.get_udid(),
-        'appPackage': device.get_app_package(),
-        'appActivity': device.get_app_activity()
+        'platformName': device['platformName'],
+        'udid': device['udid'],
+        'appPackage': device['appPackage'],
+        'appActivity': device['appActivity']
     }
-    url = 'http://' + config.get('drivers_config', 'APPIUM_HOST') + ':' + str(
-        config.get('drivers_config', 'APPIUM_PORT')) + '/wd/hub'
-    print(url)
-    context.device = device
-    context.wait = device.get_wait()
+    url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
+        config.get('drivers_config', 'appium_port')) + '/wd/hub'
+    context.wait = device['wait']
     context.driver = appium.webdriver.Remote(url, desired_caps)
 
 
@@ -149,7 +142,7 @@ def get_option_from_browser(browser, device):
 
     option = supported_browsers.get(browser.lower(), chrome_option)()
 
-    if device.get_is_headless() and browser.lower() in ['chrome', 'firefox']:
+    if device['is_headless'] and browser.lower() in ['chrome', 'firefox']:
         option.add_argument('--headless')
 
     return option
@@ -169,7 +162,7 @@ def cross_browser_with_saucelabs(context, device):
     options.set_capability('sauce:options', sauce_options)
     url = config.get("remote", "url")
     context.driver = webdriver.Remote(command_executor=url, options=options)
-    context.wait = device.get_wait()
+    context.wait = device['wait']
     context.device = device
-    context.time_page_load = device.get_time_page_load()
+    context.time_page_load = device['time_page_load']
     context.driver.maximize_window()
