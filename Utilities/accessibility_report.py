@@ -203,4 +203,4 @@ region - Ensures all page content is contained by landmarks
 	1) Target: html
 		Some page content is not contained by landmarks'''
 
-    parse_output_data(output_data=data, out_file_name="adfadf")
+    parse_violations_data(output_data=data, out_file_name="adfadf")
