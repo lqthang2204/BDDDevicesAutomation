@@ -123,13 +123,7 @@ color-contrast - Ensures the contrast between foreground and background colors m
 		Element has insufficient color contrast of 3.83 (foreground color: #007fff, background color: #ffffff, font size: 9.6pt, font weight: normal). Expected contrast ratio of 4.5:1
 	4) Target: #Outpatient\ Clinic
 		Element has insufficient color contrast of 3.83 (foreground color: #007fff, background color: #ffffff, font size: 9.6pt, font weight: normal). Expected contrast ratio of 4.5:1
-	5) Target: #Pharmacy
-		Element has insufficient color contrast of 3.83 (foreground color: #007fff, background color: #ffffff, font size: 9.6pt, font weight: normal). Expected contrast ratio of 4.5:1
-	6) Target: #Registration\ Desk
-		Element has insufficient color contrast of 3.83 (foreground color: #007fff, background color: #ffffff, font size: 9.6pt, font weight: normal). Expected contrast ratio of 4.5:1
-	7) Target: #cantLogin
-		Element has insufficient color contrast of 3.83 (foreground color: #007fff, background color: #ffffff, font size: 12.0pt, font weight: normal). Expected contrast ratio of 4.5:1
-
+	
 Rule Violated:
 duplicate-id - Ensures every id attribute value is unique
 	URL: https://dequeuniversity.com/rules/axe/3.1/duplicate-id?application=axeAPI
@@ -158,9 +152,7 @@ image-alt - Ensures <img> elements have alternate text or a role of none or pres
 		Element does not have an alt attribute
 		aria-label attribute does not exist or is empty
 		aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
-		Element has no title attribute or the title attribute is empty
-		Element's default semantics were not overridden with role="presentation"
-		Element's default semantics were not overridden with role="none"
+		
 
 Rule Violated:
 landmark-one-main - Ensures the page has only one main landmark and each iframe in the page has at most one main landmark
@@ -182,8 +174,7 @@ link-name - Ensures links have discernible text
 		aria-label attribute does not exist or is empty
 		aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
 		Element's default semantics were not overridden with role="presentation"
-		Element's default semantics were not overridden with role="none"
-		Element is in tab order and does not have accessible text
+		
 
 Rule Violated:
 page-has-heading-one - Ensure that the page, or at least one of its frames contains a level-one heading
