@@ -104,3 +104,10 @@ actions:
       - element: *pass-field
         condition: DISPLAYED
         inputType: text
+  - id: wait-field-display
+    description: wait 2 field display
+    actionElements:
+      - element: *user-field
+        condition: DISPLAYED
+      - element: *pass-field
+        condition: DISPLAYED

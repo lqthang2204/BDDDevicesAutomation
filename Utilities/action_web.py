@@ -9,11 +9,6 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from yaml import SafeLoader
 
-from ManagementElements.ActionElements import ActionElements
-from ManagementElements.ActionTest import ActionTest
-from ManagementElements.Elements import Elements
-from ManagementElements.Locator import Locator
-from ManagementElements.Page import Page
 
 
 class ManagementFile:
@@ -35,73 +30,20 @@ class ManagementFile:
             obj_page = dict_page_element[page_name]
             return obj_page
         else:
-            # obj_page = Page()
-            # dict_yaml[page_name] = obj_page
             with open(path, encoding='utf-8') as page:
                 python_dict = yaml.load(page.read(), Loader=SafeLoader)
                 json_result = json.dumps(python_dict)
                 json_object = json.loads(json_result)
                 dict_page_element[page_name] = json_object
                 return json_object
-                # print("json =", json_object)
-            #     arr_element = json_object["elements"]
-            #     for element in arr_element:
-            #         obj_element = Elements()
-            #         obj_element.set_id(element["id"])
-            #         obj_element.set_description(element["description"])
-            #         arr_locator = element["locators"]
-            #         list_locator = list()
-            #         arr_locator = list(filter(
-            #             lambda loc: loc['device'] == platform_name, arr_locator
-            #         ))
-            #         obj_locator = Locator()
-            #         obj_locator.set_device(arr_locator[0]["device"])
-            #         obj_locator.set_type(arr_locator[0]["type"])
-            #         obj_locator.set_value(arr_locator[0]["value"])
-            #         list_locator.append(obj_locator)
-            #         obj_element.set_list_locator(list_locator)
-            #         list_element.append(obj_element)
-            #     obj_page.set_list_element(list_element)
-            #     dict_action = {}
-            #     arr_action = self.check_att_is_exist(json_object, "actions")
-            #     if arr_action is not None:
-            #         for action in arr_action:
-            #             obj_action = ActionTest()
-            #             obj_action.set_id(action["id"])
-            #             obj_action.set_description(action["description"])
-            #             arr_action_elements = action["actionElements"]
-            #             list_action_element = list()
-            #             for action_elements in arr_action_elements:
-            #                 obj_action_elements = ActionElements()
-            #                 obj_locator = action_elements["element"]
-            #                 arr_locator = obj_locator["locators"]
-            #                 obj_action_elements.set_id(obj_locator["id"])
-            #                 list_locator = list()
-            #                 arr_locator = list(filter(
-            #                     lambda loc: loc['device'] == platform_name, arr_locator
-            #                 ))
-            #                 obj_locator = Locator()
-            #                 obj_locator.set_device(arr_locator[0]["device"])
-            #                 obj_locator.set_type(arr_locator[0]["type"])
-            #                 obj_locator.set_value(arr_locator[0]["value"])
-            #                 list_locator.append(obj_locator)
-            #                 obj_action_elements.set_element(list_locator)
-            #                 obj_action_elements.set_condition(self.check_att_is_exist(action_elements, "condition"))
-            #                 obj_action_elements.set_timeout(self.check_att_is_exist(action_elements, "timeout"))
-            #                 obj_action_elements.set_inputType(self.check_att_is_exist(action_elements, "inputType"))
-            #                 obj_action_elements.set_info_type(self.check_att_is_exist(action_elements, "infoType"))
-            #                 list_action_element.append(obj_action_elements)
-            #                 obj_action.set_list_action(list_action_element)
-            #             dict_action[action["id"]] = obj_action
-            #     obj_page.set_dict_action(dict_action)
-            #     dict_yaml[page_name] = obj_page
-            # return obj_page
 
-    def execute_action(self, page, action_id, driver, wait, table, dict_save_value):
+    def execute_action(self, page, action_id, driver, wait, table, dict_save_value, platform_name):
         dict_action = page['actions']
         dict_action = list(filter(
             lambda action: action['id'] == action_id, dict_action
         ))
+        type_action = None
+        value = None
         if dict_action:
             obj_action = dict_action[0]
             arr_list_action = obj_action['actionElements']
@@ -114,8 +56,9 @@ class ManagementFile:
                                 value = dict_save_value.get(value, value)
                             break
                 element_page = action_elements['element']
-                type_action = action_elements['inputType']
-                locator = self.get_locator_from_action(element_page, "WEB")
+                if self.check_field_exist(action_elements, 'inputType'):
+                    type_action = action_elements['inputType']
+                locator = self.get_locator_from_action(element_page, platform_name)
                 element = self.get_element_by(locator['type'], driver, locator['value'])
                 if self.check_field_exist(action_elements, "condition") and self.check_field_exist(action_elements, "timeout"):
                     try:
@@ -148,7 +91,7 @@ class ManagementFile:
                         else:
                             logging.error("Not support condition %s in framework", action_elements['condition'])
                             assert False, "Not support condition"
-                        if type_action.__eq__("click"):
+                        if type_action == "click":
                             if element.get_attribute("disabled") is None:
                                 element.click()
                             else:
@@ -156,15 +99,14 @@ class ManagementFile:
                                     ec.element_attribute_to_include(
                                         self.get_locator_for_wait(locator['type'], locator['value']), "disabled"))
                                 element.click()
-                        elif type_action.__eq__("text"):
+                        elif type_action == "text":
                             element.send_keys(value)
                     except Exception as e:
                         logging.info(f'can not execute action with element have value  {locator} in framework')
                         assert True, "can not execute action with element have value" + locator + "in framework"
                 elif self.check_field_exist(action_elements,'condition') and self.check_field_exist(action_elements,'timeout') is False:
                     try:
-                        self.process_execute_action(driver, wait, element, type_action, value,
-                                                    locator)
+                        self.process_execute_action(driver, wait, element, type_action, value, locator, action_elements)
                     except Exception as e:
                         logging.error("can not execute action % with element have value  %s in framework", type_action,
                                       locator['value'])
@@ -263,10 +205,10 @@ class ManagementFile:
         else:
             return obj_action_elements.get(key)
 
-    def process_execute_action(self, driver, wait, element, type_action, value, locator):
-        WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
+    def process_execute_action(self, driver, wait, element, type_action, value, locator, action_elements):
         logging.info(f'execute action  {type_action} with element have value {locator}')
-        if type_action.__eq__("click"):
+        if type_action == 'click':
+            WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
             if element.get_attribute("disabled") is None:
                 element.click()
             else:
@@ -274,8 +216,13 @@ class ManagementFile:
                     ec.element_attribute_to_include(
                         self.get_locator_for_wait(locator[type], locator['value']), "disabled"))
                 element.click()
-        elif type_action.__eq__("text"):
+        elif type_action == "text":
+            WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
             element.send_keys(value)
+        else:
+            self.wait_for_action(action_elements, wait, driver, element, locator)
+
+
 
     def check_field_exist(self, dict, key):
         try:
@@ -283,3 +230,38 @@ class ManagementFile:
                 return True
         except:
             return False
+    def wait_for_action(self, action_elements, wait, driver, element, locator):
+        locator_from_wait = self.get_locator_for_wait(locator['type'], locator['value'])
+        try:
+            if action_elements['condition'] == "ENABLED":
+                WebDriverWait(driver, wait).until(
+                    ec.element_to_be_clickable(locator_from_wait))
+            elif action_elements['condition'] == "NOT_ENABLED":
+                WebDriverWait(driver, action_elements['timeout']).until_not(
+                    ec.element_to_be_clickable(locator_from_wait))
+            elif action_elements['condition'] == "DISPLAYED":
+                WebDriverWait(driver, wait).until(
+                    ec.presence_of_element_located(locator_from_wait))
+            elif action_elements['condition'] == "NOT_DISPLAYED":
+                WebDriverWait(driver, wait).until(
+                    ec.presence_of_element_located(locator_from_wait))
+            elif action_elements['condition'] == "EXISTED":
+                elements = self.get_list_element_by(locator['type'], driver, locator['value'])
+                WebDriverWait(driver, wait).until(
+                    lambda driver: len(elements) > int(0))
+            elif action_elements['condition'] == "NOT_EXISTED":
+                elements = self.get_list_element_by(locator.type, driver, locator.value)
+                WebDriverWait(driver, wait).until_not(
+                    lambda driver: len(elements) > int(0))
+            elif action_elements['condition'] == "SELECTED":
+                WebDriverWait(driver, wait).until(
+                    ec.element_located_to_be_selected(locator_from_wait))
+            elif action_elements['condition'] == "NOT_SELECTED":
+                WebDriverWait(driver, wait).until_not(
+                    ec.element_located_to_be_selected(locator_from_wait))
+            else:
+                logging.error(f'Not support condition {action_elements} in framework')
+                assert False, "Not support condition"
+        except Exception as e:
+            logging.info(f'can not execute action with element have value  {locator} in framework')
+            assert False, "can not execute action with element have value" + locator['value'] + "in framework"

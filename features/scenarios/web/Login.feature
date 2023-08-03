@@ -25,13 +25,10 @@ Feature: login web
   @test-p1
   Scenario: test login page
     And I change the page spec to LoginPage
-    And I change the page spec to IndexPage
-    And I change the page spec to LoginPage
     And I create a set of keys with below attributes
       | Pattern to create data from | Save into Key Name    |
       | random_alphabet_5           | randomOneAplhabetLen5 |
-    And I wait for element user-field to be DISPLAYED
-    And I wait for element pass-field to be DISPLAYED
+    And I perform wait-field-display action
     And I perform login-page-two action with override values
       | Field      | Value                     |
       | user-field | Admin                     |
