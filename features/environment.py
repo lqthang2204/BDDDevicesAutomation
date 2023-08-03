@@ -53,6 +53,7 @@ def before_scenario(context, scenario):
         context.time_page_load = context.device['time_page_load']
     context.url = context.env['link']
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
+    context.dict_page_element = {}
 
 
 def launch_browser(context, device, browser):

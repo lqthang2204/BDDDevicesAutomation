@@ -25,6 +25,8 @@ Feature: login web
   @test-p1
   Scenario: test login page
     And I change the page spec to LoginPage
+    And I change the page spec to IndexPage
+    And I change the page spec to LoginPage
     And I create a set of keys with below attributes
       | Pattern to create data from | Save into Key Name    |
       | random_alphabet_5           | randomOneAplhabetLen5 |
@@ -60,6 +62,13 @@ Feature: login web
       | Pattern to create data from | Save into Key Name    |
       | random_alphabet_5           | randomTwoAplhabetLen5 |
     And I save text for element location-option-inpatient with key "btn-location"
+    And I wait for elements with below status
+          | Field                     | Value          | Status    |
+          | location-option-session   | Inpatient Ward | DISPLAYED |
+          | location-option-inpatient |                | ENABLED   |
+          | location-option-inpatient |                | EXISTED   |
+          | user-field                |                | DISPLAYED |
+          | pass-field                |                | EXISTED   |
     And I wait for elements with below status
       | Field                     | Value            | Status    |
       | location-option-session   | Inpatient Ward   | DISPLAYED |
