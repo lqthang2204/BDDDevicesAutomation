@@ -98,7 +98,6 @@ class common_device:
         arr_locator = list(filter(
             lambda loc: loc['device'] == platform_name, arr_locator
         ))
-        print(arr_locator)
         arr_locator[0]['value'] = arr_locator[0]['value'].replace("{text}", text)
         return arr_locator[0]
 
@@ -120,18 +119,6 @@ class common_device:
                 self.wait_element_for_status(element_yaml, row["Status"], driver, device, wait)
                 logging.info("Verified for %s have value %s and status %s", row["Field"], row["Value"],
                              row["Value"])
-                # for element_yaml in arr_element:
-                #     if element_yaml.id.__eq__(row["Field"]):
-                #         logging.info("Verifying for %s have value %s and status %s", row["Field"], row["Value"],
-                #                      row["Status"])
-                #         value = row["Value"]
-                #         if dict_save_value:
-                #             value = dict_save_value.get(value, value)
-                #         element_yaml = self.get_element(page, element_yaml.id + " with text " + value, platform_name,
-                #                                         dict_save_value)
-                #         self.wait_element_for_status(element_yaml, row["Status"], driver, device, wait)
-                #         logging.info("Verified for %s have value %s and status %s", row["Field"], row["Value"],
-                #                      row["Value"])
         else:
             logging.error("user must set data table for elements")
             assert False, "can not execute verify status for elements"

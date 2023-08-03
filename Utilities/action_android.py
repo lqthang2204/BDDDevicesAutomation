@@ -128,13 +128,12 @@ class ManagementFileAndroid:
                         logging.error("can not execute action % with element have value  %s in framework", type_action,
                                       locator)
                         assert False, "can not execute action " + type_action + " with element have value" + locator['value'] + "in framework"
-                # else:
-                #     try:
-                #         self.process_execute_action(driver, wait, type_action, value, locator_from_wait, locator)
-                #     except Exception as e:
-                #         logging.error("can not execute action % with element have value  %s in framework", type_action,
-                #                       locator['value'])
-                #         assert False, "can not execute action " + type_action + " with element have value" + locator['value'] + "in framework"
+                else:
+                    logging.error("please add condition when execute action  %s in framework", type_action,
+                                  locator['value'])
+                    assert False, "can not execute action " + type_action + " with element have value" + locator[
+                        'value'] + "in framework"
+
         else:
             logging.error(f'Not Found Action {action_id} in page yaml')
             assert False, "Not Found Action " + action_id + " in page yaml"
