@@ -15,7 +15,6 @@ class common_device:
             return obj_action_elements.get(key)
 
     def action_page(self, element_page, action, driver, value, wait, dict_save_value, device):
-        # locator = ManagementFile().get_locator(element_page, device['platformName'])
         element = self.get_element_by_from_device(element_page, device, driver)
         logging.info("execute %s with element have is %s", action, element_page['value'])
         WebDriverWait(driver, wait).until(ec.all_of(
@@ -31,7 +30,7 @@ class common_device:
         elif action.__eq__("clear"):
             element.clear()
         else:
-            logging.error("Can not execute %s with element have is %s", action, locator.value)
+            logging.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"
 
     def click_action(self, element, wait, element_page, device, driver):
