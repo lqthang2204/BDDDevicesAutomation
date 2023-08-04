@@ -45,14 +45,13 @@ def before_scenario(context, scenario):
     elif context.platform == "ANDROID" and context.device['platformName'] == context.platform:
         print("android")
         launch_android(context, context.device, context.config_env)
-        context.wait = context.device['wait']
-        context.time_page_load = context.device['time_page_load']
     elif context.platform == "IOS" and context.device['platformName'] == context.platform:
         print("IOS")
         context.wait = context.device['wait']
         context.time_page_load = context.device['time_page_load']
     context.url = context.env['link']
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
+    context.dict_page_element = {}
 
 
 def launch_browser(context, device, browser):
@@ -116,20 +115,20 @@ def get_driver_from_path(context, browser, device, option):
     # https://github.com/SeleniumHQ/selenium/commit/9f5801c82fb3be3d5850707c46c3f8176e3ccd8e
     if browser == 'chrome':
         service = chrome_service(
-            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device.get_driver_from_path())
+            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device['driver_version'])
         context.driver = webdriver.Chrome(service=service, options=option)
     elif browser == 'firefox':
         service = firefox_service(
-            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device.get_driver_from_path())
+            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device['driver_version'])
         context.driver = webdriver.Firefox(service=service, options=option)
     elif browser == 'safari':
         service = safari_service(
-            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device.get_driver_from_path())
+            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device['driver_version'])
         context.driver = webdriver.Safari(service=service, options=option)
     else:
         logging.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
         service = chrome_service(
-            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device.get_driver_from_path())
+            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device['driver_version'])
         context.driver = webdriver.Chrome(service=service, options=option)
 
 
