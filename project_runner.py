@@ -3,15 +3,18 @@ import datetime
 import logging
 import subprocess
 import time
-from tags_expr_processor import filter_feature_and_scenarios
+
 import click
-import platform
+
+from tags_expr_processor import filter_feature_and_scenarios
+
 logging.basicConfig(level=logging.INFO)
+import os
+
 
 @click.group()
 @click.pass_context
 def main(context):
-    print(context)
     pass
 
 
@@ -47,10 +50,13 @@ def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
 
 
 def config_from_command_line(stage_name, platform_name):
+    project_folder = os.path.dirname(os.path.abspath(__file__))
+
     config = configparser.ConfigParser()
     config.read('config_env.ini')
 
     # Modify the 'platform' value in the [drivers_config] section
+    config.set('project_folder', 'project_folder', project_folder)
     config.set('drivers_config', 'platform', platform_name)
     config.set('drivers_config', 'stage', stage_name)
 

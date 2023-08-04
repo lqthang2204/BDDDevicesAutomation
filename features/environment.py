@@ -22,6 +22,7 @@ def before_all(context):
     file = open(config_file_path, 'r')
     context.config_env = configparser.RawConfigParser(allow_no_value=True)
     context.config_env.read_file(file)
+    context.project_folder = context.config_env.get("project_folder", "project_folder")
     context.platform = context.config_env.get("drivers_config", "platform")
     context.stage_name = context.config_env.get("drivers_config", "stage")
     if context.config_env.has_option("drivers_config", "browser"):
@@ -31,25 +32,30 @@ def before_all(context):
     context.env = read_configuration().read(context.stage_name)
 
 def before_scenario(context, scenario):
-    device = context.env['devices']
-    context.device = list(filter(
-        lambda device: device['platformName'] == context.platform, device
-    ))
-    context.device = context.device[0]
+    if context.platform in ['WEB', 'ANDROID', 'IOS']:
+        device = context.env['devices']
+        context.device = list(filter(lambda device: device['platformName'] == context.platform, device))
+        context.device = context.device[0]
+        if context.platform == "WEB" and context.device['platformName'] == context.platform:
+            if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+                cross_browser_with_saucelabs(context, context.device)
+            else:
+                launch_browser(context, context.device, context.browser)
+        elif context.platform == "ANDROID" and context.device['platformName'] == context.platform:
+            print("android")
+            launch_android(context, context.device, context.config_env)
+            context.wait = context.device['wait']
+            context.time_page_load = context.device['time_page_load']
+        elif context.platform == "IOS" and context.device['platformName'] == context.platform:
+            print("IOS")
+            context.wait = context.device['wait']
+            context.time_page_load = context.device['time_page_load']
+        context.url = context.env['link']
+
+    if context.platform == 'API':
+        context.apiurls = context.env['apifacets']['link']
+        context.endpoints = read_configuration().read_api_endpoints()
     logging.info(f'Scenario {scenario.name} started')
-    if context.platform == "WEB" and context.device['platformName'] == context.platform:
-        if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-            cross_browser_with_saucelabs(context, context.device)
-        else:
-            launch_browser(context, context.device, context.browser)
-    elif context.platform == "ANDROID" and context.device['platformName'] == context.platform:
-        print("android")
-        launch_android(context, context.device, context.config_env)
-    elif context.platform == "IOS" and context.device['platformName'] == context.platform:
-        print("IOS")
-        context.wait = context.device['wait']
-        context.time_page_load = context.device['time_page_load']
-    context.url = context.env['link']
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
     context.dict_page_element = {}
 
