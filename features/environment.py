@@ -26,7 +26,6 @@ def before_all(context):
     context.config_env = configparser.RawConfigParser(allow_no_value=True)
     context.config_env.read_file(file)
     context.project_folder = context.config_env.get("project_folder", "project_folder")
-    print(f'before_all: project_folder:  {context.project_folder}')
     context.stage_name = context.config_env.get("drivers_config", "stage")
     if context.config_env.has_option("drivers_config", "browser"):
         context.browser = context.config_env.get("drivers_config", "browser")
