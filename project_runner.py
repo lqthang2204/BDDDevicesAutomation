@@ -6,7 +6,7 @@ import time
 
 import click
 
-from tags_expr_processor import filter_feature_and_scenarios
+from bdd_tags_processor.bdd_tags_expression_processor import filter_feature_and_scenarios
 
 logging.basicConfig(level=logging.INFO)
 import os
@@ -30,6 +30,7 @@ def main(context):
               default='scenario', help='specify the stage to run. Default value is scenario')
 def run(feature_dir, tags, forks, stage_name, parallel_scheme):
     total_scenarios = filter_feature_and_scenarios(feature_dir, 'features/final', tags)
+    logging.info(f'{total_scenarios} Scenarios found...')
     params = []
 
     if tags:
