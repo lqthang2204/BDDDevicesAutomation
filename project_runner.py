@@ -26,11 +26,9 @@ def main(context):
               help='number of processes. Default value is 5')
 @click.option('--stage', '-sg', 'stage_name', type=click.Choice(['QA', 'SIT', 'UAT', 'PROD']), default='QA',
               help='specify the stage to run. Default value is QA')
-@click.option('--platform', '-pl', 'platform_name', type=click.Choice(['WEB', 'ANDROID', 'iOS', 'API']), default='WEB',
-              help='specify platform to run. Default value is WEB')
 @click.option('--parallel-scheme', '-ps', 'parallel_scheme', type=click.Choice(['feature', 'scenario']),
               default='scenario', help='specify the stage to run. Default value is scenario')
-def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
+def run(feature_dir, tags, forks, stage_name, parallel_scheme):
     total_scenarios = filter_feature_and_scenarios(feature_dir, 'features/final', tags)
     params = []
 
@@ -46,18 +44,16 @@ def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
     }
 
     if total_scenarios > 0:
-        _run_feature(args, stage_name, platform_name)
+        _run_feature(args, stage_name)
 
 
-def config_from_command_line(stage_name, platform_name):
+def config_from_command_line(stage_name):
     project_folder = os.path.dirname(os.path.abspath(__file__))
 
     config = configparser.ConfigParser()
     config.read('config_env.ini')
 
-    # Modify the 'platform' value in the [drivers_config] section
     config.set('project_folder', 'project_folder', project_folder)
-    config.set('drivers_config', 'platform', platform_name)
     config.set('drivers_config', 'stage', stage_name)
 
     # Save the changes to the config.ini file
@@ -66,11 +62,10 @@ def config_from_command_line(stage_name, platform_name):
     logging.info('Config file updated based on user provided command line arguments')
 
 
-def _run_feature(args, stage_name, platform_name):
-    config_from_command_line(stage_name, platform_name)
+def _run_feature(args, stage_name):
+    config_from_command_line(stage_name)
     cmd = f"behavex {args['params']}"
     logging.info(f'Command prepared: {cmd}')
-    # Get the start time
     # Get the start time in seconds since the epoch
     start_time = datetime.datetime.now().timestamp()
     start_time_str = datetime.datetime.now().strftime('%I:%M:%S %p')  # Format the start time as HH:MM:SS AM/PM

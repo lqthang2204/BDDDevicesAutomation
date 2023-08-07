@@ -2,6 +2,7 @@ import configparser
 import datetime
 import logging
 import os
+
 import appium
 from appium.webdriver.appium_service import AppiumService
 from selenium import webdriver
@@ -11,6 +12,7 @@ from selenium.webdriver.firefox.options import Options as firefox_option
 from selenium.webdriver.firefox.service import Service as firefox_service
 from selenium.webdriver.safari.options import Options as safari_option
 from selenium.webdriver.safari.service import Service as safari_service
+
 from Utilities.action_web import ManagementFile
 from Utilities.read_configuration import read_configuration
 
@@ -23,7 +25,8 @@ def before_all(context):
     file = open(config_file_path, 'r')
     context.config_env = configparser.RawConfigParser(allow_no_value=True)
     context.config_env.read_file(file)
-    context.platform = context.config_env.get("drivers_config", "platform")
+    context.project_folder = context.config_env.get("project_folder", "project_folder")
+    print(f'before_all: project_folder:  {context.project_folder}')
     context.stage_name = context.config_env.get("drivers_config", "stage")
     if context.config_env.has_option("drivers_config", "browser"):
         context.browser = context.config_env.get("drivers_config", "browser")
@@ -31,30 +34,30 @@ def before_all(context):
         context.browser = "chrome"
     context.env = read_configuration().read(context.stage_name)
 
-def before_scenario(context, scenario):
-    if context.platform in ['WEB', 'ANDROID', 'IOS']:
-        device = context.env['devices']
-        context.device = list(filter(lambda device: device['platformName'] == context.platform, device))
-        context.device = context.device[0]
-        if context.platform == "WEB" and context.device['platformName'] == context.platform:
-            if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-                cross_browser_with_saucelabs(context, context.device)
-            else:
-                launch_browser(context, context.device, context.browser)
-        elif context.platform == "ANDROID" and context.device['platformName'] == context.platform:
-            print("android")
-            launch_android(context, context.device, context.config_env)
-            context.wait = context.device['wait']
-            context.time_page_load = context.device['time_page_load']
-        elif context.platform == "IOS" and context.device['platformName'] == context.platform:
-            print("IOS")
-            context.wait = context.device['wait']
-            context.time_page_load = context.device['time_page_load']
-        context.url = context.env['link']
 
-    if context.platform == 'API':
-        context.apiurls = context.env['apifacets']['link']
-        context.endpoints = read_configuration().read_api_endpoints()
+def before_scenario(context, scenario):
+    context.device = context.env['devices']
+    # context.device = list(filter(lambda device: device['platformName'] == context.platform, device))
+    context.device = context.device[0]
+    if context.device['platformName'] == "WEB":
+        if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+            cross_browser_with_saucelabs(context, context.device)
+        else:
+            launch_browser(context, context.device, context.browser)
+    elif context.device['platformName'] == "ANDROID":
+        print("android")
+        launch_android(context, context.device, context.config_env)
+        context.wait = context.device['wait']
+        context.time_page_load = context.device['time_page_load']
+    elif context.device['platformName'] == "IOS":
+        print("IOS")
+        context.wait = context.device['wait']
+        context.time_page_load = context.device['time_page_load']
+    context.url = context.env['link']
+
+    context.apiurls = context.env['apifacets']['link']
+    context.endpoints = read_configuration().read_api_endpoints()
+
     logging.info(f'Scenario {scenario.name} started')
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
     context.dict_page_element = {}
@@ -108,12 +111,12 @@ def after_scenario(context, scenario):
         context.driver.quit()
     logging.info(f'Scenario {scenario.name} Ended')
 
+
 def after_all(context):
     if context.driver is not None:
         print('Closing driver from After_ALL')
         context.driver.close()
         context.driver.quit()
-
 
 
 def get_driver_from_path(context, browser, device, option):
@@ -151,6 +154,8 @@ def get_option_from_browser(browser, device):
         option.add_argument('--headless')
 
     return option
+
+
 def cross_browser_with_saucelabs(context, device):
     config_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'remote_config.ini')
     file = open(config_file_path, 'r')
