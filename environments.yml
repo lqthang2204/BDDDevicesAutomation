@@ -36,6 +36,8 @@ env:
       link:
         SFCC: https://stores2022--qa.sandbox.my.salesforce.com
         SFCLOUD: https://some-api.salesforce.com
+        FAKERESTAPI: https://fakerestapi.azurewebsites.net
+        GOREST: https://gorest.co.in
   - stage: SIT
     link:
       OPEN_MRS: https://demo.openmrs.org/openmrs/login.htm

@@ -18,11 +18,11 @@ from Utilities.read_configuration import read_configuration
 def before_all(context):
     context.dict_save_value = {}
     context.driver = None
-    config_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config_env.ini')
+    context.root_path = os.path.dirname(os.path.dirname(__file__))
+    config_file_path = os.path.join(context.root_path, 'config_env.ini')
     file = open(config_file_path, 'r')
     context.config_env = configparser.RawConfigParser(allow_no_value=True)
     context.config_env.read_file(file)
-    context.project_folder = context.config_env.get("project_folder", "project_folder")
     context.platform = context.config_env.get("drivers_config", "platform")
     context.stage_name = context.config_env.get("drivers_config", "stage")
     if context.config_env.has_option("drivers_config", "browser"):

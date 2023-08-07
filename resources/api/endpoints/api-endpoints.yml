@@ -1,2 +1,6 @@
 SFCC:
   Composite-Graph: /services/data/v1.0/composite/graph
+FAKERESTAPI:
+  Activity: /api/v1/Activities
+GOREST:
+  Get-Users: /public/v2/users

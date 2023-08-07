@@ -8,7 +8,7 @@ from yaml import SafeLoader
 
 class read_configuration:
 
-    project_folder =  os.path.dirname(os.path.dirname(__file__))
+    project_folder = os.path.dirname(os.path.dirname(__file__))
 
     def read(self, stage_name):
         config_file_path = self.project_folder + "/environments.yml"
