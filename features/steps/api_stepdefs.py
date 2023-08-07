@@ -21,7 +21,7 @@ def step_impl(context):
         for row in context_table:
             result = get_test_data_for(row[1], context.dict_save_value)
             headers[row[0]] = result
-    Requests.headers = headers
+    Requests.req_props.headers = headers
 
 
 # Required Step RegEx for all
