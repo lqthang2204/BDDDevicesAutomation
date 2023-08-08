@@ -26,6 +26,7 @@ class Requests(RequestProps):
         if method == 'GET':
             Requests.response = requests.get(Requests.api_base_url, params=Requests.para, headers=Requests.req_props.headers, cookies=Requests.cookies)
         elif method == 'POST':
-            Requests.response = requests.post(Requests.api_base_url, data=Requests.para, headers=Requests.req_props.headers, cookies=Requests.cookies, json=Requests.payload)
+            Requests.response = requests.post(Requests.api_base_url,  headers=Requests.req_props.headers, cookies=Requests.cookies, json=Requests.req_props.payload)
         else:
             raise Exception(f'Bad HTTP method "{method}" was received')
+        print(Requests.response.status_code)

@@ -1,3 +1,4 @@
+import json
 import os
 
 from behave import *
@@ -33,7 +34,7 @@ def step_impl(context, payload_file):
     with open(payload_file, 'r') as file:
         payload_json = file.read()
     # After reading We can read the Datatable and replace the values with some Runtime values also using the function get_test_data_for()
-    Requests.payload = payload_json
+    Requests.req_props.payload = json.dumps(payload_json)
 
 
 @step(u'I trigger {api_method} call with below attributes')

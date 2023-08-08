@@ -1,5 +1,7 @@
+import re
 class RequestProps:
     _headers = {}
+    _payload = {}
 
     @classmethod
     def _sanitize_headers(cls):
@@ -22,19 +24,27 @@ class RequestProps:
     def headers(self, headers):
         self._set_headers(headers)
 
-#
-# class CheckRequest(RequestProps):
-#
-#     @staticmethod
-#     def __init__():
-#         super().headers = {
-#         "       Content-Type       ": "     application/json       ",
-#         "       Authorization         ": "      Bearer my_token      ",
-#     }
-#
-#     @staticmethod
-#     def _sendthis():
-#         print(CheckRequest.headers)
+    @classmethod
+    def _sanitize_payload(cls):
+        cls._payload = cls._payload.replace('\n', '')
+
+    @classmethod
+    def _get_payload(cls):
+        return cls._payload
+
+    @classmethod
+    def _set_payload(cls, payload):
+        cls._payload = payload
+        cls._sanitize_payload()  # Call the sanitize method whenever payload are set
+
+    @property
+    def payload(self):
+        return self._get_payload()
+
+    @payload.setter
+    def payload(self, payload):
+        self._set_payload(payload)
+
 
 if __name__ == '__main__':
     # Usage:
