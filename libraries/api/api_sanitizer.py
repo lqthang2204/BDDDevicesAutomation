@@ -1,7 +1,11 @@
 import re
+
+
 class RequestProps:
-    _headers = {}
-    _payload = {}
+    _headers = None
+    _payload = None
+    _cookies = None
+    _params = None
 
     @classmethod
     def _sanitize_headers(cls):
@@ -26,7 +30,9 @@ class RequestProps:
 
     @classmethod
     def _sanitize_payload(cls):
-        cls._payload = cls._payload.replace('\n', '')
+        cls._payload = cls._payload.strip()
+        cls._payload = re.sub(r'\s*"\s*(.*?[^\\])\s*"\s*', r'"\1"', cls._payload, flags=re.DOTALL)
+        cls._payload = re.sub(r'\s*([{}:\[\]])\s*', r'\1', cls._payload, flags=re.DOTALL)
 
     @classmethod
     def _get_payload(cls):
@@ -44,6 +50,22 @@ class RequestProps:
     @payload.setter
     def payload(self, payload):
         self._set_payload(payload)
+
+    @property
+    def params(self):
+        return self._get_params()
+
+    @params.setter
+    def params(self, params):
+        self._set_params(params)
+
+    @classmethod
+    def _get_params(cls):
+        return cls._params
+
+    @classmethod
+    def _set_params(cls, params):
+        cls._params = params
 
 
 if __name__ == '__main__':

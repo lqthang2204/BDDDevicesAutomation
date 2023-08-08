@@ -3,8 +3,8 @@ import os
 
 from behave import *
 
-from libraries.api.my_request import Requests
-from libraries.api.api_asserts import APIAsserts as Assert, APIAsserts
+from libraries.api.api_asserts import APIAsserts
+from libraries.api.request_core import Requests
 from libraries.data_generators import get_test_data_for
 from libraries.misc_operations import sanitize_datatable
 
@@ -31,15 +31,26 @@ def step_impl(context):
 @step(u'I set payload {payload_file} with below attributes')
 def step_impl(context, payload_file):
     payload_file = os.path.join(context.root_path, 'resources', 'api', 'request-json', payload_file + '.json')
+    print(f'payload file : {payload_file}')
     with open(payload_file, 'r') as file:
         payload_json = file.read()
     # After reading We can read the Datatable and replace the values with some Runtime values also using the function get_test_data_for()
-    Requests.req_props.payload = json.dumps(payload_json)
+    payload_json = payload_json.replace('\n', '')
+    Requests.req_props.payload = payload_json
 
 
 @step(u'I trigger {api_method} call with below attributes')
 def step_impl(context, api_method):
-        Requests._send(api_method, context.table)
+    # Below code to be moved into a separate function as it will include a lot of detailing based on Issue #30
+    if context.table:
+        list_data = []
+        for row in context.table:
+            if row['FieldName'] == 'params':
+                list_data.append(row['fieldValue'])
+        Requests.req_props.params = json.dumps(list_data)
+    #  code to be moved into a separate function as it will include a lot of detailing based on Issue #30
+
+    Requests._send(api_method)
 
 
 @step(u'I verify the response with below attributes')
