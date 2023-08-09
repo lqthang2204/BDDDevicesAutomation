@@ -8,7 +8,10 @@ class Requests(RequestProps):
         super().__init__()
         if apifacet_name is not None:
             self.apifacet_name = apifacet_name
-            self.api_base_url = context.apiurls[apifacet_name] + context.endpoints[apifacet_name][endpoint_name]
+            if endpoint_name:
+                self.api_base_url = context.apiurls[apifacet_name] + context.endpoints[apifacet_name][endpoint_name]
+            else:
+                self.api_base_url = context.apiurls[apifacet_name]
 
     def _send(self, method: str):
 
