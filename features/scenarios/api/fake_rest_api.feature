@@ -33,4 +33,4 @@ Feature: test api with fake rest api
       | FieldName       | FieldValue                                                        |
       | Response Code   | 200                                                               |
       | Response Header | x-links-current Equal https://gorest.co.in/public/v2/users?page=1 |
-      | Response Body   | email Equal menaka_gandhi@morar.example                           |
+      | Response Body   | email Equal ahluwalia_vasudev@leannon.example                                            |

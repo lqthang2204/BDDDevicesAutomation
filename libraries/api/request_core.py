@@ -14,9 +14,9 @@ class Requests(RequestProps):
 
         if method == 'GET':
             pass
-            self.response = requests.get(self.api_base_url, params=self.params, headers=self.headers)
+            self.response = requests.get(self.api_base_url, params=self._params, headers=self.headers, verify=False)
         elif method == 'POST':
-            self.response = requests.post(self.api_base_url, headers=self.headers, data=self.payload, params=self.params)
+            self.response = requests.post(self.api_base_url, headers=self.headers, data=self.payload, params=self._params, verify=False)
         else:
             raise Exception(f'Bad HTTP method "{method}" was received')
         print(self.response.status_code)

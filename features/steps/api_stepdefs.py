@@ -47,8 +47,8 @@ def step_impl(context, api_method):
         list_data = []
         for row in context_table:
             if row[0] == 'params':
-                list_data.append(row['fieldValue'])
-        context.req.params = json.dumps(list_data)
+                list_data.append(row[1])
+        context.req._params = json.dumps(list_data)
     #  code to be moved into a separate function as it will include a lot of detailing based on Issue #30
 
     context.req._send(api_method)
