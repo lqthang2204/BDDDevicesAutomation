@@ -1,26 +1,22 @@
-import json
-
 import requests
 
 from libraries.api.api_sanitizer import RequestProps
 
 
 class Requests(RequestProps):
-    req_props = None
-    @staticmethod
-    def __init__(context, apifacet_name, endpoint_name):
-        Requests.apifacet_name = apifacet_name
-        Requests.api_base_url = context.apiurls[apifacet_name] + context.endpoints[apifacet_name][endpoint_name]
-        Requests.req_props = RequestProps()
-        Requests.cookies = {}
+    def __init__(self, context=None, apifacet_name=None, endpoint_name=None):
+        super().__init__()
+        if apifacet_name is not None:
+            self.apifacet_name = apifacet_name
+            self.api_base_url = context.apiurls[apifacet_name] + context.endpoints[apifacet_name][endpoint_name]
 
-    @staticmethod
-    def _send( method: str):
+    def _send(self, method: str):
 
         if method == 'GET':
-            Requests.response = requests.get(Requests.api_base_url, params=Requests.param, headers=Requests.req_props.headers, cookies=Requests.cookies)
+            pass
+            self.response = requests.get(self.api_base_url, params=self.params, headers=self.headers)
         elif method == 'POST':
-            Requests.response = requests.post(Requests.api_base_url,  headers=Requests.req_props.headers, data=Requests.req_props.payload)
+            self.response = requests.post(self.api_base_url, headers=self.headers, data=self.payload, params=self.params)
         else:
             raise Exception(f'Bad HTTP method "{method}" was received')
-        print(Requests.response.status_code)
+        print(self.response.status_code)

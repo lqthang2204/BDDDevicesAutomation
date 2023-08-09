@@ -2,10 +2,12 @@ import re
 
 
 class RequestProps:
-    _headers = None
-    _payload = None
-    _cookies = None
-    _params = None
+
+    def __init__(self):
+        self._headers = None
+        self._payload = None
+        self._cookies = None
+        self._params = None
 
     @classmethod
     def _sanitize_headers(cls):
@@ -66,6 +68,12 @@ class RequestProps:
     @classmethod
     def _set_params(cls, params):
         cls._params = params
+        cls._sanitize_params()  # Call the sanitize method whenever params are set
+
+    @classmethod
+    def _sanitize_params(cls):
+        cls._params = cls._params.strip()
+        # to add more condition for cleanup based on data
 
 
 if __name__ == '__main__':
