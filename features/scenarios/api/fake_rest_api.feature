@@ -34,7 +34,7 @@ Feature: test api with fake rest api
       | FieldName    | fieldValue        |
       | Content-Type | text/plain; v=1.0 |
     And I trigger GET call with below attributes
-    Then I verify response code with status is "200"
+    And I verify response code with status is "200"
     Then I verify response header with below attributes
       | FieldName              | FieldValue | Helpers  |
       | Server                 | Kestrel    | NOT_NULL |
