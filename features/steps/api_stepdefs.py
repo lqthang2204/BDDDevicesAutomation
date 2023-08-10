@@ -52,14 +52,7 @@ def step_impl(context, api_method):
                 list_data.append(row[1])
         context.req._params = json.dumps(list_data)
     #  code to be moved into a separate function as it will include a lot of detailing based on Issue #30
-
     context.req._send(api_method)
-
-
-@step(u'I verify the response with below attributes')
-def step_impl(context):
-    # Assert.response_has_key(Requests.response, context.table)
-    APIAsserts.response_has_key(context.req.response, context.table)
 
 @step(u'I verify response body with below attributes')
 def step_impl(context):
