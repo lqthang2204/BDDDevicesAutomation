@@ -14,18 +14,20 @@ Feature: test api with fake rest api
       | FieldName              | FieldValue | Helpers  |
       | Server                 | Kestrel    | NOT_NULL |
       | Server                 | Kestrel    | ALPHABET |
-      | api-supported-versions | 1.0        | NUMERIC  |
+      | api-supported-versions | 1.0        |          |
       | Date                   |            | NOT_NULL |
       | test                   |            | NULL     |
     Then I verify response body with below attributes
-      | FieldName | FieldValue | Helpers  |
-      | dueDate   |            | NOT_NULL |
-      | title     |            | NOT_NULL |
-      | completed | False      | ALPHABET |
-      | id        |            | NUMERIC  |
+      | FieldName | FieldValue     | Helpers  |
+      | dueDate   |                | NOT_NULL |
+      | title     |                | NOT_NULL |
+      | completed | False          | ALPHABET |
+      | id        |                | NUMERIC  |
+      | title     | Activity [0-9] | REGEX    |
+      | title     | [A-z] [0-9]    | REGEX    |
 
 
-    @fake_rest_api_2
+  @fake_rest_api_2
     Scenario: DEMO API without endpoint
     Given I set apifacet FAKERESTAPI without endpoint
     And I set headers with below attributes
