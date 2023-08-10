@@ -10,11 +10,11 @@ class APIAsserts:
         assert response.status_code == expected_code, \
             f'Expected status code {expected_code}, but got {response.status_code}. {message}'
 
-    def response_has_key(response: Response, table, status_code, title):
+    def response_has_key(response_dict, table, status_code, title):
         try:
             if title == "response_code":
-                assert response.status_code == int(
-                    status_code), f'response status code failed when return {response.status_code}'
+                assert response_dict['code'] == int(
+                    status_code), f'response status code failed when return {response_dict["code"]}'
             else:
                 if table:
                     if title == "header":
@@ -24,18 +24,18 @@ class APIAsserts:
                             field_value = row[1]
                             helpers = row[2]
                             if len(field_value) == 0 and field_name:
-                                APIAsserts.check_condition_not_result(field_name, helpers, dict(response.headers))
+                                APIAsserts.check_condition_not_result(field_name, helpers, response_dict['headers'])
                             elif len(field_value) != 0 and field_name or helpers:
-                                assert field_value in dict(response.headers)[
+                                assert field_value in response_dict['headers'][
                                     field_name], f'Response json does not have value {field_value}'
-                                APIAsserts.check_condition_have_result(dict(response.headers)[field_name], helpers)
+                                APIAsserts.check_condition_have_result(response_dict['headers'][field_name], helpers)
                     elif title == "body":
                         for row in table:
                             print("verifying body api")
                             field_name = row[0]
                             field_value = row[1]
                             helpers = row[2]
-                            data = response.json()
+                            data = response_dict['json']
                             list_value = []
                             if len(field_value) == 0 and field_name:
                                 list_value = APIAsserts.find_value_from_key(data, field_name, list_value)
@@ -113,6 +113,8 @@ class APIAsserts:
             assert list_value is not None, f'Response json does not contain a field name {result}'
         elif helpers == "NULL":
             assert result is None, f'Response json contain a field name {result}'
+        elif helpers == "EQUAL":
+            assert result == list_value, f'Response json contain a field name {result}'
         elif helpers == "":
                 print("do not check")
         else:
