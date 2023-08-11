@@ -14,16 +14,18 @@ class Requests(RequestProps):
             else:
                 self.api_base_url = context.apiurls[apifacet_name]
 
+    def validate_response_is_json(self, response):
+        try:
+            response.json()
+            return True
+        except Exception as e:
+            print("Response invalid json")
+            return False
+
     def _send(self, method: str):
         try:
-            if method == 'GET':
-                pass
-                self.response = requests.get(self.api_base_url, params=self._params, headers=self.headers, verify=False)
-            elif method == 'POST':
-                self.response = requests.post(self.api_base_url, headers=self.headers, data=self.payload, params=self._params, verify=False)
-            else:
-                raise Exception(f'Invalid HTTP method "{method}" was received')
-
+            self.response = requests.request(method=method, url=self.api_base_url, headers=self.headers, data=self.payload, params=self.params,
+                                             verify=False)
             # This will help us pick up anything from the Response of a request.
             if self.validate_response_is_json(self.response):
                 self.response_dict['json'] = self.response.json()
@@ -33,18 +35,12 @@ class Requests(RequestProps):
             self.response_dict['text'] = self.response.text
             self.response_dict['cookies'] = self.response.cookies
             self.response_dict['redirect'] = self.response.is_redirect
-            # print(self.response_dict['code'])
-
+            print(self.response_dict['content'])
         except requests.RequestException as e:
-            print(f'Method: {method} \n API URL {self.api_base_url} \n Params {self._params} \n Headers {self.headers} \n')
+            print(f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n')
             print(f'Exception {e}')
         except Exception as e:
-            print(f'Method: {method} \n API URL {self.api_base_url} \n Params {self._params} \n Headers {self.headers} \n')
+            print(f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n')
             print(f'Exception {e}')
-    def validate_response_is_json(self, response):
-        try:
-            response.json()
-            return True
-        except Exception as e:
-            print("Response invalid json")
-            return False
+        except:
+            raise Exception(f'Invalid HTTP method "{method}" was received')

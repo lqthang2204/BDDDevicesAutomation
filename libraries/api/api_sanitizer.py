@@ -4,14 +4,15 @@ import re
 class RequestProps:
 
     def __init__(self):
-        self._headers = None
-        self._payload = None
-        self._cookies = None
-        self._params = None
+        self.headers = None
+        self.payload = None
+        self.cookies = None
+        self.params = None
 
     @classmethod
     def _sanitize_headers(cls):
-        cls._headers = {key.strip(): value.strip() for key, value in cls._headers.items()}
+        if cls._headers:
+            cls._headers = {key.strip(): value.strip() for key, value in cls._headers.items()}
 
     @classmethod
     def _get_headers(cls):
@@ -32,9 +33,9 @@ class RequestProps:
 
     @classmethod
     def _sanitize_payload(cls):
-        cls._payload = cls._payload.strip()
-        cls._payload = re.sub(r'\s*"\s*(.*?[^\\])\s*"\s*', r'"\1"', cls._payload, flags=re.DOTALL)
-        cls._payload = re.sub(r'\s*([{}:\[\]])\s*', r'\1', cls._payload, flags=re.DOTALL)
+        if cls._payload:
+            cls._payload = re.sub(r'\s*"\s*(.*?[^\\])\s*"\s*', r'"\1"', cls._payload, flags=re.DOTALL)
+            cls._payload = re.sub(r'\s*([{}:\[\]])\s*', r'\1', cls._payload, flags=re.DOTALL)
 
     @classmethod
     def _get_payload(cls):
@@ -72,8 +73,8 @@ class RequestProps:
 
     @classmethod
     def _sanitize_params(cls):
-        cls._params = cls._params.strip()
-        # to add more condition for cleanup based on data
+        if cls._params:
+            cls._params = [item.strip() for item in cls._params]
 
 
 if __name__ == '__main__':

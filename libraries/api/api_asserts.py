@@ -1,7 +1,7 @@
 import json
+import re
 
 from requests import Response
-import re
 
 
 class APIAsserts:
@@ -84,7 +84,7 @@ class APIAsserts:
         elif helpers == "NULL":
             assert result is None, f'Response json contain a field name {result}'
         elif helpers == "":
-                print("do not check")
+            print("do not check")
         else:
             assert False, f'not contain helper in data table do not check'
 
@@ -100,7 +100,7 @@ class APIAsserts:
             return response_header.get(
                 field_name).isalpha(), f'Response json does not contain alphabet {response_header.get(field_name).isnumeric()}'
         elif helpers == "":
-                print("do not check")
+            print("do not check")
         else:
             assert False, f'not contain helper in data table do not check'
 
@@ -116,7 +116,7 @@ class APIAsserts:
         elif helpers == "EQUAL":
             assert result == list_value, f'Response json contain a field name {result}'
         elif helpers == "":
-                print("do not check")
+            print("do not check")
         else:
             assert False, f'not contain helper in data table do not check'
 
@@ -134,6 +134,6 @@ class APIAsserts:
                 for key in list_value:
                     assert key.isalpha(), f'Response json does not contain alphabet {key}'
         elif helpers == "":
-                print("do not check")
+            print("do not check")
         else:
             assert False, f'not contain helper in data table do not check'
