@@ -5,8 +5,9 @@ import subprocess
 import time
 
 import click
-
 from bdd_tags_processor.bdd_tags_expression_processor import filter_feature_and_scenarios
+
+from package_installer import ensure_package_versions
 
 logging.basicConfig(level=logging.INFO)
 import os
@@ -29,8 +30,10 @@ def main(context):
 @click.option('--parallel-scheme', '-ps', 'parallel_scheme', type=click.Choice(['feature', 'scenario']),
               default='scenario', help='specify the stage to run. Default value is scenario')
 def run(feature_dir, tags, forks, stage_name, parallel_scheme):
+    # ensure all the packages are installed
+    ensure_package_versions()
+
     total_scenarios = filter_feature_and_scenarios(feature_dir, 'features/final', tags)
-    logging.info(f'{total_scenarios} Scenarios found...')
     params = []
 
     if tags:
@@ -99,5 +102,5 @@ if __name__ == '__main__':
     # 1. disable the @click definition mentioned above main() and run()
     # 2. disable main() below
     # 3. enabled the statement below
-    # run("features/orangeHRM*.feature", "{~@norun and (@test1 or @test2)}", 2, 'QA', 'WEB', 'scenario')
+    # run("features/orangeHRM*.feature", "{~@norun and (@test1 or @test2)}", 2, 'QA',  'scenario')
     main()
