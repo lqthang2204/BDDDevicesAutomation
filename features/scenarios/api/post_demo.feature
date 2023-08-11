@@ -1,8 +1,8 @@
 @api
-Feature: API GET demo one
+Feature: API POST demo one
 
 
-  @api @tanuj
+  @api @harshpost
   Scenario: DEMO for GET call in API one
     Given I set apifacet as SFCC for endpoint Composite-Graph
     And I set headers with below attributes
