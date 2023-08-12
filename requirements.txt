@@ -8,4 +8,4 @@ Appium-Python-Client==2.11.1
 click==8.1.5
 axe-selenium-python>=2.1.6
 bdd-tags-processor>=0.2.0
-jsonpath_ng
+jsonpath_ng==1.5.3
