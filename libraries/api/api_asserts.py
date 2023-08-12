@@ -2,7 +2,7 @@ import json
 import re
 
 from requests import Response
-
+from jsonpath_ng import parse
 
 class APIAsserts:
 
@@ -23,12 +23,20 @@ class APIAsserts:
                             field_name = row[0]
                             field_value = row[1]
                             helpers = row[2]
+                            value_header = response_dict['headers'][field_name]
                             if len(field_value) == 0 and field_name:
-                                APIAsserts.check_condition_not_result(field_name, helpers, response_dict['headers'])
-                            elif len(field_value) != 0 and field_name or helpers:
-                                assert field_value in response_dict['headers'][
-                                    field_name], f'Response json does not have value {field_value}'
-                                APIAsserts.check_condition_have_result(response_dict['headers'][field_name], helpers)
+                                if helpers != "":
+                                    value = APIAsserts.check_condition_have_result_body("", helpers, value_header)
+                                # if helper = '', default key always have value !=""
+                                else:
+                                    assert value != "", f'Response json does not contain field name {value_header}'
+                            elif field_value != "" and field_name:
+                                if helpers == "REGEX":
+                                    assert re.search(field_value,
+                                                     value_header), f'Response json does not match with pattern at {value_header}'
+                                else:
+                                    # assert field_value == value, f'Response json does not have a value {field_value}'
+                                    APIAsserts.check_condition_have_result_body(field_value, helpers, value_header)
                     elif title == "body":
                         for row in table:
                             print("verifying body api")
@@ -36,104 +44,48 @@ class APIAsserts:
                             field_value = row[1]
                             helpers = row[2]
                             data = response_dict['json']
-                            list_value = []
+                            # get data from key
+                            value = APIAsserts.find_value_from_key(data, field_name)
                             if len(field_value) == 0 and field_name:
-                                list_value = APIAsserts.find_value_from_key(data, field_name, list_value)
-                                if helpers == "REGEX":
-                                    for value in list_value:
-                                        assert re.search(field_value,
-                                                         value), f'Response json does not match with pattern at {value}'
+                                # check data , if helper !=", check data based to helper
+                                if helpers != "":
+                                    APIAsserts.check_condition_have_result_body("",helpers, value)
+                                # if helper = '', default key always have value !=""
                                 else:
-                                    APIAsserts.check_condition_not_result_body(field_name, helpers, list_value)
+                                    assert value != "", f'Response json does not contain field name {data}'
                             elif len(field_value) != 0 and field_name or helpers:
-                                list_value = APIAsserts.find_value_from_key(data, field_name, list_value)
                                 if helpers == "REGEX":
-                                    for value in list_value:
-                                        assert re.search(field_value,
-                                                         value), f'Response json does not match with pattern at {value}'
+                                    assert re.search(field_value,
+                                                     value), f'Response json does not match with pattern at {value}'
                                 else:
-                                    assert field_value in list_value, f'Response json does not have a value {field_value}'
-                                    APIAsserts.check_condition_have_result_body(field_value, helpers, list_value)
-
-                                # value = dict(response.headers)]
-                                # assert value in data_header[1].strip(), f'Response json does not have a value {value}'
+                                    # assert field_value == value, f'Response json does not have a value {field_value}'
+                                    APIAsserts.check_condition_have_result_body(field_value, helpers, value)
 
         except json.decoder.JSONDecodeError:
             assert False, f'Response is not in JSON format'
 
-    def find_value_from_key(json_object, target_key, list_test):
-        if type(json_object) is dict and json_object:
-            for key in json_object:
-                if key == target_key:
-                    print("{}: {}".format(target_key, json_object[key]))
-                    list_test.append(str(json_object[key]))
-                APIAsserts.find_value_from_key(json_object[key], target_key, list_test)
-
-        elif type(json_object) is list and json_object:
-            for item in json_object:
-                APIAsserts.find_value_from_key(item, target_key, list_test)
-        return list_test
-
-    def check_condition_have_result(result, helpers):
+    def find_value_from_key(json_object, target_key):
+        try:
+            jsonpath_expression = parse(target_key)
+            match = jsonpath_expression.find(json_object)
+            print(" value is", match[0].value)
+            return match[0].value
+        except Exception as e:
+            print("not found value from key")
+            return ""
+    def check_condition_have_result_body(field_value, helpers, value):
         if helpers == "NUMERIC":
-            assert result.isnumeric(), f'Response json does not contain number have value {result}'
+            assert str(value).isnumeric(), f'Response json does not contain number have value {value}'
         elif helpers == "ALPHABET":
-            assert result.isalpha(), f'Response json does not contain alphabet {result}'
+            assert str(value).isalpha(), f'Response json does not contain alphabet {value}'
         elif helpers == "NOT_NULL":
-            assert result is not None, f'Response json does not contain a field name {result}'
-        elif helpers == "NULL":
-            assert result is None, f'Response json contain a field name {result}'
+            assert value is not None, f'Response json does not contain a field name {value}'
+        elif helpers =="CONTAIN" and field_value!="":
+            assert field_value in value, f'Response json does not contain a field name {value}'
+        elif helpers =="EQUAL" and field_value!="":
+            assert field_value == value, f'Response json does not equal a field name {value}'
         elif helpers == "":
-            print("do not check")
-        else:
-            assert False, f'not contain helper in data table do not check'
-
-    def check_condition_not_result(field_name, helpers, response_header):
-        if helpers == "NOT_NULL":
-            assert field_name in response_header, f'Response json does not contain a field name {field_name}'
-        elif helpers == "NULL":
-            assert response_header.get(field_name) is None, f'Response json contain a field name {field_name}'
-        elif helpers == "NUMERIC":
-            return response_header.get(
-                field_name).isnumeric(), f'Response json does not contain number {response_header.get(field_name).isnumeric()}'
-        elif helpers == "ALPHABET":
-            return response_header.get(
-                field_name).isalpha(), f'Response json does not contain alphabet {response_header.get(field_name).isnumeric()}'
-        elif helpers == "":
-            print("do not check")
-        else:
-            assert False, f'not contain helper in data table do not check'
-
-    def check_condition_have_result_body(result, helpers, list_value):
-        if helpers == "NUMERIC":
-            assert result.isnumeric(), f'Response json does not contain number have value {result}'
-        elif helpers == "ALPHABET":
-            assert result.isalpha(), f'Response json does not contain alphabet {result}'
-        elif helpers == "NOT_NULL":
-            assert list_value is not None, f'Response json does not contain a field name {result}'
-        elif helpers == "NULL":
-            assert result is None, f'Response json contain a field name {result}'
-        elif helpers == "EQUAL":
-            assert result == list_value, f'Response json contain a field name {result}'
-        elif helpers == "":
-            print("do not check")
-        else:
-            assert False, f'not contain helper in data table do not check'
-
-    def check_condition_not_result_body(field_name, helpers, list_value):
-        if helpers == "NOT_NULL":
-            assert len(list_value) > 0, f'Response json does not contain a field name {field_name}'
-        elif helpers == "NULL":
-            assert len(list_value) == 0, f'Response json contain a field name {field_name}'
-        elif helpers == "NUMERIC":
-            if list_value:
-                for key in list_value:
-                    assert key.isnumeric(), f'Response json does not contain number have value {key}'
-        elif helpers == "ALPHABET":
-            if list_value:
-                for key in list_value:
-                    assert key.isalpha(), f'Response json does not contain alphabet {key}'
-        elif helpers == "":
-            print("do not check")
+            # when helper = "" => default is check value same with value of key
+            assert field_value == value, f'Response json does not equal a field name {value}'
         else:
             assert False, f'not contain helper in data table do not check'

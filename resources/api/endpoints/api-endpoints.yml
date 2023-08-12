@@ -4,3 +4,5 @@ FAKERESTAPI:
   Activity: /api/v1/Activities
 GOREST:
   Get-Users: /public/v2/users
+REQRES:
+  Get-Users: /api/users?page=2

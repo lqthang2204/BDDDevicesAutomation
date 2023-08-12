@@ -39,8 +39,11 @@ class Requests(RequestProps):
         except requests.RequestException as e:
             print(f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n')
             print(f'Exception {e}')
+            assert False, f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n'
         except Exception as e:
             print(f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n')
             print(f'Exception {e}')
+            assert False, f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n'
         except:
             raise Exception(f'Invalid HTTP method "{method}" was received')
+            assert False, f'Invalid HTTP method "{method}" was received'

@@ -16,15 +16,13 @@ Feature: test api with fake rest api
       | Server                 | Kestrel    | ALPHABET |
       | api-supported-versions | 1.0        |          |
       | Date                   |            | NOT_NULL |
-      | test                   |            | NULL     |
-    Then I verify response body with below attributes
-      | FieldName | FieldValue     | Helpers  |
-      | dueDate   |                | NOT_NULL |
-      | title     |                | NOT_NULL |
-      | completed | False          | ALPHABET |
-      | id        |                | NUMERIC  |
-      | title     | Activity [0-9] | REGEX    |
-      | title     | [A-z] [0-9]    | REGEX    |
+    And I verify response body with below attributes
+      | FieldName   | FieldValue     | Helpers  |
+      | [0].id      | 1              | NUMERIC  |
+      | [0].title   | Activity 1     |          |
+      | [*].title   | Activity [0-9] | REGEX    |
+      | [*].title   | [A-z] [0-9]    | REGEX    |
+      | [*].dueDate |                | NOT_NULL |
 
 
   @fake_rest_api_2
@@ -36,10 +34,8 @@ Feature: test api with fake rest api
     And I trigger GET call with below attributes
     And I verify response code with status is "200"
     Then I verify response header with below attributes
-      | FieldName              | FieldValue | Helpers  |
-      | Server                 | Kestrel    | NOT_NULL |
-      | Server                 | Kestrel    | ALPHABET |
-      | api-supported-versions |            | NULL     |
-      | Date                   |            | NOT_NULL |
-      | test                   |            | NULL     |
-      | Transfer-Encoding      | chunked    |          |
+      | FieldName         | FieldValue | Helpers  |
+      | Server            | Kestrel    | NOT_NULL |
+      | Server            | Kestrel    | ALPHABET |
+      | Date              |            | NOT_NULL |
+      | Transfer-Encoding | chunked    |          |
