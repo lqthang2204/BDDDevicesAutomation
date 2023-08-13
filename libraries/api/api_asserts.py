@@ -55,8 +55,13 @@ class APIAsserts:
                                     assert value != "", f'Response json does not contain field name {data}'
                             elif len(field_value) != 0 and field_name or helpers:
                                 if helpers == "REGEX":
-                                    assert re.search(field_value,
-                                                     value), f'Response json does not match with pattern at {value}'
+                                    if isinstance(value, list):
+                                        for val in value:
+                                            assert re.search(field_value,
+                                                             val), f'Response json does not match with pattern at {val}'
+                                    else:
+                                        assert re.search(field_value,
+                                                         value), f'Response json does not match with pattern at {value}'
                                 else:
                                     # assert field_value == value, f'Response json does not have a value {field_value}'
                                     APIAsserts.check_condition_have_result_body(field_value, helpers, value)
@@ -66,10 +71,14 @@ class APIAsserts:
 
     def find_value_from_key(json_object, target_key):
         try:
-            jsonpath_expression = parse(target_key)
-            match = jsonpath_expression.find(json_object)
-            print(" value is", match[0].value)
-            return match[0].value
+            if re.search('[*]', target_key):
+                jsonpath_expression = parse(target_key)
+                match_value_list = [match.value for match in jsonpath_expression.find(json_object)]
+                return match_value_list
+            else:
+                jsonpath_expression = parse(target_key)
+                match = jsonpath_expression.find(json_object)
+                return match[0].value
         except Exception as e:
             print("not found value from key")
             return ""

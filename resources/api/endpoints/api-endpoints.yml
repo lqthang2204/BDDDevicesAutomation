@@ -6,3 +6,4 @@ GOREST:
   Get-Users: /public/v2/users
 REQRES:
   Get-Users: /api/users?page=2
+  Get-Users-for-page: /api/users
