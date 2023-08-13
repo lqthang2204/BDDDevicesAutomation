@@ -1,4 +1,4 @@
-@api_fake_rest
+@api_fake_rest @get
 Feature: test api with fake rest api
 
 

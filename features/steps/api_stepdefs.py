@@ -51,7 +51,10 @@ def step_impl(context, api_method):
         context_table = sanitize_datatable(context.table)
         list_data = []
         for row in context_table:
-            list_data.append(row[0])
+            if row[0].lower() == 'param':
+                list_data.append(row[1])
+            elif row[0].lower() == 'path':
+                context.req.api_base_url = context.req.api_base_url.replace('{' + row[1] + '}', row[2])
         if list_data:
             context.req.params = json.dumps(list_data)
     #  code to be moved into a separate function as it will include a lot of detailing based on Issue #30

@@ -1,5 +1,7 @@
 SFCC:
-  Composite-Graph: /services/data/v1.0/composite/graph
+  Composite-Graph: /services/data/v54.0/composite/graph
+SFCLOUD:
+  Get-Location: /v1/locations/location/{orgId}/{locationType}/{locationId}
 FAKERESTAPI:
   Activity: /api/v1/Activities
 GOREST:

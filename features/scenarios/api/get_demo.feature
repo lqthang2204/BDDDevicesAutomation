@@ -2,20 +2,21 @@
 Feature: API GET demo one
 
 
-  @api @harshget
+  @api @harshget @get
   Scenario: DEMO for GET call in API one
     Given I set apifacet as SFCLOUD for endpoint Get-Location
     And I set headers with below attributes
-      | FieldName     | fieldValue                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-      | Authorization | Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiIyZjk5NTJjNy0xZjhlLTQwNTAtYWY0MS0xZjE2YjE2NTI1ZDgiLCJpc3MiOiJodHRwczovL2xvZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vYzA5MmExOGEtYzkzMi00NTdkLWE5MWUtYjEwZWYyZjZhZTY0L3YyLjAiLCJpYXQiOjE2OTE3NTAzMDksIm5iZiI6MTY5MTc1MDMwOSwiZXhwIjoxNjkxNzU0MjA5LCJhaW8iOiJBU1FBMi84VUFBQUF1N0VFNW55MHdVWG16cTY4NytZdGttV1pPL1drS2JhbmhDdVBZVzV5NytzPSIsImF6cCI6ImNmYjMyNzNjLTgxNTAtNGYzZC1iMzZhLWZiOTNlNzUzYTg5ZCIsImF6cGFjciI6IjEiLCJvaWQiOiJkNGRjN2NhOC02OTg3LTRlNjAtOTkzZC1hMTNmMzBiYzUyZjciLCJyaCI6IjAuQVNNQWlxR1N3RExKZlVXcEhyRU84dmF1Wk1kU21TLU9IMUJBcjBFZkZyRmxKZGdqQUFBLiIsInJvbGVzIjpbImRlZmF1bHQiXSwic3ViIjoiZDRkYzdjYTgtNjk4Ny00ZTYwLTk5M2QtYTEzZjMwYmM1MmY3IiwidGlkIjoiYzA5MmExOGEtYzkzMi00NTdkLWE5MWUtYjEwZWYyZjZhZTY0IiwidXRpIjoiTUJKMExaM1lWa1d4OWNjRG9ZT0FBQSIsInZlciI6IjIuMCJ9.KPsi_O5ZwYwsxG8ePmcQxgx-ioWBm7aeu6b-SCOjW9RT6O99JEybwYNiVD63CnZm7c7nbucxL-02yOcffT4NLs98uCCtg6mH5FG8tXwa2GWzV3baCQz33W-Cbmrw5iYZqgn8gmK9Lm08nVnj_mpJtHjn9NmEX7gyFUniGUA9mwMom1SD-s1Yisit3dECnhGiEHW-UAAMJBAdfmOFDTRgZ6m0zav6y_wf5mDG_kOYdEWE76Y3WBkqefiJZGnqKw9TY7e5pqWSWiYkwtV4WYSN1j8vvM1blbnGS9mcW6Rjw0bV2TuuEM624JPdHpRP-Pv6VZcLD5LxCSTE1aZXTG1_dQ |
-      | Content-Type  | application/json                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+      | FieldName     | fieldValue                   |
+      | Authorization | Bearer eyJ0eXAiOiJKV1QiLCJhb |
+      | Content-Type  | application/json             |
     And I trigger GET call with below attributes
-      | AttributeName | AttributeValue | AttributeUsage |
-      | locationType  | DSV            |                |
-      | locationId    | 60722          |                |
-      | version       | v1             |                |
+      | Operation Level | AttributeName | AttributeValue |
+      | Path            | orgId         | THE_ORG        |
+      | Path            | locationType  | CENTRE         |
+      | Path            | locationId    | 12345          |
     Then I verify response code with status is "200"
-#    Then I verify response body with below attributes
-#      | FieldName | FieldValue | Helpers  |
-#      | id        |            | NOT_NULL |
-#      | PersonEmail | AutoGenEmail_yUregTnJbXt9FPeX8pgr@Test.com | EQUAL    |
+    Then I verify response body with below attributes
+      | FieldName                   | FieldValue | Helpers  |
+      | $.workingCalendar.startTime | 00:00      | EQUAL    |
+      | $.workingCalendar.startTime |            | NOT_NULL |
+      | $.workingCalendar.endTime   | 06:00      | EQUAL    |
