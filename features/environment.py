@@ -25,6 +25,7 @@ def before_all(context):
     file = open(config_file_path, 'r')
     context.config_env = configparser.RawConfigParser(allow_no_value=True)
     context.config_env.read_file(file)
+    context.platform = context.config_env.get("drivers_config", "platform")
     context.project_folder = context.config_env.get("project_folder", "project_folder")
     context.stage_name = context.config_env.get("drivers_config", "stage")
     if context.config_env.has_option("drivers_config", "browser"):
@@ -35,8 +36,10 @@ def before_all(context):
 
 
 def before_scenario(context, scenario):
-    context.device = context.env['devices']
-    # context.device = list(filter(lambda device: device['platformName'] == context.platform, device))
+    device = context.env['devices']
+    context.device = list(filter(
+        lambda device: device['platformName'] == context.platform, device
+    ))
     context.device = context.device[0]
     if context.device['platformName'] == "WEB":
         if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
