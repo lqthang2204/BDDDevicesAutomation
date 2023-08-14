@@ -10,7 +10,7 @@ class APIAsserts:
         assert response.status_code == expected_code, \
             f'Expected status code {expected_code}, but got {response.status_code}. {message}'
 
-    def response_has_key(response_dict, table, status_code, title):
+    def response_has_key(response_dict, table, status_code, title, dict_save_value):
         try:
             if title == "response_code":
                 assert response_dict['code'] == int(
@@ -54,6 +54,8 @@ class APIAsserts:
                                 else:
                                     assert value != "", f'Response json does not contain field name {data}'
                             elif len(field_value) != 0 and field_name or helpers:
+                                if dict_save_value:
+                                    field_value = dict_save_value.get(field_value, field_value)
                                 if helpers == "REGEX":
                                     if isinstance(value, list):
                                         for val in value:
@@ -98,3 +100,11 @@ class APIAsserts:
             assert field_value == value, f'Response json does not equal a field name {value}'
         else:
             assert False, f'not contain helper in data table do not check'
+    def get_json_file(self, data_payload, target_key, value, dict_save_value):
+        if dict_save_value:
+            value = dict_save_value.get(value, value)
+        jsonpath_expression = parse(target_key)
+        jsonpath_expression.find(data_payload)
+        data_payload = jsonpath_expression.update(data_payload, value)
+        return data_payload
+

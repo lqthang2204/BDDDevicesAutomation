@@ -39,3 +39,27 @@ Feature: test api with fake rest api
       | Server            | Kestrel    | ALPHABET |
       | Date              |            | NOT_NULL |
       | Transfer-Encoding | chunked    |          |
+
+     @fake_rest_api_3
+    Scenario: DEMO api use key-value to verify response data
+    Given I navigate to url OPEN_MRS
+    And I change the page spec to LoginPage
+    And I wait for element user-field to be DISPLAYED
+    And I type "johan" into element user-field
+    And I save text for element user-field with key "user-name"
+    And I set apifacet as FAKERESTAPI for endpoint Create_Activity
+    And I set headers with below attributes
+      | FieldName    | fieldValue                             |
+      | Content-Type | application/json; charset=utf-8; v=1.0 |
+    And I set payload fake_rest_api with below attributes
+      | FieldName | fieldValue    |
+      | title     | KEY.user-name |
+    And I trigger POST call with below attributes
+    And I verify response body with below attributes
+      | FieldName | FieldValue | Helpers |
+      | $.id      | 1          | NUMERIC |
+      | $.title   | johan      |         |
+    And I verify response body with below attributes
+      | FieldName | FieldValue    | Helpers |
+      | $.id      | 1             | NUMERIC |
+      | $.title   | KEY.user-name |         |

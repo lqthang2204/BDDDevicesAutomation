@@ -41,7 +41,12 @@ def step_impl(context, payload_file):
         payload_json = file.read()
     # After reading We can read the Datatable and replace the values with some Runtime values also using the function get_test_data_for()
     payload_json = payload_json.replace('\n', '')
-    context.req.payload = payload_json
+    payload_json = json.loads(payload_json)
+    if context.table:
+        context_table = sanitize_datatable(context.table)
+        for row in context_table:
+            payload_json = APIAsserts().get_json_file(payload_json, row[0], row[1], context.dict_save_value)
+    context.req.payload = json.dumps(payload_json)
 
 
 @step(u'I trigger {api_method} call with below attributes')
@@ -63,7 +68,7 @@ def step_impl(context, api_method):
 
 @step(u'I verify response body with below attributes')
 def step_impl(context):
-    APIAsserts.response_has_key(context.req.response_dict, context.table, "", "body")
+    APIAsserts.response_has_key(context.req.response_dict, context.table, "", "body", context.dict_save_value)
 
 
 @step(u'I verify response header with below attributes')
