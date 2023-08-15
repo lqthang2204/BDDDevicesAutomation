@@ -1,5 +1,6 @@
 import random
 import re
+import uuid
 from datetime import datetime, timedelta
 
 ALPHANUMERIC = 'alphanumeric_'
@@ -23,6 +24,8 @@ def get_test_data_for(sample_data, context_dict):
             return ''
         elif sample_data == 'NULL':
             return None
+        elif sample_data == 'uuid':
+            return get_uuid()
         elif sample_data.startswith('random_'):
             return generate_random_numeric_alpha_string(sample_data)
         elif sample_data.startswith('date') or sample_data.startswith('time'):
@@ -224,6 +227,16 @@ def get_random_alphanumeric_in_range(min_num, max_num):
     random_str_length = get_random_number_in_range(min_num, max_num)
     return ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
                                   k=random_str_length))
+
+
+def get_uuid():
+    # Generate a UUID
+    uuid_value = uuid.uuid4()
+    # Convert the UUID to a string and replace hyphens with empty strings
+    formatted_value = str(uuid_value).replace('-', '')
+    # Insert hyphens at specific positions to match your desired format
+    uuid_value = f"{formatted_value[:4]}-{formatted_value[4:10]}-{formatted_value[10:14]}-{formatted_value[14:18]}-{formatted_value[18:24]}-{formatted_value[24:]}"
+    return uuid_value
 
 
 # Example Usage:

@@ -1,4 +1,4 @@
-@api_reqres
+@api @api_reqres
 Feature: test api with fake rest api
 
 

@@ -34,8 +34,10 @@ env:
       udid: emulator-5554
     apifacets:
       link:
-        SFCC: https://stores2022--qa.sandbox.my.salesforce.com
-        SFCLOUD: https://some-api.salesforce.com
+        SFCC: https://stores20--qa.sandbox.my.salesforce.com
+        SFCC-TOKEN: https://test.salesforce.com/services/oauth2/token
+        SFCLOUD: https://api-eu.jdadelivers.com
+        SFCLOUD-TOKEN: https://login.microsoftonline.com/oauth2/v2.0/token
         FAKERESTAPI: https://fakerestapi.azurewebsites.net
         GOREST: https://gorest.co.in
         REQRES: https://reqres.in

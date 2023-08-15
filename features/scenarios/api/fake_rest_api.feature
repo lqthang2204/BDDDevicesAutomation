@@ -1,4 +1,4 @@
-@api_fake_rest @get
+@api @api_fake_rest @get @fast
 Feature: test api with fake rest api
 
 
@@ -27,7 +27,7 @@ Feature: test api with fake rest api
 
   @fake_rest_api_2
     Scenario: DEMO API without endpoint
-    Given I set apifacet FAKERESTAPI without endpoint
+    Given I set apifacet as FAKERESTAPI without endpoint
     And I set headers with below attributes
       | FieldName    | fieldValue        |
       | Content-Type | text/plain; v=1.0 |
