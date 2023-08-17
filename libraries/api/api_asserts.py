@@ -72,7 +72,7 @@ class APIAsserts:
                                         assert re.search(field_value,
                                                          value_body), f'Response json does not match with pattern at {value_body}'
                                 else:
-                                    # assert field_value == value, f'Response json does not have a value {field_value}'
+                                    # assert field_value == value_body, f'Response json does not have a value {field_value}'
                                     APIAsserts.check_condition_have_result_body(field_value, helpers, value_body)
 
         except json.decoder.JSONDecodeError:
@@ -101,6 +101,8 @@ class APIAsserts:
             assert value is not None, f'Response json does not contain a field name {value}'
         elif helpers == "CONTAIN" and field_value != "":
             assert field_value in value, f'Response json does not contain a field name {value}'
+        elif helpers == "BOOL" and field_value != "":
+            assert APIAsserts.convert_string_to_bool(field_value) == value, f'Response json does not contain a field name {value}'
         elif helpers == "EQUAL" and field_value != "":
             assert field_value == value, f'Response json does not equal a field name {value}'
         elif helpers == "":
@@ -109,10 +111,10 @@ class APIAsserts:
         else:
             assert False, f'not contain helper in data table do not check'
 
-    # def get_json_file(self, data_payload, target_key, value, dict_save_value):
-    #     if dict_save_value:
-    #         value = dict_save_value.get(value, value)
-    #     jsonpath_expression = parse(target_key)
-    #     jsonpath_expression.find(data_payload)
-    #     data_payload = jsonpath_expression.update(data_payload, value)
-    #     return data_payload
+    def convert_string_to_bool(expect):
+        if expect in ['true', 'True', 'TRUE']:
+            return True
+        elif expect in ['false', 'False', 'FALSE']:
+            return False
+        else:
+            assert False, f'framework does not support convert type bool as {expect}'

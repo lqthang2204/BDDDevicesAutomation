@@ -17,12 +17,13 @@ Feature: test api with fake rest api
       | api-supported-versions | 1.0        |          |
       | Date                   |            | NOT_NULL |
     And I verify response body with below attributes
-      | FieldName   | FieldValue     | Helpers  |
-      | [0].id      | 1              | NUMERIC  |
-      | [0].title   | Activity 1     |          |
-      | [*].title   | Activity [0-9] | REGEX    |
-      | [*].title   | [A-z] [0-9]    | REGEX    |
-      | [*].dueDate |                | NOT_NULL |
+      | FieldName     | FieldValue     | Helpers  |
+      | [0].id        | 1              | NUMERIC  |
+      | [0].title     | Activity 1     |          |
+      | [*].title     | Activity [0-9] | REGEX    |
+      | [*].title     | [A-z] [0-9]    | REGEX    |
+      | [*].dueDate   |                | NOT_NULL |
+      | [0].completed | False          | BOOL     |
 
 
   @fake_rest_api_2
