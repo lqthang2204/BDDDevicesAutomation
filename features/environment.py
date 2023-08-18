@@ -36,26 +36,27 @@ def before_all(context):
 
 
 def before_scenario(context, scenario):
-    device = context.env['devices']
-    context.device = list(filter(
-        lambda device: device['platformName'] == context.platform, device
-    ))
-    context.device = context.device[0]
-    if context.device['platformName'] == "WEB":
-        if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-            cross_browser_with_saucelabs(context, context.device)
-        else:
-            launch_browser(context, context.device, context.browser)
-    elif context.device['platformName'] == "ANDROID":
-        print("android")
-        launch_android(context, context.device, context.config_env)
-        context.wait = context.device['wait']
-        context.time_page_load = context.device['time_page_load']
-    elif context.device['platformName'] == "IOS":
-        print("IOS")
-        context.wait = context.device['wait']
-        context.time_page_load = context.device['time_page_load']
-    context.url = context.env['link']
+    if context.platform != 'API':
+        device = context.env['devices']
+        context.device = list(filter(
+            lambda device: device['platformName'] == context.platform, device
+        ))
+        context.device = context.device[0]
+        if context.device['platformName'] == "WEB":
+            if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+                cross_browser_with_saucelabs(context, context.device)
+            else:
+                launch_browser(context, context.device, context.browser)
+        elif context.device['platformName'] == "ANDROID":
+            print("android")
+            launch_android(context, context.device, context.config_env)
+            context.wait = context.device['wait']
+            context.time_page_load = context.device['time_page_load']
+        elif context.device['platformName'] == "IOS":
+            print("IOS")
+            context.wait = context.device['wait']
+            context.time_page_load = context.device['time_page_load']
+        context.url = context.env['link']
 
     context.apiurls = context.env['apifacets']['link']
     context.endpoints = read_configuration().read_api_endpoints()
