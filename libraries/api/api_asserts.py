@@ -44,7 +44,8 @@ class APIAsserts:
                                     APIAsserts.check_condition_have_result_body(field_value, helpers, value_header)
                     elif title == "body":
                         for row in table:
-                            print("verifying body api")
+                            if row[0] == 'response_code':
+                                continue
                             field_name = row[0]
                             field_value = get_test_data_for(row[1], context.dict_save_value)
                             helpers = row[2]
@@ -94,20 +95,67 @@ class APIAsserts:
 
     def check_condition_have_result_body(field_value, helpers, value):
         if helpers == "NUMERIC":
-            assert str(value).isnumeric(), f'Response json does not contain number have value {value}'
+            if field_value != "" and isinstance(value, list):
+                for val in value:
+                    assert str(val).isnumeric(), f'Response json does not number have value {value}'
+                assert int(field_value) in value, f'Response json does not contain number have value {value}'
+            elif field_value !="":
+                assert int(field_value) == value, f'Response json does not equal number have value {value}'
+            elif field_value =="" and isinstance(value, list):
+                for val in value:
+                    assert str(val).isnumeric(), f'Response json does not number have value {value}'
+            else:
+                assert str(value).isnumeric(), f'Response json does not number have value {value}'
         elif helpers == "ALPHABET":
-            assert str(value).isalpha(), f'Response json does not contain alphabet {value}'
+            if field_value != "" and isinstance(value, list):
+                for val in value:
+                    assert str(val).isalpha(), f'Response json does not alpha have value {value}'
+                assert field_value in value, f'Response json does not contain alpha have value {value}'
+            elif field_value != "":
+                assert field_value == value, f'Response json does not equal alpha have value {value}'
+            elif field_value == "" and isinstance(value, list):
+                for val in value:
+                    assert str(val).isalpha(), f'Response json does not alpha have value {value}'
+            else:
+                assert str(value).isalpha(), f'Response json does not alpha have value {value}'
         elif helpers == "NOT_NULL":
             assert value is not None, f'Response json does not contain a field name {value}'
-        elif helpers == "CONTAIN" and field_value != "":
-            assert field_value in value, f'Response json does not contain a field name {value}'
+        elif helpers == "CONTAIN":
+            if field_value != "" and isinstance(value, list):
+                for val in value:
+                    assert field_value in val, f'Response json does not contain have value {value}'
+            elif field_value != "":
+                assert field_value in value, f'Response json does not equal alpha have value {value}'
+            else:
+                assert False, f'Not found expected value in datatable {field_value}'
         elif helpers == "BOOL" and field_value != "":
-            assert APIAsserts.convert_string_to_bool(field_value) == value, f'Response json does not contain a field name {value}'
+            if field_value != "" and isinstance(value, list):
+                for val in value:
+                    assert type(val) == bool, f'Response json does not contain boolean {value}'
+                assert APIAsserts.convert_string_to_bool(
+                        field_value) in value , f'Response json does not contain a field name {value}'
+            elif field_value != "":
+                assert APIAsserts.convert_string_to_bool(
+                    field_value) == value, f'Response json does not contain a field name {value}'
+            elif field_value == "" and isinstance(value, list):
+                for val in value:
+                    assert type(val) == bool, f'Response json does not contain boolean {value}'
+            else:
+                assert type(value) == bool, f'Response json does not boolean {value}'
         elif helpers == "EQUAL" and field_value != "":
-            assert field_value == value, f'Response json does not equal a field name {value}'
+            if field_value != "" and isinstance(value, list):
+                for val in value:
+                    assert field_value == val, f'Response json does not equal a field name {value}'
+            elif field_value != "":
+                assert field_value == value, f'Response json does not equal a field name {value}'
+            else:
+                assert False, f'Not found expected value in datatable {field_value}'
         elif helpers == "":
+            if field_value != "":
             # when helper = "" => default is check value same with value of key
-            assert field_value == value, f'Response json does not equal a field name {value}'
+                assert field_value == value, f'Response json does not equal a field name {value}'
+            else:
+                assert False, f'Not found expected value in datatable {field_value}'
         else:
             assert False, f'not contain helper in data table do not check'
 

@@ -85,3 +85,16 @@ def step_impl(context):
 @step(u'I verify response code with status is "{status_code}"')
 def step_impl(context, status_code):
     APIAsserts.response_has_key(context.req.response_dict, context, context.table, status_code, "response_code")
+
+@given(u'I poll the {api_method} call "{times_number}" times until below conditions')
+def step_impl(context, api_method, times_number):
+    for i in range(int(times_number)):
+        context.req._send(api_method)
+        if context.table:
+            context_table = sanitize_datatable(context.table)
+            for row in context_table:
+                if row[0]== 'response_code':
+                    APIAsserts.response_has_key(context.req.response_dict, context, context.table, row[1],
+                                                "response_code")
+                else:
+                    APIAsserts.response_has_key(context.req.response_dict, context, context.table, "", "body")

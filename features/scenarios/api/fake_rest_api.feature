@@ -64,3 +64,17 @@ Feature: test api with fake rest api
       | FieldName | FieldValue    | Helpers |
       | $.id      | 1             | NUMERIC |
       | $.title   | KEY.user-name |         |
+
+ @fake_rest_api_4
+  Scenario: DEMO polling GET Method
+    Given I set apifacet as FAKERESTAPI for endpoint Activity
+    And I set headers with below attributes
+      | FieldName    | fieldValue        |
+      | Content-Type | text/plain; v=1.0 |
+    And I trigger GET call with below attributes
+    And I verify response code with status is "200"
+   And I poll the GET call "10" times until below conditions
+     | FieldName     | FieldValue | Helpers |
+     | response_code | 200        |         |
+     | [0].id        | 1          | NUMERIC |
+
