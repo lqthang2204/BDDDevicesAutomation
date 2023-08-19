@@ -80,7 +80,7 @@ Feature: test api with fake rest api
      | [0].id        | 1          | NUMERIC |
 
     @fake_rest_api_5
-  Scenario: DEMO polling GET Method
+  Scenario: DEMO polling mix with set parameter for url
     Given I set apifacet as GOREST for endpoint Insert-User
     And I set headers with below attributes
       | FieldName     | fieldValue                                                       |
