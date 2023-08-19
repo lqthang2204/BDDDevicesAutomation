@@ -36,7 +36,7 @@ def get_test_data_for(sample_data, context_dict):
                     srch_key = 'KEY.' + sample_data
                 else:
                     srch_key = sample_data
-                return context_dict.get(srch_key, sample_data)
+                return str(context_dict.get(srch_key, sample_data))
             else:
                 return sample_data
     # if this line return None is encountered it means we have condition umimplemented

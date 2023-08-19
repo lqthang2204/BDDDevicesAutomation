@@ -7,6 +7,8 @@ FAKERESTAPI:
   Create_Activity: /api/v1/Activities
 GOREST:
   Get-Users: /public/v2/users
+  Insert-User: /public/v2/users
+  Get-User-ID: /public/v2/users/{user-id}
 REQRES:
   Get-Users: /api/users?page=2
   Get-Users-for-page: /api/users

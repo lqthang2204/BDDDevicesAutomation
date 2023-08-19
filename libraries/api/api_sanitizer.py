@@ -56,8 +56,8 @@ class RequestProps:
         context_table = sanitize_datatable(context.table)
         for row in context_table:
             payload_json = cls.get_json_file(payload_json, row[0], row[1], context.dict_save_value)
-
-        cls._payload = json.dumps(payload_json)
+        payload_json = json.dumps(payload_json)
+        cls._payload = payload_json
 
     @property
     def payload(self):
