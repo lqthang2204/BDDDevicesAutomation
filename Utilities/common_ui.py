@@ -5,8 +5,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
-
-
+from faker import Faker
+from libraries.faker.User import generate_user
 class common_device:
     def check_att_is_exist(self, obj_action_elements, key):
         if obj_action_elements.get(key) is None:
@@ -164,3 +164,11 @@ class common_device:
                 return element.text
             else:
                 return element.get_attribute('content-desc')
+    def create_random_user(self, locale):
+        if locale:
+            faker = Faker(locale)
+        else:
+            faker = Faker('en_US')
+        print("faker.unique.first_name() ==", faker.unique.first_name())
+        user = generate_user(faker.unique.first_name(), faker.unique.last_name(), faker.job(), faker.address(), faker.phone_number(), faker.city(), faker.state(), faker.postcode(), faker.domain_name(), faker.prefix(), faker.suffix())
+        return user

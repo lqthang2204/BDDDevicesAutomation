@@ -114,7 +114,38 @@ Feature: test api with fake rest api
         | path            | user-id      | KEY.id_user    |
       And I poll the GET call "10" times until below conditions
         | FieldName     | FieldValue              | Helpers |
-        | response_code | 200                       |         |
+        | response_code | 200                     |         |
         | name          | KEY.randomAplhabetLen10 |         |
         | email         | KEY.unique-gmail        |         |
+
+   @fake_rest_api_6
+  Scenario: DEMO create user with fake data
+    Given I set apifacet as GOREST for endpoint Insert-User
+    And I set headers with below attributes
+    And I create a random user
+    And I set headers with below attributes
+      | FieldName     | fieldValue                                                       |
+      | Authorization | f9ef81d9ea448aed0436d36b5b3b51dab7d467feeb403baad749844ea0d51d96 |
+      | Content-Type  | application/json; charset=utf-8; v=1.0                           |
+    And I set payload user_gorest with below attributes
+      | FieldName | fieldValue      |
+      | email     | USER.email      |
+      | name      | USER.first_name |
+     And I trigger POST call with below attributes
+    And I verify response code with status is "201"
+    And I verify response body with below attributes
+      | FieldName | FieldValue      | Helpers |
+      | name      | USER.first_name |         |
+      | email     | USER.email      |         |
+     And I create a random user
+     And I set payload user_gorest with below attributes
+       | FieldName | fieldValue        |
+       | email     | USER.2.email      |
+       | name      | USER.2.first_name |
+     And I trigger POST call with below attributes
+    And I verify response code with status is "201"
+    And I verify response body with below attributes
+      | FieldName | FieldValue        | Helpers |
+      | name      | USER.2.first_name |         |
+      | email     | USER.2.email      |         |
 

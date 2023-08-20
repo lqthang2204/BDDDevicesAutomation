@@ -3,9 +3,10 @@ chromedriver-autoinstaller==0.4.1
 PyYAML==6.0
 selenium==4.10.0
 webdriver-manager==3.8.6
-behavex==3.0.0
+behavex==2.0.1
 Appium-Python-Client==2.11.1
 click==8.1.5
 axe-selenium-python>=2.1.6
 bdd-tags-processor>=0.2.0
 jsonpath_ng==1.5.3
+faker == 19.3.0

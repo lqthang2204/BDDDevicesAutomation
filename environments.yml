@@ -8,7 +8,7 @@ env:
       IDIVA: https://idiva.vn/
     devices:
     - platformName: WEB
-      is_headless: true
+      is_headless: false
       wait: 30
       time_page_load: 30
       auto_download_driver: true

@@ -2,6 +2,7 @@ import random
 import re
 import uuid
 from datetime import datetime, timedelta
+from libraries.faker import management_user
 
 ALPHANUMERIC = 'alphanumeric_'
 NUMBERPREFIX = 'number_'
@@ -33,7 +34,13 @@ def get_test_data_for(sample_data, context_dict):
         else:
             if context_dict:
                 if not sample_data.startswith('KEY.'):
-                    srch_key = 'KEY.' + sample_data
+                    if 'USER.' in sample_data:
+                        arr_user = sample_data.split('USER.')
+                        list_user = context_dict['USER.']
+                        sample_data = management_user.get_user(list_user, arr_user[1])
+                        srch_key = sample_data
+                    else:
+                        srch_key = 'KEY.' + sample_data
                 else:
                     srch_key = sample_data
                 return str(context_dict.get(srch_key, sample_data))

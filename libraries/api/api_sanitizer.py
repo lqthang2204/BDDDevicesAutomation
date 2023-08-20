@@ -4,6 +4,7 @@ import re
 from jsonpath_ng import parse
 
 from libraries.misc_operations import sanitize_datatable
+from libraries.faker import management_user
 
 
 class RequestProps:
@@ -92,7 +93,12 @@ class RequestProps:
     @classmethod
     def get_json_file(self, data_payload, target_key, value, dict_save_value):
         if dict_save_value:
-            value = dict_save_value.get(value, value)
+            if 'USER.' in value:
+                arr_user = value.split('USER.')
+                list_user = dict_save_value['USER.']
+                value= management_user.get_user(list_user, arr_user[1])
+            else:
+                value = dict_save_value.get(value, value)
         jsonpath_expression = parse(target_key)
         jsonpath_expression.find(data_payload)
         data_payload = jsonpath_expression.update(data_payload, value)
