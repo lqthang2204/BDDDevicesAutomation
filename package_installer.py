@@ -31,11 +31,11 @@ def ensure_package_versions():
             installed_version = version(package)
             if installed_version < expected_version:
                 logging.info(f"Updating {package} from {installed_version} to {expected_version}")
-                subprocess.run(["pip", "install", f"{package}>={expected_version}"])
+                subprocess.run(["pip3", "install -U", f"{package}>={expected_version}"])
                 pkg_to_upgrade[package] = expected_version
         except Exception:
             logging.info(f"Installing {package} version {expected_version}")
-            subprocess.run(["pip", "install", f"{package}>={expected_version}"])
+            subprocess.run(["pip3", "install", f"{package}>={expected_version}"])
             pkg_to_upgrade[package] = expected_version
 
     if pkg_to_upgrade:
