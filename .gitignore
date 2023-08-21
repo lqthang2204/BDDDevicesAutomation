@@ -11,3 +11,4 @@ features/final
 output
 WebDriver
 target
+**/geckodriver.log
