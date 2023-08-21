@@ -30,6 +30,7 @@ Feature: orange HRM web
     And I click element mobile-button
     And I type "test" into element search-input
 
+
   Scenario: test login page1
     Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage
@@ -47,3 +48,21 @@ Feature: orange HRM web
     And I wait for element find-patient-button to be ENABLED
     And I click element find-patient-button
     And I wait for element search-input to be DISPLAYED
+
+    @test-2
+      Scenario: create random user
+    Given I navigate to url GOOGLE
+    And I change the page spec to pageGoogle
+    And I wait for element search-field to be DISPLAYED
+    And I click element search-field
+    And I create a random user
+    And I type "lqthang" into element search-field
+    And I navigate to url TECHPANDA
+    And I change the page spec to HomePage
+    And I wait for element mobile-button to be DISPLAYED
+    And I wait for element mobile-button to be ENABLED
+    And I wait for element mobile-button to be EXISTED
+    And I click element mobile-button
+    And I type "USER.first_name" into element search-input
+    And I wait 20 seconds
+#    And I wait for element <string> to be <string>

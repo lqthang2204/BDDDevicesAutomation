@@ -7,6 +7,7 @@ from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 from faker import Faker
 from libraries.faker.User import generate_user
+from libraries.faker import management_user
 class common_device:
     def check_att_is_exist(self, obj_action_elements, key):
         if obj_action_elements.get(key) is None:
@@ -25,7 +26,12 @@ class common_device:
             self.click_action(element, wait, element_page, device, driver)
         elif action.__eq__("type"):
             if dict_save_value:
-                value = dict_save_value.get(value, value)
+                if 'USER.' in value:
+                    arr_user = value.split('USER.')
+                    list_user = dict_save_value['USER.']
+                    value = management_user.get_user(list_user, arr_user[1])
+                else:
+                    value = dict_save_value.get(value, value)
             element.send_keys(value)
         elif action.__eq__("clear"):
             element.clear()

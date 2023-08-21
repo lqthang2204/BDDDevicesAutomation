@@ -8,17 +8,17 @@ env:
       IDIVA: https://idiva.vn/
     devices:
     - platformName: WEB
-      is_headless: false
+      is_headless: true
       wait: 30
       time_page_load: 30
       auto_download_driver: true
-      driver_version: WebDriver\\chromedriver_114.exe
+      driver_version: WebDriver\chromedriver_116.exe
     - platformName: ANDROID
       is_headless: true
       wait: 30
       time_page_load: 31
       auto_download_driver: false
-      driver_version: WebDriver\\chromedriver_114.exe
+      driver_version: WebDriver\\chromedriver_116.exe
       appPackage: com.android.chrome
       appActivity: com.google.android.apps.chrome.Main
 #      udid: HVA222NA
