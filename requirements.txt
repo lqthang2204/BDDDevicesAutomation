@@ -8,3 +8,5 @@ axe-selenium-python>=2.1.6
 bdd-tags-processor>=0.2.0
 jsonpath_ng>=1.5.3
 faker>=19.3.0
+configparser~=6.0.0
+requests~=2.31.0
