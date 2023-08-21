@@ -1,7 +1,7 @@
 behave>=1.2.6
 PyYAML>=6.0.1
 selenium>=4.11.2
-behavex>=2.0.1
+behavex==2.0.1
 Appium-Python-Client>=2.11.1
 click>=8.1.5
 axe-selenium-python>=2.1.6
