@@ -47,7 +47,11 @@ def step_impl(context):
                     logging.info(f'Success: {row[0]} {row[1]} {row[2]}')
                 # saving the value to context
                 if row[3]:
-                    context.dict_save_value['KEY.' + row[3]] = result
+                    if row[3].startswith('KEY.'):
+                        new_key_name = row[3]
+                    else:
+                        new_key_name = 'KEY.' + row[3]
+                    context.dict_save_value[new_key_name] = result
             else:
                 raise NotImplementedError(f'{row[1]}: is not a recognized operator')
 

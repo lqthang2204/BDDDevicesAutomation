@@ -3,7 +3,9 @@ from behave import *
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 from Utilities.common_ui import common_device
-
+from faker import Faker
+from libraries.faker import User
+from libraries.faker import management_user
 
 
 @step(u'I navigate to url {name}')
@@ -86,3 +88,7 @@ def step_impl(context, element, key):
                                                                      context.dict_save_value, context.wait,
                                                                      context.device)
     return context.dict_save_value
+@step(u'I create a random user')
+def step_impl(context):
+    user = common_device().create_random_user(None)
+    management_user.save_user_to_dict(context.dict_save_value, user)

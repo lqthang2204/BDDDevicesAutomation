@@ -1,0 +1,16 @@
+{
+  "graphs": [
+    {
+      "graphId": "1",
+      "compositeRequest": [
+        {
+          "body": {
+            "ExternalId__c": "1djhfdf-afug3457ydsif-af8934iuhdif-er",
+            "PersonEmail": "test123@gmail.com",
+            "Loginid__c": "test123@gmail.com"
+          }
+        }
+      ]
+    }
+  ]
+}
