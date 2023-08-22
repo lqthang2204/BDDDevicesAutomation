@@ -1,3 +1,5 @@
+import os
+
 from behave import *
 
 from Utilities.action_android import ManagementFileAndroid
@@ -14,8 +16,7 @@ def launchBrowser(context, name):
 @step(u'I change the page spec to {page}')
 def change_page(context, page):
     path_file = context.dict_yaml[page + ".yaml"]
-    page = ManagementFile().read_yaml_file(path_file + "/" + page + ".yaml", context.dict_yaml, page, context.device['platformName'],
-                                           context.dict_page_element)
+    page = ManagementFile().read_yaml_file(os.path.join(path_file, page+'.yaml'), context.dict_yaml, page, context.device['platformName'], context.dict_page_element)
     context.page_present = page
     return context.page_present
 

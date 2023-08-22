@@ -13,7 +13,7 @@ from project_runner import logger, project_folder
 
 class ManagementFile:
     def get_dict_path_yaml(self):
-        file_path = os.path.join(project_folder, "/resources/pages/*/*.yaml")
+        file_path = os.path.join(project_folder, "resources", "pages", "*", "*.yaml")
         # print("file path =======================", file_path)
         dict_yaml = {}
         files = glob.glob(file_path, recursive=True)
