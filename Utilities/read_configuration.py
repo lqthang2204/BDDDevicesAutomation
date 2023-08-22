@@ -5,9 +5,7 @@ import yaml
 from yaml import SafeLoader
 
 
-
 class read_configuration:
-
     project_folder = os.path.dirname(os.path.dirname(__file__))
 
     def read(self, stage_name):
@@ -21,8 +19,7 @@ class read_configuration:
                     return stage_env
 
     def read_api_endpoints(self):
-        api_endpoint_path = os.path.join(self.project_folder, "resources", "api", "endpoints" ,'api-endpoints.yml')
+        api_endpoint_path = os.path.join(self.project_folder, "resources", "api", "endpoints", 'api-endpoints.yml')
         with open(api_endpoint_path) as api_endpoints_file:
             api_endpoint = yaml.safe_load(api_endpoints_file.read())
         return api_endpoint
-

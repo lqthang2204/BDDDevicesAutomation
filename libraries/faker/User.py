@@ -8,12 +8,14 @@ class generate_user:
         self.city = city
         self.state = state
         self.zip_code = zip_code
-        self.domain_name= domain_name
+        self.domain_name = domain_name
         self.prefix = prefix
         self.suffix = suffix
+
     @property
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
+
     @property
     def email(self):
         return f'{self.first_name}.{self.last_name}@{self.domain_name}'

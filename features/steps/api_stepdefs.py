@@ -7,6 +7,7 @@ from libraries.api.api_asserts import APIAsserts
 from libraries.api.request_core import Requests
 from libraries.data_generators import get_test_data_for
 from libraries.misc_operations import sanitize_datatable
+from project_runner import logger
 
 
 @step(u'I set apifacet as {api_facet} for endpoint {endpoint_name}')
@@ -38,7 +39,7 @@ def step_impl(context):
 @step(u'I set payload {payload_file} with below attributes')
 def step_impl(context, payload_file):
     payload_file = os.path.join(context.root_path, 'resources', 'api', 'request-json', payload_file + '.json')
-    print(f'payload file : {payload_file}')
+    logger.info(f'payload file : {payload_file}')
     with open(payload_file, 'r') as file:
         payload_json = file.read()
     # After reading We can read the Datatable and replace the values with some Runtime values also using the function get_test_data_for()
@@ -49,7 +50,7 @@ def step_impl(context, payload_file):
 @step(u'I set form {payload_file} with below attributes')
 def step_impl(context, payload_file):
     payload_file = os.path.join(context.root_path, 'resources', 'api', 'request-json', payload_file + '.json')
-    print(f'payload file : {payload_file}')
+    logger.info(f'payload file : {payload_file}')
     with open(payload_file, 'r') as file:
         payload_json = file.read()
     context.req.payload = json.loads(payload_json)

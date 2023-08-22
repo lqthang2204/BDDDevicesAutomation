@@ -96,8 +96,8 @@ actions:
       - element: *sneaker-product
         condition: ENABLED
         inputType: click
-#      - element: *bag-product
-#        condition: DISPLAYED
+  #      - element: *bag-product
+  #        condition: DISPLAYED
   - id: search-sneaker
     description: search neaker
     actionElements:

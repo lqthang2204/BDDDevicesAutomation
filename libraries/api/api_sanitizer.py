@@ -3,8 +3,8 @@ import re
 
 from jsonpath_ng import parse
 
-from libraries.misc_operations import sanitize_datatable
 from libraries.faker import management_user
+from libraries.misc_operations import sanitize_datatable
 
 
 class RequestProps:
@@ -96,7 +96,7 @@ class RequestProps:
             if 'USER.' in value:
                 arr_user = value.split('USER.')
                 list_user = dict_save_value['USER.']
-                value= management_user.get_user(list_user, arr_user[1])
+                value = management_user.get_user(list_user, arr_user[1])
             else:
                 value = dict_save_value.get(value, value)
         jsonpath_expression = parse(target_key)

@@ -2,7 +2,7 @@ def get_user(list_user, key):
     if '.' in key:
         list_key = key.split('.')
         if list_key[0].isnumeric():
-            user = list_user[(int(list_key[0])-1)]
+            user = list_user[(int(list_key[0]) - 1)]
             key = list_key[1]
         else:
             assert False, f'index of user must be integer {key}'
@@ -10,7 +10,7 @@ def get_user(list_user, key):
         user = list_user[0]
     if key == 'email':
         return user.email
-    elif key =='first_name':
+    elif key == 'first_name':
         return user.first_name
     elif key == 'last_name':
         return user.last_name
@@ -33,6 +33,7 @@ def get_user(list_user, key):
     else:
         assert False, f'user do not contain attribute {key}'
 
+
 def save_user_to_dict(dict_save_value, user):
     if dict_save_value.get('USER.'):
         list_user = dict_save_value.get('USER.')
@@ -42,4 +43,3 @@ def save_user_to_dict(dict_save_value, user):
         list_user = []
         list_user.append(user)
         dict_save_value['USER.'] = list_user
-

@@ -1,16 +1,16 @@
 import configparser
 import datetime
-import logging
+import os
 import subprocess
 import time
 
 import click
 from bdd_tags_processor.bdd_tags_expression_processor import filter_feature_and_scenarios
 
+from libraries.logger_core import start_logger_facility
 from package_installer import ensure_package_versions
 
-logging.basicConfig(level=logging.INFO)
-import os
+logger = start_logger_facility()
 
 
 @click.group()
@@ -66,17 +66,17 @@ def config_from_command_line(stage_name, platform_name):
     # Save the changes to the config.ini file
     with open('config_env.ini', 'w') as config_file:
         config.write(config_file)
-    logging.info('Config file updated based on user provided command line arguments')
+    logger.info('Config file updated based on user provided command line arguments')
 
 
 def _run_feature(args, stage_name, platform_name):
     config_from_command_line(stage_name, platform_name)
     cmd = f"behavex {args['params']}"
-    logging.info(f'Command prepared: {cmd}')
+    logger.info(f'Command prepared: {cmd}')
     # Get the start time in seconds since the epoch
     start_time = datetime.datetime.now().timestamp()
     start_time_str = datetime.datetime.now().strftime('%I:%M:%S %p')  # Format the start time as HH:MM:SS AM/PM
-    logging.info(f'Start time: {start_time_str}')
+    logger.info(f'Start time: {start_time_str}')
 
     try:
         completed_process = subprocess.run(cmd, shell=True)
@@ -86,18 +86,18 @@ def _run_feature(args, stage_name, platform_name):
         duration_seconds = duration
         duration_minutes = duration / 60
 
-        logging.info(f'Execution completed at: {end_time.strftime("%I:%M:%S %p")}')
+        logger.info(f'Execution completed at: {end_time.strftime("%I:%M:%S %p")}')
         duration_time = int(time.time() - start_time)
         status = 'ok' if completed_process.returncode == 0 else 'failed'
 
         if status == 'failed':
-            logging.error('There are FAILED Scenarios that need investigation')
+            logger.error('There are FAILED Scenarios that need investigation')
             exit(1)
     except subprocess.CalledProcessError as e:
-        logging.error('Executing the behaveX command failed')
+        logger.error('Executing the behaveX command failed')
         exit(1)
 
-    logging.info(f'Total time taken: {duration_seconds:.2f} seconds ({duration_minutes:.2f} minutes)')
+    logger.info(f'Total time taken: {duration_seconds:.2f} seconds ({duration_minutes:.2f} minutes)')
 
 
 if __name__ == '__main__':
