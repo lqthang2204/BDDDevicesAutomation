@@ -3,6 +3,8 @@ import re
 
 from axe_selenium_python import Axe
 
+from project_runner import project_folder
+
 
 def parse_violations_data(output_data, out_file_name):
     # Initialize variables to store data
@@ -15,8 +17,6 @@ def parse_violations_data(output_data, out_file_name):
     serious_elements = ""
     moderate_elements = ""
     minor_elements = ""
-
-    project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     # Split the output_data by the 'Rule Violated:' lines
     violations = output_data.strip().split("Rule Violated:\n")
@@ -87,7 +87,7 @@ def parse_violations_data(output_data, out_file_name):
     )
 
     # Create the target folder if it doesn't exist
-    target_folder = os.path.join(project_folder, "target", "accessibility")
+    target_folder = os.path.join(project_folder, "output", "accessibility")
     os.makedirs(target_folder, exist_ok=True)
 
     # Write the HTML report to a file in the target folder

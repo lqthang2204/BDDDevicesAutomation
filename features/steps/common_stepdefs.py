@@ -2,7 +2,7 @@ from time import sleep
 
 from behave import *
 
-from Utilities.accessibility_report import perform_accessibility_verification
+from libraries.accessibility_report import perform_accessibility_verification
 from libraries.data_generators import get_test_data_for
 from libraries.misc_operations import sanitize_datatable
 from libraries.number_string_operations import check_and_call_operator
@@ -63,7 +63,7 @@ def step_impl(context):
 def step_impl(context):
     logger.info('------ Displaying Dictionary keys ------')
     for keys, value in context.dict_save_value.items():
-        logger.info(keys, value)
+        logger.info(f'{keys}, {value}')
 
 
 @step(u'I wait {wait_duration} seconds')

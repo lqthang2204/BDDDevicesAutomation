@@ -15,11 +15,13 @@ def start_logger_facility():
     logger.addHandler(handler)
 
     stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
-    return logger
+    return logger, project_folder
 
 
 if __name__ == '__main__':
-    logger = start_logger_facility()
+    logger, project_folder = start_logger_facility()
+    logger.info(f'Project Folder: {project_folder}')
     logger.debug('This is a logger Test message')

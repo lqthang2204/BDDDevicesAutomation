@@ -18,7 +18,7 @@ class common_device:
 
     def action_page(self, element_page, action, driver, value, wait, dict_save_value, device):
         element = self.get_element_by_from_device(element_page, device, driver)
-        logger.info("execute %s with element have is %s", action, element_page['value'])
+        logger.info(f'execute {action} with element have is {element_page["value"]}')
         WebDriverWait(driver, wait).until(ec.all_of(
             ec.element_to_be_clickable(element)),
             ec.presence_of_element_located(element)
@@ -58,7 +58,7 @@ class common_device:
     def wait_element_for_status(self, element_page, status, driver, device, wait):
         # locator = ManagementFile().get_locator(element_page, wait)
         locator_from_wait = self.get_locator_for_wait_from_device(element_page)
-        logger.info("wait element have value  %s with the status %s", element_page['value'], status);
+        logger.info(f"wait element have value {element_page['value']} with the status {status}")
         try:
             if status == "DISPLAYED":
                 WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
@@ -116,16 +116,14 @@ class common_device:
                 arr_element = list(filter(
                     lambda element: element['id'] == row["Field"], arr_element
                 ))
-                logger.info("Verifying for %s have value %s and status %s", row["Field"], row["Value"],
-                            row["Status"])
+                logger.info(f'Verifying for {row["Field"]} have value {row["Value"]} and status {row["Status"]}')
                 value = row["Value"]
                 if dict_save_value:
                     value = dict_save_value.get(value, value)
                 element_yaml = self.get_element(page, arr_element[0]['id'] + " with text " + value, platform_name,
                                                 dict_save_value)
                 self.wait_element_for_status(element_yaml, row["Status"], driver, device, wait)
-                logger.info("Verified for %s have value %s and status %s", row["Field"], row["Value"],
-                            row["Value"])
+                logger.info(f'Verified for {row["Field"]} have value {row["Value"]} and status {row["Value"]}')
         else:
             logger.error("user must set data table for elements")
             assert False, "can not execute verify status for elements"
@@ -133,7 +131,7 @@ class common_device:
     def save_text_from_element(self, element_page, driver, key, dict_save_value, wait, device):
         try:
             # locator = ManagementFile().get_locator(element_page, device['platformName'])
-            logger.info("save text for element  %s with key is %s", element_page['value'], key);
+            logger.info(f"save text for element {element_page['value']} with key is {key}")
             WebDriverWait(driver, wait).until(
                 ec.presence_of_element_located(self.get_locator_for_wait_from_device(element_page)))
             element = self.get_element_by_from_device(element_page, device, driver)
@@ -141,7 +139,7 @@ class common_device:
             dict_save_value["KEY." + key] = value
             return dict_save_value
         except Exception as e:
-            logger.error("Can not save text for element  %s with key is %s", element_page['value'], key);
+            logger.error(f"Can not save text for element {element_page['value']} with key is {key}")
             assert False, "Can not save text for element " + element_page['value']
 
     def get_locator_for_wait_from_device(self, element_page):

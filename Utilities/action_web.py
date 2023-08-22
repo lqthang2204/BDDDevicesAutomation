@@ -8,12 +8,12 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from yaml import SafeLoader
 
-from project_runner import logger
+from project_runner import logger, project_folder
 
 
 class ManagementFile:
     def get_dict_path_yaml(self):
-        file_path = os.path.dirname(os.path.dirname(__file__)) + "/resources/pages/*/*.yaml"
+        file_path = os.path.join(project_folder, "/resources/pages/*/*.yaml")
         # print("file path =======================", file_path)
         dict_yaml = {}
         files = glob.glob(file_path, recursive=True)

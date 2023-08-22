@@ -1,6 +1,5 @@
 import configparser
 import datetime
-import os
 import subprocess
 import time
 
@@ -10,7 +9,7 @@ from bdd_tags_processor.bdd_tags_expression_processor import filter_feature_and_
 from libraries.logger_core import start_logger_facility
 from package_installer import ensure_package_versions
 
-logger = start_logger_facility()
+logger, project_folder = start_logger_facility()
 
 
 @click.group()
@@ -54,8 +53,6 @@ def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
 
 
 def config_from_command_line(stage_name, platform_name):
-    project_folder = os.path.dirname(os.path.abspath(__file__))
-
     config = configparser.ConfigParser()
     config.read('config_env.ini')
 
