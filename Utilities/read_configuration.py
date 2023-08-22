@@ -9,7 +9,7 @@ from project_runner import project_folder
 
 class read_configuration:
     def read(self, stage_name):
-        config_file_path = os.path.join(project_folder, "/environments.yml")
+        config_file_path = os.path.join(project_folder, "environments.yml")
         with open(config_file_path) as configs_env:
             config_file = yaml.load(configs_env.read(), Loader=SafeLoader)
             json_result = json.dumps(config_file)
