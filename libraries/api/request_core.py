@@ -1,6 +1,7 @@
 import requests
 
 from libraries.api.api_sanitizer import RequestProps
+from project_runner import logger
 
 
 class Requests(RequestProps):
@@ -19,7 +20,7 @@ class Requests(RequestProps):
             response.json()
             return True
         except Exception as e:
-            print("Response invalid json")
+            logger.info("Response invalid json")
             return False
 
     def _send(self, method: str):
@@ -35,14 +36,14 @@ class Requests(RequestProps):
             self.response_dict['text'] = self.response.text
             self.response_dict['cookies'] = self.response.cookies
             self.response_dict['redirect'] = self.response.is_redirect
-            print(self.response_dict['content'])
+            logger.info(self.response_dict['content'])
         except requests.RequestException as e:
-            print(f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n')
-            print(f'Exception {e}')
+            logger.info(f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n')
+            logger.info(f'Exception {e}')
             assert False, f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n'
         except Exception as e:
-            print(f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n')
-            print(f'Exception {e}')
+            logger.info(f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n')
+            logger.info(f'Exception {e}')
             assert False, f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n'
         except:
             raise Exception(f'Invalid HTTP method "{method}" was received')

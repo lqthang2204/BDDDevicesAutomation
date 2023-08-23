@@ -49,8 +49,8 @@ Feature: orange HRM web
     And I click element find-patient-button
     And I wait for element search-input to be DISPLAYED
 
-    @test-2
-      Scenario: create random user
+  @test-2
+  Scenario: create random user
     Given I navigate to url GOOGLE
     And I change the page spec to pageGoogle
     And I wait for element search-field to be DISPLAYED

@@ -1,12 +1,12 @@
-import logging
 from time import sleep
 
 from behave import *
 
-from Utilities.accessibility_report import perform_accessibility_verification
+from libraries.accessibility_report import perform_accessibility_verification
 from libraries.data_generators import get_test_data_for
 from libraries.misc_operations import sanitize_datatable
 from libraries.number_string_operations import check_and_call_operator
+from project_runner import logger
 
 
 @step(u'I create a set of keys with below attributes')
@@ -44,7 +44,7 @@ def step_impl(context):
                                                          (' as ' + right_data) if right_data != row[2] else '']
                     raise AssertionError(f'Failing condition: {row[0]}{to_display_left} {row[1]} {row[2]}{to_display_right}')
                 else:
-                    logging.info(f'Success: {row[0]} {row[1]} {row[2]}')
+                    logger.info(f'Success: {row[0]} {row[1]} {row[2]}')
                 # saving the value to context
                 if row[3]:
                     if row[3].startswith('KEY.'):
@@ -61,13 +61,12 @@ def step_impl(context):
 # Only for DEBUG purpose when you want to pring all the key-Values
 @step(u'I print all the dictionary keys')
 def step_impl(context):
-    print('------ Displaying Dictionary keys ------')
+    logger.info('------ Displaying Dictionary keys ------')
     for keys, value in context.dict_save_value.items():
-        print(keys, value)
-    print('------ Printed Dictionary keys ------')
+        logger.info(f'{keys}, {value}')
 
 
 @step(u'I wait {wait_duration} seconds')
 def step_impl(context, wait_duration):
-    logging.info(f'waiting for {wait_duration} seconds')
+    logger.info(f'waiting for {wait_duration} seconds')
     sleep(int(wait_duration))

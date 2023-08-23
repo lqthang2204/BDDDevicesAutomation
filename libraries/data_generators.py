@@ -2,6 +2,7 @@ import random
 import re
 import uuid
 from datetime import datetime, timedelta
+
 from libraries.faker import management_user
 
 ALPHANUMERIC = 'alphanumeric_'

@@ -1,6 +1,5 @@
 import configparser
 import datetime
-import logging
 import os
 
 import appium
@@ -15,18 +14,19 @@ from selenium.webdriver.safari.service import Service as safari_service
 
 from Utilities.action_web import ManagementFile
 from Utilities.read_configuration import read_configuration
+from project_runner import logger, project_folder
 
 
 def before_all(context):
     context.dict_save_value = {}
     context.driver = None
-    context.root_path = os.path.dirname(os.path.dirname(__file__))
+    context.root_path = project_folder
     config_file_path = os.path.join(context.root_path, 'config_env.ini')
     file = open(config_file_path, 'r')
     context.config_env = configparser.RawConfigParser(allow_no_value=True)
     context.config_env.read_file(file)
     context.platform = context.config_env.get("drivers_config", "platform")
-    context.project_folder = context.config_env.get("project_folder", "project_folder")
+    context.project_folder = project_folder
     context.stage_name = context.config_env.get("drivers_config", "stage")
     if context.config_env.has_option("drivers_config", "browser"):
         context.browser = context.config_env.get("drivers_config", "browser")
@@ -48,12 +48,10 @@ def before_scenario(context, scenario):
             else:
                 launch_browser(context, context.device, context.browser)
         elif context.device['platformName'] == "ANDROID":
-            print("android")
             launch_android(context, context.device, context.config_env)
             context.wait = context.device['wait']
             context.time_page_load = context.device['time_page_load']
         elif context.device['platformName'] == "IOS":
-            print("IOS")
             context.wait = context.device['wait']
             context.time_page_load = context.device['time_page_load']
         context.url = context.env['link']
@@ -61,7 +59,7 @@ def before_scenario(context, scenario):
     context.apiurls = context.env['apifacets']['link']
     context.endpoints = read_configuration().read_api_endpoints()
 
-    logging.info(f'Scenario {scenario.name} started')
+    logger.info(f'Scenario {scenario.name} started')
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
     context.dict_page_element = {}
 
@@ -78,7 +76,7 @@ def launch_browser(context, device, browser):
         elif browser == 'safari':
             context.driver = webdriver.Safari()
         else:
-            logging.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
+            logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
             context.driver = webdriver.Chrome(options=option)
     context.wait = device['wait']
     context.time_page_load = device['time_page_load']
@@ -112,12 +110,12 @@ def after_scenario(context, scenario):
     if context.driver is not None:
         context.driver.close()
         context.driver.quit()
-    logging.info(f'Scenario {scenario.name} Ended')
+    logger.info(f'Scenario {scenario.name} Ended')
 
 
 def after_all(context):
     if context.driver is not None:
-        print('Closing driver from After_ALL')
+        logger.info('Closing driver from After_ALL')
         context.driver.close()
         context.driver.quit()
 
@@ -127,20 +125,20 @@ def get_driver_from_path(context, browser, device, option):
     # https://github.com/SeleniumHQ/selenium/commit/9f5801c82fb3be3d5850707c46c3f8176e3ccd8e
     if browser == 'chrome':
         service = chrome_service(
-            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device['driver_version'])
+            executable_path=project_folder + '\\' + device['driver_version'])
         context.driver = webdriver.Chrome(service=service, options=option)
     elif browser == 'firefox':
         service = firefox_service(
-            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device['driver_version'])
+            executable_path=project_folder + '\\' + device['driver_version'])
         context.driver = webdriver.Firefox(service=service, options=option)
     elif browser == 'safari':
         service = safari_service(
-            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device['driver_version'])
+            executable_path=project_folder + '\\' + device['driver_version'])
         context.driver = webdriver.Safari(service=service, options=option)
     else:
-        logging.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
+        logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
         service = chrome_service(
-            executable_path=os.path.dirname(os.path.dirname(__file__)) + '\\' + device['driver_version'])
+            executable_path=project_folder + '\\' + device['driver_version'])
         context.driver = webdriver.Chrome(service=service, options=option)
 
 
@@ -160,7 +158,7 @@ def get_option_from_browser(browser, device):
 
 
 def cross_browser_with_saucelabs(context, device):
-    config_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'remote_config.ini')
+    config_file_path = os.path.join(project_folder, 'remote_config.ini')
     file = open(config_file_path, 'r')
     config = configparser.RawConfigParser(allow_no_value=True)
     config.read_file(file)

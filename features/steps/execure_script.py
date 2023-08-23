@@ -1,10 +1,10 @@
+import os
+
 from behave import *
 
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 from Utilities.common_ui import common_device
-from faker import Faker
-from libraries.faker import User
 from libraries.faker import management_user
 
 
@@ -12,10 +12,11 @@ from libraries.faker import management_user
 def launchBrowser(context, name):
     context.driver.get(context.url[name])
 
+
 @step(u'I change the page spec to {page}')
 def change_page(context, page):
     path_file = context.dict_yaml[page + ".yaml"]
-    page = ManagementFile().read_yaml_file(path_file + "/" + page + ".yaml", context.dict_yaml, page, context.device['platformName'],  context.dict_page_element)
+    page = ManagementFile().read_yaml_file(os.path.join(path_file, page+'.yaml'), context.dict_yaml, page, context.device['platformName'], context.dict_page_element)
     context.page_present = page
     return context.page_present
 
@@ -61,7 +62,6 @@ def step_impl(context, action):
 
 
 @step(u'I perform {action} action with override values')
-
 def step_impl(context, action):
     if context.device['platformName'] == "WEB":
         ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, context.table,
@@ -88,6 +88,8 @@ def step_impl(context, element, key):
                                                                      context.dict_save_value, context.wait,
                                                                      context.device)
     return context.dict_save_value
+
+
 @step(u'I create a random user')
 def step_impl(context):
     user = common_device().create_random_user(None)

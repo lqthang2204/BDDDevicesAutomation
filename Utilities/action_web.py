@@ -1,6 +1,5 @@
 import glob
 import json
-import logging
 import os
 
 import yaml
@@ -9,11 +8,12 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from yaml import SafeLoader
 
+from project_runner import logger, project_folder
 
 
 class ManagementFile:
     def get_dict_path_yaml(self):
-        file_path = os.path.dirname(os.path.dirname(__file__)) + "/resources/pages/*/*.yaml"
+        file_path = os.path.join(project_folder, "resources", "pages", "*", "*.yaml")
         # print("file path =======================", file_path)
         dict_yaml = {}
         files = glob.glob(file_path, recursive=True)
@@ -25,7 +25,7 @@ class ManagementFile:
         # dict_yaml_path = dict(dict_yaml)      # no needed
         return dict_yaml
 
-    def read_yaml_file(self, path, dict_yaml, page_name, platform_name,  dict_page_element):
+    def read_yaml_file(self, path, dict_yaml, page_name, platform_name, dict_page_element):
         if dict_page_element and page_name in dict_page_element.keys():
             obj_page = dict_page_element[page_name]
             return obj_page
@@ -89,7 +89,7 @@ class ManagementFile:
                             WebDriverWait(driver, action_elements['timeout']).until_not(
                                 ec.element_located_to_be_selected(element))
                         else:
-                            logging.error("Not support condition %s in framework", action_elements['condition'])
+                            logger.error("Not support condition %s in framework", action_elements['condition'])
                             assert False, "Not support condition"
                         if type_action == "click":
                             if element.get_attribute("disabled") is None:
@@ -102,14 +102,14 @@ class ManagementFile:
                         elif type_action == "text":
                             element.send_keys(value)
                     except Exception as e:
-                        logging.info(f'can not execute action with element have value  {locator} in framework')
+                        logger.info(f'can not execute action with element have value  {locator} in framework')
                         assert True, "can not execute action with element have value" + locator + "in framework"
-                elif self.check_field_exist(action_elements,'condition') and self.check_field_exist(action_elements,'timeout') is False:
+                elif self.check_field_exist(action_elements, 'condition') and self.check_field_exist(action_elements, 'timeout') is False:
                     try:
                         self.process_execute_action(driver, wait, element, type_action, value, locator, action_elements)
                     except Exception as e:
-                        logging.error("can not execute action % with element have value  %s in framework", type_action,
-                                      locator['value'])
+                        logger.error("can not execute action % with element have value  %s in framework", type_action,
+                                     locator['value'])
                         assert False, "can not execute action " + type_action + " with element have value" + locator[
                             'value'] + "in framework"
                 else:
@@ -117,15 +117,15 @@ class ManagementFile:
                         self.process_execute_action(driver, wait, element, type_action, value,
                                                     locator)
                     except Exception as e:
-                        logging.error("can not execute action % with element have value  %s in framework", type_action,
-                                      locator.value)
+                        logger.error("can not execute action % with element have value  %s in framework", type_action,
+                                     locator.value)
                         assert False, "can not execute action " + type_action + " with element have value" + locator.value + "in framework"
         else:
-            logging.error(f'Not Found Action {action_id} in page yaml')
+            logger.error(f'Not Found Action {action_id} in page yaml')
             assert False, "Not Found Action " + action_id + " in page yaml"
 
     def get_element_by(self, type, driver, value):
-        logging.info(f'Get element by {type} with value is {value}')
+        logger.info(f'Get element by {type} with value is {value}')
         if type.__eq__("ID"):
             element = driver.find_element(By.ID, value)
         elif type.__eq__("NAME"):
@@ -141,12 +141,12 @@ class ManagementFile:
         elif type.__eq__("CSS"):
             element = driver.find_element(By.CSS_SELECTOR, value)
         else:
-            logging.error(f'Can not get  element by {type} with value is {value}')
+            logger.error(f'Can not get  element by {type} with value is {value}')
             raise Exception("Not support type in framework")
         return element
 
     def get_list_element_by(self, type, driver, value):
-        logging.info(f'Get list element by {type} with value is {value}')
+        logger.info(f'Get list element by {type} with value is {value}')
         if type.__eq__("ID"):
             elements = driver.find_elements(By.ID, value)
         elif type.__eq__("NAME"):
@@ -162,12 +162,12 @@ class ManagementFile:
         elif type.__eq__("CSS"):
             elements = driver.find_elements(By.CSS_SELECTOR, value)
         else:
-            logging.error(f'Can not get  element by {type} with value is {value}')
+            logger.error(f'Can not get  element by {type} with value is {value}')
             raise Exception("Not support type in framework")
         return elements
 
     def get_locator_for_wait(self, type, value):
-        logging.info(f'get locator for wait with type {type} with value is {value}')
+        logger.info(f'get locator for wait with type {type} with value is {value}')
         if type.__eq__("ID"):
             locator = (By.ID, value)
         elif type.__eq__("NAME"):
@@ -183,7 +183,7 @@ class ManagementFile:
         elif type.__eq__("CSS"):
             locator = (By.CSS_SELECTOR, value)
         else:
-            logging.error(f'Not support type {type} in framework')
+            logger.error(f'Not support type {type} in framework')
             raise Exception(f'Not support type {type} in framework')
         return locator
 
@@ -206,7 +206,7 @@ class ManagementFile:
             return obj_action_elements.get(key)
 
     def process_execute_action(self, driver, wait, element, type_action, value, locator, action_elements):
-        logging.info(f'execute action  {type_action} with element have value {locator}')
+        logger.info(f'execute action  {type_action} with element have value {locator}')
         if type_action == 'click':
             WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
             if element.get_attribute("disabled") is None:
@@ -222,14 +222,13 @@ class ManagementFile:
         else:
             self.wait_for_action(action_elements, wait, driver, element, locator)
 
-
-
     def check_field_exist(self, dict, key):
         try:
             if dict[key]:
                 return True
         except:
             return False
+
     def wait_for_action(self, action_elements, wait, driver, element, locator):
         locator_from_wait = self.get_locator_for_wait(locator['type'], locator['value'])
         try:
@@ -260,8 +259,8 @@ class ManagementFile:
                 WebDriverWait(driver, wait).until_not(
                     ec.element_located_to_be_selected(locator_from_wait))
             else:
-                logging.error(f'Not support condition {action_elements} in framework')
+                logger.error(f'Not support condition {action_elements} in framework')
                 assert False, "Not support condition"
         except Exception as e:
-            logging.info(f'can not execute action with element have value  {locator} in framework')
+            logger.info(f'can not execute action with element have value  {locator} in framework')
             assert False, "can not execute action with element have value" + locator['value'] + "in framework"

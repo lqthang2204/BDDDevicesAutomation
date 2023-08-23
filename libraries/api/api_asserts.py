@@ -5,6 +5,7 @@ from jsonpath_ng import parse
 from requests import Response
 
 from libraries.data_generators import get_test_data_for
+from project_runner import logger
 
 
 class APIAsserts:
@@ -22,7 +23,7 @@ class APIAsserts:
                 if table:
                     if title == "header":
                         for row in table:
-                            print("verifying header api")
+                            logger.info("verifying header api")
                             field_name = row[0]
                             field_value = get_test_data_for(row[1], context.dict_save_value)
                             helpers = row[2]
@@ -43,6 +44,7 @@ class APIAsserts:
                                     # assert field_value == value, f'Response json does not have a value {field_value}'
                                     APIAsserts.check_condition_have_result_body(field_value, helpers, value_header)
                     elif title == "body":
+                        logger.info("verifying body api")
                         for row in table:
                             if row[0] == 'response_code':
                                 continue
@@ -90,7 +92,7 @@ class APIAsserts:
                 match = jsonpath_expression.find(json_object)
                 return match[0].value
         except Exception as e:
-            print("not found value from key")
+            logger.error("not found value from key")
             return ""
 
     def check_condition_have_result_body(field_value, helpers, value):
@@ -99,9 +101,9 @@ class APIAsserts:
                 for val in value:
                     assert str(val).isnumeric(), f'Response json does not number have value {value}'
                 assert int(field_value) in value, f'Response json does not contain number have value {value}'
-            elif field_value !="":
+            elif field_value != "":
                 assert int(field_value) == value, f'Response json does not equal number have value {value}'
-            elif field_value =="" and isinstance(value, list):
+            elif field_value == "" and isinstance(value, list):
                 for val in value:
                     assert str(val).isnumeric(), f'Response json does not number have value {value}'
             else:
@@ -133,7 +135,7 @@ class APIAsserts:
                 for val in value:
                     assert type(val) == bool, f'Response json does not contain boolean {value}'
                 assert APIAsserts.convert_string_to_bool(
-                        field_value) in value , f'Response json does not contain a field name {value}'
+                    field_value) in value, f'Response json does not contain a field name {value}'
             elif field_value != "":
                 assert APIAsserts.convert_string_to_bool(
                     field_value) == value, f'Response json does not contain a field name {value}'
@@ -152,7 +154,7 @@ class APIAsserts:
                 assert False, f'Not found expected value in datatable {field_value}'
         elif helpers == "":
             if field_value != "":
-            # when helper = "" => default is check value same with value of key
+                # when helper = "" => default is check value same with value of key
                 assert field_value == value, f'Response json does not equal a field name {value}'
             else:
                 assert False, f'Not found expected value in datatable {field_value}'

@@ -3,6 +3,8 @@ import re
 
 from axe_selenium_python import Axe
 
+from project_runner import project_folder
+
 
 def parse_violations_data(output_data, out_file_name):
     # Initialize variables to store data
@@ -15,8 +17,6 @@ def parse_violations_data(output_data, out_file_name):
     serious_elements = ""
     moderate_elements = ""
     minor_elements = ""
-
-    project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     # Split the output_data by the 'Rule Violated:' lines
     violations = output_data.strip().split("Rule Violated:\n")
@@ -87,7 +87,7 @@ def parse_violations_data(output_data, out_file_name):
     )
 
     # Create the target folder if it doesn't exist
-    target_folder = os.path.join(project_folder, "target", "accessibility")
+    target_folder = os.path.join(project_folder, "output", "accessibility")
     os.makedirs(target_folder, exist_ok=True)
 
     # Write the HTML report to a file in the target folder
@@ -95,7 +95,8 @@ def parse_violations_data(output_data, out_file_name):
     with open(output_file_path, "w") as file:
         file.write(html_report)
 
-def perform_accessibility_verification(context_driver,page_name):
+
+def perform_accessibility_verification(context_driver, page_name):
     axe = Axe(context_driver)
     axe.inject()
     results = axe.run()
@@ -104,6 +105,7 @@ def perform_accessibility_verification(context_driver,page_name):
     axe_violations = axe.report(results['violations'])  # <<-- Results a User friendly readable text
     axe_violations = re.sub(r'\n\s*\n', '\n\n', axe_violations)
     parse_violations_data(axe_violations, page_name)
+
 
 # Example Usage:
 if __name__ == '__main__':

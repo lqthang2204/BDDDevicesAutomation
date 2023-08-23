@@ -1,13 +1,14 @@
-import logging
-
+from faker import Faker
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
-from faker import Faker
-from libraries.faker.User import generate_user
 from libraries.faker import management_user
+from libraries.faker.User import generate_user
+from project_runner import logger
+
+
 class common_device:
     def check_att_is_exist(self, obj_action_elements, key):
         if obj_action_elements.get(key) is None:
@@ -17,7 +18,7 @@ class common_device:
 
     def action_page(self, element_page, action, driver, value, wait, dict_save_value, device):
         element = self.get_element_by_from_device(element_page, device, driver)
-        logging.info("execute %s with element have is %s", action, element_page['value'])
+        logger.info(f'execute {action} with element have is {element_page["value"]}')
         WebDriverWait(driver, wait).until(ec.all_of(
             ec.element_to_be_clickable(element)),
             ec.presence_of_element_located(element)
@@ -36,7 +37,7 @@ class common_device:
         elif action.__eq__("clear"):
             element.clear()
         else:
-            logging.error("Can not execute %s with element have is %s", action)
+            logger.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"
 
     def click_action(self, element, wait, element_page, device, driver):
@@ -57,7 +58,7 @@ class common_device:
     def wait_element_for_status(self, element_page, status, driver, device, wait):
         # locator = ManagementFile().get_locator(element_page, wait)
         locator_from_wait = self.get_locator_for_wait_from_device(element_page)
-        logging.info("wait element have value  %s with the status %s", element_page['value'], status);
+        logger.info(f"wait element have value {element_page['value']} with the status {status}")
         try:
             if status == "DISPLAYED":
                 WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
@@ -82,7 +83,7 @@ class common_device:
             else:
                 raise Exception("Not support status ", status)
         except Exception as e:
-            logging.error("The status %s is not currently.", status);
+            logger.error("The status %s is not currently.", status);
             assert False, e
 
     def get_element(self, page, element, platform_name, dict_save_value):
@@ -115,24 +116,22 @@ class common_device:
                 arr_element = list(filter(
                     lambda element: element['id'] == row["Field"], arr_element
                 ))
-                logging.info("Verifying for %s have value %s and status %s", row["Field"], row["Value"],
-                             row["Status"])
+                logger.info(f'Verifying for {row["Field"]} have value {row["Value"]} and status {row["Status"]}')
                 value = row["Value"]
                 if dict_save_value:
                     value = dict_save_value.get(value, value)
                 element_yaml = self.get_element(page, arr_element[0]['id'] + " with text " + value, platform_name,
                                                 dict_save_value)
                 self.wait_element_for_status(element_yaml, row["Status"], driver, device, wait)
-                logging.info("Verified for %s have value %s and status %s", row["Field"], row["Value"],
-                             row["Value"])
+                logger.info(f'Verified for {row["Field"]} have value {row["Value"]} and status {row["Value"]}')
         else:
-            logging.error("user must set data table for elements")
+            logger.error("user must set data table for elements")
             assert False, "can not execute verify status for elements"
 
     def save_text_from_element(self, element_page, driver, key, dict_save_value, wait, device):
         try:
             # locator = ManagementFile().get_locator(element_page, device['platformName'])
-            logging.info("save text for element  %s with key is %s", element_page['value'], key);
+            logger.info(f"save text for element {element_page['value']} with key is {key}")
             WebDriverWait(driver, wait).until(
                 ec.presence_of_element_located(self.get_locator_for_wait_from_device(element_page)))
             element = self.get_element_by_from_device(element_page, device, driver)
@@ -140,12 +139,11 @@ class common_device:
             dict_save_value["KEY." + key] = value
             return dict_save_value
         except Exception as e:
-            logging.error("Can not save text for element  %s with key is %s", element_page['value'], key);
+            logger.error(f"Can not save text for element {element_page['value']} with key is {key}")
             assert False, "Can not save text for element " + element_page['value']
 
     def get_locator_for_wait_from_device(self, element_page):
         return ManagementFile().get_locator_for_wait(element_page['type'], element_page['value'])
-
 
     def get_list_element_by_from_device(self, element_page, device, driver):
         if device['platformName'] == "WEB":
@@ -170,11 +168,13 @@ class common_device:
                 return element.text
             else:
                 return element.get_attribute('content-desc')
+
     def create_random_user(self, locale):
         if locale:
             faker = Faker(locale)
         else:
             faker = Faker('en_US')
-        print("faker.unique.first_name() ==", faker.unique.first_name())
-        user = generate_user(faker.unique.first_name(), faker.unique.last_name(), faker.job(), faker.address(), faker.phone_number(), faker.city(), faker.state(), faker.postcode(), faker.domain_name(), faker.prefix(), faker.suffix())
+        logger.info(f'faker.unique.first_name() == {faker.unique.first_name()}')
+        user = generate_user(faker.unique.first_name(), faker.unique.last_name(), faker.job(), faker.address(), faker.phone_number(), faker.city(),
+                             faker.state(), faker.postcode(), faker.domain_name(), faker.prefix(), faker.suffix())
         return user
