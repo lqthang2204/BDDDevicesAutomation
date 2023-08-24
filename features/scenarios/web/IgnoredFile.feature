@@ -118,3 +118,30 @@ Feature: login web for norun
       | Field      | Value     |
       | user-field | Admin     |
       | pass-field | KEY.title |
+
+    @verify-element-feature
+  Scenario: test feature verify for elements
+    Given I navigate to url OPEN_MRS
+    And I change the page spec to LoginPage-Variant
+    And I create a random user
+    And I verify that following elements with below attributes
+        | Field                     | Value           | Status    | Helpers          |
+        | user-field                |                 | DISPLAYED |                  |
+        | pass-field                |                 | DISPLAYED |                  |
+    And I type "USER.first_name" into element user-field
+    And I wait 10 seconds
+    And I verify that following elements with below attributes
+      | Field      | Value           | Status    | Helpers |
+      | user-field | USER.first_name | DISPLAYED |         |
+    And I clear text from element user-field
+        And I verify that following elements with below attributes
+        | Field                     | Value           | Status    | Helpers          |
+        | user-field                |                 | DISPLAYED |                  |
+        | pass-field                |                 | DISPLAYED |                  |
+        | location-option-inpatient | Inpatient Ward  | DISPLAYED |                  |
+        | location-option-inpatient | #007FFF         | DISPLAYED | BACKGROUND-COLOR |
+        | location-option-inpatient | #FFFFFF         | DISPLAYED | COLOR            |
+        | login-button              | #88af28         | ENABLED   | BACKGROUND-COLOR |
+        | login-button              | #FFFFFF         | ENABLED   | COLOR            |
+        | location-option-inpatient | Inpatient       | DISPLAYED | STARTSWITH       |
+        | location-option-inpatient | Inpatient [A-z] | DISPLAYED | REGEX            |

@@ -28,9 +28,7 @@ class common_device:
         elif action.__eq__("type"):
             if dict_save_value:
                 if 'USER.' in value:
-                    arr_user = value.split('USER.')
-                    list_user = dict_save_value['USER.']
-                    value = management_user.get_user(list_user, arr_user[1])
+                    value = self.get_value_from_user_random(value, dict_save_value)
                 else:
                     value = dict_save_value.get(value, value)
             element.send_keys(value)
@@ -46,11 +44,13 @@ class common_device:
                 element.click()
             else:
                 WebDriverWait(driver, wait).until_not(
-                    ec.element_attribute_to_include(ManagementFile().get_locator_for_wait(element_page['type'], element_page['value']),
-                                                    "disabled"))
+                    ec.element_attribute_to_include(
+                        ManagementFile().get_locator_for_wait(element_page['type'], element_page['value']),
+                        "disabled"))
                 element.click()
         else:
-            locator_from_wait = ManagementFileAndroid().get_locator_for_wait(element_page['type'], element_page['value'])
+            locator_from_wait = ManagementFileAndroid().get_locator_for_wait(element_page['type'],
+                                                                             element_page['value'])
             WebDriverWait(driver, wait).until(
                 ec.element_to_be_clickable(locator_from_wait))
             element.click()
@@ -175,6 +175,45 @@ class common_device:
         else:
             faker = Faker('en_US')
         logger.info(f'faker.unique.first_name() == {faker.unique.first_name()}')
-        user = generate_user(faker.unique.first_name(), faker.unique.last_name(), faker.job(), faker.address(), faker.phone_number(), faker.city(),
+        user = generate_user(faker.unique.first_name(), faker.unique.last_name(), faker.job(), faker.address(),
+                             faker.phone_number(), faker.city(),
                              faker.state(), faker.postcode(), faker.domain_name(), faker.prefix(), faker.suffix())
         return user
+
+    def verify_elements_below_attributes(self, page, row, platform_name, dict_save_value, driver, device, wait):
+        # arr_element = page['elements']
+        arr_element = page['elements']
+        arr_element = list(filter(
+            lambda element: element['id'] == row[0], arr_element
+        ))
+        logger.info(f'Verifying for {row[0]} have value {row[1]} and status {row[2]}')
+        value = row[1]
+        if value is None: value = ''
+        if dict_save_value:
+            if 'USER.' in value:
+                value = self.get_value_from_user_random(value, dict_save_value)
+            else:
+                value = dict_save_value.get(value, value)
+        element_yaml = self.get_element(page, arr_element[0]['id'] + " with text " + value, platform_name,
+                                        dict_save_value)
+        if row[2] and element_yaml:
+            if value != '':
+                logger.info(f'Verified for {row[0]} have value {row[1]} and status {row[2]}')
+                self.verify_value_in_element(element_yaml, value, device, driver)
+            else:
+                logger.info(f'Verified for {row[0]} have value {row[1]} and status {row[2]}')
+                self.wait_element_for_status(element_yaml, row[2], driver, device, wait)
+        else:
+            logger.error(f'table must be contains both field name and status')
+            assert False, f'table must be contains both field name {row[0]} and status {row[2]}'
+
+    def get_value_from_user_random(self, value, dict_save_value):
+        arr_user = value.split('USER.')
+        list_user = dict_save_value['USER.']
+        value = management_user.get_user(list_user, arr_user[1])
+        return value
+    def verify_value_in_element(self, element_page, expect, device, driver):
+        element = self.get_element_by_from_device(element_page, device, driver)
+        value = self.get_value_element_form_device(element, device)
+        assert value == expect, f'value of the element not equal to values expected {expect}'
+
