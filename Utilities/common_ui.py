@@ -1,13 +1,13 @@
 from faker import Faker
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-
+import re
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 from libraries.faker import management_user
 from libraries.faker.User import generate_user
 from project_runner import logger
-
+from selenium.webdriver.support.color import Color
 
 class common_device:
     def check_att_is_exist(self, obj_action_elements, key):
@@ -168,6 +168,24 @@ class common_device:
                 return element.text
             else:
                 return element.get_attribute('content-desc')
+    def get_bg_color_element_form_device(self, element, device):
+        if device['platformName'] == "WEB":
+            argb = element.value_of_css_property('background-color')
+            return Color.from_string(argb).hex.lower()
+        else:
+            if element.get_attribute("content-desc") is None:
+                return element.text
+            else:
+                return element.get_attribute('content-desc')
+    def get_color_element_form_device(self, element, device):
+        if device['platformName'] == "WEB":
+            argb = element.value_of_css_property('color')
+            return Color.from_string(argb).hex.lower()
+        else:
+            if element.get_attribute("content-desc") is None:
+                return element.text
+            else:
+                return element.get_attribute('content-desc')
 
     def create_random_user(self, locale):
         if locale:
@@ -188,6 +206,7 @@ class common_device:
         ))
         logger.info(f'Verifying for {row[0]} have value {row[1]} and status {row[2]}')
         value = row[1]
+        helper = row[3]
         if value is None: value = ''
         if dict_save_value:
             if 'USER.' in value:
@@ -196,8 +215,9 @@ class common_device:
                 value = dict_save_value.get(value, value)
         element_yaml = self.get_element(page, arr_element[0]['id'] + " with text " + value, platform_name,
                                         dict_save_value)
+        self.get_value_from_helpers(value, helper, element_yaml, device, driver)
         if row[2] and element_yaml:
-            if value != '':
+            if value != '' and helper is None:
                 logger.info(f'Verified for {row[0]} have value {row[1]} and status {row[2]}')
                 self.verify_value_in_element(element_yaml, value, device, driver)
             else:
@@ -216,4 +236,30 @@ class common_device:
         element = self.get_element_by_from_device(element_page, device, driver)
         value = self.get_value_element_form_device(element, device)
         assert value == expect, f'value of the element not equal to values expected {expect}'
+
+    def get_value_from_helpers(self, expected, helper, element_page, device, driver):
+        if helper and expected:
+            if helper == 'REGEX':
+                element = self.get_element_by_from_device(element_page, device, driver)
+                value_element = self.get_value_element_form_device(element, device)
+                assert re.search(expected,value_element), f'value of element not match with pattern {value_element}'
+            elif helper == 'STARTSWITH':
+                element = self.get_element_by_from_device(element_page, device, driver)
+                value_element = self.get_value_element_form_device(element, device)
+                assert value_element.startswith(expected), f'value of element is {expected} not start with {expected}'
+            elif helper == 'CONTAINS':
+                element = self.get_element_by_from_device(element_page, device, driver)
+                value_element = self.get_value_element_form_device(element, device)
+                assert expected in value_element , f'value of element is {value_element} not contains {expected}'
+            elif helper == 'BACKGROUND-COLOR':
+                element = self.get_element_by_from_device(element_page, device, driver)
+                bg_color = self.get_bg_color_element_form_device(element, device)
+                assert bg_color == expected.lower(), f'element there is no background color same with {expected}'
+            elif helper == 'COLOR':
+                element = self.get_element_by_from_device(element_page, device, driver)
+                color = self.get_color_element_form_device(element, device)
+                assert color == expected.lower(), f'element there is no color same with {expected}'
+        elif helper and expected == '':
+            assert False, f'The helper and value columns must both have a value at the same time'
+
 

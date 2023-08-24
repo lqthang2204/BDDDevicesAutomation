@@ -129,16 +129,18 @@ Feature: login web for norun
         | user-field                |                 | DISPLAYED |                  |
         | pass-field                |                 | DISPLAYED |                  |
     And I type "USER.first_name" into element user-field
-    And I wait 10 seconds
     And I verify that following elements with below attributes
-      | Field      | Value           | Status    | Helpers |
-      | user-field | USER.first_name | DISPLAYED |         |
+        | Field      | Value           | Status    | Helpers |
+        | user-field | USER.first_name | DISPLAYED |         |
     And I clear text from element user-field
-        And I verify that following elements with below attributes
+    And I wait for element location-option-inpatient to be ENABLED
+    And I click element location-option-inpatient
+    And I verify that following elements with below attributes
         | Field                     | Value           | Status    | Helpers          |
         | user-field                |                 | DISPLAYED |                  |
         | pass-field                |                 | DISPLAYED |                  |
         | location-option-inpatient | Inpatient Ward  | DISPLAYED |                  |
+        | location-option-inpatient | In              | DISPLAYED | CONTAINS         |
         | location-option-inpatient | #007FFF         | DISPLAYED | BACKGROUND-COLOR |
         | location-option-inpatient | #FFFFFF         | DISPLAYED | COLOR            |
         | login-button              | #88af28         | ENABLED   | BACKGROUND-COLOR |
