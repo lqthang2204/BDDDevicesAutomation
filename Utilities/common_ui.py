@@ -169,10 +169,13 @@ class common_device:
                 return element.text
             else:
                 return element.get_attribute('content-desc')
-    def get_color_element_form_device(self, element, device, color):
+    def get_value_attribute_element_form_device(self, element, device, value):
         if device['platformName'] == "WEB":
-            argb = element.value_of_css_property(color)
-            return Color.from_string(argb).hex.lower()
+            value_attribute = element.value_of_css_property(value)
+            if 'color' in value:
+                return Color.from_string(value_attribute).hex.lower()
+            else:
+                return value_attribute.lower()
         else:
             if element.get_attribute("content-desc") is None:
                 return element.text
@@ -234,18 +237,33 @@ class common_device:
             if helper == 'REGEX':
                 value_element = self.get_value_element_form_device(element, device)
                 check_match_pattern(expected, value_element, 'value of element not match with pattern')
-            elif helper == 'STARTSWITH':
+            elif helper == 'STARTS_WITH':
                 value_element = self.get_value_element_form_device(element, device)
                 assert value_element.startswith(expected), f'value of element is {expected} not start with {expected}'
+            elif helper == 'ENDS_WITH':
+                value_element = self.get_value_element_form_device(element, device)
+                assert value_element.endswith(expected), f'value of element is {expected} not ends with {expected}'
             elif helper == 'CONTAINS':
                 value_element = self.get_value_element_form_device(element, device)
                 assert expected in value_element , f'value of element is {value_element} not contains {expected}'
             elif helper == 'BACKGROUND-COLOR':
-                bg_color = self.get_color_element_form_device(element, device,'background-color')
+                bg_color = self.get_value_attribute_element_form_device(element, device,'background-color')
                 assert bg_color == expected.lower(), f'element there is no background color same with {expected}'
             elif helper == 'COLOR':
-                color = self.get_color_element_form_device(element, device, 'color')
+                color = self.get_value_attribute_element_form_device(element, device, 'color')
                 assert color == expected.lower(), f'element there is no color same with {expected}'
+            elif helper == 'FONT_FAMILY':
+                value_attribute = self.get_value_attribute_element_form_device(element, device, 'font-family')
+                assert value_attribute == expected.lower(), f'element there is no font family same with {expected}'
+            elif helper == 'FONT_SIZE':
+                value_attribute = self.get_value_attribute_element_form_device(element, device, 'font-size')
+                assert value_attribute == expected.lower(), f'font family of element not same with {expected}'
+            elif helper == 'FONT_WEIGHT':
+                value_attribute = self.get_value_attribute_element_form_device(element, device, 'font-weight')
+                assert value_attribute == expected.lower(), f'font weight of element not same with with {expected}'
+            elif helper == 'FONT_HEIGHT':
+                value_attribute = self.get_value_attribute_element_form_device(element, device, 'height')
+                assert value_attribute == expected.lower(), f'font height of element not same with with {expected}'
         elif helper and expected == '':
             assert False, f'The helper and value columns must both have a value at the same time'
 
