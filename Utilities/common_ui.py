@@ -264,6 +264,9 @@ class common_device:
             elif helper == 'FONT_HEIGHT':
                 value_attribute = self.get_value_attribute_element_form_device(element, device, 'height')
                 assert value_attribute == expected.lower(), f'font height of element not same with with {expected}'
+            elif helper == 'TEXT_ALIGN':
+                value_attribute = self.get_value_attribute_element_form_device(element, device, 'text-align')
+                assert value_attribute == expected.lower(), f'font height of element not same with with {expected}'
         elif helper and expected == '':
             assert False, f'The helper and value columns must both have a value at the same time'
 
