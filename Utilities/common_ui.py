@@ -169,13 +169,17 @@ class common_device:
                 return element.text
             else:
                 return element.get_attribute('content-desc')
-    def get_value_attribute_element_form_device(self, element, device, value):
+    def get_value_attribute_element_form_device(self, element, device, value, flag):
         if device['platformName'] == "WEB":
-            value_attribute = element.value_of_css_property(value)
-            if 'color' in value:
-                return Color.from_string(value_attribute).hex.lower()
+            if flag:
+                value_attribute = element.value_of_css_property(value)
+                if 'color' in value:
+                    return Color.from_string(value_attribute).hex.lower()
+                else:
+                    return value_attribute.lower()
             else:
-                return value_attribute.lower()
+                return element.get_attribute(value)
+
         else:
             if element.get_attribute("content-desc") is None:
                 return element.text
@@ -247,26 +251,29 @@ class common_device:
                 value_element = self.get_value_element_form_device(element, device)
                 assert expected in value_element , f'value of element is {value_element} not contains {expected}'
             elif helper == 'BACKGROUND-COLOR':
-                bg_color = self.get_value_attribute_element_form_device(element, device,'background-color')
+                bg_color = self.get_value_attribute_element_form_device(element, device,'background-color', True)
                 assert bg_color == expected.lower(), f'element there is no background color same with {expected}'
             elif helper == 'COLOR':
-                color = self.get_value_attribute_element_form_device(element, device, 'color')
+                color = self.get_value_attribute_element_form_device(element, device, 'color', True)
                 assert color == expected.lower(), f'element there is no color same with {expected}'
             elif helper == 'FONT_FAMILY':
-                value_attribute = self.get_value_attribute_element_form_device(element, device, 'font-family')
+                value_attribute = self.get_value_attribute_element_form_device(element, device, 'font-family', True)
                 assert value_attribute == expected.lower(), f'element there is no font family same with {expected}'
             elif helper == 'FONT_SIZE':
-                value_attribute = self.get_value_attribute_element_form_device(element, device, 'font-size')
+                value_attribute = self.get_value_attribute_element_form_device(element, device, 'font-size', True)
                 assert value_attribute == expected.lower(), f'font family of element not same with {expected}'
             elif helper == 'FONT_WEIGHT':
-                value_attribute = self.get_value_attribute_element_form_device(element, device, 'font-weight')
-                assert value_attribute == expected.lower(), f'font weight of element not same with with {expected}'
+                value_attribute = self.get_value_attribute_element_form_device(element, device, 'font-weight', True)
+                assert value_attribute == expected.lower(), f'font weight of element not same with {expected}'
             elif helper == 'FONT_HEIGHT':
-                value_attribute = self.get_value_attribute_element_form_device(element, device, 'height')
-                assert value_attribute == expected.lower(), f'font height of element not same with with {expected}'
+                value_attribute = self.get_value_attribute_element_form_device(element, device, 'height', True)
+                assert value_attribute == expected.lower(), f'font height of element not same with {expected}'
             elif helper == 'TEXT_ALIGN':
-                value_attribute = self.get_value_attribute_element_form_device(element, device, 'text-align')
-                assert value_attribute == expected.lower(), f'font height of element not same with with {expected}'
+                value_attribute = self.get_value_attribute_element_form_device(element, device, 'text-align', True)
+                assert value_attribute == expected.lower(), f'font align of element not same with {expected}'
+            else:
+                value_attribute = self.get_value_attribute_element_form_device(element, device, helper, False)
+                assert value_attribute == expected, f'value attribute of element not same with {expected}, need to check attribute of element'
         elif helper and expected == '':
             assert False, f'The helper and value columns must both have a value at the same time'
 

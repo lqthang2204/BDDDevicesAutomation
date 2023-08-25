@@ -153,3 +153,7 @@ Feature: login web for norun
       | location-option-inpatient | 400                         | DISPLAYED | FONT_WEIGHT      |
       | location-option-inpatient | 35px                        | DISPLAYED | FONT_HEIGHT      |
       | location-option-inpatient | left                        | DISPLAYED | TEXT_ALIGN       |
+      | location-option-inpatient | 6                           | DISPLAYED | value            |
+      | location-option-inpatient | 1                           | DISPLAYED | data-key         |
+      | location-option-inpatient | selected                    | DISPLAYED | class            |
+
