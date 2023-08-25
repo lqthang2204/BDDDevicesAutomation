@@ -8,6 +8,7 @@ from libraries.faker import management_user
 from libraries.faker.User import generate_user
 from project_runner import logger
 from selenium.webdriver.support.color import Color
+from libraries.data_generators import check_match_pattern
 
 class common_device:
     def check_att_is_exist(self, obj_action_elements, key):
@@ -190,7 +191,6 @@ class common_device:
         return user
 
     def verify_elements_below_attributes(self, page, row, platform_name, dict_save_value, driver, device, wait):
-        # arr_element = page['elements']
         arr_element = page['elements']
         arr_element = list(filter(
             lambda element: element['id'] == row[0], arr_element
@@ -230,24 +230,20 @@ class common_device:
 
     def verify_value_with_helpers(self, expected, helper, element_page, device, driver):
         if helper and expected:
+            element = self.get_element_by_from_device(element_page, device, driver)
             if helper == 'REGEX':
-                element = self.get_element_by_from_device(element_page, device, driver)
                 value_element = self.get_value_element_form_device(element, device)
-                assert re.search(expected,value_element), f'value of element not match with pattern {value_element}'
+                check_match_pattern(expected, value_element, 'value of element not match with pattern')
             elif helper == 'STARTSWITH':
-                element = self.get_element_by_from_device(element_page, device, driver)
                 value_element = self.get_value_element_form_device(element, device)
                 assert value_element.startswith(expected), f'value of element is {expected} not start with {expected}'
             elif helper == 'CONTAINS':
-                element = self.get_element_by_from_device(element_page, device, driver)
                 value_element = self.get_value_element_form_device(element, device)
                 assert expected in value_element , f'value of element is {value_element} not contains {expected}'
             elif helper == 'BACKGROUND-COLOR':
-                element = self.get_element_by_from_device(element_page, device, driver)
                 bg_color = self.get_color_element_form_device(element, device,'background-color')
                 assert bg_color == expected.lower(), f'element there is no background color same with {expected}'
             elif helper == 'COLOR':
-                element = self.get_element_by_from_device(element_page, device, driver)
                 color = self.get_color_element_form_device(element, device, 'color')
                 assert color == expected.lower(), f'element there is no color same with {expected}'
         elif helper and expected == '':
