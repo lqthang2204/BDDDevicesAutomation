@@ -1,0 +1,27 @@
+elements:
+  - &add-alarm-button
+    id: add-alarm-button
+    description: Add alarm button
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: ANDROID
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+  - &cancel-button
+    id: cancel-button
+    description: Cancel alarm button
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ID
+        value: com.google.android.deskclock:id/material_timepicker_cancel_button
+      - device: ANDROID
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button

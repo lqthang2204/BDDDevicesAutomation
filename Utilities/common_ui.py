@@ -66,9 +66,7 @@ class common_device:
             elif status == "NOT_DISPLAYED":
                 WebDriverWait(driver, wait).until(ec.invisibility_of_element_located(locator_from_wait))
             elif status == "ENABLED":
-                WebDriverWait(driver, wait).until(ec.all_of(
-                    ec.element_to_be_clickable(locator_from_wait)),
-                    ec.presence_of_element_located(locator_from_wait))
+                WebDriverWait(driver, wait).until(ec.element_to_be_clickable(locator_from_wait))
             elif status == "NOT_ENABLED":
                 WebDriverWait(driver, wait).until_not(ec.element_to_be_clickable(locator_from_wait))
             elif status == "EXISTED":
@@ -102,7 +100,11 @@ class common_device:
         arr_element = list(filter(
             lambda loc: loc['id'] == element, arr_element
         ))
-        arr_locator = arr_element[0]['locators']
+        try:
+            arr_locator = arr_element[0]['locators']
+        except IndexError:
+            arr_locator = 'null'
+            assert False, f'element {element} not exist in page spec'
         arr_locator = list(filter(
             lambda loc: loc['device'] == platform_name, arr_locator
         ))
@@ -167,11 +169,8 @@ class common_device:
                 return element.get_attribute('value')
             else:
                 return element.text
-        else:
-            if element.get_attribute("content-desc") is None:
+        elif device['platformName'] == "ANDROID":
                 return element.text
-            else:
-                return element.get_attribute('content-desc')
     def get_value_attribute_element_form_device(self, element, device, value, flag):
         if device['platformName'] == "WEB":
             if flag:
@@ -182,12 +181,14 @@ class common_device:
                     return value_attribute.lower()
             else:
                 return element.get_attribute(value)
-
+        elif device['platformName'] == "ANDROID":
+            try:
+                return element.get_attribute(value)
+            except Exception as e:
+                print(e)
+                assert False, f'framework does not support for attribute {value}'
         else:
-            if element.get_attribute("content-desc") is None:
-                return element.text
-            else:
-                return element.get_attribute('content-desc')
+            assert False, f'Framework does not support for {device["platformName"]}'
 
     def create_random_user(self, locale):
         if locale:
@@ -239,6 +240,8 @@ class common_device:
         assert value == expect, f'value of the element not equal to values expected {expect}'
 
     def verify_value_with_helpers(self, expected, helper, element_page, device, driver):
+        if helper in ['BACKGROUND-COLOR', 'COLOR', 'FONT_FAMILY', 'FONT_SIZE', 'FONT_WEIGHT', 'FONT_HEIGHT', 'TEXT_ALIGN'] and expected and device['platformName'] != 'WEB':
+            assert False, f'framework only check {helper} for WEB env, not support for native app'
         if helper and expected:
             element = self.get_element_by_from_device(element_page, device, driver)
             if helper == 'REGEX':
