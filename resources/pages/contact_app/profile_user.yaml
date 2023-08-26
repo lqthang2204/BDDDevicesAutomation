@@ -1,0 +1,14 @@
+elements:
+  - &full-name
+    id: full-name
+    description: View full name user
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ID
+        value: com.google.android.contacts:id/large_title
+      - device: ANDROID
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button

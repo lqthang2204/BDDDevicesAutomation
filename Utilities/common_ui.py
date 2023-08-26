@@ -217,7 +217,6 @@ class common_device:
                 value = dict_save_value.get(value, value)
         element_yaml = self.get_element(page, arr_element[0]['id'] + " with text " + value, platform_name,
                                         dict_save_value)
-        self.verify_value_with_helpers(value, helper, element_yaml, device, driver)
         if row[2] and element_yaml:
             if value != '' and helper is None:
                 logger.info(f'Verified for {row[0]} have value {row[1]} and status {row[2]}')
@@ -228,6 +227,7 @@ class common_device:
         else:
             logger.error(f'table must be contains both field name and status')
             assert False, f'table must be contains both field name {row[0]} and status {row[2]}'
+        self.verify_value_with_helpers(value, helper, element_yaml, device, driver)
 
     def get_value_from_user_random(self, value, dict_save_value):
         arr_user = value.split('USER.')
