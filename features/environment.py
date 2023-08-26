@@ -107,14 +107,14 @@ def after_step(context, step):
 
 
 def after_scenario(context, scenario):
-    if context.driver is not None:
+    if context.driver and context.platform == 'WEB':
         context.driver.close()
         context.driver.quit()
     logger.info(f'Scenario {scenario.name} Ended')
 
 
 def after_all(context):
-    if context.driver is not None:
+    if context.driver and context.platform == 'WEB':
         logger.info('Closing driver from After_ALL')
         context.driver.close()
         context.driver.quit()

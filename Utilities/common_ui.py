@@ -58,7 +58,7 @@ class common_device:
 
     def wait_element_for_status(self, element_page, status, driver, device, wait):
         # locator = ManagementFile().get_locator(element_page, wait)
-        locator_from_wait = self.get_locator_for_wait_from_device(element_page)
+        locator_from_wait = self.get_locator_for_wait_from_device(element_page, device)
         logger.info(f"wait element have value {element_page['value']} with the status {status}")
         try:
             if status == "DISPLAYED":
@@ -134,7 +134,7 @@ class common_device:
             # locator = ManagementFile().get_locator(element_page, device['platformName'])
             logger.info(f"save text for element {element_page['value']} with key is {key}")
             WebDriverWait(driver, wait).until(
-                ec.presence_of_element_located(self.get_locator_for_wait_from_device(element_page)))
+                ec.presence_of_element_located(self.get_locator_for_wait_from_device(element_page, device)))
             element = self.get_element_by_from_device(element_page, device, driver)
             value = self.get_value_element_form_device(element, device)
             dict_save_value["KEY." + key] = value
@@ -143,8 +143,11 @@ class common_device:
             logger.error(f"Can not save text for element {element_page['value']} with key is {key}")
             assert False, "Can not save text for element " + element_page['value']
 
-    def get_locator_for_wait_from_device(self, element_page):
-        return ManagementFile().get_locator_for_wait(element_page['type'], element_page['value'])
+    def get_locator_for_wait_from_device(self, element_page, device):
+        if device['platformName'] == "WEB":
+            return ManagementFile().get_locator_for_wait(element_page['type'], element_page['value'])
+        else:
+            return ManagementFileAndroid().get_locator_for_wait(element_page['type'], element_page['value'])
 
     def get_list_element_by_from_device(self, element_page, device, driver):
         if device['platformName'] == "WEB":
