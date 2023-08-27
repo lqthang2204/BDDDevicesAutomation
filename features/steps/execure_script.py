@@ -26,7 +26,7 @@ def click_action(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "click", context.driver, "", context.wait,
-                                context.dict_save_value, context.device)
+                                context.dict_save_value, context.device, context)
 
 
 @step(u'I type "{text}" into element {element}')
@@ -34,7 +34,7 @@ def type_action(context, text, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "type", context.driver, text, context.wait,
-                                context.dict_save_value, context.device)
+                                context.dict_save_value, context.device, context)
 
 
 @step(u'I wait for element {element} to be {status}')
@@ -77,7 +77,7 @@ def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "clear", context.driver, "", context.wait,
-                                context.dict_save_value, context.device)
+                                context.dict_save_value, context.device, context)
 
 
 @step(u'I save text for element {element} with key "{key}"')

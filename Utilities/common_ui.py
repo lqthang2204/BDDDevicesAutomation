@@ -1,3 +1,5 @@
+from time import sleep
+
 from faker import Faker
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -17,13 +19,14 @@ class common_device:
         else:
             return obj_action_elements.get(key)
 
-    def action_page(self, element_page, action, driver, value, wait, dict_save_value, device):
+    def action_page(self, element_page, action, driver, value, wait, dict_save_value, device, context):
         element = self.get_element_by_from_device(element_page, device, driver)
         logger.info(f'execute {action} with element have is {element_page["value"]}')
         WebDriverWait(driver, wait).until(ec.all_of(
             ec.element_to_be_clickable(element)),
             ec.presence_of_element_located(element)
         )
+        self.highlight(element,  0.3, context.highlight)
         if action.__eq__("click"):
             self.click_action(element, wait, element_page, device, driver)
         elif action.__eq__("type"):
@@ -282,5 +285,19 @@ class common_device:
                 assert value_attribute == expected, f'value attribute of element not same with {expected}, need to check attribute of element'
         elif helper and expected == '':
             assert False, f'The helper and value columns must both have a value at the same time'
-
+    def highlight(self, element, time, is_hightlight):
+        """Highlights (blinks) a Selenium Webdriver element"""
+        if is_hightlight == 'true':
+            try:
+                driver = element._parent
+                def apply_style(s):
+                    driver.execute_script("arguments[0].setAttribute('style', arguments[1]);",
+                                          element, s)
+                original_style = element.get_attribute('style')
+                apply_style("background: yellow; border: 2px solid red;")
+                sleep(float(time))
+                apply_style(original_style)
+            except Exception as e:
+                assert True
+                print(e)
 
