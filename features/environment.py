@@ -44,6 +44,7 @@ def before_scenario(context, scenario):
         ))
         context.device = context.device[0]
         if context.device['platformName'] == "WEB":
+            if context.device['is_headless']: context.highlight = 'false'
             if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
                 cross_browser_with_saucelabs(context, context.device)
             else:
