@@ -26,6 +26,7 @@ def before_all(context):
     context.config_env = configparser.RawConfigParser(allow_no_value=True)
     context.config_env.read_file(file)
     context.platform = context.config_env.get("drivers_config", "platform")
+    context.highlight = context.config_env.get("drivers_config", "is_highlight").lower()
     context.project_folder = project_folder
     context.stage_name = context.config_env.get("drivers_config", "stage")
     if context.config_env.has_option("drivers_config", "browser"):
@@ -43,6 +44,7 @@ def before_scenario(context, scenario):
         ))
         context.device = context.device[0]
         if context.device['platformName'] == "WEB":
+            if context.device['is_headless']: context.highlight = 'false'
             if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
                 cross_browser_with_saucelabs(context, context.device)
             else:
@@ -51,9 +53,11 @@ def before_scenario(context, scenario):
             launch_android(context, context.device, context.config_env)
             context.wait = context.device['wait']
             context.time_page_load = context.device['time_page_load']
+            context.highlight = 'false'
         elif context.device['platformName'] == "IOS":
             context.wait = context.device['wait']
             context.time_page_load = context.device['time_page_load']
+            context.highlight = 'false'
         context.url = context.env['link']
 
     context.apiurls = context.env['apifacets']['link']

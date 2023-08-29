@@ -1,5 +1,5 @@
 @test-app-clock @mobile @android
-Feature: idiva mobile
+Feature:  mobile
 
   @test-app-clock1
   Scenario: test app clock android

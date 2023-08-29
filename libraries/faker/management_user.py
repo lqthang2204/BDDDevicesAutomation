@@ -14,6 +14,8 @@ def get_user(list_user, key):
         return user.first_name
     elif key == 'last_name':
         return user.last_name
+    elif key == 'full_name':
+        return user.first_name +' '+user.last_name
     elif key == 'job':
         return user.job
     elif key == 'address':
