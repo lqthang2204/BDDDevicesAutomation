@@ -245,7 +245,11 @@ def get_uuid():
     # Insert hyphens at specific positions to match your desired format
     uuid_value = f"{formatted_value[:4]}-{formatted_value[4:10]}-{formatted_value[10:14]}-{formatted_value[14:18]}-{formatted_value[18:24]}-{formatted_value[24:]}"
     return uuid_value
-
+def check_match_pattern(regex, value, message):
+    if re.search(regex, value):
+        assert True
+    else:
+        assert False, f'{message} {value}'
 
 # Example Usage:
 if __name__ == '__main__':

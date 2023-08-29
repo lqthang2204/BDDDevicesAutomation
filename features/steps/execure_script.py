@@ -1,7 +1,7 @@
 import os
 
 from behave import *
-
+from libraries.misc_operations import sanitize_datatable
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 from Utilities.common_ui import common_device
@@ -94,3 +94,13 @@ def step_impl(context, element, key):
 def step_impl(context):
     user = common_device().create_random_user(None)
     management_user.save_user_to_dict(context.dict_save_value, user)
+
+@step(u'I verify that following elements with below attributes')
+def step_impl(context):
+    if context.table:
+        context_table = sanitize_datatable(context.table)
+        for row in context_table:
+            context.element_page = common_device().verify_elements_below_attributes(context.page_present, row,
+                                                                               context.device['platformName'],
+                                                                               context.dict_save_value, context.driver,
+                                                                               context.device, context.wait)

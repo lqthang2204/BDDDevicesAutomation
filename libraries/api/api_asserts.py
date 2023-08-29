@@ -3,10 +3,9 @@ import re
 
 from jsonpath_ng import parse
 from requests import Response
-
 from libraries.data_generators import get_test_data_for
 from project_runner import logger
-
+from libraries.data_generators import check_match_pattern
 
 class APIAsserts:
 
@@ -38,8 +37,7 @@ class APIAsserts:
                                     assert value != "", f'Response json does not contain field name {value_header}'
                             elif field_value != "" and field_name:
                                 if helpers == "REGEX":
-                                    assert re.search(field_value,
-                                                     value_header), f'Response json does not match with pattern at {value_header}'
+                                    check_match_pattern(field_value, value_header, 'Response json does not match with pattern at')
                                 else:
                                     # assert field_value == value, f'Response json does not have a value {field_value}'
                                     APIAsserts.check_condition_have_result_body(field_value, helpers, value_header)
@@ -69,13 +67,10 @@ class APIAsserts:
                                 if helpers == "REGEX":
                                     if isinstance(value_body, list):
                                         for val in value_body:
-                                            assert re.search(field_value,
-                                                             val), f'Response json does not match with pattern at {val}'
+                                            check_match_pattern(field_value, val, 'Response json does not match with pattern at')
                                     else:
-                                        assert re.search(field_value,
-                                                         value_body), f'Response json does not match with pattern at {value_body}'
+                                        check_match_pattern(field_value, value_body, 'Response json does not match with pattern at')
                                 else:
-                                    # assert field_value == value_body, f'Response json does not have a value {field_value}'
                                     APIAsserts.check_condition_have_result_body(field_value, helpers, value_body)
 
         except json.decoder.JSONDecodeError:
@@ -168,3 +163,4 @@ class APIAsserts:
             return False
         else:
             assert False, f'framework does not support convert type bool as {expect}'
+

@@ -19,6 +19,8 @@ env:
       time_page_load: 31
       auto_download_driver: false
       driver_version: WebDriver\\chromedriver_116.exe
+#      appPackage: com.google.android.deskclock
+#      appActivity: com.android.deskclock.DeskClock
       appPackage: com.android.chrome
       appActivity: com.google.android.apps.chrome.Main
 #      udid: HVA222NA

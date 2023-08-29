@@ -23,7 +23,7 @@ class ManagementFileAndroid:
         elif type_element.__eq__("CSS"):
             element = driver.find_element(AppiumBy.CSS_SELECTOR, value)
         elif type_element.__eq__("ACCESSIBILITY_ID"):
-            element = driver.find_elemen(AppiumBy.ACCESSIBILITY_ID, value)
+            element = driver.find_element(AppiumBy.ACCESSIBILITY_ID, value)
         else:
             logger.error(f'Can not get  element by {type_element} with value is {value}')
             raise Exception("Not support type in framework")
