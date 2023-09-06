@@ -23,24 +23,18 @@ def change_page(context, page):
 
 @step(u'I click element {element}')
 def click_action(context, element):
-    is_shadow= False
-    if "as shadow element" in element:
-        is_shadow = True
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "click", context.driver, "", context.wait,
-                                context.dict_save_value, context.device, context, is_shadow)
+                                context.dict_save_value, context.device, context)
 
 
 @step(u'I type "{text}" into element {element}')
 def type_action(context, text, element):
-    is_shadow= False
-    if "as shadow element" in element:
-        is_shadow = True
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "type", context.driver, text, context.wait,
-                                context.dict_save_value, context.device, context, is_shadow)
+                                context.dict_save_value, context.device, context)
 
 
 @step(u'I wait for element {element} to be {status}')
@@ -80,13 +74,10 @@ def step_impl(context, action):
 
 @step(u'I clear text from element {element}')
 def step_impl(context, element):
-    is_shadow= False
-    if "as shadow element" in element:
-        is_shadow = True
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "clear", context.driver, "", context.wait,
-                                context.dict_save_value, context.device, context, is_shadow)
+                                context.dict_save_value, context.device, context)
 
 
 @step(u'I save text for element {element} with key "{key}"')
@@ -113,3 +104,10 @@ def step_impl(context):
                                                                                context.device['platformName'],
                                                                                context.dict_save_value, context.driver,
                                                                                context.device, context.wait)
+@step(u'I {action} shadow element {element}')
+def step_impl(context, action, element):
+    if context.device['platformName'] == "WEB":
+        context.element_page = common_device().get_element(context.page_present, element,
+                                                           context.device['platformName'], context.dict_save_value)
+        ManagementFile().action_with_shadow_element(context.element_page, action, context.driver, "", context.wait,
+                                    context.dict_save_value, context.device, context)

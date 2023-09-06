@@ -11,8 +11,7 @@ from libraries.faker.User import generate_user
 from project_runner import logger
 from selenium.webdriver.support.color import Color
 from libraries.data_generators import check_match_pattern
-import pyshadow
-from pyshadow.main import Shadow
+
 
 class common_device:
     def check_att_is_exist(self, obj_action_elements, key):
@@ -302,13 +301,4 @@ class common_device:
             except Exception as e:
                 assert True
                 print(e)
-    def get_shadow_element(self, context):
-        logger.info(f'finding shadow element {context.element_page["value"]}')
-        if context.element_page['type'] == 'CSS':
-            shadow = Shadow(context.driver)
-            element = shadow.find_element(context.element_page['value'])
-            return element
-        else:
-            logger.error(f'the type of shadow element must be CSS type, type is {context.element_page["type"]}')
-            assert False, f'the type of shadow element must be CSS type'
 
