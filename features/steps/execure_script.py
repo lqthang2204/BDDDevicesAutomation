@@ -109,5 +109,11 @@ def step_impl(context, action, element):
     if context.device['platformName'] == "WEB":
         context.element_page = common_device().get_element(context.page_present, element,
                                                            context.device['platformName'], context.dict_save_value)
-        ManagementFile().action_with_shadow_element(context.element_page, action, context.driver, "", context.wait,
+        value = ''
+        if 'type' in action and 'into' in action:
+            arr_value = action.split("\"")
+            arr_value = [i.strip().lstrip() for i in arr_value]
+            value = arr_value[1]
+            action = arr_value[0]
+        ManagementFile().action_with_shadow_element(context.element_page, action, context.driver, value, context.wait,
                                     context.dict_save_value, context.device, context)

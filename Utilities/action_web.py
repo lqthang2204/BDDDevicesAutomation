@@ -285,6 +285,7 @@ class ManagementFile:
                     value = self.get_value_from_user_random(value, dict_save_value)
                 else:
                     value = dict_save_value.get(value, value)
+            element.click()
             element.send_keys(value)
         elif action.__eq__("clear"):
             element.clear()
