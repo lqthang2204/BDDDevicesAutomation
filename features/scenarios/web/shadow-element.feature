@@ -2,7 +2,7 @@
 Feature: test shadow elements
 
   @mc-chrome-shadow
-  Scenario: test shadow feature function
+  Scenario: test shadow feature function1
     Given I navigate to url CHROME-SETTING
     And I change the page spec to settingpage
     And I click shadow element import borkmarks
@@ -12,7 +12,7 @@ Feature: test shadow elements
     And I wait 5 seconds
 
     @mc-chrome-shadow-2
-  Scenario: test shadow feature function
+  Scenario: test shadow feature function2
     Given I navigate to url CHROME-SETTING
     And I change the page spec to settingpage
     And I click shadow element search field
@@ -25,7 +25,7 @@ Feature: test shadow elements
 #    And I wait 5 seconds
 
       @mc-chrome-shadow-3
-  Scenario: test shadow feature function
+  Scenario: test shadow feature function3
     Given I navigate to url CHROME-SETTING
     And I change the page spec to settingpage
     And I click shadow element sync data
