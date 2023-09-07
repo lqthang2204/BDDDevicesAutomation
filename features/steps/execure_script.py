@@ -116,4 +116,6 @@ def step_impl(context, action, element):
             value = arr_value[1]
             action = arr_value[0]
         ManagementFile().action_with_shadow_element(context.element_page, action, context.driver, value, context.wait,
-                                    context.dict_save_value, context.device, context)
+                                    context.dict_save_value, context)
+    else:
+        assert False, "only support action script with WEB ENVIRONMENT in framework"

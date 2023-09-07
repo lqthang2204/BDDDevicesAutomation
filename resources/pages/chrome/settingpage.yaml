@@ -41,3 +41,9 @@ elements:
       - device: WEB
         type: CSS
         value: input[id*='searchInput']
+  - id: sync data
+    description: Sync data
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[@id='sync-setup']
