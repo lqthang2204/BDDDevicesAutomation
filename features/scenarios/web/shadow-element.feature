@@ -18,9 +18,8 @@ Feature: test shadow elements
     And I click shadow element search field
     And I type "Customize your Chrome profile" into shadow element search field
     And I wait 5 seconds
-    And I click shadow element toogle button
+    And I clear shadow element search field
     And I wait 5 seconds
-#    And I wait for element mobile-button to be DISPLAYED
-#    And I click element <product>
-#    And I type "test " into element search-input
-#    And I wait 2 seconds
+    And I click shadow element import borkmarks
+    And I click shadow element import button
+    And I wait 5 seconds

@@ -40,4 +40,4 @@ elements:
     locators:
       - device: WEB
         type: CSS
-        value: cr-toolbar-search-field[id*='search']
+        value: input[id*='searchInput']

@@ -4,12 +4,12 @@ import os
 
 import yaml
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from yaml import SafeLoader
 from pyshadow.main import Shadow
 from project_runner import logger, project_folder
-
 
 class ManagementFile:
     def get_dict_path_yaml(self):
@@ -269,7 +269,7 @@ class ManagementFile:
         if type == 'CSS':
             shadow = Shadow(driver)
             shadow.set_explicit_wait(wait, 1)
-            element = shadow.find_element(value)
+            element = shadow.find_element(value, False)
             return element
         else:
             logger.error(f'the type of shadow element must be CSS type, type is {type}')
@@ -281,11 +281,7 @@ class ManagementFile:
             element.click()
         elif action.__eq__("type"):
             if dict_save_value:
-                if 'USER.' in value:
-                    value = self.get_value_from_user_random(value, dict_save_value)
-                else:
-                    value = dict_save_value.get(value, value)
-            element.click()
+                value = dict_save_value.get(value, value)
             element.send_keys(value)
         elif action.__eq__("clear"):
             element.clear()
