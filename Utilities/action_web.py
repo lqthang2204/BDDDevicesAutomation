@@ -264,25 +264,25 @@ class ManagementFile:
         except Exception as e:
             logger.info(f'can not execute action with element have value  {locator} in framework')
             assert False, "can not execute action with element have value" + locator['value'] + "in framework"
-    def get_shadow_element(self, type, driver, value, wait, context):
+    def get_shadow_element(self, type, driver, value, wait, is_highlight):
         logger.info(f'finding shadow element {value}')
         shadow = Shadow(driver)
         shadow.set_explicit_wait(wait, 1)
         if type == 'CSS':
             element = shadow.find_element(value, False)
-            if context.highlight == 'true':
+            if is_highlight == 'true':
                 shadow.highlight(element, color='red', time_in_mili_seconds=0.2)
             return element
         elif type == 'XPATH':
             element = shadow.find_element_by_xpath(value, False)
-            if context.highlight == 'true':
+            if is_highlight == 'true':
                 shadow.highlight(element, color='red', time_in_mili_seconds=0.2)
             return element
         else:
             logger.error(f'the type of shadow element must be CSS type, type is {type}')
             assert False, f'the type of shadow element must be CSS type'
-    def action_with_shadow_element(self, element_page, action, driver, value, wait, dict_save_value, context):
-        element = self.get_shadow_element(element_page['type'], driver, element_page['value'], wait, context)
+    def action_with_shadow_element(self, element_page, action, driver, value, wait, dict_save_value, is_highlight):
+        element = self.get_shadow_element(element_page['type'], driver, element_page['value'], wait, is_highlight)
         logger.info(f'execute {action} with element have is {element_page["value"]}')
         if action.__eq__("click"):
             element.click()
