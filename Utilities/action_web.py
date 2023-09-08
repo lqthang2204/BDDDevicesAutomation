@@ -4,12 +4,12 @@ import os
 
 import yaml
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from yaml import SafeLoader
-
+from pyshadow.main import Shadow
 from project_runner import logger, project_folder
-
 
 class ManagementFile:
     def get_dict_path_yaml(self):
@@ -264,3 +264,37 @@ class ManagementFile:
         except Exception as e:
             logger.info(f'can not execute action with element have value  {locator} in framework')
             assert False, "can not execute action with element have value" + locator['value'] + "in framework"
+    def get_shadow_element(self, type, driver, value, wait, is_highlight):
+        logger.info(f'finding shadow element {value}')
+        shadow = Shadow(driver)
+        shadow.set_explicit_wait(wait, 1)
+        if type == 'CSS':
+            element = shadow.find_element(value, False)
+            if is_highlight == 'true':
+                shadow.highlight(element, color='red', time_in_mili_seconds=0.2)
+            return element
+        elif type == 'XPATH':
+            element = shadow.find_element_by_xpath(value, False)
+            if is_highlight == 'true':
+                shadow.highlight(element, color='red', time_in_mili_seconds=0.2)
+            return element
+        else:
+            logger.error(f'the type of shadow element must be CSS type, type is {type}')
+            assert False, f'the type of shadow element must be CSS type'
+    def action_with_shadow_element(self, element_page, action, driver, value, wait, dict_save_value, is_highlight):
+        element = self.get_shadow_element(element_page['type'], driver, element_page['value'], wait, is_highlight)
+        logger.info(f'execute {action} with element have is {element_page["value"]}')
+        if action.__eq__("click"):
+            element.click()
+        elif action.__eq__("type"):
+            if dict_save_value:
+                value = dict_save_value.get(value, value)
+            element.send_keys(value)
+        elif action.__eq__("clear"):
+            element.clear()
+        elif action.__eq__("wait"):
+            WebDriverWait(driver, wait).until(
+                ec.presence_of_element_located(element))
+        else:
+            logger.error("Can not execute %s with element have is %s", action)
+            assert False, "Not support action in framework"

@@ -12,6 +12,7 @@ from project_runner import logger
 from selenium.webdriver.support.color import Color
 from libraries.data_generators import check_match_pattern
 
+
 class common_device:
     def check_att_is_exist(self, obj_action_elements, key):
         if obj_action_elements.get(key) is None:
