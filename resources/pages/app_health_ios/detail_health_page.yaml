@@ -1,0 +1,87 @@
+elements:
+  - &first-name
+    id: first-name
+    description: Continue button
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: IOS
+        type: IOS_PREDICATE
+        value: label == "First Name"
+  - &field-text
+    id: field base to text
+    description: Continue button
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeStaticText[@name="First Name"]
+  - &first-name-field
+    id: first-name-field
+    description: Continue button
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: IOS
+        type: IOS_CLASS_CHAIN
+        value: /**/XCUIElementTypeTextField[`value == "Optional"`][1]
+  - &last-name
+    id: last-name
+    description: Continue button at page 2
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: IOS
+        type: IOS_PREDICATE
+        value: label == "Last Name"
+  - &dob
+    id: dob
+    description: Continue button at page 2
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: IOS
+        type: ACCESSIBILITY_ID
+        value: Date of Birth
+  - &sex
+    id: sex
+    description: sex field
+    locators:
+      - device: IOS
+        type: ACCESSIBILITY_ID
+        value: Sex
+  - &height
+    id: height
+    description: height field
+    locators:
+      - device: IOS
+        type: ACCESSIBILITY_ID
+        value: Height
+  - &weight
+    id: weight
+    description: weight field
+    locators:
+      - device: IOS
+        type: ACCESSIBILITY_ID
+        value: Weight
