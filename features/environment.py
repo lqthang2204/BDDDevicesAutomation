@@ -52,11 +52,10 @@ def before_scenario(context, scenario):
         elif context.device['platformName'] == "ANDROID":
             launch_android(context, context.device, context.config_env)
             context.wait = context.device['wait']
-            context.time_page_load = context.device['time_page_load']
             context.highlight = 'false'
         elif context.device['platformName'] == "IOS":
+            launch_ios(context, context.device, context.config_env)
             context.wait = context.device['wait']
-            context.time_page_load = context.device['time_page_load']
             context.highlight = 'false'
         context.url = context.env['link']
 
@@ -91,13 +90,30 @@ def launch_android(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get('drivers_config', 'APPIUM_HOST'), '-P', str(config.get('drivers_config', 'APPIUM_PORT'))], timeout_ms=20000)
     desired_caps = {
+        'automationName': 'uiautomator2',
         'platformName': device['platformName'],
         'udid': device['udid'],
         'appPackage': device['appPackage'],
         'appActivity': device['appActivity']
     }
     url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
-        config.get('drivers_config', 'appium_port')) + '/wd/hub'
+        config.get('drivers_config', 'appium_port'))
+    context.wait = device['wait']
+    context.driver = appium.webdriver.Remote(url, desired_caps)
+
+def launch_ios(context, device, config):
+    # service = AppiumService()
+    # service.start(args=['--address',config.get('drivers_config', 'APPIUM_HOST'), '-P', str(config.get('drivers_config', 'APPIUM_PORT'))], timeout_ms=20000)
+    desired_caps = {
+        'automationName': 'XCUITest',
+        'platformName': device['platformName'],
+        'udid': device['udid'],
+        'bundleId': device['bundleId'],
+        'platformVersion': str(device['platformVersion']),
+        'deviceName': device['deviceName']
+    }
+    url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
+        config.get('drivers_config', 'appium_port'))
     context.wait = device['wait']
     context.driver = appium.webdriver.Remote(url, desired_caps)
 

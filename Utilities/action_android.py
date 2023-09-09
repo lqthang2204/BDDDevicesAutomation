@@ -24,6 +24,12 @@ class ManagementFileAndroid:
             element = driver.find_element(AppiumBy.CSS_SELECTOR, value)
         elif type_element.__eq__("ACCESSIBILITY_ID"):
             element = driver.find_element(AppiumBy.ACCESSIBILITY_ID, value)
+        elif type_element.__eq__("IOS_PREDICATE"):
+            element = driver.find_element(AppiumBy.IOS_PREDICATE, value)
+        elif type_element.__eq__("IOS_CLASS_CHAIN"):
+            if value[:1] == '/':
+                value = value[1:]
+            element = driver.find_element(AppiumBy.IOS_CLASS_CHAIN, value)
         else:
             logger.error(f'Can not get  element by {type_element} with value is {value}')
             raise Exception("Not support type in framework")
@@ -47,6 +53,12 @@ class ManagementFileAndroid:
             elements = driver.find_elements(AppiumBy.CSS_SELECTOR, value)
         elif type_element.__eq__("ACCESSIBILITY_ID"):
             elements = driver.find_elemen(AppiumBy.ACCESSIBILITY_ID, value)
+        elif type_element.__eq__("IOS_PREDICATE"):
+            elements = driver.find_elemen(AppiumBy.IOS_PREDICATE, value)
+        elif type_element.__eq__("IOS_CLASS_CHAIN"):
+            if value[:1] == '/':
+                value = value[1:]
+            elements = driver.find_elemen(AppiumBy.IOS_CLASS_CHAIN, value)
         else:
             logger.error(f'Can not get  element by {type_element} with value is {value}')
             raise Exception("Not support type in framework")
@@ -87,6 +99,12 @@ class ManagementFileAndroid:
             locator = (AppiumBy.CSS_SELECTOR, value)
         elif type.__eq__("ACCESSIBILITY_ID"):
             locator = (AppiumBy.ACCESSIBILITY_ID, value)
+        elif type.__eq__("IOS_PREDICATE"):
+            locator = (AppiumBy.IOS_PREDICATE, value)
+        elif type.__eq__("IOS_CLASS_CHAIN"):
+            if value[:1] == '/':
+                value = value[1:]
+            locator = (AppiumBy.IOS_CLASS_CHAIN, value)
         else:
             logger.error("Not support type %s in framework", type)
             raise Exception("Not support type in framework", type)
@@ -116,18 +134,23 @@ class ManagementFileAndroid:
                 locator = self.get_locator_from_action(element_page, platform_name)
                 # element = self.get_by_android(locator.type, driver, locator.value)
                 locator_from_wait = self.get_locator_for_wait(locator['type'], locator['value'])
-                if self.check_field_exist(action_elements, "condition") and self.check_field_exist(action_elements, "timeout"):
-                    self.wait_for_action(action_elements, action_elements['timeout'], driver, locator_from_wait, locator, type_action, value, True)
-                elif self.check_field_exist(action_elements, 'condition') and self.check_field_exist(action_elements, 'timeout') is False:
+                if self.check_field_exist(action_elements, "condition") and self.check_field_exist(action_elements,
+                                                                                                   "timeout"):
+                    self.wait_for_action(action_elements, action_elements['timeout'], driver, locator_from_wait,
+                                         locator, type_action, value, True)
+                elif self.check_field_exist(action_elements, 'condition') and self.check_field_exist(action_elements,
+                                                                                                     'timeout') is False:
                     try:
                         if type_action:
                             self.process_execute_action(driver, wait, type_action, value, locator_from_wait, locator)
                         else:
-                            self.wait_for_action(action_elements, wait, driver, locator_from_wait, locator, type_action, value, False)
+                            self.wait_for_action(action_elements, wait, driver, locator_from_wait, locator, type_action,
+                                                 value, False)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action,
                                      locator)
-                        assert False, "can not execute action " + type_action + " with element have value" + locator['value'] + "in framework"
+                        assert False, "can not execute action " + type_action + " with element have value" + locator[
+                            'value'] + "in framework"
                 else:
                     logger.error("please add condition when execute action  %s in framework", type_action,
                                  locator['value'])

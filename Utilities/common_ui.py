@@ -23,10 +23,9 @@ class common_device:
     def action_page(self, element_page, action, driver, value, wait, dict_save_value, device, context):
         element = self.get_element_by_from_device(element_page, device, driver)
         logger.info(f'execute {action} with element have is {element_page["value"]}')
-        WebDriverWait(driver, wait).until(ec.all_of(
-            ec.element_to_be_clickable(element)),
-            ec.presence_of_element_located(element)
-        )
+        # WebDriverWait(driver, wait).until(ec.all_of(
+        #     ec.element_to_be_clickable(element))
+        # )
         self.highlight(element,  0.3, context.highlight)
         if action.__eq__("click"):
             self.click_action(element, wait, element_page, device, driver)
@@ -173,7 +172,7 @@ class common_device:
                 return element.get_attribute('value')
             else:
                 return element.text
-        elif device['platformName'] == "ANDROID":
+        else:
                 return element.text
     def get_value_attribute_element_form_device(self, element, device, value, flag):
         if device['platformName'] == "WEB":

@@ -1,0 +1,27 @@
+elements:
+  - &continue-button
+    id: continue-button
+    description: Continue button
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeStaticText[@name="Continue"]
+  - &continue-button-page-2
+    id: continue-button-page-2
+    description: Continue button at page 2
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeButton[@name="Continue"]
