@@ -3,7 +3,7 @@ from time import sleep
 from faker import Faker
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-import re
+from selenium.webdriver.common.action_chains import ActionChains
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 from libraries.faker import management_user
@@ -38,6 +38,9 @@ class common_device:
             element.send_keys(value)
         elif action.__eq__("clear"):
             element.clear()
+        elif action.__eq__('hover-over'):
+            action = ActionChains(driver)
+            action.move_to_element(element).perform()
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"
@@ -147,6 +150,19 @@ class common_device:
         except Exception as e:
             logger.error(f"Can not save text for element {element_page['value']} with key is {key}")
             assert False, "Can not save text for element " + element_page['value']
+    def save_coordinates_from_element(self, element_page, driver, key, dict_save_value, wait, device):
+        try:
+            # locator = ManagementFile().get_locator(element_page, device['platformName'])
+            logger.info(f"save coordinates for element {element_page['value']} with key is {key}")
+            WebDriverWait(driver, wait).until(
+                ec.presence_of_element_located(self.get_locator_for_wait_from_device(element_page, device)))
+            element = self.get_element_by_from_device(element_page, device, driver)
+            location = element.location
+            dict_save_value["KEY." + key] = location
+            return dict_save_value
+        except Exception as e:
+            logger.error(f"Can not save coordinates for element {element_page['value']} with key is {key}")
+            assert False, "Can not save coordinates for element " + element_page['value']
 
     def get_locator_for_wait_from_device(self, element_page, device):
         if device['platformName'] == "WEB":
@@ -300,4 +316,5 @@ class common_device:
             except Exception as e:
                 assert True
                 print(e)
+
 

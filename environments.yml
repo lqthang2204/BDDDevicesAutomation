@@ -7,9 +7,10 @@ env:
       TIKI: https://tiki.vn/
       IDIVA: https://idiva.vn/
       CHROME-SETTING: chrome://settings
+      GURU99: http://demo.guru99.com/test/drag_drop.html
     devices:
     - platformName: WEB
-      is_headless: true
+      is_headless: false
       wait: 30
       time_page_load: 30
       auto_download_driver: true

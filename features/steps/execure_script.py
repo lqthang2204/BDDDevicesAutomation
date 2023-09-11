@@ -119,3 +119,30 @@ def step_impl(context, action, element):
                                     context.dict_save_value, context.highlight)
     else:
         assert False, "only support action script with WEB ENVIRONMENT in framework"
+
+@given(u'I drag and drop element {element_from} to element {element_to}')
+def step_impl(context, element_from, element_to):
+    element_from = common_device().get_element(context.page_present, element_from,
+                                                       context.device['platformName'], context.dict_save_value)
+    element_to = common_device().get_element(context.page_present, element_to,
+                                                       context.device['platformName'], context.dict_save_value)
+    ManagementFile().action_mouse('drag-and-drop', element_from, element_to, context)
+@given(u'I hover-over element {element}')
+def step_impl(context, element):
+    context.element_page = common_device().get_element(context.page_present, element,
+                                                       context.device['platformName'], context.dict_save_value)
+    common_device().action_page(context.element_page, "hover-over", context.driver, '', context.wait,
+                                context.dict_save_value, context.device, context)
+@step(u'I save coordinates for element {element} with key "{key}"')
+def step_impl(context, element, key):
+    context.element_page = common_device().get_element(context.page_present, element,
+                                                       context.device['platformName'], context.dict_save_value)
+    context.dict_save_value = common_device().save_coordinates_from_element(context.element_page, context.driver, key,
+                                                                     context.dict_save_value, context.wait,
+                                                                     context.device)
+    return context.dict_save_value
+@given(u'I drag and drop element {element_from} to coordinates {coordinates_to}')
+def step_impl(context, element_from, coordinates_to):
+    element_from = common_device().get_element(context.page_present, element_from,
+                                               context.device['platformName'], context.dict_save_value)
+    ManagementFile().action_mouse('drag-and-drop-coordinates', element_from, coordinates_to, context)
