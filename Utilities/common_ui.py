@@ -99,7 +99,7 @@ class common_device:
             arr_value = [i.lstrip() for i in arr_value]
             element = arr_value[0].strip()
             # remove double quote
-            text = arr_value[1]
+            text = arr_value[1].replace('"','')
             if dict_save_value:
                 text = dict_save_value.get(text, text)
         arr_element = page['elements']

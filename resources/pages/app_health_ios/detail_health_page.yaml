@@ -85,3 +85,17 @@ elements:
       - device: IOS
         type: ACCESSIBILITY_ID
         value: Weight
+  - &done-button
+    id: done-button
+    description: Done button
+    locators:
+      - device: IOS
+        type: ACCESSIBILITY_ID
+        value: Done
+  - &date-picker-month
+    id: date-picker-month
+    description: Date picker month
+    locators:
+      - device: IOS
+        type: XPATH
+        value: //*[XCUIElementTypePicker/XCUIElementTypePickerWheel][1]

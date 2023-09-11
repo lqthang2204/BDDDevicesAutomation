@@ -1,7 +1,7 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-
+from selenium.webdriver.common.action_chains import ActionChains
 from project_runner import logger
 
 
@@ -224,3 +224,19 @@ class ManagementFileAndroid:
         except Exception as e:
             logger.info(f'can not execute action with element have value  {locator} in framework')
             assert is_check, "can not execute action with element have value" + locator['value'] + "in framework"
+    def action_mouse_mobile(self,action, element_page_from, element_page_to, context):
+        element_from = self.get_by_android(element_page_from['type'], context.driver, element_page_from['value'])
+        logger.info(f'execute {action} with element have is {element_page_from["value"]}')
+        if action.__eq__('drag-and-drop'):
+            action = ActionChains(context.driver)
+            element_to = self.get_by_android(element_page_to['type'], context.driver, element_page_to['value'])
+            logger.info(f'execute {action} with element have is {element_page_to["value"]}')
+            action.drag_and_drop(element_from, element_to).perform()
+        elif action.__eq__('drag-and-drop-coordinates'):
+            action = ActionChains(context.driver)
+            if context.dict_save_value:
+                location = context.dict_save_value.get(element_page_to, element_page_to)
+            action.drag_and_drop_by_offset(element_from, int(location['x']), int(location['y'])).perform()
+        else:
+            logger.error("Can not execute %s with element have is %s", action)
+            assert False, "Not support action in framework"
