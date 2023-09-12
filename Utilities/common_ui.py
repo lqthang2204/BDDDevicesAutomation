@@ -88,7 +88,7 @@ class common_device:
             else:
                 raise Exception("Not support status ", status)
         except Exception as e:
-            logger.error("The status %s is not currently.", status);
+            logger.error(f"The status {status['value']} is not currently.  with element have value {element_page['value']}")
             assert False, e
 
     def get_element(self, page, element, platform_name, dict_save_value):
