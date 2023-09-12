@@ -11,7 +11,7 @@ env:
       GLOBAL_SQA: https://www.globalsqa.com/demo-site/draganddrop
     devices:
     - platformName: WEB
-      is_headless: false
+      is_headless: true
       wait: 30
       time_page_load: 30
       auto_download_driver: true
