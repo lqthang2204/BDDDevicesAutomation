@@ -231,7 +231,8 @@ class ManagementFileAndroid:
             action = ActionChains(context.driver)
             element_to = self.get_by_android(element_page_to['type'], context.driver, element_page_to['value'])
             logger.info(f'execute {action} with element have is {element_page_to["value"]}')
-            action.drag_and_drop(element_from, element_to).perform()
+            # action.drag_and_drop(element_from, element_to).perform()
+            action.drag_and_drop_by_offset(element_from, 100, 100).perform()
         elif action.__eq__('drag-and-drop-coordinates'):
             action = ActionChains(context.driver)
             if context.dict_save_value:

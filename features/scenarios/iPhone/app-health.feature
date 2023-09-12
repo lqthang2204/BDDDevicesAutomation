@@ -30,4 +30,5 @@ Feature:  mobile ios
     And I wait for element done-button to be ENABLED
     And I click element done-button
     And I click element dob
-    And I drag and drop element date-picker-month to element first-name
+#    And I drag and drop element date-picker-month to element first-name
+   And I type "March" into element date-picker-month

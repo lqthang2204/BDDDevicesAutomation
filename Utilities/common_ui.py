@@ -316,5 +316,17 @@ class common_device:
             except Exception as e:
                 assert True
                 print(e)
-
+    def save_coordinates_from_element(self, element_page, driver, key, dict_save_value, wait, device):
+        try:
+            # locator = ManagementFile().get_locator(element_page, device['platformName'])
+            logger.info(f"save text for element {element_page['value']} with key is {key}")
+            WebDriverWait(driver, wait).until(
+                ec.presence_of_element_located(self.get_locator_for_wait_from_device(element_page, device)))
+            element = self.get_element_by_from_device(element_page, device, driver)
+            location = element.location
+            dict_save_value["KEY." + key] = location
+            return dict_save_value
+        except Exception as e:
+            logger.error(f"Can not save text for element {element_page['value']} with key is {key}")
+            assert False, "Can not save text for element " + element_page['value']
 

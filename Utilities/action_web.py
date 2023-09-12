@@ -309,8 +309,10 @@ class ManagementFile:
         elif action.__eq__('drag-and-drop-coordinates'):
             action = ActionChains(context.driver)
             if context.dict_save_value:
-                location = context.dict_save_value.get(element_page_to, element_page_to)
-            action.drag_and_drop_by_offset(element_from, int(location['x']), int(location['y'])).perform()
+                x = int(context.dict_save_value.get(element_page_to, element_page_to)['x'])
+                y = int(context.dict_save_value.get(element_page_to, element_page_to)['y'])
+            action.drag_and_drop_by_offset(element_from, x, y)
+            action.perform()
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"
