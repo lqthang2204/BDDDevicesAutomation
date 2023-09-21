@@ -11,7 +11,7 @@ from libraries.faker.User import generate_user
 from project_runner import logger
 from selenium.webdriver.support.color import Color
 from libraries.data_generators import check_match_pattern
-
+import copy
 
 class common_device:
 
@@ -103,7 +103,10 @@ class common_device:
             text = arr_value[1].replace('"', '')
             if dict_save_value:
                 text = dict_save_value.get(text, text)
-        arr_element = page['elements']
+            page_temp = copy.deepcopy(page)
+        else:
+            page_temp = page
+        arr_element = page_temp['elements']
         arr_element = list(filter(
             lambda loc: loc['id'] == element, arr_element
         ))

@@ -31,9 +31,9 @@ Feature: test feature drag and drop
     And I wait for element capital with text "Oslo" to be DISPLAYED
     And I wait for element country_field with text "Italy" to be DISPLAYED
     And I hover-over element capital with text "Oslo"
-    And I drag and drop element capital with text "Oslo" to element country_field_italy
-    And I drag and drop element capital with text "Stockholm" to element country_field_Spain
-#    And I drag and drop element capital with text "Washington" to element country_field_Norway
-#    And I drag and drop element capital with text "Copenhagen" to element country_field_Denmark
+    And I drag and drop element capital with text "Oslo" to element country_field with text "Italy"
+    And I drag and drop element capital with text "Stockholm" to element country_field with text "Norway"
+    And I drag and drop element capital with text "Washington" to element country_field with text "South Korea"
+    And I drag and drop element capital with text "Copenhagen" to element country_field with text "United States"
     And I wait 5 seconds
 

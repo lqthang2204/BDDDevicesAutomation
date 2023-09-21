@@ -306,16 +306,6 @@ class ManagementFile:
             element_to = self.get_element_by(element_page_to['type'], context.driver, element_page_to['value'])
             logger.info(f'execute {action} with element have is {element_page_to["value"]}')
             action.drag_and_drop(element_from, element_to).perform()
-        elif action.__eq__('drag-and-drop-coordinates'):
-            action = ActionChains(context.driver)
-            if context.dict_save_value:
-                x = int(context.dict_save_value.get(element_page_to, element_page_to)['x'])
-                y = int(context.dict_save_value.get(element_page_to, element_page_to)['y'])
-                print(x)
-                print(y)
-            action.click_and_hold(element_from).move_by_offset(x, y).release().perform()
-            # action.drag_and_drop_by_offset(element_from, x, y).perform()
-            # action.perform()
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"
