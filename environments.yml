@@ -9,6 +9,7 @@ env:
       CHROME-SETTING: chrome://settings
       GURU99: http://demo.guru99.com/test/drag_drop.html
       GLOBAL_SQA: https://www.globalsqa.com/demo-site/draganddrop
+      DHTMLGOODIES: http://www.dhtmlgoodies.com/scripts/drag-drop-custom/demo-drag-drop-3.html
     devices:
     - platformName: WEB
       is_headless: true

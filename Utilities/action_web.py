@@ -311,8 +311,11 @@ class ManagementFile:
             if context.dict_save_value:
                 x = int(context.dict_save_value.get(element_page_to, element_page_to)['x'])
                 y = int(context.dict_save_value.get(element_page_to, element_page_to)['y'])
-            action.drag_and_drop_by_offset(element_from, x, y)
-            action.perform()
+                print(x)
+                print(y)
+            action.click_and_hold(element_from).move_by_offset(x, y).release().perform()
+            # action.drag_and_drop_by_offset(element_from, x, y).perform()
+            # action.perform()
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"

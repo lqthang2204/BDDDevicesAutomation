@@ -10,4 +10,4 @@ elements:
     locators:
       - device: WEB
         type: XPATH
-        value: //*[@id='bank']/li
+        value: (//*[@class='ui-widget-content'])[2]

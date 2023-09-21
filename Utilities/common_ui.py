@@ -14,6 +14,7 @@ from libraries.data_generators import check_match_pattern
 
 
 class common_device:
+
     def check_att_is_exist(self, obj_action_elements, key):
         if obj_action_elements.get(key) is None:
             return None
@@ -88,7 +89,7 @@ class common_device:
             else:
                 raise Exception("Not support status ", status)
         except Exception as e:
-            logger.error(f"The status {status['value']} is not currently.  with element have value {element_page['value']}")
+            logger.error(f"The status {status} is not currently.  with element have value {element_page['value']}")
             assert False, e
 
     def get_element(self, page, element, platform_name, dict_save_value):
@@ -99,7 +100,7 @@ class common_device:
             arr_value = [i.lstrip() for i in arr_value]
             element = arr_value[0].strip()
             # remove double quote
-            text = arr_value[1].replace('"','')
+            text = arr_value[1].replace('"', '')
             if dict_save_value:
                 text = dict_save_value.get(text, text)
         arr_element = page['elements']
@@ -108,8 +109,8 @@ class common_device:
         ))
         try:
             arr_locator = arr_element[0]['locators']
-        except IndexError:
-            arr_locator = 'null'
+        except IndexError as e:
+            print(e)
             assert False, f'element {element} not exist in page spec'
         arr_locator = list(filter(
             lambda loc: loc['device'] == platform_name, arr_locator
@@ -150,19 +151,6 @@ class common_device:
         except Exception as e:
             logger.error(f"Can not save text for element {element_page['value']} with key is {key}")
             assert False, "Can not save text for element " + element_page['value']
-    def save_coordinates_from_element(self, element_page, driver, key, dict_save_value, wait, device):
-        try:
-            # locator = ManagementFile().get_locator(element_page, device['platformName'])
-            logger.info(f"save coordinates for element {element_page['value']} with key is {key}")
-            WebDriverWait(driver, wait).until(
-                ec.presence_of_element_located(self.get_locator_for_wait_from_device(element_page, device)))
-            element = self.get_element_by_from_device(element_page, device, driver)
-            location = element.location
-            dict_save_value["KEY." + key] = location
-            return dict_save_value
-        except Exception as e:
-            logger.error(f"Can not save coordinates for element {element_page['value']} with key is {key}")
-            assert False, "Can not save coordinates for element " + element_page['value']
 
     def get_locator_for_wait_from_device(self, element_page, device):
         if device['platformName'] == "WEB":
@@ -315,18 +303,4 @@ class common_device:
                 apply_style(original_style)
             except Exception as e:
                 assert True
-                print(e)
-    def save_coordinates_from_element(self, element_page, driver, key, dict_save_value, wait, device):
-        try:
-            # locator = ManagementFile().get_locator(element_page, device['platformName'])
-            logger.info(f"save text for element {element_page['value']} with key is {key}")
-            WebDriverWait(driver, wait).until(
-                ec.presence_of_element_located(self.get_locator_for_wait_from_device(element_page, device)))
-            element = self.get_element_by_from_device(element_page, device, driver)
-            location = element.location
-            dict_save_value["KEY." + key] = location
-            return dict_save_value
-        except Exception as e:
-            logger.error(f"Can not save text for element {element_page['value']} with key is {key}")
-            assert False, "Can not save text for element " + element_page['value']
 
