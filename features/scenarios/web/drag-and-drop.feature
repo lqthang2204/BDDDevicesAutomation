@@ -9,10 +9,7 @@ Feature: test feature drag and drop
     And I wait for element debit_side to be DISPLAYED
 #    And I hover-over element bank_label
     And I drag and drop element bank_label to element debit_side
-    And I wait for element debit_side to be DISPLAYED
-    And I save coordinates for element debit_side with key "debit_side"
-    And I drag and drop element bank_label to coordinates "KEY.debit_side"
-    And I wait 200 seconds
+    And I wait 5 seconds
 
   @drag-drop-2
   Scenario: test drag and drop 2

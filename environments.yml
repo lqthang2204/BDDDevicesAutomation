@@ -20,27 +20,13 @@ env:
     - platformName: ANDROID
       is_headless: true
       wait: 30
-      time_page_load: 31
-      auto_download_driver: false
-      driver_version: WebDriver\\chromedriver_116.exe
-      appPackage: com.google.android.deskclock
-      appActivity: com.android.deskclock.DeskClock
-#      appPackage: com.android.chrome
-#      appActivity: com.google.android.apps.chrome.Main
-#      udid: HVA222NA
-      udid: emulator-5554
+#      config_file: capabilities_android.json
+      config_file: capabilities_android_chrome.json
     - platformName: IOS
       is_headless: false
       wait: 32
       time_page_load: 32
-      auto_download_driver: false
-      driver_version: WebDriver\\chromedriver_114.exe
-      appPackage: com.android.chrome
-      appActivity: com.google.android.apps.chrome.Main
-      deviceName: iPhone 14 Pro
-      platformVersion: 16.4
-      bundleId: com.apple.Health
-      udid: FB3D0069-0E98-4034-81B0-3415874B78F5
+      config_file: capabilities_ios.json
     apifacets:
       link:
         SFCC: https://stores20--qa.sandbox.my.salesforce.com

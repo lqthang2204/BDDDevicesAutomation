@@ -136,11 +136,3 @@ def step_impl(context, element):
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "hover-over", context.driver, '', context.wait,
                                 context.dict_save_value, context.device, context)
-@step(u'I drag and drop element {element_from} to coordinates "{location}"')
-def step_impl(context, element_from, location):
-    element_from = common_device().get_element(context.page_present, element_from,
-                                               context.device['platformName'], context.dict_save_value)
-    if context.device['platformName'] == "WEB":
-        ManagementFile().action_mouse('drag-and-drop-coordinates', element_from, location, context)
-    else:
-        ManagementFileAndroid().action_mouse_mobile('drag-and-drop', element_from, location, context)

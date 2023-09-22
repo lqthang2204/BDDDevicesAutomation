@@ -1,0 +1,7 @@
+{
+  "automationName": "uiautomator2",
+  "platformName": "android",
+  "udid": "emulator-5554",
+  "appPackage": "com.android.chrome",
+  "appActivity": "com.google.android.apps.chrome.Main"
+}
