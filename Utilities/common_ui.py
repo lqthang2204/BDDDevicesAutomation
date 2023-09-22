@@ -112,14 +112,15 @@ class common_device:
         ))
         try:
             arr_locator = arr_element[0]['locators']
+            arr_locator = list(filter(
+                lambda loc: loc['device'] == platform_name, arr_locator
+            ))
+            arr_locator[0]['value'] = arr_locator[0]['value'].replace("{text}", text)
+            return arr_locator[0]
         except IndexError as e:
             print(e)
-            assert False, f'element {element} not exist in page spec'
-        arr_locator = list(filter(
-            lambda loc: loc['device'] == platform_name, arr_locator
-        ))
-        arr_locator[0]['value'] = arr_locator[0]['value'].replace("{text}", text)
-        return arr_locator[0]
+            assert False, f'element {element} not exist in page spec, with platform {platform_name}'
+
 
     def verify_elements_with_status(self, page, table, platform_name, dict_save_value, driver, device, wait):
         # arr_element = page['elements']
