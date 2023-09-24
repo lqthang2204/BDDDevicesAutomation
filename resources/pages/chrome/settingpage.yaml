@@ -5,7 +5,7 @@ elements:
       - device: WEB
         type: CSS
         value: cr-link-row[id*='importDataDialogTrigger']
-      - device: ANDROID
+      - device: IOS
         type: XPATH
         value: (((//*[@resource-id='com.google.android.contacts:id/editors'])[1])//*)[3]
       - device: ANDROID

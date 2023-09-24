@@ -1,5 +1,6 @@
 from time import sleep
 
+from appium.webdriver.common.touch_action import TouchAction
 from faker import Faker
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -40,8 +41,7 @@ class common_device:
         elif action.__eq__("clear"):
             element.clear()
         elif action.__eq__('hover-over'):
-            action = ActionChains(driver)
-            action.move_to_element(element).perform()
+            self.mouse_action(element, driver, action, device)
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"
@@ -307,4 +307,14 @@ class common_device:
                 apply_style(original_style)
             except Exception as e:
                 assert True
+    def mouse_action(self, element, driver, action, device):
+        if action == 'hover-over':
+            if device['platformName'] == 'WEB':
+                action = ActionChains(driver)
+                action.move_to_element(element).perform()
+            else:
+                action = TouchAction(driver)
+                action.press(element).release().perform()
+
+
 

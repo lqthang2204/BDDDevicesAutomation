@@ -10,9 +10,10 @@ env:
       GURU99: http://demo.guru99.com/test/drag_drop.html
       GLOBAL_SQA: https://www.globalsqa.com/demo-site/draganddrop
       DHTMLGOODIES: http://www.dhtmlgoodies.com/scripts/drag-drop-custom/demo-drag-drop-3.html
+      CODESANDBOX: https://codesandbox.io/s/mobile-drag-drop-test-byuq7
     devices:
     - platformName: WEB
-      is_headless: true
+      is_headless: false
       wait: 30
       time_page_load: 30
       auto_download_driver: true
@@ -26,7 +27,7 @@ env:
       is_headless: false
       wait: 32
       time_page_load: 32
-      config_file: capabilities_ios.json
+      config_file: capabilities_ios_safari.json
     apifacets:
       link:
         SFCC: https://stores20--qa.sandbox.my.salesforce.com

@@ -1,4 +1,5 @@
 from appium.webdriver.common.appiumby import AppiumBy
+from appium.webdriver.common.touch_action import TouchAction
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
@@ -228,10 +229,13 @@ class ManagementFileAndroid:
         element_from = self.get_by_android(element_page_from['type'], context.driver, element_page_from['value'])
         logger.info(f'execute {action} with element have is {element_page_from["value"]}')
         if action.__eq__('drag-and-drop'):
-            action = ActionChains(context.driver)
+            touch_action = TouchAction(context.driver)
             element_to = self.get_by_android(element_page_to['type'], context.driver, element_page_to['value'])
+            touch_action.tap(element_from).perform()
+            touch_action.long_press(element_from).move_to(element_to).release().perform()
             logger.info(f'execute {action} with element have is {element_page_to["value"]}')
-            action.drag_and_drop(element_from, element_to).perform()
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"
+
+
