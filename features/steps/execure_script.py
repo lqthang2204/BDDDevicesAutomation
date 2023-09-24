@@ -56,7 +56,7 @@ def step_impl(context):
 def step_impl(context, action):
     if context.device['platformName'] == "WEB":
         ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, None, None, context.device['platformName'])
-    elif context.device['platformName'] == "ANDROID":
+    else:
         ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver,
                                                        context.wait, None, None, context.device['platformName'])
 
@@ -66,7 +66,7 @@ def step_impl(context, action):
     if context.device['platformName'] == "WEB":
         ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, context.table,
                                         context.dict_save_value, context.device['platformName'])
-    elif context.device['platformName'] == "ANDROID":
+    else:
         ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver,
                                                        context.device.get_wait(), context.table,
                                                        context.dict_save_value, context.device['platformName'])
