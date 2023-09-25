@@ -34,4 +34,4 @@ jobs:
         appium &>/dev/null &
     - name: run appium ios tests
       run: |
-          python3 project_runner.py run -fd 'features/scenarios/iPhone' -tg '{@safari_drag_and_drop and ~@norun}' -fk 3 -sg QA -ps scenario
+          python3 project_runner.py run -fd 'features/scenarios/iPhone' -tg '{@safari_drag_and_drop and ~@norun}' -fk 3 -sg QA -ps scenario -pl IOS
