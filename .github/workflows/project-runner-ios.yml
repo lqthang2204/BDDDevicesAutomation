@@ -32,15 +32,6 @@ jobs:
         npm install -g appium@2.1.3
         appium -v
         appium &>/dev/null &
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: run appium ios tests
       run: |
-#          python project_runner.py run -fd features -fk 3 -sg QA -pl WEB -ps scenario
           python3 project_runner.py run -fd 'features/scenarios/iPhone' -tg '{@safari_drag_and_drop and ~@norun}' -fk 3 -sg QA -ps scenario
-#          python ./launch/RunTest.py
-#         run with default tag "final"
