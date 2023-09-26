@@ -89,7 +89,8 @@ def launch_browser(context, device, browser):
 def launch_android(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get('drivers_config', 'APPIUM_HOST'), '-P', str(config.get('drivers_config', 'APPIUM_PORT'))], timeout_ms=20000)
-    with open(device['config_file'], 'r') as f:
+    config_file_path = os.path.join(context.root_path, device['config_file'])
+    with open(config_file_path, 'r') as f:
         desired_caps = json.load(f)
     url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
         config.get('drivers_config', 'appium_port'))
@@ -99,7 +100,8 @@ def launch_android(context, device, config):
 def launch_ios(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get('drivers_config', 'APPIUM_HOST'), '-P', str(config.get('drivers_config', 'APPIUM_PORT'))], timeout_ms=20000)
-    with open(device['config_file'], 'r') as f:
+    config_file_path = os.path.join(context.root_path, device['config_file'])
+    with open(config_file_path, 'r') as f:
         data = json.load(f)
     url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
         config.get('drivers_config', 'appium_port'))
