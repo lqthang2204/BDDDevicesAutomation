@@ -1,0 +1,13 @@
+elements:
+  - id: bank_label
+    description: Bank button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[@id='credit2']/a
+  - id: debit_side
+    description: Debit side
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class='ui-widget-content'])[2]

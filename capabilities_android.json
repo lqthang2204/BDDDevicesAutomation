@@ -1,0 +1,7 @@
+{
+  "automationName": "uiautomator2",
+  "platformName": "android",
+  "udid": "emulator-5554",
+  "appPackage": "com.google.android.deskclock",
+  "appActivity": "com.android.deskclock.DeskClock"
+}

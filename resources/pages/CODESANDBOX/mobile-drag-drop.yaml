@@ -1,0 +1,61 @@
+elements:
+  - id: click-run-button
+    description: Click to to run button
+    locators:
+      - device: WEB
+        type: CSS
+        value: cr-link-row[id*='importDataDialogTrigger']
+      - device: IOS
+        type: IOS_PREDICATE
+        value: label == "Click to Run"
+      - device: ANDROID
+        type: XPATH
+        value: //android.widget.TextView[@text='Click to Run']
+  - id: 1a-button
+    description: 1A button
+    locators:
+      - device: WEB
+        type: CSS
+        value: cr-link-row[id*='importDataDialogTrigger']
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeOther[@name="Mobile Drag & Drop Test"])[3]/XCUIElementTypeOther[3]
+      - device: ANDROID
+        type: XPATH
+        value: //android.widget.TextView[@text='1A']
+  - id: 2a-button
+    description: 2A button
+    locators:
+      - device: WEB
+        type: CSS
+        value: cr-link-row[id*='importDataDialogTrigger']
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeOther[@name="Mobile Drag & Drop Test"])[3]/XCUIElementTypeOther[6]
+      - device: ANDROID
+        type: XPATH
+        value: //android.widget.TextView[@text='2A']
+  - id: 1b-button
+    description: 1b button
+    locators:
+      - device: WEB
+        type: CSS
+        value: cr-link-row[id*='importDataDialogTrigger']
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeStaticText[@name="1B"]
+      - device: ANDROID
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+  - id: 1c-button
+    description: 1C button
+    locators:
+      - device: WEB
+        type: CSS
+        value: cr-link-row[id*='importDataDialogTrigger']
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeStaticText[@name="1C"]
+      - device: ANDROID
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button

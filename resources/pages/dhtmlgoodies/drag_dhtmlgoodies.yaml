@@ -1,0 +1,27 @@
+elements:
+  - &capital
+    id: capital
+    description: Capital field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[text()="{text}"])[2]
+      - device: ANDROID
+        type: XPATH
+        value: (((//*[@resource-id='com.google.android.contacts:id/editors'])[1])//*)[3]
+      - device: ANDROID
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+  - &country_field
+    id: country_field
+    description: country  field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: (((//*[@resource-id='com.google.android.contacts:id/editors'])[1])//*)[3]
+      - device: ANDROID
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button

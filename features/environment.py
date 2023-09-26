@@ -1,7 +1,7 @@
 import configparser
 import datetime
 import os
-
+import json
 import appium
 from appium.webdriver.appium_service import AppiumService
 from selenium import webdriver
@@ -89,13 +89,9 @@ def launch_browser(context, device, browser):
 def launch_android(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get('drivers_config', 'APPIUM_HOST'), '-P', str(config.get('drivers_config', 'APPIUM_PORT'))], timeout_ms=20000)
-    desired_caps = {
-        'automationName': 'uiautomator2',
-        'platformName': device['platformName'],
-        'udid': device['udid'],
-        'appPackage': device['appPackage'],
-        'appActivity': device['appActivity']
-    }
+    config_file_path = os.path.join(context.root_path, device['config_file'])
+    with open(config_file_path, 'r') as f:
+        desired_caps = json.load(f)
     url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
         config.get('drivers_config', 'appium_port'))
     context.wait = device['wait']
@@ -104,18 +100,13 @@ def launch_android(context, device, config):
 def launch_ios(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get('drivers_config', 'APPIUM_HOST'), '-P', str(config.get('drivers_config', 'APPIUM_PORT'))], timeout_ms=20000)
-    desired_caps = {
-        'automationName': 'XCUITest',
-        'platformName': device['platformName'],
-        'udid': device['udid'],
-        'bundleId': device['bundleId'],
-        'platformVersion': str(device['platformVersion']),
-        'deviceName': device['deviceName']
-    }
+    config_file_path = os.path.join(context.root_path, device['config_file'])
+    with open(config_file_path, 'r') as f:
+        data = json.load(f)
     url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
         config.get('drivers_config', 'appium_port'))
     context.wait = device['wait']
-    context.driver = appium.webdriver.Remote(url, desired_caps)
+    context.driver = appium.webdriver.Remote(url, data)
 
 
 def after_step(context, step):

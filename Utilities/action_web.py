@@ -1,7 +1,7 @@
 import glob
 import json
 import os
-
+from selenium.webdriver.common.action_chains import ActionChains
 import yaml
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -295,6 +295,17 @@ class ManagementFile:
         elif action.__eq__("wait"):
             WebDriverWait(driver, wait).until(
                 ec.presence_of_element_located(element))
+        else:
+            logger.error("Can not execute %s with element have is %s", action)
+            assert False, "Not support action in framework"
+    def action_mouse(self,action, element_page_from, element_page_to, context):
+        element_from = self.get_element_by(element_page_from['type'], context.driver, element_page_from['value'])
+        logger.info(f'execute {action} with element have is {element_page_from["value"]}')
+        if action.__eq__('drag-and-drop'):
+            action = ActionChains(context.driver)
+            element_to = self.get_element_by(element_page_to['type'], context.driver, element_page_to['value'])
+            logger.info(f'execute {action} with element have is {element_page_to["value"]}')
+            action.drag_and_drop(element_from, element_to).perform()
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"

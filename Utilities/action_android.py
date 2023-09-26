@@ -1,7 +1,8 @@
 from appium.webdriver.common.appiumby import AppiumBy
+from appium.webdriver.common.touch_action import TouchAction
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-
+from selenium.webdriver.common.action_chains import ActionChains
 from project_runner import logger
 
 
@@ -224,3 +225,17 @@ class ManagementFileAndroid:
         except Exception as e:
             logger.info(f'can not execute action with element have value  {locator} in framework')
             assert is_check, "can not execute action with element have value" + locator['value'] + "in framework"
+    def action_mouse_mobile(self,action, element_page_from, element_page_to, context):
+        element_from = self.get_by_android(element_page_from['type'], context.driver, element_page_from['value'])
+        logger.info(f'execute {action} with element have is {element_page_from["value"]}')
+        if action.__eq__('drag-and-drop'):
+            touch_action = TouchAction(context.driver)
+            element_to = self.get_by_android(element_page_to['type'], context.driver, element_page_to['value'])
+            touch_action.tap(element_from).perform()
+            touch_action.long_press(element_from).move_to(element_to).release().perform()
+            logger.info(f'execute {action} with element have is {element_page_to["value"]}')
+        else:
+            logger.error("Can not execute %s with element have is %s", action)
+            assert False, "Not support action in framework"
+
+

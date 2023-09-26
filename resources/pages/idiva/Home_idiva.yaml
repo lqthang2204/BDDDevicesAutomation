@@ -18,7 +18,7 @@ elements:
         value: (//*[@class="android.widget.EditText"])[1]
       - device: ANDROID
         type: XPATH
-        value: //android.view.View[@content-desc="THỜI TRANG NỮ"]
+        value: //android.view.View[@content-desc="THỜI TRANG NỮ"]/android.widget.TextView
   - &fashion-male
     id: fashion-male
     description: Fashion male

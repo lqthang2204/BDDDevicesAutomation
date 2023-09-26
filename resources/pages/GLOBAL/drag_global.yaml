@@ -1,0 +1,7 @@
+elements:
+  - id: image
+    description: Image one
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text() = "{text}"]

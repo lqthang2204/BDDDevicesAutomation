@@ -26,7 +26,7 @@ def main(context):
               help='number of processes. Default value is 5')
 @click.option('--stage', '-sg', 'stage_name', type=click.Choice(['QA', 'SIT', 'UAT', 'PROD']), default='QA',
               help='specify the stage to run. Default value is QA')
-@click.option('--platform', '-pl', 'platform_name', type=click.Choice(['API', 'WEB', 'ANDROID', 'iOS']), default='WEB',
+@click.option('--platform', '-pl', 'platform_name', type=click.Choice(['API', 'WEB', 'ANDROID', 'IOS']), default='WEB',
               help='specify platform to run. Default value is WEB')
 @click.option('--parallel-scheme', '-ps', 'parallel_scheme', type=click.Choice(['feature', 'scenario']),
               default='scenario', help='specify the stage to run. Default value is scenario')

@@ -1,9 +1,10 @@
 from time import sleep
 
+from appium.webdriver.common.touch_action import TouchAction
 from faker import Faker
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-import re
+from selenium.webdriver.common.action_chains import ActionChains
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 from libraries.faker import management_user
@@ -11,9 +12,10 @@ from libraries.faker.User import generate_user
 from project_runner import logger
 from selenium.webdriver.support.color import Color
 from libraries.data_generators import check_match_pattern
-
+import copy
 
 class common_device:
+
     def check_att_is_exist(self, obj_action_elements, key):
         if obj_action_elements.get(key) is None:
             return None
@@ -38,6 +40,8 @@ class common_device:
             element.send_keys(value)
         elif action.__eq__("clear"):
             element.clear()
+        elif action.__eq__('hover-over'):
+            self.mouse_action(element, driver, action, device)
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"
@@ -85,7 +89,7 @@ class common_device:
             else:
                 raise Exception("Not support status ", status)
         except Exception as e:
-            logger.error("The status %s is not currently.", status);
+            logger.error(f"The status {status} is not currently.  with element have value {element_page['value']}")
             assert False, e
 
     def get_element(self, page, element, platform_name, dict_save_value):
@@ -96,23 +100,27 @@ class common_device:
             arr_value = [i.lstrip() for i in arr_value]
             element = arr_value[0].strip()
             # remove double quote
-            text = arr_value[1]
+            text = arr_value[1].replace('"', '')
             if dict_save_value:
                 text = dict_save_value.get(text, text)
-        arr_element = page['elements']
+            page_temp = copy.deepcopy(page)
+        else:
+            page_temp = page
+        arr_element = page_temp['elements']
         arr_element = list(filter(
             lambda loc: loc['id'] == element, arr_element
         ))
         try:
             arr_locator = arr_element[0]['locators']
-        except IndexError:
-            arr_locator = 'null'
-            assert False, f'element {element} not exist in page spec'
-        arr_locator = list(filter(
-            lambda loc: loc['device'] == platform_name, arr_locator
-        ))
-        arr_locator[0]['value'] = arr_locator[0]['value'].replace("{text}", text)
-        return arr_locator[0]
+            arr_locator = list(filter(
+                lambda loc: loc['device'] == platform_name, arr_locator
+            ))
+            arr_locator[0]['value'] = arr_locator[0]['value'].replace("{text}", text)
+            return arr_locator[0]
+        except IndexError as e:
+            print(e)
+            assert False, f'element {element} not exist in page spec, with platform {platform_name}'
+
 
     def verify_elements_with_status(self, page, table, platform_name, dict_save_value, driver, device, wait):
         # arr_element = page['elements']
@@ -299,5 +307,14 @@ class common_device:
                 apply_style(original_style)
             except Exception as e:
                 assert True
-                print(e)
+    def mouse_action(self, element, driver, action, device):
+        if action == 'hover-over':
+            if device['platformName'] == 'WEB':
+                action = ActionChains(driver)
+                action.move_to_element(element).perform()
+            else:
+                action = TouchAction(driver)
+                action.press(element).release().perform()
+
+
 

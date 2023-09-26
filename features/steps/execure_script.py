@@ -56,7 +56,7 @@ def step_impl(context):
 def step_impl(context, action):
     if context.device['platformName'] == "WEB":
         ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, None, None, context.device['platformName'])
-    elif context.device['platformName'] == "ANDROID":
+    else:
         ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver,
                                                        context.wait, None, None, context.device['platformName'])
 
@@ -66,7 +66,7 @@ def step_impl(context, action):
     if context.device['platformName'] == "WEB":
         ManagementFile().execute_action(context.page_present, action, context.driver, context.wait, context.table,
                                         context.dict_save_value, context.device['platformName'])
-    elif context.device['platformName'] == "ANDROID":
+    else:
         ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver,
                                                        context.device.get_wait(), context.table,
                                                        context.dict_save_value, context.device['platformName'])
@@ -119,3 +119,20 @@ def step_impl(context, action, element):
                                     context.dict_save_value, context.highlight)
     else:
         assert False, "only support action script with WEB ENVIRONMENT in framework"
+
+@given(u'I drag and drop element {element_from} to element {element_to}')
+def step_impl(context, element_from, element_to):
+    element_from = common_device().get_element(context.page_present, element_from,
+                                                       context.device['platformName'], context.dict_save_value)
+    element_to = common_device().get_element(context.page_present, element_to,
+                                                       context.device['platformName'], context.dict_save_value)
+    if context.device['platformName'] == "WEB":
+        ManagementFile().action_mouse('drag-and-drop', element_from, element_to, context)
+    else:
+        ManagementFileAndroid().action_mouse_mobile('drag-and-drop', element_from, element_to, context)
+@step(u'I hover-over element {element}')
+def step_impl(context, element):
+    context.element_page = common_device().get_element(context.page_present, element,
+                                                       context.device['platformName'], context.dict_save_value)
+    common_device().action_page(context.element_page, "hover-over", context.driver, '', context.wait,
+                                context.dict_save_value, context.device, context)
