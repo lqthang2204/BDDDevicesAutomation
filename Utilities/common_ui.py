@@ -212,7 +212,7 @@ class common_device:
                              faker.state(), faker.postcode(), faker.domain_name(), faker.prefix(), faker.suffix())
         return user
 
-    def verify_elements_below_attributes(self, page, row, platform_name, dict_save_value, driver, device, wait):
+    def verify_elements_below_attributes(self, page, row, platform_name, dict_save_value, driver, device, wait, is_highlight):
         arr_element = page['elements']
         arr_element = list(filter(
             lambda element: element['id'] == row[0], arr_element
@@ -231,30 +231,32 @@ class common_device:
         if row[2] and element_yaml:
             if value != '' and helper is None:
                 logger.info(f'Verified for {row[0]} have value {row[1]} and status {row[2]}')
-                self.verify_value_in_element(element_yaml, value, device, driver)
+                self.verify_value_in_element(element_yaml, value, device, driver, is_highlight)
             else:
                 logger.info(f'Verified for {row[0]} have value {row[1]} and status {row[2]}')
                 self.wait_element_for_status(element_yaml, row[2], driver, device, wait)
         else:
             logger.error(f'table must be contains both field name and status')
             assert False, f'table must be contains both field name {row[0]} and status {row[2]}'
-        self.verify_value_with_helpers(value, helper, element_yaml, device, driver)
+        self.verify_value_with_helpers(value, helper, element_yaml, device, driver, is_highlight)
 
     def get_value_from_user_random(self, value, dict_save_value):
         arr_user = value.split('USER.')
         list_user = dict_save_value['USER.']
         value = management_user.get_user(list_user, arr_user[1])
         return value
-    def verify_value_in_element(self, element_page, expect, device, driver):
+    def verify_value_in_element(self, element_page, expect, device, driver, is_highlight):
         element = self.get_element_by_from_device(element_page, device, driver)
+        self.scroll_to_element_by_js(element, driver, True, device['platformName'], is_highlight)
         value = self.get_value_element_form_device(element, device)
         assert value == expect, f'value of the element not equal to values expected {expect}'
 
-    def verify_value_with_helpers(self, expected, helper, element_page, device, driver):
+    def verify_value_with_helpers(self, expected, helper, element_page, device, driver, is_highlight):
         if helper in ['BACKGROUND-COLOR', 'COLOR', 'FONT_FAMILY', 'FONT_SIZE', 'FONT_WEIGHT', 'FONT_HEIGHT', 'TEXT_ALIGN'] and expected and device['platformName'] != 'WEB':
             assert False, f'framework only check {helper} for WEB env, not support for native app'
         if helper and expected:
             element = self.get_element_by_from_device(element_page, device, driver)
+            self.scroll_to_element_by_js(element, driver, True, device['platformName'], is_highlight)
             if helper == 'REGEX':
                 value_element = self.get_value_element_form_device(element, device)
                 check_match_pattern(expected, value_element, 'value of element not match with pattern')
@@ -316,5 +318,22 @@ class common_device:
                 action = TouchAction(driver)
                 action.press(element).release().perform()
 
-
+    def scroll_to_element_by_js(self, element, driver, flag, platform, is_highlight):
+        if platform == 'WEB':
+            try:
+                driver.execute_script("arguments[0].scrollIntoView(true);", element)
+                self.highlight(element,  0.3, is_highlight)
+            except:
+                assert flag, f'can not scroll to element {element}'
+        else:
+            assert False, f'feature scroll to element by javascript only support for Web environmental'
+    def scroll_to_element(self, element, driver, flag, platform, is_highlight):
+        if platform == 'WEB':
+            try:
+                ActionChains(driver).scroll_to_element(element).perform()
+                self.highlight(element,  0.3, is_highlight)
+            except:
+                assert flag, f'can not scroll to element {element}'
+        else:
+            print("env movile")
 

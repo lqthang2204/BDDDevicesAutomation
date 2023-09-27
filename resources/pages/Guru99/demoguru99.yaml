@@ -11,3 +11,9 @@ elements:
       - device: WEB
         type: XPATH
         value: (//*[@class='ui-widget-content'])[2]
+  - id: header-title
+    description: Header title
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[@class='col-md-2 header-section']

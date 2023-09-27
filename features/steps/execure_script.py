@@ -103,7 +103,7 @@ def step_impl(context):
             context.element_page = common_device().verify_elements_below_attributes(context.page_present, row,
                                                                                context.device['platformName'],
                                                                                context.dict_save_value, context.driver,
-                                                                               context.device, context.wait)
+                                                                               context.device, context.wait, context.highlight)
 @step(u'I {action} shadow element {element}')
 def step_impl(context, action, element):
     if context.device['platformName'] == "WEB":
@@ -136,3 +136,17 @@ def step_impl(context, element):
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "hover-over", context.driver, '', context.wait,
                                 context.dict_save_value, context.device, context)
+
+@step(u'I scroll to element {element}')
+def step_impl(context, element):
+    context.element_page = common_device().get_element(context.page_present, element,
+                                                       context.device['platformName'], context.dict_save_value)
+    element = common_device().get_element_by_from_device(context.element_page, context.device, context.driver)
+    common_device().scroll_to_element(element, context.driver, False, context.device['platformName'], context.highlight)
+
+@step(u'I scroll by java-script to element {element}')
+def step_impl(context, element):
+    context.element_page = common_device().get_element(context.page_present, element,
+                                                       context.device['platformName'], context.dict_save_value)
+    element = common_device().get_element_by_from_device(context.element_page, context.device, context.driver)
+    common_device().scroll_to_element_by_js(element, context.driver, False, context.device['platformName'], context.highlight)

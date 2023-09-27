@@ -21,16 +21,26 @@ Feature: test feature drag and drop
 #    And I drag and drop element bank_label to element debit_side
 #    And I wait 5 seconds
 
-    @drag-drop-3
-  Scenario: test drag and drop 3
-    Given I navigate to url DHTMLGOODIES
-    And I change the page spec to drag_dhtmlgoodies
-    And I wait for element capital with text "Oslo" to be DISPLAYED
-    And I wait for element country_field with text "Italy" to be DISPLAYED
-    And I hover-over element capital with text "Oslo"
-    And I drag and drop element capital with text "Oslo" to element country_field with text "Italy"
-    And I drag and drop element capital with text "Stockholm" to element country_field with text "Norway"
-    And I drag and drop element capital with text "Washington" to element country_field with text "South Korea"
-    And I drag and drop element capital with text "Copenhagen" to element country_field with text "United States"
-    And I wait 5 seconds
+    @scroll-to-element-1
+  Scenario: test scroll to element
+    Given I navigate to url INDEX_GURU
+    And I change the page spec to index_guru
+    And I verify that following elements with below attributes
+      | Field                  | Value  | Status    | Helpers |
+      | header-python-tutorial | Python | DISPLAYED |         |
+      And I wait 10 seconds
+
+   @scroll-to-element-2
+  Scenario: test scroll to element 2
+    Given I navigate to url INDEX_GURU
+    And I change the page spec to index_guru
+    And I scroll by java-script to element header-python-tutorial
+     And I wait 10 seconds
+     And I scroll to element python-tutorial with text "Execute Python"
+     And I wait 10 seconds
+     And I scroll to element header-python-tutorial
+     And I wait 10 seconds
+
+
+
 
