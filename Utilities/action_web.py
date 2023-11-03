@@ -1,6 +1,8 @@
 import glob
 import json
 import os
+from time import sleep
+
 from selenium.webdriver.common.action_chains import ActionChains
 import yaml
 from selenium.webdriver.common.by import By
@@ -309,4 +311,6 @@ class ManagementFile:
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"
-
+    def accept_popup(self,driver):
+        alert = driver.switch_to.alert
+        alert.accept()

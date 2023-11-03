@@ -1,0 +1,19 @@
+elements:
+  - id: double-button
+    description: selenium icon
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(text(),"Double-Click Me To See Alert")]
+  - id: right-button
+    description: header selenium tutorial
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()="right click me"]
+  - id: edit-button
+    description: Edit button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //span[text()="Edit"]

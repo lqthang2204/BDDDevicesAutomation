@@ -31,6 +31,14 @@ class common_device:
         self.highlight(element,  0.3, context.highlight)
         if action.__eq__("click"):
             self.click_action(element, wait, element_page, device, driver)
+        elif action.__eq__('double-click'):
+            action_chains = ActionChains(driver)
+            action_chains.double_click(on_element=element)
+            action_chains.perform()
+        elif action.__eq__('right-click'):
+            action_chains = ActionChains(driver)
+            action_chains.context_click(on_element=element)
+            action_chains.perform()
         elif action.__eq__("type"):
             if dict_save_value:
                 if 'USER.' in value:
@@ -336,4 +344,6 @@ class common_device:
                 assert flag, f'can not scroll to element {element}'
         else:
             print("env movile")
+
+
 

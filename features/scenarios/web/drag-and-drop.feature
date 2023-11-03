@@ -42,5 +42,17 @@ Feature: test feature drag and drop
      And I wait 10 seconds
 
 
+      @right-and-double-click
+  Scenario: action right and double cliclk
+   Given I navigate to url GURU99-DOUBLE
+    And I change the page spec to double-example
+    And I wait for element double-button to be ENABLED
+    And I double-click element double-button
+    And I accept for popup
+    And I right-click element right-button
+    And I wait for element edit-button to be DISPLAYED
+        And I wait 2 seconds
+
+
 
 
