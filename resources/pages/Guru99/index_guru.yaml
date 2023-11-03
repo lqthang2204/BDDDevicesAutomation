@@ -11,3 +11,16 @@ elements:
       - device: WEB
         type: XPATH
         value: //h1[text()="Selenium Tutorial"]
+  - id: header-python-tutorial
+    description: header python tutorial
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //h4[text()="Python"]
+  - id: python-tutorial
+    description: python tutorial
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //a[text()="{text}"]
+
