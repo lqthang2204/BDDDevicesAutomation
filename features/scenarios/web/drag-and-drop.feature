@@ -48,10 +48,8 @@ Feature: test feature drag and drop
     And I change the page spec to double-example
     And I wait for element double-button to be ENABLED
     And I double-click element double-button
-    And I wait 2 seconds
     And I accept for popup
      And I double-click element double-button
-    And I wait 2 seconds
     And I dismiss for popup
     And I right-click element right-button
     And I wait for element edit-button to be DISPLAYED

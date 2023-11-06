@@ -166,4 +166,4 @@ def step_impl(context, element):
 
 @step(u'I {status} for popup')
 def step_impl(context,  status):
-    ManagementFile().handle_popup(context.driver, status)
+    ManagementFile().handle_popup(context.driver, status, context.wait)

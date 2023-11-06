@@ -311,9 +311,13 @@ class ManagementFile:
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"
-    def handle_popup(self,driver, status):
+    def handle_popup(self,driver, status, wait):
         alert = driver.switch_to.alert
-        if status == 'accept':
+        WebDriverWait(driver, wait).until(ec.alert_is_present(), 'Timed out waiting for simple alert to appear')
+        if status.__eq__('accept'):
             alert.accept()
-        elif status == 'dismiss':
+        elif status.__eq__('dismiss'):
             alert.dismiss()
+        else:
+            logger.error("not found status %s of popup", status)
+            assert False, "Not support status in framework"
