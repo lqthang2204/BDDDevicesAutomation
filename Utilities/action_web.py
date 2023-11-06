@@ -311,6 +311,9 @@ class ManagementFile:
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"
-    def accept_popup(self,driver):
+    def handle_popup(self,driver, status):
         alert = driver.switch_to.alert
-        alert.accept()
+        if status == 'accept':
+            alert.accept()
+        elif status == 'dismiss':
+            alert.dismiss()

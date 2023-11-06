@@ -164,6 +164,6 @@ def step_impl(context, element):
     common_device().action_page(context.element_page, "right-click", context.driver, "", context.wait,
                                 context.dict_save_value, context.device, context)
 
-@step(u'I accept for popup')
-def step_impl(context):
-    ManagementFile().accept_popup(context.driver)
+@step(u'I {status} for popup')
+def step_impl(context,  status):
+    ManagementFile().handle_popup(context.driver, status)
