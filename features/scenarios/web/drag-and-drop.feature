@@ -54,6 +54,18 @@ Feature: test feature drag and drop
     And I right-click element right-button
     And I wait for element edit-button to be DISPLAYED
 
+      @switch-Iframe
+  Scenario: action right and double cliclk
+   Given I navigate to url GURU99-DOUBLE
+    And I change the page spec to double-example
+    And I click element selenium-button
+        And I wait for element selenium-demo-page to be ENABLED
+        And I click element selenium-demo-page
+#        And I perform click-if-exist-button action
+    And I switch to Iframe iframe-topic
+    And I click element banner-jmeter
+        And I wait 50 seconds
+
 
 
 

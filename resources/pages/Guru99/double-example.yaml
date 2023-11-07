@@ -17,3 +17,48 @@ elements:
       - device: WEB
         type: XPATH
         value: //span[text()="Edit"]
+  - id: iframe-topic
+    description: Iframe topic
+    locators:
+      - device: WEB
+        type: ID
+        value: a077aa5e
+  - id: banner-jmeter
+    description: Banner of page
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+  - id: details-button
+    description: Detail button
+    locators:
+      - device: WEB
+        type: ID
+        value: details-button
+  - id: selenium-button
+    description: Selenium button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //a[contains(text(),'Selenium')]
+  - id: selenium-demo-page
+    description: Selenium demo page
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //a[contains(text(),'Guru99 Demo Page')]
+  - &dismiss-button
+    id: dismiss-button
+    description: Dismiss button
+    locators:
+      - device: WEB
+        type: ID
+        value: dismiss-button
+actions:
+  - id: click-if-exist-button
+    description: dismiss action
+    actionElements:
+      - element: *dismiss-button
+        condition: DISPLAYED
+        timeout: 5000
+        inputType: click

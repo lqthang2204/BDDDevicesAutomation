@@ -167,3 +167,8 @@ def step_impl(context, element):
 @step(u'I {status} for popup')
 def step_impl(context,  status):
     ManagementFile().handle_popup(context.driver, status, context.wait)
+@step(u'I switch to Iframe {iframe}')
+def step_impl(context, iframe):
+    context.element_page = common_device().get_element(context.page_present, iframe,
+                                                       context.device['platformName'], context.dict_save_value)
+    common_device().switch_to_frame(context.driver, context.element_page, context.wait, context.device)

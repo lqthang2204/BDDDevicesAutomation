@@ -344,6 +344,9 @@ class common_device:
                 assert flag, f'can not scroll to element {element}'
         else:
             print("env movile")
+    def switch_to_frame(self, driver, element_page, wait, device):
+        WebDriverWait(driver, wait).until(ec.frame_to_be_available_and_switch_to_it(element_page['value']))
+        # driver.switch_to.frame(element_page['value'])
 
 
 
