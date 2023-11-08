@@ -2,6 +2,7 @@ from time import sleep
 
 from appium.webdriver.common.touch_action import TouchAction
 from faker import Faker
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
@@ -344,8 +345,19 @@ class common_device:
                 assert flag, f'can not scroll to element {element}'
         else:
             print("env movile")
-    def switch_to_frame(self, driver, element_page, wait, device):
-        WebDriverWait(driver, wait).until(ec.frame_to_be_available_and_switch_to_it(element_page['value']))
+    def switch_to_frame(self, driver, element_page, wait, device, status):
+        if status:
+            WebDriverWait(driver, wait).until(ec.frame_to_be_available_and_switch_to_it(element_page['value']))
+        else:
+            driver.switch_to.default_content()
+
+    def switch_to_frame_by_index(self, driver, index):
+        size = len(driver.find_elements(By.TAG_NAME, "iframe"))
+        driver.switch_to.frame(int(index))
+            # size = driver.find_element(By.TAG_NAME('iframe').size())
+            # for index in size:
+            #     driver.switch_to().frame(index)
+            #     WebDriverWait(driver, wait).until(ec.frame_to_be_available_and_switch_to_it(element_page['value']))
         # driver.switch_to.frame(element_page['value'])
 
 

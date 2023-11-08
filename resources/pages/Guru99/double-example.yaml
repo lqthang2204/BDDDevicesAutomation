@@ -23,6 +23,12 @@ elements:
       - device: WEB
         type: ID
         value: a077aa5e
+  - id: iframe-google-ads
+    description: Iframe google ads
+    locators:
+      - device: WEB
+        type: ID
+        value: google_ads_iframe_/24132379/INTERSTITIAL_DemoGuru99_0
   - id: banner-jmeter
     description: Banner of page
     locators:
@@ -52,8 +58,8 @@ elements:
     description: Dismiss button
     locators:
       - device: WEB
-        type: ID
-        value: dismiss-button
+        type: XPATH
+        value: //*[@id="dismiss-button"]
 actions:
   - id: click-if-exist-button
     description: dismiss action

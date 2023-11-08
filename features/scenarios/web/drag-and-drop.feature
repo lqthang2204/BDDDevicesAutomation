@@ -61,6 +61,7 @@ Feature: test feature drag and drop
     And I click element selenium-button
         And I wait for element selenium-demo-page to be ENABLED
         And I click element selenium-demo-page
+#                And I switch Iframe by index 7
 #        And I perform click-if-exist-button action
     And I switch to Iframe iframe-topic
     And I click element banner-jmeter

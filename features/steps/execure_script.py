@@ -171,4 +171,10 @@ def step_impl(context,  status):
 def step_impl(context, iframe):
     context.element_page = common_device().get_element(context.page_present, iframe,
                                                        context.device['platformName'], context.dict_save_value)
-    common_device().switch_to_frame(context.driver, context.element_page, context.wait, context.device)
+    common_device().switch_to_frame(context.driver, context.element_page, context.wait, context.device, True)
+@step(u'I switch Iframe default')
+def step_impl(context):
+    common_device().switch_to_frame(context.driver, context.element_page, context.wait, context.device, False)
+@step(u'I switch Iframe by index {index}')
+def step_impl(context, index):
+    common_device().switch_to_frame_by_index(context.driver, index)
