@@ -27,8 +27,8 @@ elements:
     description: Iframe google ads
     locators:
       - device: WEB
-        type: ID
-        value: google_ads_iframe_/24132379/INTERSTITIAL_DemoGuru99_0
+        type: XPATH
+        value: //div[@id="google_ads_iframe_/24132379/INTERSTITIAL_DemoGuru99_0__container__"]//iframe
   - id: banner-jmeter
     description: Banner of page
     locators:
@@ -66,5 +66,5 @@ actions:
     actionElements:
       - element: *dismiss-button
         condition: DISPLAYED
-        timeout: 5000
+        timeout: 8
         inputType: click
