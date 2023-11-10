@@ -60,11 +60,22 @@ elements:
       - device: WEB
         type: XPATH
         value: //*[@id="dismiss-button"]
+  - &close-button
+    id: close-button
+    description: Close button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()='Close']
 actions:
   - id: click-if-exist-button
     description: dismiss action
     actionElements:
       - element: *dismiss-button
+        condition: DISPLAYED
+        timeout: 8
+        inputType: click
+      - element: *close-button
         condition: DISPLAYED
         timeout: 8
         inputType: click
