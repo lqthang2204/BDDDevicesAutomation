@@ -65,9 +65,15 @@ Feature: test feature drag and drop
     And I perform click-if-exist-button action
     And I switch Iframe default
     And I switch to Iframe iframe-topic
-#    And I scroll to element banner-jmeter
+    And I scroll to element banner-jmeter
 #    And I wait for element banner-jmeter to be ENABLED
     And I click element banner-jmeter
+    And I switch active tab with index 2
+    And I switch active tab with title "Selenium Live Project: FREE Real Time Project for Practice"
+    And I change the page spec to Selenium_Live_Project
+    And I verify that following elements with below attributes
+      | Field        | Value                                                      | Status    | Helpers |
+      | title_header | Selenium Live Project: FREE Real Time Project for Practice | DISPLAYED |         |
     And I wait 5 seconds
 
 

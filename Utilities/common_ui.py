@@ -352,7 +352,27 @@ class common_device:
             driver.switch_to.default_content()
 
     def switch_to_frame_by_index(self, driver, index):
-        driver.switch_to.frame(int(index))
+        try:
+            driver.switch_to.frame(int(index))
+        except IndexError as index:
+            assert False,  index
+    def switch_to_tab_by_index(self, driver, index):
+        try:
+            driver.switch_to.window(driver.window_handles[int(index)-1])
+        except IndexError as index:
+            assert False,  index
+
+    def switch_to_tab_by_title(self, driver, title):
+        tab_list = driver.window_handles
+        flag = False
+        for tab in tab_list:
+            driver.switch_to.window(tab)
+            if driver.title == title:
+                driver.switch_to.window(tab)
+                flag = True
+                break
+        assert flag, f'can now switch to tab has {title}, please verify title in page'
+
 
 
 

@@ -178,3 +178,9 @@ def step_impl(context):
 @step(u'I switch Iframe by index {index}')
 def step_impl(context, index):
     common_device().switch_to_frame_by_index(context.driver, index)
+@step(u'I switch active tab with index {index}')
+def step_impl(context, index):
+    common_device().switch_to_tab_by_index(context.driver, index)
+@step(u'I switch active tab with title "{title}"')
+def step_impl(context, title):
+    common_device().switch_to_tab_by_title(context.driver, title)
