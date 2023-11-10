@@ -58,10 +58,10 @@ class ManagementFile:
                                 value = dict_save_value.get(value, value)
                             break
                 element_page = action_elements['element']
+                locator = self.get_locator_from_action(element_page, platform_name)
                 if self.check_field_exist(action_elements, 'inputType'):
                     type_action = action_elements['inputType']
                     try:
-                        locator = self.get_locator_from_action(element_page, platform_name)
                         element = self.get_locator_for_wait(locator['type'], locator['value'])
                         if self.check_field_exist(action_elements, "condition") and self.check_field_exist(action_elements, "timeout"):
                             if action_elements['condition'] == "ENABLED":
@@ -115,8 +115,7 @@ class ManagementFile:
                 else:
                     try:
                         element = self.get_element_by(locator['type'], driver, locator['value'])
-                        self.process_execute_action(driver, wait, element, type_action, value,
-                                                    locator)
+                        self.process_execute_action(driver, wait, element, type_action, value, locator)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action,
                                      locator.value)
