@@ -1,0 +1,74 @@
+elements:
+  - id: product-one
+    description: Product One
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: //android.widget.ImageView[@content-desc="Sauce Lab Back Packs"]
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeStaticText[@name="store item text"])[1]
+  - id: name-product
+    description: Name product
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: ID
+        value: com.saucelabs.mydemoapp.android:id/productTV
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeStaticText[@name="Sauce Labs Backpack"]
+  - id: Add-to-card-button
+    description: Product One
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: //android.widget.Button[@content-desc="Tap to add product to cart"]
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeOther[@name="Add To Cart button"]
+  - id: Back-button
+    description: Back button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.View[@content-desc="Jmeter720"]/android.widget.Image
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeOther[@name="navigation back button"]
+  - id: product-two
+    description: Product One
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: //android.widget.ImageView[@content-desc="Sauce Lab Bolt T-Shirt"]
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeStaticText[@name="store item text"])[6]
+  - id: product-six
+    description: Product One
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: //android.widget.ImageView[@content-desc="Test.sllTheThings() T-Shirt"]
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeStaticText[@name="store item text"])[6]
+

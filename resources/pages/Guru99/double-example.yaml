@@ -5,6 +5,12 @@ elements:
       - device: WEB
         type: XPATH
         value: //*[contains(text(),"Double-Click Me To See Alert")]
+  - id: header-title-demo-page
+    description: selenium icon
+    locators:
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeStaticText[@name="THIS IS A DEMO PAGE FOR TESTING"]
   - id: right-button
     description: header selenium tutorial
     locators:
@@ -35,6 +41,12 @@ elements:
       - device: WEB
         type: XPATH
         value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.View[@content-desc="Jmeter720"]/android.widget.Image
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeOther[@name="a077aa5e"]/XCUIElementTypeLink/XCUIElementTypeImage
   - id: details-button
     description: Detail button
     locators:
@@ -47,12 +59,36 @@ elements:
       - device: WEB
         type: XPATH
         value: //a[contains(text(),'Selenium')]
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.View[@content-desc="Selenium "]/android.widget.TextView
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeStaticText[@name="Selenium"]
   - id: selenium-demo-page
     description: Selenium demo page
     locators:
       - device: WEB
         type: XPATH
         value: //a[contains(text(),'Guru99 Demo Page')]
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.View[@content-desc="Guru99 Demo Page"]/android.widget.TextView
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeStaticText[@name="Guru99 Demo Page"]
+  - id: title-banner-jmeter
+    description: Titlte banner
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //a[contains(text(),'Guru99 Demo Page')]
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.View[@content-desc="Guru99 Demo Page"]/android.widget.TextView
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeStaticText[@name="iFrame will not show if you have adBlock extension enabled"]
   - &dismiss-button
     id: dismiss-button
     description: Dismiss button

@@ -24,11 +24,10 @@ class common_device:
             return obj_action_elements.get(key)
 
     def action_page(self, element_page, action, driver, value, wait, dict_save_value, device, context):
+        locator_from_wait = self.get_locator_for_wait_from_device(element_page, device)
+        WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
         element = self.get_element_by_from_device(element_page, device, driver)
         logger.info(f'execute {action} with element have is {element_page["value"]}')
-        # WebDriverWait(driver, wait).until(ec.all_of(
-        #     ec.element_to_be_clickable(element))
-        # )
         self.highlight(element,  0.3, context.highlight)
         if action.__eq__("click"):
             self.click_action(element, wait, element_page, device, driver)
@@ -240,7 +239,7 @@ class common_device:
         if row[2] and element_yaml:
             if value != '' and helper is None:
                 logger.info(f'Verified for {row[0]} have value {row[1]} and status {row[2]}')
-                self.verify_value_in_element(element_yaml, value, device, driver, is_highlight)
+                self.verify_value_in_element(element_yaml, value, device, driver, is_highlight, wait)
             else:
                 logger.info(f'Verified for {row[0]} have value {row[1]} and status {row[2]}')
                 self.wait_element_for_status(element_yaml, row[2], driver, device, wait)
@@ -254,11 +253,13 @@ class common_device:
         list_user = dict_save_value['USER.']
         value = management_user.get_user(list_user, arr_user[1])
         return value
-    def verify_value_in_element(self, element_page, expect, device, driver, is_highlight):
+    def verify_value_in_element(self, element_page, expect, device, driver, is_highlight, wait):
+        locator_from_wait = common_device().get_locator_for_wait_from_device(element_page, device)
+        WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
         element = self.get_element_by_from_device(element_page, device, driver)
         self.scroll_to_element_by_js(element, driver, True, device['platformName'], is_highlight)
         value = self.get_value_element_form_device(element, device)
-        assert value == expect, f'value of the element not equal to values expected {expect}'
+        assert value == expect, f'value of the element is {value} not equal to values expected {expect}'
 
     def verify_value_with_helpers(self, expected, helper, element_page, device, driver, is_highlight):
         if helper in ['BACKGROUND-COLOR', 'COLOR', 'FONT_FAMILY', 'FONT_SIZE', 'FONT_WEIGHT', 'FONT_HEIGHT', 'TEXT_ALIGN'] and expected and device['platformName'] != 'WEB':
@@ -335,7 +336,7 @@ class common_device:
             except:
                 assert flag, f'can not scroll to element {element}'
         else:
-            assert False, f'feature scroll to element by javascript only support for Web environmental'
+            assert True, f'feature scroll to element by javascript only support for Web environmental'
     def scroll_to_element(self, element, driver, flag, platform, is_highlight):
         if platform == 'WEB':
             try:
@@ -344,7 +345,7 @@ class common_device:
             except:
                 assert flag, f'can not scroll to element {element}'
         else:
-            print("env movile")
+            assert False, f'feature scroll to element not suuport for mobile'
     def switch_to_frame(self, driver, element_page, wait, device, status):
         if status:
             WebDriverWait(driver, wait).until(ec.frame_to_be_available_and_switch_to_it(ManagementFile().get_locator_for_wait(element_page['type'], element_page['value'])))

@@ -1,6 +1,9 @@
 import os
 
 from behave import *
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.wait import WebDriverWait
+
 from libraries.misc_operations import sanitize_datatable
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
@@ -141,6 +144,8 @@ def step_impl(context, element):
 def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
+    locator_from_wait = common_device().get_locator_for_wait_from_device(context.element_page, context.device)
+    WebDriverWait(context.driver, context.wait).until(ec.presence_of_element_located(locator_from_wait))
     element = common_device().get_element_by_from_device(context.element_page, context.device, context.driver)
     common_device().scroll_to_element(element, context.driver, False, context.device['platformName'], context.highlight)
 
@@ -148,6 +153,8 @@ def step_impl(context, element):
 def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
+    locator_from_wait = common_device().get_locator_for_wait_from_device(context.element_page, context.device)
+    WebDriverWait(context.driver, context.wait).until(ec.presence_of_element_located(locator_from_wait))
     element = common_device().get_element_by_from_device(context.element_page, context.device, context.driver)
     common_device().scroll_to_element_by_js(element, context.driver, False, context.device['platformName'], context.highlight)
 
@@ -184,3 +191,11 @@ def step_impl(context, index):
 @step(u'I switch active tab with title "{title}"')
 def step_impl(context, title):
     common_device().switch_to_tab_by_title(context.driver, title)
+@step(u'I scroll {action} to element {element}')
+def step_impl(context, element, action):
+    if context.device['platformName'] == "WEB":
+        assert False, 'feature scroll down,up only support for mobile'
+    else:
+        context.element_page = common_device().get_element(context.page_present, element,
+                                                           context.device['platformName'], context.dict_save_value)
+        ManagementFileAndroid().scroll_mobile(action, context.element_page, context.driver)

@@ -1,3 +1,5 @@
+from time import sleep
+
 from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.common.touch_action import TouchAction
 from selenium.webdriver.support import expected_conditions as ec
@@ -237,5 +239,56 @@ class ManagementFileAndroid:
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, "Not support action in framework"
+    def scroll_from_to_element(self, element_page_from, element_page_to, driver, wait):
+        element_from_wait = self.get_locator_for_wait(element_page_from['type'], element_page_from['value'])
+        element_to_wait = self.get_locator_for_wait(element_page_to['type'], element_page_from['value'])
+        WebDriverWait(driver, wait).until(ec.presence_of_element_located(element_from_wait))
+        WebDriverWait(driver, wait).until(ec.presence_of_element_located(element_to_wait))
+        touch_action = TouchAction(driver)
+        element_from = self.get_by_android(element_page_from['type'],driver, element_page_to['value'])
+        element_to = self.get_by_android(element_page_to['type'], driver, element_page_to['value'])
+        driver.findElementByAndroidUIAutomator
+        # logger.info(f'execute {action} with element have is {element_page_to["value"]}')
 
-
+    def scroll_mobile(self, action, element_destination, driver):
+        element = self.get_locator_for_wait(element_destination['type'], element_destination['value'])
+        logger.info(f'get element have is value is {element_destination["value"]}')
+        logger.info(f'starting scroll to element {element_destination["value"]}')
+        self.scroll(driver, action, element)
+    def scroll(self, driver, action, element):
+        sleep(1)
+        flag = False
+        window_size = driver.get_window_size()
+        number = 3
+        if action.__eq__('down'):
+            start_y = window_size["height"] * 0.5
+            end_y = window_size["height"] * 0.2
+            start_x = window_size["width"] / 2
+            for each in range(1, 3):
+                driver.swipe(start_x, start_y, start_x, end_y, 2000)
+                try:
+                    WebDriverWait(driver, 10).until(ec.presence_of_element_located(element))
+                    flag = True
+                    break
+                except:
+                    assert True, f'Not found element {element} when scroll down, try again!'
+        elif action.__eq__('up'):
+            start_y = window_size["height"] * 0.1
+            end_y = window_size["height"] * 0.5
+            start_x = window_size["width"] / 2
+            for each in range(1, 3):
+                driver.swipe(start_x, start_y, start_x, end_y, 2000)
+                try:
+                    WebDriverWait(driver, 10).until(ec.presence_of_element_located(element))
+                    flag = True
+                    break
+                except:
+                    assert True, f'Not found element {element} when scroll down, try again!'
+        elif action.__eq__('left'):
+            print('left')
+        elif action.__eq__('right'):
+            print('right')
+        else:
+            assert False, "can not execute scroll to element with action " + action + " in framework"
+        if flag is False:
+            assert False, f'not found element when scroll'

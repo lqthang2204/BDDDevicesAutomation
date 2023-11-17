@@ -1,0 +1,8 @@
+{
+  "appium:app": "/Users/lequangthang/Downloads/mda-1.0.16-19.apk",
+  "appium:deviceName": "emulator-5554",
+  "appium:automationName": "UiAutomator2",
+  "appium:platformName": "android",
+  "appium.appPackage": "com.saucelabs.mydemoapp.android",
+  "appWaitActivity": "com.saucelabs.mydemoapp.android.view.activities.MainActivity"
+}
