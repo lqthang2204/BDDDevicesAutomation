@@ -150,3 +150,20 @@ def step_impl(context, element):
                                                        context.device['platformName'], context.dict_save_value)
     element = common_device().get_element_by_from_device(context.element_page, context.device, context.driver)
     common_device().scroll_to_element_by_js(element, context.driver, False, context.device['platformName'], context.highlight)
+
+@step(u'I double-click element {element}')
+def step_impl(context, element):
+    context.element_page = common_device().get_element(context.page_present, element,
+                                                       context.device['platformName'], context.dict_save_value)
+    common_device().action_page(context.element_page, "double-click", context.driver, "", context.wait,
+                                context.dict_save_value, context.device, context)
+@step(u'I right-click element {element}')
+def step_impl(context, element):
+    context.element_page = common_device().get_element(context.page_present, element,
+                                                       context.device['platformName'], context.dict_save_value)
+    common_device().action_page(context.element_page, "right-click", context.driver, "", context.wait,
+                                context.dict_save_value, context.device, context)
+
+@step(u'I {status} for popup')
+def step_impl(context,  status):
+    ManagementFile().handle_popup(context.driver, status, context.wait)

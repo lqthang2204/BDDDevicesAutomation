@@ -12,6 +12,7 @@ env:
       GLOBAL_SQA: https://www.globalsqa.com/demo-site/draganddrop
       DHTMLGOODIES: http://www.dhtmlgoodies.com/scripts/drag-drop-custom/demo-drag-drop-3.html
       CODESANDBOX: https://codesandbox.io/s/mobile-drag-drop-test-byuq7
+      GURU99-DOUBLE: https://demo.guru99.com/test/simple_context_menu.html
     devices:
     - platformName: WEB
       is_headless: true

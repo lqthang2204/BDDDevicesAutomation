@@ -147,7 +147,7 @@ Feature: login web
     And I click element login-button
 
 
-#  @login-variant
+  @login-variant2
   Scenario: Another Variation of Login script. Keeping only overriding values while actions provided in Scenario
     When I change the page spec to LoginPage-Variant
     Then I wait for element user-field to be DISPLAYED
