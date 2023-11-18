@@ -259,10 +259,9 @@ class ManagementFileAndroid:
         sleep(1)
         flag = False
         window_size = driver.get_window_size()
-        number = 3
         if action.__eq__('down'):
-            start_y = window_size["height"] * 0.5
-            end_y = window_size["height"] * 0.2
+            start_y = window_size["height"] * 0.6
+            end_y = window_size["height"] * 0.30
             start_x = window_size["width"] / 2
             for each in range(1, 3):
                 driver.swipe(start_x, start_y, start_x, end_y, 2000)
@@ -273,8 +272,8 @@ class ManagementFileAndroid:
                 except:
                     assert True, f'Not found element {element} when scroll down, try again!'
         elif action.__eq__('up'):
-            start_y = window_size["height"] * 0.1
-            end_y = window_size["height"] * 0.5
+            start_y = window_size["height"] * 0.30
+            end_y = window_size["height"] * 0.60
             start_x = window_size["width"] / 2
             for each in range(1, 3):
                 driver.swipe(start_x, start_y, start_x, end_y, 2000)
@@ -290,5 +289,4 @@ class ManagementFileAndroid:
             print('right')
         else:
             assert False, "can not execute scroll to element with action " + action + " in framework"
-        if flag is False:
-            assert False, f'not found element when scroll'
+        assert flag, f'not found element when scroll'
