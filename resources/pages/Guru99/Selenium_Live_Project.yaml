@@ -1,0 +1,7 @@
+elements:
+  - id: title_header
+    description: title header
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //h1[@class='entry-title']

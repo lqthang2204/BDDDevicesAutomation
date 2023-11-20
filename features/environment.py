@@ -25,10 +25,10 @@ def before_all(context):
     file = open(config_file_path, 'r')
     context.config_env = configparser.RawConfigParser(allow_no_value=True)
     context.config_env.read_file(file)
-    context.platform = context.config_env.get("drivers_config", "platform")
+    context.platform = context.config_env.get("drivers_config", "platform").upper()
     context.highlight = context.config_env.get("drivers_config", "is_highlight").lower()
     context.project_folder = project_folder
-    context.stage_name = context.config_env.get("drivers_config", "stage")
+    context.stage_name = context.config_env.get("drivers_config", "stage").upper()
     if context.config_env.has_option("drivers_config", "browser"):
         context.browser = context.config_env.get("drivers_config", "browser")
     else:

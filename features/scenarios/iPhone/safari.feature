@@ -15,3 +15,31 @@ Feature:  mobile ios
 #    And I click element continue-button-page-2
 #    And I change the page spec to detail_health_page
 #    And I verify that following elements with below attributes
+
+  @click-ios
+  Scenario: switch-Iframe
+    Given I navigate to url GURU99-DOUBLE
+    And I change the page spec to double-example
+    And I click element selenium-button
+    And I click element selenium-demo-page
+
+  @scroll_element_ios
+  Scenario: Scroll element demo IOS
+    Given I change the page spec to indexRN
+    And I wait for element product-one to be ENABLED
+    And I click element product-one
+    And I verify that following elements with below attributes
+      | Field              | Value               | Status    | Helpers |
+      | name-product       | Sauce Labs Backpack | DISPLAYED |         |
+      | Add-to-card-button | Add To Cart         | ENABLED   |         |
+    And I wait for element Back-button to be ENABLED
+    And I click element Back-button
+    And I scroll down to element product-six
+    And I click element product-six
+    And I click element Back-button
+    And I scroll up to element product-one
+    And I click element product-one
+#    And I click element product-six
+#    //XCUIElementTypeStaticText[@name="Sauce Labs Backpack"]
+#    And I click element selenium-button
+#    And I click element selenium-demo-page

@@ -58,56 +58,54 @@ class ManagementFile:
                                 value = dict_save_value.get(value, value)
                             break
                 element_page = action_elements['element']
+                locator = self.get_locator_from_action(element_page, platform_name)
                 if self.check_field_exist(action_elements, 'inputType'):
                     type_action = action_elements['inputType']
-                locator = self.get_locator_from_action(element_page, platform_name)
-                element = self.get_element_by(locator['type'], driver, locator['value'])
-                if self.check_field_exist(action_elements, "condition") and self.check_field_exist(action_elements, "timeout"):
                     try:
-                        if action_elements['condition'] == "ENABLED":
-                            WebDriverWait(driver, action_elements['timeout']).until(
-                                ec.element_to_be_clickable(element))
-                        elif action_elements['condition'] == "NOT_ENABLED":
-                            WebDriverWait(driver, action_elements['timeout']).until_not(
-                                ec.element_to_be_clickable(element))
-                        elif action_elements['condition'] == "DISPLAYED":
-                            WebDriverWait(driver, action_elements['timeout']).until(
-                                ec.presence_of_element_located(element))
-                        elif action_elements['condition'] == "NOT_DISPLAYED":
-                            WebDriverWait(driver, action_elements['timeout']).until(
-                                ec.presence_of_element_located(element))
-                        elif action_elements['condition'] == "EXISTED":
-                            elements = self.get_list_element_by(locator['type'], driver, locator['value'])
-                            WebDriverWait(driver, action_elements['timeout']()).until(
-                                lambda driver: len(elements) > int(0))
-                        elif action_elements['condition'] == "NOT_EXISTED":
-                            elements = self.get_list_element_by(locator['type'], driver, locator['value'])
-                            WebDriverWait(driver, action_elements['timeout']).until_not(
-                                lambda driver: len(elements) > int(0))
-                        elif action_elements['condition'] == "SELECTED":
-                            WebDriverWait(driver, action_elements['timeout']).until(
-                                ec.element_located_to_be_selected(element))
-                        elif action_elements['condition'] == "NOT_SELECTED":
-                            WebDriverWait(driver, action_elements['timeout']).until_not(
-                                ec.element_located_to_be_selected(element))
-                        else:
-                            logger.error("Not support condition %s in framework", action_elements['condition'])
-                            assert False, "Not support condition"
-                        if type_action == "click":
-                            if element.get_attribute("disabled") is None:
-                                element.click()
-                            else:
+                        element = self.get_locator_for_wait(locator['type'], locator['value'])
+                        if self.check_field_exist(action_elements, "condition") and self.check_field_exist(action_elements, "timeout"):
+                            if action_elements['condition'] == "ENABLED":
+                                WebDriverWait(driver, action_elements['timeout']).until(
+                                    ec.element_to_be_clickable(element))
+                            elif action_elements['condition'] == "NOT_ENABLED":
                                 WebDriverWait(driver, action_elements['timeout']).until_not(
-                                    ec.element_attribute_to_include(
-                                        self.get_locator_for_wait(locator['type'], locator['value']), "disabled"))
-                                element.click()
+                                    ec.element_to_be_clickable(element))
+                            elif action_elements['condition'] == "DISPLAYED":
+                                WebDriverWait(driver, action_elements['timeout']).until(
+                                    ec.presence_of_element_located(element))
+                            elif action_elements['condition'] == "NOT_DISPLAYED":
+                                WebDriverWait(driver, action_elements['timeout']).until(
+                                    ec.presence_of_element_located(element))
+                            elif action_elements['condition'] == "EXISTED":
+                                elements = self.get_list_element_by(locator['type'], driver, locator['value'])
+                                WebDriverWait(driver, action_elements['timeout']()).until(
+                                    lambda driver: len(elements) > int(0))
+                            elif action_elements['condition'] == "NOT_EXISTED":
+                                elements = self.get_list_element_by(locator['type'], driver, locator['value'])
+                                WebDriverWait(driver, action_elements['timeout']).until_not(
+                                    lambda driver: len(elements) > int(0))
+                            elif action_elements['condition'] == "SELECTED":
+                                WebDriverWait(driver, action_elements['timeout']).until(
+                                    ec.element_located_to_be_selected(element))
+                            elif action_elements['condition'] == "NOT_SELECTED":
+                                WebDriverWait(driver, action_elements['timeout']).until_not(
+                                    ec.element_located_to_be_selected(element))
+                            else:
+                                logger.error("Not support condition %s in framework", action_elements['condition'])
+                                assert False, "Not support condition"
+                        if type_action == "click":
+                            element = self.get_element_by(locator['type'], driver, locator['value'])
+                            element.click()
+                            element.click()
                         elif type_action == "text":
+                            element = self.get_element_by(locator['type'], driver, locator['value'])
                             element.send_keys(value)
                     except Exception as e:
                         logger.info(f'can not execute action with element have value  {locator} in framework')
                         assert True, "can not execute action with element have value" + locator + "in framework"
                 elif self.check_field_exist(action_elements, 'condition') and self.check_field_exist(action_elements, 'timeout') is False:
                     try:
+                        element = self.get_element_by(locator['type'], driver, locator['value'])
                         self.process_execute_action(driver, wait, element, type_action, value, locator, action_elements)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action,
@@ -116,8 +114,8 @@ class ManagementFile:
                             'value'] + "in framework"
                 else:
                     try:
-                        self.process_execute_action(driver, wait, element, type_action, value,
-                                                    locator)
+                        element = self.get_element_by(locator['type'], driver, locator['value'])
+                        self.process_execute_action(driver, wait, element, type_action, value, locator)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action,
                                      locator.value)
