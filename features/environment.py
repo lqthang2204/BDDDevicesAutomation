@@ -198,56 +198,15 @@ def cross_browser_with_mobile(context, device):
     config = configparser.RawConfigParser(allow_no_value=True)
     config.read_file(file)
     caps = get_data_config_mobile(context, device)
-    username = 'oauth-quangthangle1402-621a9'
-    access_key = 'bd2b4759-5b0c-4008-8f20-9a5a024e79be'
-    # url = 'http://%s:%s@ondemand.eu-central-1.saucelabs.com:80/wd/hub' % (username, access_key)
-
-    # desired_caps = {
-    #     "name": 'test',
-    #     "app": "http://saucelabs.com/example_files/ContactManager.apk",
-    #     "platformName": "Android",
-    #     "deviceName": 'Google Pixel 7 Pro GoogleAPI Emulator',
-    #     "platformVersion": "4.4",
-    #     "appiumVersion": "2.0.0",
-    #     'automationName': 'UiAutomator2'
-    # }
-    # caps = {}
-    # caps['platformName'] = 'Android'
-    # caps['browserName'] = 'Chrome'
-    # caps['appium:deviceName'] = 'Google Pixel 4a GoogleAPI Emulator'
-    # caps['appium:platformVersion'] = '14.0'
-    # caps['appium:automationName'] = 'automationName'
     caps['sauce:options'] = {}
     caps['sauce:options']['appiumVersion'] = '2.0.0'
-    caps['sauce:options']['username'] = username
-    caps['sauce:options']['accessKey'] = access_key
+    caps['sauce:options']['username'] = config.get("remote", "username")
+    caps['sauce:options']['accessKey'] = config.get("remote", "accessKey")
     caps['sauce:options']['build'] = config.get("remote", "build")
     caps['sauce:options']['name'] = config.get("remote", "name")
     caps['sauce:options']['deviceOrientation'] = 'PORTRAIT'
 
-    url = 'https://ondemand.eu-central-1.saucelabs.com:443/wd/hub'
-    # driver = webdriver.Remote(url, caps)
-
-    # url = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
-    # context.driver = webdriver.Remote(url, caps)
-    # sauce_url = config.get("remote", "url")
-    # option = UiAutomator2Options().load_capabilities(caps)
-    context.driver = appium_driver.Remote(url, desired_capabilities=caps)
-
-    # options.W3C_CAPABILITY_NAMES.issubset()
-    # options = UiAutomator2Options().load_capabilities(caps)
-    # if options.capabilities['automationName']:
-    #     dict_option =  dict(options.capabilities).keys()
-    # options
-    # options.as_w3c(caps)
-    # options2 = options.capabilities('automationName')
-    # UiAutomator2Options().default_capabilities.__delitem__('automationName')
-    # key = UiAutomator2Options().default_capabilities['automationName']
-
-    # print("key", key)
-    # options.default_capabilities.fromkeys()
-    # context.driver = webdriver.Remote(command_executor=url, options=options)
-    # context.driver = webdriver.Remote(command_executor=url, options=options)
+    context.driver = appium_driver.Remote(config.get("remote", "url"), desired_capabilities=caps)
     context.wait = device['wait']
     context.device = device
 
