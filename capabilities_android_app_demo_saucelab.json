@@ -1,0 +1,9 @@
+{
+    "appium:automationName": "UIAutomator2",
+  "appium:platformVersion": "14.0",
+  "platformName": "Android",
+  "appium:deviceName": "Google Pixel 4a GoogleAPI Emulator",
+  "appium.appPackage": "com.saucelabs.mydemoapp.android",
+  "appWaitActivity": "com.saucelabs.mydemoapp.android.view.activities.MainActivity",
+  "app": "https://github.com/saucelabs/sample-app-mobile/releases/download/2.7.1/Android.SauceLabs.Mobile.Sample.app.2.7.1.apk"
+}

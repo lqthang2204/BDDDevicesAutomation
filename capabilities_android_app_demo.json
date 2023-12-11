@@ -1,5 +1,5 @@
 {
-  "appium:app": "/Users/lequangthang/Downloads/mda-1.0.16-19.apk",
+  "appium:app": "https://github.com/lqthang2204/Selenium-with-python-behave/blob/main/mda-1.0.16-19.apk.zip",
   "appium:deviceName": "emulator-5554",
   "appium:automationName": "UiAutomator2",
   "appium:platformName": "android",

@@ -23,9 +23,10 @@ env:
     - platformName: ANDROID
       is_headless: true
       wait: 30
-      config_file: capabilities_android_app_demo.json
+#      config_file: capabilities_android_app_demo.json
 #      config_file: capabilities_android.json
-#      config_file: capabilities_android_chrome.json
+#      config_file: capabilities_android_chrome_demo_saucelab.json
+      config_file: capabilities_android_app_demo_saucelab.json
     - platformName: IOS
       is_headless: false
       wait: 32

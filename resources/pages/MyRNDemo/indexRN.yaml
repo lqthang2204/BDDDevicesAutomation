@@ -1,4 +1,16 @@
 elements:
+  - id: user-name
+    description: Username field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: //android.widget.ImageView[@content-desc="Sauce Lab Back Packs"]
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeStaticText[@name="store item text"])[1]
   - id: product-one
     description: Product One
     locators:

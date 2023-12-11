@@ -3,6 +3,7 @@ import datetime
 import os
 import json
 import appium
+from appium.options.android import UiAutomator2Options
 from appium.webdriver.appium_service import AppiumService
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as chrome_option
@@ -11,7 +12,7 @@ from selenium.webdriver.firefox.options import Options as firefox_option
 from selenium.webdriver.firefox.service import Service as firefox_service
 from selenium.webdriver.safari.options import Options as safari_option
 from selenium.webdriver.safari.service import Service as safari_service
-
+from appium import webdriver as appium_driver
 from Utilities.action_web import ManagementFile
 from Utilities.read_configuration import read_configuration
 from project_runner import logger, project_folder
@@ -43,16 +44,19 @@ def before_scenario(context, scenario):
             lambda device: device['platformName'] == context.platform, device
         ))
         context.device = context.device[0]
-        if context.device['platformName'] == "WEB":
+        if context.device['platformName'].upper() == "WEB":
             if context.device['is_headless']: context.highlight = 'false'
             if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
                 cross_browser_with_saucelabs(context, context.device)
             else:
                 launch_browser(context, context.device, context.browser)
         elif context.device['platformName'] == "ANDROID":
-            launch_android(context, context.device, context.config_env)
-            context.wait = context.device['wait']
-            context.highlight = 'false'
+            if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+                cross_browser_with_mobile(context, context.device)
+            else:
+                launch_android(context, context.device, context.config_env)
+                context.wait = context.device['wait']
+                context.highlight = 'false'
         elif context.device['platformName'] == "IOS":
             launch_ios(context, context.device, context.config_env)
             context.wait = context.device['wait']
@@ -89,24 +93,21 @@ def launch_browser(context, device, browser):
 def launch_android(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get('drivers_config', 'APPIUM_HOST'), '-P', str(config.get('drivers_config', 'APPIUM_PORT'))], timeout_ms=20000)
-    config_file_path = os.path.join(context.root_path, device['config_file'])
-    with open(config_file_path, 'r') as f:
-        desired_caps = json.load(f)
+    desired_caps = get_data_config_mobile(context, device)
+    option = UiAutomator2Options().load_capabilities(desired_caps)
     url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
         config.get('drivers_config', 'appium_port'))
-    context.wait = device['wait']
-    context.driver = appium.webdriver.Remote(url, desired_caps)
+    context.driver = appium.webdriver.Remote(command_executor=url, options=option)
+
 
 def launch_ios(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get('drivers_config', 'APPIUM_HOST'), '-P', str(config.get('drivers_config', 'APPIUM_PORT'))], timeout_ms=20000)
-    config_file_path = os.path.join(context.root_path, device['config_file'])
-    with open(config_file_path, 'r') as f:
-        data = json.load(f)
+    desired_caps = get_data_config_mobile(context, device)
     url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
         config.get('drivers_config', 'appium_port'))
     context.wait = device['wait']
-    context.driver = appium.webdriver.Remote(url, data)
+    context.driver = appium.webdriver.Remote(url, desired_caps)
 
 
 def after_step(context, step):
@@ -188,3 +189,69 @@ def cross_browser_with_saucelabs(context, device):
     context.device = device
     context.time_page_load = device['time_page_load']
     context.driver.maximize_window()
+
+
+def cross_browser_with_mobile(context, device):
+    config_file_path = os.path.join(project_folder, 'remote_config.ini')
+    file = open(config_file_path, 'r')
+    config = configparser.RawConfigParser(allow_no_value=True)
+    config.read_file(file)
+    caps = get_data_config_mobile(context, device)
+    username = 'oauth-quangthangle1402-621a9'
+    access_key = 'bd2b4759-5b0c-4008-8f20-9a5a024e79be'
+    # url = 'http://%s:%s@ondemand.eu-central-1.saucelabs.com:80/wd/hub' % (username, access_key)
+
+    # desired_caps = {
+    #     "name": 'test',
+    #     "app": "http://saucelabs.com/example_files/ContactManager.apk",
+    #     "platformName": "Android",
+    #     "deviceName": 'Google Pixel 7 Pro GoogleAPI Emulator',
+    #     "platformVersion": "4.4",
+    #     "appiumVersion": "2.0.0",
+    #     'automationName': 'UiAutomator2'
+    # }
+    # caps = {}
+    # caps['platformName'] = 'Android'
+    # caps['browserName'] = 'Chrome'
+    # caps['appium:deviceName'] = 'Google Pixel 4a GoogleAPI Emulator'
+    # caps['appium:platformVersion'] = '14.0'
+    # caps['appium:automationName'] = 'automationName'
+    caps['sauce:options'] = {}
+    caps['sauce:options']['appiumVersion'] = '2.0.0'
+    caps['sauce:options']['username'] = username
+    caps['sauce:options']['accessKey'] = access_key
+    caps['sauce:options']['build'] = config.get("remote", "build")
+    caps['sauce:options']['name'] = config.get("remote", "name")
+    caps['sauce:options']['deviceOrientation'] = 'PORTRAIT'
+
+    url = 'https://ondemand.eu-central-1.saucelabs.com:443/wd/hub'
+    # driver = webdriver.Remote(url, caps)
+
+    # url = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
+    # context.driver = webdriver.Remote(url, caps)
+    # sauce_url = config.get("remote", "url")
+    # option = UiAutomator2Options().load_capabilities(caps)
+    context.driver = appium_driver.Remote(url, desired_capabilities=caps)
+
+    # options.W3C_CAPABILITY_NAMES.issubset()
+    # options = UiAutomator2Options().load_capabilities(caps)
+    # if options.capabilities['automationName']:
+    #     dict_option =  dict(options.capabilities).keys()
+    # options
+    # options.as_w3c(caps)
+    # options2 = options.capabilities('automationName')
+    # UiAutomator2Options().default_capabilities.__delitem__('automationName')
+    # key = UiAutomator2Options().default_capabilities['automationName']
+
+    # print("key", key)
+    # options.default_capabilities.fromkeys()
+    # context.driver = webdriver.Remote(command_executor=url, options=options)
+    # context.driver = webdriver.Remote(command_executor=url, options=options)
+    context.wait = device['wait']
+    context.device = device
+
+def get_data_config_mobile(context, device):
+    config_file_path = os.path.join(context.root_path, device['config_file'])
+    with open(config_file_path, 'r') as f:
+        data = json.load(f)
+    return data
