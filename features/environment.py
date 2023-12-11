@@ -94,10 +94,11 @@ def launch_android(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get('drivers_config', 'APPIUM_HOST'), '-P', str(config.get('drivers_config', 'APPIUM_PORT'))], timeout_ms=20000)
     desired_caps = get_data_config_mobile(context, device)
-    option = UiAutomator2Options().load_capabilities(desired_caps)
+    # option = UiAutomator2Options().load_capabilities(desired_caps)
     url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
         config.get('drivers_config', 'appium_port'))
-    context.driver = appium.webdriver.Remote(command_executor=url, options=option)
+    # context.driver = appium.webdriver.Remote(command_executor=url, options=option)
+    context.driver = appium.webdriver.Remote(url, desired_caps)
 
 
 def launch_ios(context, device, config):
