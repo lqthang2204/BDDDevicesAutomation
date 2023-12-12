@@ -9,8 +9,8 @@ elements:
         type: ACCESSIBILITY_ID
         value: test-Username
       - device: IOS
-        type: XPATH
-        value: (//XCUIElementTypeStaticText[@name="store item text"])[1]
+        type: ACCESSIBILITY_ID
+        value: test-Username
   - id: password
     description: Password field
     locators:
@@ -21,8 +21,8 @@ elements:
         type: ACCESSIBILITY_ID
         value: test-Password
       - device: IOS
-        type: XPATH
-        value: (//XCUIElementTypeStaticText[@name="store item text"])[1]
+        type: ACCESSIBILITY_ID
+        value: test-Password
   - id: login-button
     description: Login button
     locators:
@@ -33,8 +33,8 @@ elements:
         type: ACCESSIBILITY_ID
         value: test-LOGIN
       - device: IOS
-        type: XPATH
-        value: (//XCUIElementTypeStaticText[@name="store item text"])[1]
+        type: ACCESSIBILITY_ID
+        value: test-LOGIN
   - id: product-one
     description: Product One
     locators:
@@ -46,7 +46,7 @@ elements:
         value: (//android.widget.TextView[@content-desc="test-Item title"])[1]
       - device: IOS
         type: XPATH
-        value: (//XCUIElementTypeStaticText[@name="store item text"])[1]
+        value: (//XCUIElementTypeStaticText[@name="test-Item title"])[1]
   - id: name-product
     description: Name product
     locators:
@@ -82,7 +82,7 @@ elements:
         value: test-BACK TO PRODUCTS
       - device: IOS
         type: XPATH
-        value: //XCUIElementTypeOther[@name="navigation back button"]
+        value: //XCUIElementTypeOther[@name="test-BACK TO PRODUCTS"]
   - id: product-two
     description: Product One
     locators:
@@ -106,5 +106,5 @@ elements:
         value: (//android.widget.TextView[@content-desc="test-Item title"])[4]
       - device: IOS
         type: XPATH
-        value: (//XCUIElementTypeStaticText[@name="store item text"])[6]
+        value: (//XCUIElementTypeStaticText[@name="test-Item title"])[4]
 
