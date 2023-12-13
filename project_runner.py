@@ -30,7 +30,9 @@ def main(context):
               help='specify platform to run. Default value is WEB')
 @click.option('--parallel-scheme', '-ps', 'parallel_scheme', type=click.Choice(['feature', 'scenario']),
               default='scenario', help='specify the stage to run. Default value is scenario')
-def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
+@click.option('--remote', '-rm', 'is_remote', type=click.Choice(['true', 'false']),
+              default='false', help='specify the remote with cross browser')
+def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme, is_remote):
 
     # ensure all the packages are installed
     ensure_package_versions()
@@ -50,16 +52,17 @@ def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
     }
 
     if total_scenarios > 0:
-        _run_feature(args, stage_name, platform_name)
+        _run_feature(args, stage_name, platform_name, is_remote)
 
 
-def config_from_command_line(stage_name, platform_name):
+def config_from_command_line(stage_name, platform_name, is_remote):
     config = configparser.ConfigParser()
     config.read('config_env.ini')
 
     config.set('project_folder', 'project_folder', project_folder)
     config.set('drivers_config', 'stage', stage_name)
     config.set('drivers_config', 'platform', platform_name)
+    config.set('drivers_config', 'remote-saucelabs', is_remote)
 
     # Save the changes to the config.ini file
     with open('config_env.ini', 'w') as config_file:
@@ -67,8 +70,8 @@ def config_from_command_line(stage_name, platform_name):
     logger.info('Config file updated based on user provided command line arguments')
 
 
-def _run_feature(args, stage_name, platform_name):
-    config_from_command_line(stage_name, platform_name)
+def _run_feature(args, stage_name, platform_name, is_remote):
+    config_from_command_line(stage_name, platform_name, is_remote)
     cmd = f"behavex {args['params']}"
     logger.info(f'Command prepared: {cmd}')
     # Get the start time in seconds since the epoch
@@ -104,5 +107,5 @@ if __name__ == '__main__':
     # 2. disable main() below
     # 3. enabled the statement below
     # run("features/scenarios/web", "{~@norun and (@test1 or @test2)}", 2, 'QA', 'WEB','scenario')
-    # run("features/scenarios/iPhone", "{~@norun and (@scroll_element_ios)}", 2, 'QA', 'IOS', 'scenario')
+    # run("features/scenarios/iPhone", "{~@norun and (@scroll_element_ios)}", 2, 'QA', 'IOS', 'scenario', 'true')
     main()
