@@ -3,7 +3,6 @@ import datetime
 import os
 import json
 import appium
-from appium.options.android import UiAutomator2Options
 from appium.webdriver.appium_service import AppiumService
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as chrome_option
@@ -16,6 +15,7 @@ from appium import webdriver as appium_driver
 from Utilities.action_web import ManagementFile
 from Utilities.read_configuration import read_configuration
 from project_runner import logger, project_folder
+from sauceclient import SauceClient
 
 
 def before_all(context):
@@ -68,7 +68,6 @@ def before_scenario(context, scenario):
 
     context.apiurls = context.env['apifacets']['link']
     context.endpoints = read_configuration().read_api_endpoints()
-
     logger.info(f'Scenario {scenario.name} started')
     context.dict_yaml = ManagementFile().get_dict_path_yaml()
     context.dict_page_element = {}
@@ -103,7 +102,6 @@ def launch_android(context, device, config):
     # context.driver = appium.webdriver.Remote(command_executor=url, options=option)
     context.driver = appium.webdriver.Remote(url, desired_caps)
 
-
 def launch_ios(context, device, config):
     # service = AppiumService()
     # service.start(args=['--address',config.get('drivers_config', 'APPIUM_HOST'), '-P', str(config.get('drivers_config', 'APPIUM_PORT'))], timeout_ms=20000)
@@ -113,7 +111,6 @@ def launch_ios(context, device, config):
     context.wait = device['wait']
     context.driver = appium.webdriver.Remote(url, desired_caps)
 
-
 def after_step(context, step):
     if step.status == 'failed':
         current_time = datetime.datetime.now()
@@ -121,10 +118,14 @@ def after_step(context, step):
             current_time.microsecond)
         context.driver.get_screenshot_as_file(context.evidence_path + '/' + step.name + '_' + date_time + '.png')
 
-
 def after_scenario(context, scenario):
     if context.driver:
         context.driver.quit()
+        if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+            config = read_config_remote()
+            sauce_client = SauceClient(config.get("remote", "username"), config.get("remote", "accessKey"))
+            test_status = scenario.status == 'passed'
+            sauce_client.jobs.update_job(context.driver.session_id, passed=test_status)
     logger.info(f'Scenario {scenario.name} Ended')
 
 
@@ -164,12 +165,9 @@ def get_option_from_browser(browser, device):
         'firefox': firefox_option,
         'safari': safari_option,
     }
-
     option = supported_browsers.get(browser.lower(), chrome_option)()
-
     if device['is_headless'] and browser.lower() in ['chrome', 'firefox']:
         option.add_argument('--headless')
-
     return option
 
 
@@ -196,10 +194,11 @@ def cross_browser_with_saucelabs(context, device):
 
 
 def cross_browser_with_mobile(context, device):
-    config_file_path = os.path.join(project_folder, 'remote_config.ini')
-    file = open(config_file_path, 'r')
-    config = configparser.RawConfigParser(allow_no_value=True)
-    config.read_file(file)
+    # config_file_path = os.path.join(project_folder, 'remote_config.ini')
+    # file = open(config_file_path, 'r')
+    # config = configparser.RawConfigParser(allow_no_value=True)
+    # config.read_file(file)
+    config = read_config_remote()
     caps = get_data_config_mobile(context, device)
     caps['sauce:options'] = {}
     caps['sauce:options']['appiumVersion'] = '2.0.0'
@@ -217,3 +216,9 @@ def get_data_config_mobile(context, device):
     with open(config_file_path, 'r') as f:
         data = json.load(f)
     return data
+def read_config_remote():
+    config_file_path = os.path.join(project_folder, 'remote_config.ini')
+    file = open(config_file_path, 'r')
+    config = configparser.RawConfigParser(allow_no_value=True)
+    config.read_file(file)
+    return config

@@ -31,6 +31,7 @@ def main(context):
 @click.option('--parallel-scheme', '-ps', 'parallel_scheme', type=click.Choice(['feature', 'scenario']),
               default='scenario', help='specify the stage to run. Default value is scenario')
 def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme):
+
     # ensure all the packages are installed
     ensure_package_versions()
 
@@ -102,5 +103,6 @@ if __name__ == '__main__':
     # 1. disable the @click definition mentioned above main() and run()
     # 2. disable main() below
     # 3. enabled the statement below
-    # run("features/orangeHRM*.feature", "{~@norun and (@test1 or @test2)}", 2, 'QA',  'scenario')
+    # run("features/scenarios/web", "{~@norun and (@test1 or @test2)}", 2, 'QA', 'WEB','scenario')
+    # run("features/scenarios/iPhone", "{~@norun and (@scroll_element_ios)}", 2, 'QA', 'IOS', 'scenario')
     main()

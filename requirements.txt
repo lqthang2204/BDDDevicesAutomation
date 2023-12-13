@@ -10,3 +10,4 @@ jsonpath_ng>=1.5.3
 faker==19.3.0
 requests>=2.31.0
 pyshadow==0.0.5
+sauceclient==1.0.0
