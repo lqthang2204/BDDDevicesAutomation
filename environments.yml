@@ -33,6 +33,7 @@ env:
       time_page_load: 32
 #      config_file: capabilities_ios.json
       config_file: capabilities_iOS_app_demo_saucelab.json
+#      config_file: capabilities_iOS_app_demo.json
     apifacets:
       link:
         SFCC: https://stores20--qa.sandbox.my.salesforce.com

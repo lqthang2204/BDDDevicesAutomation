@@ -58,9 +58,12 @@ def before_scenario(context, scenario):
                 context.wait = context.device['wait']
                 context.highlight = 'false'
         elif context.device['platformName'] == "IOS":
-            launch_ios(context, context.device, context.config_env)
-            context.wait = context.device['wait']
-            context.highlight = 'false'
+            if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+                cross_browser_with_mobile(context, context.device)
+            else:
+                launch_ios(context, context.device, context.config_env)
+                context.wait = context.device['wait']
+                context.highlight = 'false'
         context.url = context.env['link']
 
     context.apiurls = context.env['apifacets']['link']
@@ -120,8 +123,7 @@ def after_step(context, step):
 
 
 def after_scenario(context, scenario):
-    if context.driver and context.platform == 'WEB':
-        context.driver.close()
+    if context.driver:
         context.driver.quit()
     logger.info(f'Scenario {scenario.name} Ended')
 
@@ -131,6 +133,7 @@ def after_all(context):
         logger.info('Closing driver from After_ALL')
         context.driver.close()
         context.driver.quit()
+
 
 
 def get_driver_from_path(context, browser, device, option):
@@ -205,10 +208,9 @@ def cross_browser_with_mobile(context, device):
     caps['sauce:options']['build'] = config.get("remote", "build")
     caps['sauce:options']['name'] = config.get("remote", "name")
     caps['sauce:options']['deviceOrientation'] = 'PORTRAIT'
-
-    context.driver = appium_driver.Remote(config.get("remote", "url"), desired_capabilities=caps)
     context.wait = device['wait']
     context.device = device
+    context.driver = appium_driver.Remote(config.get("remote", "url"), desired_capabilities=caps)
 
 def get_data_config_mobile(context, device):
     config_file_path = os.path.join(context.root_path, device['config_file'])
