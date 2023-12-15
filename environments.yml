@@ -15,7 +15,7 @@ env:
       GURU99-DOUBLE: https://demo.guru99.com/test/simple_context_menu.html
     devices:
     - platformName: WEB
-      is_headless: true
+      is_headless: false
       wait: 30
       time_page_load: 30
       auto_download_driver: true
@@ -25,7 +25,7 @@ env:
       wait: 30
 #      config_file: capabilities_android_app_demo.json
 #      config_file: capabilities_android.json
-#      config_file: capabilities_android_chrome_demo_saucelab.json
+      config_file: capabilities_android_app_demo.json
 #      config_file: capabilities_android_app_demo_saucelab.json
     - platformName: IOS
       is_headless: false

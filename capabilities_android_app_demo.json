@@ -1,5 +1,5 @@
 {
-  "appium:app": "/Users/lequangthang/Downloads/Android.SauceLabs.Mobile.Sample.app.2.7.1.apk",
+  "appium:app": "E:\\workspace-research\\Selenium-with-python-behave\\Android.SauceLabs.Mobile.Sample.app.2.7.1.apk",
   "appium:deviceName": "emulator-5554",
   "appium:automationName": "UiAutomator2",
   "appium:platformName": "android",

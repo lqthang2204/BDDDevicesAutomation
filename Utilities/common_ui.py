@@ -132,7 +132,7 @@ class common_device:
 
     def verify_elements_with_status(self, page, table, platform_name, dict_save_value, driver, device, wait):
         # arr_element = page['elements']
-        if table is not None:
+        if table:
             for row in table:
                 arr_element = page['elements']
                 arr_element = list(filter(
@@ -184,7 +184,7 @@ class common_device:
 
     def get_value_element_form_device(self, element, device):
         if device['platformName'] == "WEB":
-            if element.get_attribute("value") is not None and element.tag_name == "input":
+            if element.get_attribute("value") and element.tag_name == "input":
                 return element.get_attribute('value')
             else:
                 return element.text

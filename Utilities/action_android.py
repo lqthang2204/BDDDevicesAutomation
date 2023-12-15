@@ -124,7 +124,7 @@ class ManagementFileAndroid:
             obj_action = dict_action[0]
             arr_list_action = obj_action['actionElements']
             for action_elements in arr_list_action:
-                if table is not None:
+                if table:
                     for row in table:
                         if action_elements['element']['id'] == row["Field"]:
                             value = row["Value"]
@@ -168,7 +168,7 @@ class ManagementFileAndroid:
         WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
         element = self.get_by_android(locator['type'], driver, locator['value'])
         logger.info(f'execute action {type_action} with element have value {locator}')
-        if type_action is not None:
+        if type_action:
             WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
             if type_action.__eq__("click"):
                 element.click()

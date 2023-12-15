@@ -47,21 +47,21 @@ def before_scenario(context, scenario):
         if context.device['platformName'].upper() == "WEB":
             if context.device['is_headless']: context.highlight = 'false'
             if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-                cross_browser_with_saucelabs(context, context.device)
+                cross_browser_with_web(context, context.device)
             else:
                 launch_browser(context, context.device, context.browser)
         elif context.device['platformName'] == "ANDROID":
             if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
                 cross_browser_with_mobile(context, context.device)
             else:
-                launch_android(context, context.device, context.config_env)
+                launch_mobile(context, context.device, context.config_env)
                 context.wait = context.device['wait']
                 context.highlight = 'false'
         elif context.device['platformName'] == "IOS":
             if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
                 cross_browser_with_mobile(context, context.device)
             else:
-                launch_ios(context, context.device, context.config_env)
+                launch_mobile(context, context.device, context.config_env)
                 context.wait = context.device['wait']
                 context.highlight = 'false'
         context.url = context.env['link']
@@ -91,25 +91,12 @@ def launch_browser(context, device, browser):
     context.time_page_load = device['time_page_load']
     context.driver.maximize_window()
 
-
-def launch_android(context, device, config):
-    # service = AppiumService()
-    # service.start(args=['--address',config.get('drivers_config', 'APPIUM_HOST'), '-P', str(config.get('drivers_config', 'APPIUM_PORT'))], timeout_ms=20000)
-    desired_caps = get_data_config_mobile(context, device)
-    # option = UiAutomator2Options().load_capabilities(desired_caps)
-    url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
-        config.get('drivers_config', 'appium_port'))
-    # context.driver = appium.webdriver.Remote(command_executor=url, options=option)
-    context.driver = appium.webdriver.Remote(url, desired_caps)
-
-def launch_ios(context, device, config):
-    # service = AppiumService()
-    # service.start(args=['--address',config.get('drivers_config', 'APPIUM_HOST'), '-P', str(config.get('drivers_config', 'APPIUM_PORT'))], timeout_ms=20000)
+def launch_mobile(context, device, config):
     desired_caps = get_data_config_mobile(context, device)
     url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
-        config.get('drivers_config', 'appium_port'))
+        config.get('drivers_config', 'appium_port'))+"/wd/hub"
     context.wait = device['wait']
-    context.driver = appium.webdriver.Remote(url, desired_caps)
+    context.driver = appium_driver.Remote(url, desired_caps)
 
 def after_step(context, step):
     if step.status == 'failed':
@@ -171,11 +158,8 @@ def get_option_from_browser(browser, device):
     return option
 
 
-def cross_browser_with_saucelabs(context, device):
-    config_file_path = os.path.join(project_folder, 'remote_config.ini')
-    file = open(config_file_path, 'r')
-    config = configparser.RawConfigParser(allow_no_value=True)
-    config.read_file(file)
+def cross_browser_with_web(context, device):
+    config = read_config_remote()
     options = get_option_from_browser(config.get("remote", "browser"), device)
     options.browser_version = 'latest'
     options.platform_name = config.get("remote", "platform_name")
@@ -194,10 +178,6 @@ def cross_browser_with_saucelabs(context, device):
 
 
 def cross_browser_with_mobile(context, device):
-    # config_file_path = os.path.join(project_folder, 'remote_config.ini')
-    # file = open(config_file_path, 'r')
-    # config = configparser.RawConfigParser(allow_no_value=True)
-    # config.read_file(file)
     config = read_config_remote()
     caps = get_data_config_mobile(context, device)
     caps['sauce:options'] = {}
