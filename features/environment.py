@@ -96,7 +96,7 @@ def launch_mobile(context, device, config):
     url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
         config.get('drivers_config', 'appium_port'))
     context.wait = device['wait']
-    context.driver = appium_driver.Remote(url, desired_caps)
+    context.driver = appium_driver.Remote(url, desired_capabilities=desired_caps)
 
 def after_step(context, step):
     if step.status == 'failed':
