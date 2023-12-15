@@ -11,3 +11,5 @@ faker==19.3.0
 requests>=2.31.0
 pyshadow==0.0.5
 sauceclient==1.0.0
+behave-html-formatter==0.9.10
+allure-behave==2.13.2
