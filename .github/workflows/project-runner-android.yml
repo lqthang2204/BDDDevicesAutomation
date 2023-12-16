@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: run android test
+name: run android test local
 
 on:
   push:
@@ -32,6 +32,19 @@ jobs:
         npm install -g appium@2.1.3
         appium -v
         appium &>/dev/null &
-    - name: run appium ios tests
+    - name: Install and Run Appium Server
       run: |
-          python project_runner.py run -fd 'features/scenarios/android' -tg '{@scroll_element_android}' -sg QA -ps scenario -pl ANDROID -rm true
+        chmod +x ./RunAppiumServer.sh # install and run appium server in the background
+        ./RunAppiumServer.sh
+    - name: EMU_4
+      uses: ReactiveCircus/android-emulator-runner@v2 # install and create the Emulator
+      with:
+        api-level: ${{ matrix.api-level }}
+        target: ${{ matrix.target }}
+        arch: x86_64
+        profile: Nexus 6
+        avd-name: 4th_Pixel_4_XL_API_30
+        script: pwd
+    - name: run appium android tests local
+      run: |
+          python project_runner.py run -fd 'features/scenarios/android' -tg '{@scroll_element_android}' -sg QA -ps scenario -pl ANDROID

@@ -25,7 +25,8 @@ env:
       wait: 30
 #      config_file: capabilities_android_app_demo.json
 #      config_file: capabilities_android.json
-      config_file: capabilities_android_app_demo.json
+#      config_file: capabilities_android_app_demo.json
+      config_file: capabilities_android_app_demo_github_action.json
 #      config_file: capabilities_android_app_demo_saucelab.json
     - platformName: IOS
       is_headless: false
