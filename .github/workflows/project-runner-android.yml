@@ -34,10 +34,10 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest
         pip install -r requirements.txt
-        npm install -g appium@2.1.3
+        npm install -g appium@1.22
         appium -v
         appium &>/dev/null &
-        appium driver install uiautomator2
+#        appium driver install uiautomator2
     - name: Install and Run Appium Server
       run: |
         chmod +x ./RunAppiumServer.sh # install and run appium server in the background
@@ -46,6 +46,9 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
+        force-avd-creation: false
+        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        disable-animations: true
         script: python project_runner.py run -fd 'features/scenarios/android' -tg '{@scroll_element_android}' -sg QA -ps scenario -pl ANDROID
 #    - name: run appium android tests local
 #      run: |
