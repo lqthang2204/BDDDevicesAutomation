@@ -5,5 +5,5 @@
   "appium:platformName": "Android",
   "appium.appPackage": "com.swaglabsmobileapp",
   "appWaitActivity": "com.swaglabsmobileapp.MainActivity",
-  "appium_url" : "127.0.0.1:4723"
+  "appium_url" : "127.0.0.1:4723/wd/hub"
 }
