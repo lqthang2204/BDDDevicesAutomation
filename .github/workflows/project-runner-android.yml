@@ -34,7 +34,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest
         pip install -r requirements.txt
-        npm install -g appium@1.22
+        npm install -g appium@next
         appium -v
         appium &>/dev/null &
         appium driver install uiautomator2
