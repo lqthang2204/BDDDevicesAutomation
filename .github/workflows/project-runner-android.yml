@@ -41,16 +41,14 @@ jobs:
       run: |
         chmod +x ./RunAppiumServer.sh # install and run appium server in the background
         ./RunAppiumServer.sh
-    - name: EMU_4
-      uses: ReactiveCircus/android-emulator-runner@v2 # install and create the Emulator
+    - name: setup android
+      uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: ${{ matrix.api-level }}
-        target: ${{ matrix.target }}
+        api-level: 29
         arch: x86_64
         profile: Nexus 6
-        avd-name: 4th_Pixel_4_XL_API_30
-        script: pwd
-        emulator-build: 7425822
+        script: |
+          adb devices
     - name: run appium android tests local
       run: |
           python project_runner.py run -fd 'features/scenarios/android' -tg '{@scroll_element_android}' -sg QA -ps scenario -pl ANDROID
