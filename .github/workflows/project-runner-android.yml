@@ -52,3 +52,8 @@ jobs:
     - name: run appium android tests local
       run: |
           python project_runner.py run -fd 'features/scenarios/android' -tg '{@scroll_element_android}' -sg QA -ps scenario -pl ANDROID
+    - name: Upload Test Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-report
+        path: app/build/reports
