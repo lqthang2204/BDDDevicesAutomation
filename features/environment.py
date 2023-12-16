@@ -2,9 +2,8 @@ import configparser
 import datetime
 import os
 import json
-import appium
-from appium.webdriver.appium_service import AppiumService
 from selenium import webdriver
+from selenium.common import SessionNotCreatedException
 from selenium.webdriver.chrome.options import Options as chrome_option
 from selenium.webdriver.chrome.service import Service as chrome_service
 from selenium.webdriver.firefox.options import Options as firefox_option
@@ -92,11 +91,14 @@ def launch_browser(context, device, browser):
     context.driver.maximize_window()
 
 def launch_mobile(context, device, config):
-    desired_caps = get_data_config_mobile(context, device)
-    url = 'http://' + config.get('drivers_config', 'appium_host') + ':' + str(
-        config.get('drivers_config', 'appium_port'))
-    context.wait = device['wait']
-    context.driver = appium_driver.Remote(url, desired_capabilities=desired_caps)
+    try:
+        desired_caps = get_data_config_mobile(context, device)
+        context.wait = device['wait']
+        context.driver = appium_driver.Remote(desired_caps['appium_url'], desired_capabilities=desired_caps)
+    except SessionNotCreatedException as ex:
+        logger.error('Config file updated based on user provided command line arguments')
+        print("not connect with remote saucelab, please check configuration again!")
+        assert False, f'{ex.msg}'
 
 def after_step(context, step):
     if step.status == 'failed':
@@ -115,36 +117,32 @@ def after_scenario(context, scenario):
             sauce_client.jobs.update_job(context.driver.session_id, passed=test_status)
     logger.info(f'Scenario {scenario.name} Ended')
 
-
 def after_all(context):
     if context.driver and context.platform == 'WEB':
         logger.info('Closing driver from After_ALL')
         context.driver.close()
         context.driver.quit()
 
-
-
 def get_driver_from_path(context, browser, device, option):
     # //change due to update form selenium 4.10.0 , removed executable_path
     # https://github.com/SeleniumHQ/selenium/commit/9f5801c82fb3be3d5850707c46c3f8176e3ccd8e
     if browser == 'chrome':
         service = chrome_service(
-            executable_path=project_folder + '\\' + device['driver_version'])
+            executable_path=project_folder + '\\' + device['driver_path'])
         context.driver = webdriver.Chrome(service=service, options=option)
     elif browser == 'firefox':
         service = firefox_service(
-            executable_path=project_folder + '\\' + device['driver_version'])
+            executable_path=project_folder + '\\' + device['driver_path'])
         context.driver = webdriver.Firefox(service=service, options=option)
     elif browser == 'safari':
         service = safari_service(
-            executable_path=project_folder + '\\' + device['driver_version'])
+            executable_path=project_folder + '\\' + device['driver_path'])
         context.driver = webdriver.Safari(service=service, options=option)
     else:
         logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
         service = chrome_service(
             executable_path=project_folder + '\\' + device['driver_version'])
         context.driver = webdriver.Chrome(service=service, options=option)
-
 
 def get_option_from_browser(browser, device):
     supported_browsers = {
@@ -156,8 +154,6 @@ def get_option_from_browser(browser, device):
     if device['is_headless'] and browser.lower() in ['chrome', 'firefox']:
         option.add_argument('--headless')
     return option
-
-
 def cross_browser_with_web(context, device):
     config = read_config_remote()
     options = get_option_from_browser(config.get("remote", "browser"), device)

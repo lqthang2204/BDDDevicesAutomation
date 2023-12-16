@@ -1,8 +1,9 @@
 {
-  "appium:app": "E:\\workspace-research\\Selenium-with-python-behave\\Android.SauceLabs.Mobile.Sample.app.2.7.1.apk",
+  "appium:app": "https://github.com/saucelabs/sample-app-mobile/releases/download/2.7.1/Android.SauceLabs.Mobile.Sample.app.2.7.1.apk",
   "appium:deviceName": "emulator-5554",
   "appium:automationName": "UiAutomator2",
   "appium:platformName": "android",
   "appium.appPackage": "com.swaglabsmobileapp",
-  "appWaitActivity": "com.swaglabsmobileapp.MainActivity"
+  "appWaitActivity": "com.swaglabsmobileapp.MainActivity",
+  "appium_url" : "127.0.0.1:4724"
 }
