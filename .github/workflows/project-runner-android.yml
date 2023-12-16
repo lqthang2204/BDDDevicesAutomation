@@ -46,13 +46,12 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
-        arch: x86_64
-        profile: Nexus 6
-    - name: run appium android tests local
-      run: |
-          python project_runner.py run -fd 'features/scenarios/android' -tg '{@scroll_element_android}' -sg QA -ps scenario -pl ANDROID
-    - name: Upload Test Artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: test-report
-        path: app/build/reports
+        script: python project_runner.py run -fd 'features/scenarios/android' -tg '{@scroll_element_android}' -sg QA -ps scenario -pl ANDROID
+#    - name: run appium android tests local
+#      run: |
+#          python project_runner.py run -fd 'features/scenarios/android' -tg '{@scroll_element_android}' -sg QA -ps scenario -pl ANDROID
+#    - name: Upload Test Artifacts
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: test-report
+#        path: app/build/reports
