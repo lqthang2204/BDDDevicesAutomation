@@ -45,6 +45,7 @@ jobs:
         profile: Nexus 6
         avd-name: 4th_Pixel_4_XL_API_30
         script: pwd
+        emulator-build: 7425822
     - name: run appium android tests local
       run: |
           python project_runner.py run -fd 'features/scenarios/android' -tg '{@scroll_element_android}' -sg QA -ps scenario -pl ANDROID
