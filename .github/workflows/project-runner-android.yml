@@ -37,6 +37,7 @@ jobs:
         npm install -g appium@2.1.3
         appium -v
         appium &>/dev/null &
+        appium driver install uiautomator2
     - name: Install and Run Appium Server
       run: |
         chmod +x ./RunAppiumServer.sh # install and run appium server in the background
