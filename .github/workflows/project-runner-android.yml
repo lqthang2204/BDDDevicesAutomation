@@ -41,9 +41,14 @@ jobs:
         npm install appium-uiautomator2-driver
         appium driver list --installed
     - name: Install and Run Appium Server
-      run: |
-        chmod +x ./RunAppiumServer.sh # install and run appium server in the background
-        ./RunAppiumServer.sh
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+        - name: Install and Run Appium Server
+          uses: moatazeldebsy/appium-server-gitHub-action@V1.0.4
+#      run: |
+#        chmod +x ./RunAppiumServer.sh # install and run appium server in the background
+#        ./RunAppiumServer.sh
     - name: setup android
       uses: reactivecircus/android-emulator-runner@v2
       with:
