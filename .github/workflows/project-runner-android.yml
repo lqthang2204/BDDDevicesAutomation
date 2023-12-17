@@ -39,8 +39,7 @@ jobs:
         appium &>/dev/null &
         appium driver install uiautomator2
         npm install appium-uiautomator2-driver
-        npm install appium-doctor -g
-        appium-doctor --android
+        appium driver list --installed
     - name: Install and Run Appium Server
       run: |
         chmod +x ./RunAppiumServer.sh # install and run appium server in the background
