@@ -42,27 +42,33 @@ def before_scenario(context, scenario):
         context.device = list(filter(
             lambda device: device['platformName'] == context.platform, device
         ))
+        if len(context.device) == 0:
+            logger.error('Framework only is support for chrome, firefox and safari..., trying open with chrome')
         context.device = context.device[0]
-        if context.device['platformName'].upper() == "WEB":
-            if context.device['is_headless']: context.highlight = 'false'
-            if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-                cross_browser_with_web(context, context.device)
-            else:
-                launch_browser(context, context.device, context.browser)
-        elif context.device['platformName'] == "ANDROID":
-            if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-                cross_browser_with_mobile(context, context.device)
-            else:
-                launch_mobile(context, context.device, context.config_env)
-                context.wait = context.device['wait']
-                context.highlight = 'false'
-        elif context.device['platformName'] == "IOS":
-            if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-                cross_browser_with_mobile(context, context.device)
-            else:
-                launch_mobile(context, context.device, context.config_env)
-                context.wait = context.device['wait']
-                context.highlight = 'false'
+        match context.device['platformName'].upper():
+            case "WEB":
+                if context.device['is_headless']: context.highlight = 'false'
+                if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+                    cross_browser_with_web(context, context.device)
+                else:
+                    launch_browser(context, context.device, context.browser)
+            case "ANDROID":
+                if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+                    cross_browser_with_mobile(context, context.device)
+                else:
+                    launch_mobile(context, context.device, context.config_env)
+                    context.wait = context.device['wait']
+                    context.highlight = 'false'
+            case "IOS":
+                if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+                    cross_browser_with_mobile(context, context.device)
+                else:
+                    launch_mobile(context, context.device, context.config_env)
+                    context.wait = context.device['wait']
+                    context.highlight = 'false'
+            case fail:
+                logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
+                assert False, "Framework only is support for chrome, firefox and safari..., trying open with chrome"
         context.url = context.env['link']
 
     context.apiurls = context.env['apifacets']['link']
@@ -77,15 +83,16 @@ def launch_browser(context, device, browser):
     if device['auto_download_driver'] is False:
         get_driver_from_path(context, browser, device, option)
     else:
-        if browser == 'chrome':
-            context.driver = webdriver.Chrome(options=option)
-        elif browser == 'firefox':
-            context.driver = webdriver.Firefox(options=option)
-        elif browser == 'safari':
-            context.driver = webdriver.Safari()
-        else:
-            logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
-            context.driver = webdriver.Chrome(options=option)
+        match browser:
+            case 'chrome':
+                context.driver = webdriver.Chrome(options=option)
+            case 'firefox':
+                context.driver = webdriver.Firefox(options=option)
+            case 'safari':
+                context.driver = webdriver.Safari()
+            case fail:
+                logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
+                context.driver = webdriver.Chrome(options=option)
     context.wait = device['wait']
     context.time_page_load = device['time_page_load']
     context.driver.maximize_window()
