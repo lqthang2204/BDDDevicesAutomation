@@ -1,3 +1,5 @@
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Flqthang2204%2FSelenium-with-python-behave&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
+<a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Flqthang2204%2FSelenium-with-python-behave&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false"/></a>
 # Selenium-with-python-behave
 
 ### About this project
@@ -102,3 +104,5 @@ There is scripts use to test in framework
 And I save text for element pass-field with key "Pass"
 
 => use to save text of element in web page
+
+
