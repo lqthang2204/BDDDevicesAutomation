@@ -5,5 +5,6 @@
   "platformName": "Android",
   "appium:deviceName": "Google Pixel 4a GoogleAPI Emulator",
   "appium.appPackage": "com.swaglabsmobileapp",
-  "appWaitActivity": "com.swaglabsmobileapp.MainActivity"
+  "appWaitActivity": "com.swaglabsmobileapp.MainActivity",
+    "appium_url" : "127.0.0.1:4723"
 }
