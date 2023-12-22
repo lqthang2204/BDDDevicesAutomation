@@ -53,7 +53,7 @@ Follow https://github.com/lqthang2204/Selenium-with-python-behave for cloning a 
         * ```behavex -t @regression --parallel-processes 2 --parallel-scheme scenario```
             * paralle-sheme can have values scenario or feature
             * @regression is the tag in feature files
-     * To run remote with saucelabs with command
+     * To run remote saucelabs with command
          * ```python project_runner.py run -fd 'features/scenarios/iPhone' -tg '{@scroll_element_ios}' -sg QA -ps scenario -pl IOS -rm true```
          * ```python project_runner.py run -fd 'features/scenarios/android' -tg '{@scroll_element_android}' -sg QA -ps scenario -pl ANDROID -rm true```
          *  ```python project_runner.py run -fd 'features/scenarios/android' -tg '{@scroll_element_android}' -sg QA -ps scenario -pl ANDROID```
