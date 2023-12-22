@@ -26,17 +26,26 @@ Feature:  mobile ios
   @scroll_element_ios
   Scenario: Scroll element demo IOS
     Given I change the page spec to indexRN
+     And I click element username
+     And I type "standard_user" into element username
+     And I type "secret_sauce" into element password
+     And I wait for element login-button to be ENABLED
+     And I click element login-button
     And I wait for element product-one to be ENABLED
     And I click element product-one
     And I verify that following elements with below attributes
       | Field              | Value               | Status    | Helpers |
       | name-product       | Sauce Labs Backpack | DISPLAYED |         |
-      | Add-to-card-button | Add To Cart         | ENABLED   |         |
-    And I wait for element Back-button to be ENABLED
+#      | Add-to-card-button | ADD TO CART         | ENABLED   |         |
+     And I wait for element Back-button to be ENABLED
     And I click element Back-button
+     And I wait 5 seconds
     And I scroll down to element product-six
     And I click element product-six
+     And I wait for element Back-button to be ENABLED
     And I click element Back-button
+     And I wait 5 seconds
+#     And I scroll up to element product-two
     And I scroll up to element product-one
     And I click element product-one
 #    And I click element product-six

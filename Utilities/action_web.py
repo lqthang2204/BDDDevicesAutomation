@@ -50,7 +50,7 @@ class ManagementFile:
             obj_action = dict_action[0]
             arr_list_action = obj_action['actionElements']
             for action_elements in arr_list_action:
-                if table is not None:
+                if table:
                     for row in table:
                         if action_elements['element']['id'] == row["Field"]:
                             value = row["Value"]

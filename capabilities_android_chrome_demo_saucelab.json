@@ -1,0 +1,8 @@
+{
+    "appium:automationName": "UIAutomator2",
+  "appium:platformVersion": "14.0",
+  "platformName": "Android",
+  "appium:deviceName": "Google Pixel 4a GoogleAPI Emulator",
+  "browserName": "Chrome"
+
+}

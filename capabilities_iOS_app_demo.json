@@ -1,0 +1,10 @@
+{
+  "appium:udid": "FB3D0069-0E98-4034-81B0-3415874B78F5",
+  "platformName": "iOS",
+  "appium:bundleId": "com.saucelabs.SwagLabsMobileApp",
+  "appium:deviceName": "iPhone 14 Pro",
+  "appium:platformVersion": "16.4",
+  "appium:automationName": "XCUITest",
+  "appium:app": "https://github.com/saucelabs/sample-app-mobile/releases/download/2.7.1/iOS.Simulator.SauceLabs.Mobile.Sample.app.2.7.1.zip",
+  "appium_url" : "127.0.0.1:4723"
+}

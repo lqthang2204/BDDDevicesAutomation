@@ -1,4 +1,40 @@
 elements:
+  - id: username
+    description: Username field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: test-Username
+      - device: IOS
+        type: ACCESSIBILITY_ID
+        value: test-Username
+  - id: password
+    description: Password field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: test-Password
+      - device: IOS
+        type: ACCESSIBILITY_ID
+        value: test-Password
+  - id: login-button
+    description: Login button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: test-LOGIN
+      - device: IOS
+        type: ACCESSIBILITY_ID
+        value: test-LOGIN
   - id: product-one
     description: Product One
     locators:
@@ -7,10 +43,10 @@ elements:
         value: html/body/a/img
       - device: ANDROID
         type: XPATH
-        value: //android.widget.ImageView[@content-desc="Sauce Lab Back Packs"]
+        value: (//android.widget.TextView[@content-desc="test-Item title"])[1]
       - device: IOS
         type: XPATH
-        value: (//XCUIElementTypeStaticText[@name="store item text"])[1]
+        value: (//XCUIElementTypeStaticText[@name="test-Item title"])[1]
   - id: name-product
     description: Name product
     locators:
@@ -18,8 +54,8 @@ elements:
         type: XPATH
         value: html/body/a/img
       - device: ANDROID
-        type: ID
-        value: com.saucelabs.mydemoapp.android:id/productTV
+        type: XPATH
+        value: //android.view.ViewGroup[@content-desc="test-Description"]/android.widget.TextView[1]
       - device: IOS
         type: XPATH
         value: //XCUIElementTypeStaticText[@name="Sauce Labs Backpack"]
@@ -31,10 +67,10 @@ elements:
         value: html/body/a/img
       - device: ANDROID
         type: XPATH
-        value: //android.widget.Button[@content-desc="Tap to add product to cart"]
+        value: //android.view.ViewGroup[@content-desc="test-ADD TO CART"]/android.widget.TextView
       - device: IOS
         type: XPATH
-        value: //XCUIElementTypeOther[@name="Add To Cart button"]
+        value: //android.view.ViewGroup[@content-desc="test-ADD TO CART"]/android.widget.TextView
   - id: Back-button
     description: Back button
     locators:
@@ -42,11 +78,11 @@ elements:
         type: XPATH
         value: html/body/a/img
       - device: ANDROID
-        type: XPATH
-        value: //android.view.View[@content-desc="Jmeter720"]/android.widget.Image
+        type: ACCESSIBILITY_ID
+        value: test-BACK TO PRODUCTS
       - device: IOS
         type: XPATH
-        value: //XCUIElementTypeOther[@name="navigation back button"]
+        value: //XCUIElementTypeOther[@name="test-BACK TO PRODUCTS"]
   - id: product-two
     description: Product One
     locators:
@@ -67,8 +103,8 @@ elements:
         value: html/body/a/img
       - device: ANDROID
         type: XPATH
-        value: //android.widget.ImageView[@content-desc="Test.sllTheThings() T-Shirt"]
+        value: (//android.widget.TextView[@content-desc="test-Item title"])[4]
       - device: IOS
         type: XPATH
-        value: (//XCUIElementTypeStaticText[@name="store item text"])[6]
+        value: (//XCUIElementTypeStaticText[@name="test-Item title"])[4]
 

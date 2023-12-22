@@ -19,18 +19,22 @@ env:
       wait: 30
       time_page_load: 30
       auto_download_driver: true
-      driver_version: WebDriver\chromedriver_116.exe
+      driver_path: WebDriver\chromedriver_116.exe
     - platformName: ANDROID
       is_headless: true
       wait: 30
-      config_file: capabilities_android_app_demo.json
+#      config_file: capabilities_android_app_demo.json
 #      config_file: capabilities_android.json
-#      config_file: capabilities_android_chrome.json
+#      config_file: capabilities_android_app_demo.json
+#      config_file: capabilities_android_app_demo_github_action.json
+      config_file: capabilities_android_app_demo_saucelab.json
     - platformName: IOS
       is_headless: false
       wait: 32
       time_page_load: 32
-      config_file: capabilities_ios.json
+#      config_file: capabilities_ios.json
+      config_file: capabilities_iOS_app_demo_saucelab.json
+#      config_file: capabilities_iOS_app_demo.json
     apifacets:
       link:
         SFCC: https://stores20--qa.sandbox.my.salesforce.com
