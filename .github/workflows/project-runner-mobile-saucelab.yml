@@ -37,4 +37,4 @@ jobs:
           python project_runner.py run -fd 'features/scenarios/android' -tg '{@scroll_element_android}' -sg QA -ps scenario -pl ANDROID -rm true
     - name: run appium ios tests
       run: |
-          python project_runner.py run -fd 'features/scenarios/android' -tg '{@scroll_element_android}' -sg QA -ps scenario -pl IOS -rm true      
+          python project_runner.py run -fd 'features/scenarios/iPhone' -tg '{@scroll_element_ios}' -sg QA -ps scenario -pl IOS -rm true      
