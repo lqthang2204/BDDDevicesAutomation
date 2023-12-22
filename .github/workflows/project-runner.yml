@@ -48,6 +48,6 @@ jobs:
     - name: Test run with allure report without html
       run: |
           behave -f behave_html_formatter:HTMLFormatter  -o allure/results features/scenarios/web/drag-and-drop.feature
-    - name: Test run with allure report with html
-      run: |
-          behave -f html -o allure/results/report.html features/scenarios/web/drag-and-drop.feature          
+#    - name: Test run with allure report with html
+#      run: |
+#          behave -f html -o allure/results/report.html features/scenarios/web/drag-and-drop.feature
