@@ -3,5 +3,6 @@
   "platformName": "android",
   "udid": "emulator-5554",
   "appPackage": "com.google.android.deskclock",
-  "appActivity": "com.android.deskclock.DeskClock"
+  "appActivity": "com.android.deskclock.DeskClock",
+   "appium_url" : "127.0.0.1:4723"
 }

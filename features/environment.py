@@ -195,7 +195,7 @@ def cross_browser_with_mobile(context, device):
     context.driver = appium_driver.Remote(config.get("remote", "url"), desired_capabilities=caps)
 
 def get_data_config_mobile(context, device):
-    config_file_path = os.path.join(context.root_path, device['config_file'])
+    config_file_path = os.path.join(context.root_path+"/configuration_env", device['config_file'])
     with open(config_file_path, 'r') as f:
         data = json.load(f)
     return data
