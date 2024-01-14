@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: project runner pipeline
+name: project runner pipeline on remove saucelab
 
 on:
   push:
@@ -38,6 +38,6 @@ jobs:
     - name: Test with project_runner.py
       run: |
 #          python project_runner.py run -fd features -fk 3 -sg QA -pl WEB -ps scenario
-          python3 project_runner.py run -fd 'features/scenarios/web' -tg '{@@verify-element-feature and ~@norun}' -sg QA -ps scenario -rm true
+          python project_runner.py run -fd 'features/scenarios/remote' -tg '{@remote-web}' -sg QA -ps scenario -pl WEB -rm true
 #          python ./launch/RunTest.py
 #         run with default tag "final"

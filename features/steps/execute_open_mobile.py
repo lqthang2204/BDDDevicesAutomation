@@ -11,22 +11,22 @@ class manage_hook_mobile:
         match context.device['platformName'].upper():
             case "ANDROID":
                 if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-                    self.cross_browser_with_mobile(context, context.device)
+                    self.cross_browser_with_mobile(context, context.device, table)
                 else:
                     self.launch_mobile(context, context.device, table, True)
                     context.wait = context.device['wait']
                     context.highlight = 'false'
             case "IOS":
                 if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-                    self.cross_browser_with_mobile(context, context.device)
+                    self.cross_browser_with_mobile(context, context.device, table)
                 else:
                     self.launch_mobile(context, context.device, table, True)
                     context.wait = context.device['wait']
                     context.highlight = 'false'
 
-    def cross_browser_with_mobile(self, context, device):
+    def cross_browser_with_mobile(self, context, device, table):
         config = self.read_config_remote()
-        caps = self.get_data_config_mobile(context, device)
+        caps = self.get_data_config_mobile(context, device, table)
         caps['sauce:options'] = {}
         caps['sauce:options']['appiumVersion'] = '2.0.0'
         caps['sauce:options']['username'] = config.get("remote", "username")
@@ -38,7 +38,7 @@ class manage_hook_mobile:
         context.device = device
         context.driver = appium_driver.Remote(config.get("remote", "url"), desired_capabilities=caps)
 
-    def get_data_config_mobile(self,context, table):
+    def get_data_config_mobile(self,context, device, table):
         config_file_path = os.path.join(context.root_path+"/configuration_env/", table[0][0]+".json")
         with open(config_file_path, 'r') as f:
             data = json.load(f)
@@ -53,11 +53,11 @@ class manage_hook_mobile:
 
     def launch_mobile(self, context, device, table, flag):
         try:
-            desired_caps = self.get_data_config_mobile(context, table)
+            desired_caps = self.get_data_config_mobile(context, device, table)
             context.wait = device['wait']
             if flag:
                 appium_url = self.check_att_exist(desired_caps, "appium_url")
-                context.driver = appium_driver.Remote(appium_url, desired_capabilities=desired_caps)
+                context.driver = appium_driver.Remote(appium_url, desired_capabilities=desired_caps, strict_ssl = False)
         except SessionNotCreatedException as ex:
             logger.error('Config file updated based on user provided command line arguments')
             print("not connect with remote saucelab, please check configuration again!")
