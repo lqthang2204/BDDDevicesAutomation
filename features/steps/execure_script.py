@@ -9,13 +9,16 @@ from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 from Utilities.common_ui import common_device
 from libraries.faker import management_user
+from execute_open_mobile import manage_hook_mobile
 
 
 @step(u'I navigate to url {name}')
 def launchBrowser(context, name):
     context.driver.get(context.url[name])
-
-
+@step(u'I open application with config below')
+def step_impl(context):
+    if context.table:
+        manage_hook_mobile().open_application(context, context.table)
 @step(u'I change the page spec to {page}')
 def change_page(context, page):
     path_file = context.dict_yaml[page + ".yaml"]
@@ -71,7 +74,7 @@ def step_impl(context, action):
                                         context.dict_save_value, context.device['platformName'])
     else:
         ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver,
-                                                       context.device.get_wait(), context.table,
+                                                       context.wait, context.table,
                                                        context.dict_save_value, context.device['platformName'])
 
 

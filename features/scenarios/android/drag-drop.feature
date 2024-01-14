@@ -3,6 +3,9 @@ Feature:  mobile android
 
   @chrome_drag_and_drop
   Scenario: run chrome to test drag and drop feature
+        Given I open application with config below
+          | file config |
+          | capabilities_android_chrome            |
     Given I change the page spec to Common
     And I perform by-pass-launch action
     And I change the page spec to mobile-drag-drop

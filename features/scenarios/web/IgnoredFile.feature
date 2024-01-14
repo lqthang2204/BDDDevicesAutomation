@@ -1,7 +1,7 @@
 @testLogin @web @regression @norun
 Feature: login web for norun
 
-#  @test-1
+  @test-1
   Scenario: test login page
     Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage

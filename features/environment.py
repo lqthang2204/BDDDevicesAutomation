@@ -15,6 +15,7 @@ from Utilities.action_web import ManagementFile
 from Utilities.read_configuration import read_configuration
 from project_runner import logger, project_folder
 from sauceclient import SauceClient
+from steps.execute_open_mobile import manage_hook_mobile as manage_remote
 
 
 def before_all(context):
@@ -53,19 +54,21 @@ def before_scenario(context, scenario):
                 else:
                     launch_browser(context, context.device, context.browser)
             case "ANDROID":
-                if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-                    cross_browser_with_mobile(context, context.device)
-                else:
-                    launch_mobile(context, context.device, context.config_env)
-                    context.wait = context.device['wait']
-                    context.highlight = 'false'
+                pass
+                # if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+                #     cross_browser_with_mobile(context, context.device)
+                # else:
+                #     # launch_mobile(context, context.device, context.config_env)
+                #     context.wait = context.device['wait']
+                #     context.highlight = 'false'
             case "IOS":
-                if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-                    cross_browser_with_mobile(context, context.device)
-                else:
-                    launch_mobile(context, context.device, context.config_env)
-                    context.wait = context.device['wait']
-                    context.highlight = 'false'
+                pass
+                # if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+                #     cross_browser_with_mobile(context, context.device)
+                # else:
+                #     launch_mobile(context, context.device, context.config_env)
+                #     context.wait = context.device['wait']
+                #     context.highlight = 'false'
             case fail:
                 logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
                 assert False, "Framework only is support for chrome, firefox and safari..., trying open with chrome"
@@ -97,15 +100,15 @@ def launch_browser(context, device, browser):
     context.time_page_load = device['time_page_load']
     context.driver.maximize_window()
 
-def launch_mobile(context, device, config):
-    try:
-        desired_caps = get_data_config_mobile(context, device)
-        context.wait = device['wait']
-        context.driver = appium_driver.Remote(desired_caps['appium_url'], desired_capabilities=desired_caps)
-    except SessionNotCreatedException as ex:
-        logger.error('Config file updated based on user provided command line arguments')
-        print("not connect with remote saucelab, please check configuration again!")
-        assert False, f'{ex.msg}'
+# def launch_mobile(context, device, config):
+#     try:
+#         desired_caps = get_data_config_mobile(context, device)
+#         context.wait = device['wait']
+#         context.driver = appium_driver.Remote(desired_caps['appium_url'], desired_capabilities=desired_caps)
+#     except SessionNotCreatedException as ex:
+#         logger.error('Config file updated based on user provided command line arguments')
+#         print("not connect with remote saucelab, please check configuration again!")
+#         assert False, f'{ex.msg}'
 
 def after_step(context, step):
     if step.status == 'failed':
@@ -118,7 +121,7 @@ def after_scenario(context, scenario):
     if context.driver:
         context.driver.quit()
         if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-            config = read_config_remote()
+            config = manage_remote().read_config_remote()
             sauce_client = SauceClient(config.get("remote", "username"), config.get("remote", "accessKey"))
             test_status = scenario.status == 'passed'
             sauce_client.jobs.update_job(context.driver.session_id, passed=test_status)
@@ -162,7 +165,7 @@ def get_option_from_browser(browser, device):
         option.add_argument('--headless')
     return option
 def cross_browser_with_web(context, device):
-    config = read_config_remote()
+    config = manage_remote().read_config_remote()
     options = get_option_from_browser(config.get("remote", "browser"), device)
     options.browser_version = 'latest'
     options.platform_name = config.get("remote", "platform_name")
@@ -180,28 +183,28 @@ def cross_browser_with_web(context, device):
     context.driver.maximize_window()
 
 
-def cross_browser_with_mobile(context, device):
-    config = read_config_remote()
-    caps = get_data_config_mobile(context, device)
-    caps['sauce:options'] = {}
-    caps['sauce:options']['appiumVersion'] = '2.0.0'
-    caps['sauce:options']['username'] = config.get("remote", "username")
-    caps['sauce:options']['accessKey'] = config.get("remote", "accessKey")
-    caps['sauce:options']['build'] = config.get("remote", "build")
-    caps['sauce:options']['name'] = config.get("remote", "name")
-    caps['sauce:options']['deviceOrientation'] = 'PORTRAIT'
-    context.wait = device['wait']
-    context.device = device
-    context.driver = appium_driver.Remote(config.get("remote", "url"), desired_capabilities=caps)
+# def cross_browser_with_mobile(context, device):
+#     config = read_config_remote()
+#     caps = get_data_config_mobile(context, device)
+#     caps['sauce:options'] = {}
+#     caps['sauce:options']['appiumVersion'] = '2.0.0'
+#     caps['sauce:options']['username'] = config.get("remote", "username")
+#     caps['sauce:options']['accessKey'] = config.get("remote", "accessKey")
+#     caps['sauce:options']['build'] = config.get("remote", "build")
+#     caps['sauce:options']['name'] = config.get("remote", "name")
+#     caps['sauce:options']['deviceOrientation'] = 'PORTRAIT'
+#     context.wait = device['wait']
+#     context.device = device
+#     context.driver = appium_driver.Remote(config.get("remote", "url"), desired_capabilities=caps)
 
-def get_data_config_mobile(context, device):
-    config_file_path = os.path.join(context.root_path+"/configuration_env", device['config_file'])
-    with open(config_file_path, 'r') as f:
-        data = json.load(f)
-    return data
-def read_config_remote():
-    config_file_path = os.path.join(project_folder, 'remote_config.ini')
-    file = open(config_file_path, 'r')
-    config = configparser.RawConfigParser(allow_no_value=True)
-    config.read_file(file)
-    return config
+# def get_data_config_mobile(context, device):
+#     config_file_path = os.path.join(context.root_path+"/configuration_env", device['config_file'])
+#     with open(config_file_path, 'r') as f:
+#         data = json.load(f)
+#     return data
+# def read_config_remote():
+#     config_file_path = os.path.join(project_folder, 'remote_config.ini')
+#     file = open(config_file_path, 'r')
+#     config = configparser.RawConfigParser(allow_no_value=True)
+#     config.read_file(file)
+#     return config

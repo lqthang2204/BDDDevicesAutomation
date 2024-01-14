@@ -3,7 +3,10 @@ Feature:  mobile ios
 
   @safari_drag_and_drop
   Scenario: run safari to test drag and drop feature
-    Given I change the page spec to mobile-drag-drop
+    Given I open application with config below
+      | file config             |
+      | capabilities_ios_safari |
+    And I change the page spec to mobile-drag-drop
     And I navigate to url CODESANDBOX
     And I wait for element click-run-button to be ENABLED
     And I click element click-run-button
@@ -18,6 +21,9 @@ Feature:  mobile ios
 
   @click-ios
   Scenario: switch-Iframe
+    Given I open application with config below
+      | file config             |
+      | capabilities_ios_safari |
     Given I navigate to url GURU99-DOUBLE
     And I change the page spec to double-example
     And I click element selenium-button
@@ -25,7 +31,10 @@ Feature:  mobile ios
 
   @scroll_element_ios
   Scenario: Scroll element demo IOS
-    Given I change the page spec to indexRN
+    Given I open application with config below
+      | file config               |
+      | capabilities_iOS_app_demo |
+    And I change the page spec to indexRN
      And I click element username
      And I type "standard_user" into element username
      And I type "secret_sauce" into element password

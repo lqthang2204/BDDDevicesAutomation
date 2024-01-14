@@ -3,6 +3,9 @@ Feature:  mobile
 
   @test-app-clock1
   Scenario: test app clock android
+    Given I open application with config below
+      | file config          |
+      | capabilities_android |
     Given I change the page spec to clock_page
     And I verify that following elements with below attributes
       | Field        | Value | Status  | Helpers |
