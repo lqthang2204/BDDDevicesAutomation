@@ -68,39 +68,11 @@ Feature:  test feature remote in saucelab
 #    And I click element selenium-demo-page
 
   @remote-web
-  Scenario: test feature verify for elements
-    Given I navigate to url OPEN_MRS
-    And I change the page spec to LoginPage-Variant
-    And I create a random user
-    And I verify that following elements with below attributes
-        | Field                     | Value           | Status    | Helpers          |
-        | user-field                |                 | DISPLAYED |                  |
-        | pass-field                |                 | DISPLAYED |                  |
-    And I type "USER.first_name" into element user-field
-    And I verify that following elements with below attributes
-        | Field      | Value           | Status    | Helpers |
-        | user-field | USER.first_name | DISPLAYED |         |
-    And I clear text from element user-field
-    And I wait for element location-option-inpatient to be ENABLED
-    And I click element location-option-inpatient
-    And I verify that following elements with below attributes
-      | Field                     | Value                       | Status    | Helpers          |
-      | user-field                |                             | DISPLAYED |                  |
-      | pass-field                |                             | DISPLAYED |                  |
-      | location-option-inpatient | Inpatient Ward              | DISPLAYED |                  |
-      | location-option-inpatient | In                          | DISPLAYED | CONTAINS         |
-      | location-option-inpatient | #007FFF                     | DISPLAYED | BACKGROUND-COLOR |
-      | location-option-inpatient | #FFFFFF                     | DISPLAYED | COLOR            |
-      | login-button              | #88af28                     | ENABLED   | BACKGROUND-COLOR |
-      | login-button              | #FFFFFF                     | ENABLED   | COLOR            |
-      | location-option-inpatient | Inpatient                   | DISPLAYED | STARTS_WITH      |
-      | location-option-inpatient | Inpatient [A-z]             | DISPLAYED | REGEX            |
-      | location-option-inpatient | Ward                        | DISPLAYED | ENDS_WITH        |
-      | location-option-inpatient | OpenSans, Arial, sans-serif | DISPLAYED | FONT_FAMILY      |
-      | location-option-inpatient | 16px                        | DISPLAYED | FONT_SIZE        |
-      | location-option-inpatient | 400                         | DISPLAYED | FONT_WEIGHT      |
-      | location-option-inpatient | 35px                        | DISPLAYED | FONT_HEIGHT      |
-      | location-option-inpatient | left                        | DISPLAYED | TEXT_ALIGN       |
-      | location-option-inpatient | 6                           | DISPLAYED | value            |
-      | location-option-inpatient | 0                           | DISPLAYED | data-key         |
-      | location-option-inpatient | selected                    | DISPLAYED | class            |
+    Scenario: test drag and drop 1
+    Given I navigate to url GURU99
+    And I change the page spec to demoguru99
+    And I wait for element bank_label to be DISPLAYED
+    And I wait for element debit_side to be DISPLAYED
+#    And I hover-over element bank_label
+    And I drag and drop element bank_label to element debit_side
+    And I wait 5 seconds
