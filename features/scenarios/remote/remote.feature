@@ -73,6 +73,3 @@ Feature:  test feature remote in saucelab
     And I change the page spec to demoguru99
     And I wait for element bank_label to be DISPLAYED
     And I wait for element debit_side to be DISPLAYED
-#    And I hover-over element bank_label
-    And I drag and drop element bank_label to element debit_side
-    And I wait 5 seconds
