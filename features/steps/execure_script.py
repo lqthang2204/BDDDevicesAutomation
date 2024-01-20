@@ -10,11 +10,14 @@ from Utilities.action_web import ManagementFile
 from Utilities.common_ui import common_device
 from libraries.faker import management_user
 from execute_open_mobile import manage_hook_mobile
+from execute_open_browser import manage_hook_browser
 
 
 @step(u'I navigate to url {name}')
 def launchBrowser(context, name):
-    context.driver.get(context.url[name])
+    manage_hook_browser().open_browser(context, None, name)
+    # context.driver.get(None, context.url[name], None)
+
 @step(u'I open application with config below')
 def step_impl(context):
     if context.table:

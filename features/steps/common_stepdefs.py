@@ -7,6 +7,7 @@ from libraries.data_generators import get_test_data_for
 from libraries.misc_operations import sanitize_datatable
 from libraries.number_string_operations import check_and_call_operator
 from project_runner import logger
+from execute_open_browser import manage_hook_browser
 
 
 @step(u'I create a set of keys with below attributes')
@@ -70,3 +71,8 @@ def step_impl(context):
 def step_impl(context, wait_duration):
     logger.info(f'waiting for {wait_duration} seconds')
     sleep(int(wait_duration))
+@step(u'I navigate to url {name} with options below')
+def navigate_with_option(context, name):
+    if context.table:
+        context_table = sanitize_datatable(context.table)
+        manage_hook_browser().open_browser(context, context_table, name)

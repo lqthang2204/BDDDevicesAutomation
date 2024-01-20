@@ -121,8 +121,12 @@ Feature: login web for norun
 
     @verify-element-feature
   Scenario: test feature verify for elements
-    Given I navigate to url OPEN_MRS
-    And I change the page spec to LoginPage-Variant
+#    Given I navigate to url OPEN_MRS with options below
+#      | options              |
+#      | --headless           |
+#      | --disable-extensions |
+            Given I navigate to url OPEN_MRS
+      And I change the page spec to LoginPage-Variant
     And I create a random user
     And I verify that following elements with below attributes
         | Field                     | Value           | Status    | Helpers          |
