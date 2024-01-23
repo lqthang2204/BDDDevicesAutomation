@@ -3,6 +3,9 @@ Feature:  mobile with contact
 
   @test-app-contact
   Scenario: test app contact android
+        Given I open application with config below
+          | file config                      |
+          | capabilities_app_contact_android |
     Given I change the page spec to index_contact
     And I wait for element contact-button to be ENABLED
     And I wait for element create-contact-button to be ENABLED

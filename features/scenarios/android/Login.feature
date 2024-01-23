@@ -1,8 +1,12 @@
-@test @mobile
+@test @mobile @login_mobile
 Feature: login mobile
 
+  @norun
   Scenario: test login page2 mobile
-    Given I navigate to url OPEN_MRS
+    Given I open application with config below
+          | file config |
+          | capabilities_android_chrome            |
+    And I navigate to url OPEN_MRS
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
@@ -12,7 +16,10 @@ Feature: login mobile
 
  @switch-Iframe-android
   Scenario: switch-Iframe
-    Given I navigate to url GURU99-DOUBLE
+   Given I open application with config below
+          | file config |
+          | capabilities_android_chrome            |
+    And I navigate to url GURU99-DOUBLE
     And I change the page spec to double-example
 #   And I wait for element selenium-button to be ENABLED
     And I click element selenium-button
@@ -33,7 +40,10 @@ Feature: login mobile
 
    @scroll_element_android
   Scenario: Scroll element demo android
-    Given I change the page spec to indexRN
+     Given I open application with config below
+          | file config |
+          | capabilities_android_app_demo            |
+    And I change the page spec to indexRN
      And I click element username
      And I type "standard_user" into element username
      And I type "secret_sauce" into element password

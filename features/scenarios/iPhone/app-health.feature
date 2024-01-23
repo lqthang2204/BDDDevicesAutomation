@@ -3,6 +3,9 @@ Feature:  mobile ios
 
   @test-app-health
   Scenario: test app health ios
+    Given I open application with config below
+      | file config |
+      | capabilities_app_health_ios            |
     Given I change the page spec to index_health
     And I click element continue-button
     And I wait for element continue-button-page-2 to be ENABLED

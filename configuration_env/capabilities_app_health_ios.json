@@ -1,0 +1,8 @@
+{
+  "appium:udid": "FB3D0069-0E98-4034-81B0-3415874B78F5",
+  "platformName": "iOS",
+  "appium:bundleId": "com.apple.Health",
+  "appium:deviceName": "iPhone 14 Pro",
+  "appium:platformVersion": "16.4",
+  "appium:automationName": "XCUITest"
+}

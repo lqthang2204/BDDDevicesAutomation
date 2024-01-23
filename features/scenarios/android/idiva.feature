@@ -3,6 +3,9 @@ Feature: idiva mobile
 
   @test-idiva-1
   Scenario: idiva-1
+        Given I open application with config below
+          | file config |
+          | capabilities_android_chrome            |
     Given I change the page spec to Common
     And I perform by-pass-launch action
     And I navigate to url IDIVA
@@ -27,6 +30,9 @@ Feature: idiva mobile
 
   @test-idiva-2 @MUTE
   Scenario: idiva-2 mobile
+        Given I open application with config below
+          | file config |
+          | capabilities_android_chrome            |
     Given I change the page spec to Common
     And I perform by-pass-launch action
     And I navigate to url IDIVA
@@ -41,6 +47,9 @@ Feature: idiva mobile
 
   @test-idiva-3
   Scenario: search productmobile
+        Given I open application with config below
+          | file config |
+          | capabilities_android_chrome            |
     Given I change the page spec to Common
     And I perform by-pass-launch action
     And I navigate to url IDIVA
@@ -65,7 +74,10 @@ Feature: idiva mobile
 
   @test-idiva-4
   Scenario: search productmobile2
-    Given I change the page spec to Common
+        Given I open application with config below
+          | file config |
+          | capabilities_android_chrome            |
+    And I change the page spec to Common
     And I perform by-pass-launch action
     And I navigate to url IDIVA
     And I change the page spec to Home_idiva

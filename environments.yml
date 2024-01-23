@@ -23,18 +23,10 @@ env:
     - platformName: ANDROID
       is_headless: true
       wait: 30
-#      config_file: capabilities_android_app_demo.json
-#      config_file: capabilities_android.json
-#      config_file: capabilities_android_app_demo.json
-#      config_file: capabilities_android_app_demo_github_action.json
-      config_file: capabilities_android_app_demo_saucelab.json
     - platformName: IOS
       is_headless: false
       wait: 32
       time_page_load: 32
-#      config_file: capabilities_ios.json
-      config_file: capabilities_iOS_app_demo_saucelab.json
-#      config_file: capabilities_iOS_app_demo.json
     apifacets:
       link:
         SFCC: https://stores20--qa.sandbox.my.salesforce.com
@@ -51,33 +43,33 @@ env:
       TECHPANDA: http://live.techpanda.org/index.php/
       TIKI: https://tiki.vn/
       IDIVA: https://idiva.vn/
+      CHROME-SETTING: chrome://settings
+      GURU99: http://demo.guru99.com/test/drag_drop.html
+      INDEX_GURU: https://www.guru99.com/
+      GLOBAL_SQA: https://www.globalsqa.com/demo-site/draganddrop
+      DHTMLGOODIES: http://www.dhtmlgoodies.com/scripts/drag-drop-custom/demo-drag-drop-3.html
+      CODESANDBOX: https://codesandbox.io/s/mobile-drag-drop-test-byuq7
+      GURU99-DOUBLE: https://demo.guru99.com/test/simple_context_menu.html
     devices:
-      - platformName: WEB
-        is_headless: true
-        wait: 30
-        time_page_load: 30
-        auto_download_driver: true
-        driver_version: WebDriver\\chromedriver_114.exe
-      - platformName: ANDROID
-        is_headless: true
-        wait: 30
-        time_page_load: 31
-        auto_download_driver: false
-        driver_version: WebDriver\\chromedriver_114.exe
-        appPackage: vn.tiki.app.tikiandroid
-        appActivity: vn.tiki.android.shopping.homeV3.HomeActivity
-        udid: HVA222NA
-      #      udid: emulator-5554
-      - platformName: IOS
-        is_headless: false
-        wait: 32
-        time_page_load: 32
-        auto_download_driver: false
-        driver_version: WebDriver\\chromedriver_114.exe
-        appPackage: com.android.chrome
-        appActivity: com.google.android.apps.chrome.Main
-        udid: emulator-5554
-    api-facets:
-      - link:
-          REQRES: https://reqres:in/
-          SFCLOUD: https://some-api.salesforce.com/
+    - platformName: WEB
+      is_headless: true
+      wait: 30
+      time_page_load: 30
+      auto_download_driver: true
+      driver_path: WebDriver\chromedriver_116.exe
+    - platformName: ANDROID
+      is_headless: true
+      wait: 30
+    - platformName: IOS
+      is_headless: false
+      wait: 32
+      time_page_load: 32
+    apifacets:
+      link:
+        SFCC: https://stores20--qa.sandbox.my.salesforce.com
+        SFCC-TOKEN: https://test.salesforce.com/services/oauth2/token
+        SFCLOUD: https://api-eu.jdadelivers.com
+        SFCLOUD-TOKEN: https://login.microsoftonline.com/oauth2/v2.0/token
+        FAKERESTAPI: https://fakerestapi.azurewebsites.net
+        GOREST: https://gorest.co.in
+        REQRES: https://reqres.in
