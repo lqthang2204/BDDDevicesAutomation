@@ -15,7 +15,10 @@ from execute_open_browser import manage_hook_browser
 
 @step(u'I navigate to url {name}')
 def launchBrowser(context, name):
-    manage_hook_browser().open_browser(context, None, name)
+    if context.device['platformName'] == 'WEB':
+        manage_hook_browser().open_browser(context, None, name)
+    else:
+        context.driver.get(context.url[name])
     # context.driver.get(None, context.url[name], None)
 
 @step(u'I open application with config below')
