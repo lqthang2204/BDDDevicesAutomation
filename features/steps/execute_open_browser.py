@@ -16,16 +16,16 @@ from execute_open_mobile import manage_hook_mobile as manage_remote
 import json
 class manage_hook_browser:
     def open_browser(self, context, table, name):
-        if context.device['platformName'].upper() == "WEB":
+        try:
             if context.device['is_headless']:
                 context.highlight = 'false'
             if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
                 self.cross_browser_with_web(context, context.device, table, name)
             else:
                  self.launch_browser(context, context.device, context.browser, table, name)
-        else:
-            logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
-            assert False, "Framework only is support for chrome, firefox and safari..., trying open with chrome"
+        except:
+            logger.info('Framework only is support for chrome, firefox and safari..., script is supporting for browser')
+            assert False, f"Framework only is support for chrome, firefox and safari..., script is supporting for browser"
     def launch_browser(self, context, device, browser, table, name):
         option = self.get_option_from_browser(browser, device, table)
         if device['auto_download_driver'] is False:

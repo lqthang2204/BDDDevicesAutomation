@@ -1,16 +1,6 @@
 import configparser
 import datetime
 import os
-import json
-from selenium import webdriver
-from selenium.common import SessionNotCreatedException
-from selenium.webdriver.chrome.options import Options as chrome_option
-from selenium.webdriver.chrome.service import Service as chrome_service
-from selenium.webdriver.firefox.options import Options as firefox_option
-from selenium.webdriver.firefox.service import Service as firefox_service
-from selenium.webdriver.safari.options import Options as safari_option
-from selenium.webdriver.safari.service import Service as safari_service
-from appium import webdriver as appium_driver
 from Utilities.action_web import ManagementFile
 from Utilities.read_configuration import read_configuration
 from project_runner import logger, project_folder
@@ -70,24 +60,24 @@ def before_scenario(context, scenario):
     context.dict_page_element = {}
 
 
-def launch_browser(context, device, browser):
-    option = get_option_from_browser(browser, device)
-    if device['auto_download_driver'] is False:
-        get_driver_from_path(context, browser, device, option)
-    else:
-        match browser:
-            case 'chrome':
-                context.driver = webdriver.Chrome(options=option)
-            case 'firefox':
-                context.driver = webdriver.Firefox(options=option)
-            case 'safari':
-                context.driver = webdriver.Safari()
-            case fail:
-                logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
-                context.driver = webdriver.Chrome(options=option)
-    context.wait = device['wait']
-    context.time_page_load = device['time_page_load']
-    context.driver.maximize_window()
+# def launch_browser(context, device, browser):
+#     option = get_option_from_browser(browser, device)
+#     if device['auto_download_driver'] is False:
+#         get_driver_from_path(context, browser, device, option)
+#     else:
+#         match browser:
+#             case 'chrome':
+#                 context.driver = webdriver.Chrome(options=option)
+#             case 'firefox':
+#                 context.driver = webdriver.Firefox(options=option)
+#             case 'safari':
+#                 context.driver = webdriver.Safari()
+#             case fail:
+#                 logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
+#                 context.driver = webdriver.Chrome(options=option)
+#     context.wait = device['wait']
+#     context.time_page_load = device['time_page_load']
+#     context.driver.maximize_window()
 
 def after_step(context, step):
     if step.status == 'failed':
@@ -112,51 +102,51 @@ def after_all(context):
         context.driver.close()
         context.driver.quit()
 
-def get_driver_from_path(context, browser, device, option):
-    # //change due to update form selenium 4.10.0 , removed executable_path
-    # https://github.com/SeleniumHQ/selenium/commit/9f5801c82fb3be3d5850707c46c3f8176e3ccd8e
-    if browser == 'chrome':
-        service = chrome_service(
-            executable_path=project_folder + '\\' + device['driver_path'])
-        context.driver = webdriver.Chrome(service=service, options=option)
-    elif browser == 'firefox':
-        service = firefox_service(
-            executable_path=project_folder + '\\' + device['driver_path'])
-        context.driver = webdriver.Firefox(service=service, options=option)
-    elif browser == 'safari':
-        service = safari_service(
-            executable_path=project_folder + '\\' + device['driver_path'])
-        context.driver = webdriver.Safari(service=service, options=option)
-    else:
-        logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
-        service = chrome_service(
-            executable_path=project_folder + '\\' + device['driver_version'])
-        context.driver = webdriver.Chrome(service=service, options=option)
+# def get_driver_from_path(context, browser, device, option):
+#     # //change due to update form selenium 4.10.0 , removed executable_path
+#     # https://github.com/SeleniumHQ/selenium/commit/9f5801c82fb3be3d5850707c46c3f8176e3ccd8e
+#     if browser == 'chrome':
+#         service = chrome_service(
+#             executable_path=project_folder + '\\' + device['driver_path'])
+#         context.driver = webdriver.Chrome(service=service, options=option)
+#     elif browser == 'firefox':
+#         service = firefox_service(
+#             executable_path=project_folder + '\\' + device['driver_path'])
+#         context.driver = webdriver.Firefox(service=service, options=option)
+#     elif browser == 'safari':
+#         service = safari_service(
+#             executable_path=project_folder + '\\' + device['driver_path'])
+#         context.driver = webdriver.Safari(service=service, options=option)
+#     else:
+#         logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
+#         service = chrome_service(
+#             executable_path=project_folder + '\\' + device['driver_version'])
+#         context.driver = webdriver.Chrome(service=service, options=option)
 
-def get_option_from_browser(browser, device):
-    supported_browsers = {
-        'chrome': chrome_option,
-        'firefox': firefox_option,
-        'safari': safari_option,
-    }
-    option = supported_browsers.get(browser.lower(), chrome_option)()
-    if device['is_headless'] and browser.lower() in ['chrome', 'firefox']:
-        option.add_argument('--headless')
-    return option
-def cross_browser_with_web(context, device):
-    config = manage_remote().read_config_remote()
-    options = get_option_from_browser(config.get("remote", "browser"), device)
-    options.browser_version = 'latest'
-    options.platform_name = config.get("remote", "platform_name")
-    sauce_options = {}
-    sauce_options['username'] = config.get("remote", "username")
-    sauce_options['accessKey'] = config.get("remote", "accessKey")
-    sauce_options['build'] = config.get("remote", "build")
-    sauce_options['name'] = config.get("remote", "name")
-    options.set_capability('sauce:options', sauce_options)
-    url = config.get("remote", "url")
-    context.driver = webdriver.Remote(command_executor=url, options=options)
-    context.wait = device['wait']
-    context.device = device
-    context.time_page_load = device['time_page_load']
-    context.driver.maximize_window()
+# def get_option_from_browser(browser, device):
+#     supported_browsers = {
+#         'chrome': chrome_option,
+#         'firefox': firefox_option,
+#         'safari': safari_option,
+#     }
+#     option = supported_browsers.get(browser.lower(), chrome_option)()
+#     if device['is_headless'] and browser.lower() in ['chrome', 'firefox']:
+#         option.add_argument('--headless')
+#     return option
+# def cross_browser_with_web(context, device):
+#     config = manage_remote().read_config_remote()
+#     options = get_option_from_browser(config.get("remote", "browser"), device)
+#     options.browser_version = 'latest'
+#     options.platform_name = config.get("remote", "platform_name")
+#     sauce_options = {}
+#     sauce_options['username'] = config.get("remote", "username")
+#     sauce_options['accessKey'] = config.get("remote", "accessKey")
+#     sauce_options['build'] = config.get("remote", "build")
+#     sauce_options['name'] = config.get("remote", "name")
+#     options.set_capability('sauce:options', sauce_options)
+#     url = config.get("remote", "url")
+#     context.driver = webdriver.Remote(command_executor=url, options=options)
+#     context.wait = device['wait']
+#     context.device = device
+#     context.time_page_load = device['time_page_load']
+#     context.driver.maximize_window()
