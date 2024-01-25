@@ -15,8 +15,10 @@ from execute_open_browser import manage_hook_browser
 
 @step(u'I navigate to url {name}')
 def launchBrowser(context, name):
-    manage_hook_browser().open_browser(context, None, name)
-    # context.driver.get(None, context.url[name], None)
+    if context.device['platformName'].upper() == 'WEB':
+        manage_hook_browser().open_browser(context, None, name)
+    else:
+         context.driver.get(context.url[name])
 
 @step(u'I open application with config below')
 def step_impl(context):
@@ -205,3 +207,8 @@ def step_impl(context, element, action):
         context.element_page = common_device().get_element(context.page_present, element,
                                                            context.device['platformName'], context.dict_save_value)
         ManagementFileAndroid().scroll_mobile(action, context.element_page, context.driver)
+
+
+@step("I navigate to refresh-page")
+def step_impl(context):
+    context.driver.refresh()

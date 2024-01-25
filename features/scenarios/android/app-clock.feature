@@ -18,9 +18,9 @@ Feature:  mobile
     And I wait for element cancel-button to be ENABLED
     And I verify that following elements with below attributes
       | Field         | Value  | Status    | Helpers     |
-      | cancel-button | Cancel | ENABLED   |             |
-      | cancel-button | C[a-z] | ENABLED   | REGEX       |
-      | cancel-button | el     | ENABLED   | CONTAINS    |
+      | cancel-button | CANCEL | ENABLED   |             |
+      | cancel-button | C[A-Z] | ENABLED   | REGEX       |
+      | cancel-button | EL     | ENABLED   | CONTAINS    |
       | cancel-button | C      | ENABLED   | STARTS_WITH |
-      | cancel-button | el     | ENABLED   | ENDS_WITH   |
-      | cancel-button | Cancel | DISPLAYED | text        |
+      | cancel-button | EL     | ENABLED   | ENDS_WITH   |
+      | cancel-button | CANCEL | DISPLAYED | text        |

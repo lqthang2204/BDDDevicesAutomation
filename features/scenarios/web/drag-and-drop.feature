@@ -56,7 +56,14 @@ Feature: test feature drag and drop
 
   @switch-Iframe
   Scenario: switch-Iframe
-    Given I navigate to url GURU99-DOUBLE
+    Given I navigate to url GURU99-DOUBLE with options below
+      | options   | value                       |
+      | extension | AdBlock-best-ad-blocker.crx |
+    And I wait 5 seconds
+    And I switch active tab with title "AdBlock is now installed!"
+    And I wait 10 seconds
+    And I navigate to refresh-page
+    And I switch active tab with title "Simple Context Menu"
     And I change the page spec to double-example
     And I click element selenium-button
     And I wait for element selenium-demo-page to be ENABLED
