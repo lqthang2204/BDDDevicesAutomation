@@ -1,0 +1,65 @@
+elements:
+  - &all-items
+    id: all-items
+    description: Username field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: test-ALL ITEMS
+      - device: IOS
+        type: ACCESSIBILITY_ID
+        value: test-Username
+  - &web-view
+    id: web-view
+    description: Username field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: test-WEBVIEW
+      - device: IOS
+        type: ACCESSIBILITY_ID
+        value: test-Username
+  - &qr-code
+    id: qr-code
+    description: Username field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: test-QR CODE SCANNER
+      - device: IOS
+        type: ACCESSIBILITY_ID
+        value: test-Username
+  - &about
+    id: about
+    description: Username field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: test-ABOUT
+      - device: IOS
+        type: ACCESSIBILITY_ID
+        value: test-Username
+actions:
+  - id: verify-menu
+    description: verify menus items display
+    actionElements:
+      - element: *all-items
+        condition: DISPLAYED
+      - element: *web-view
+        condition: DISPLAYED
+      - element: *qr-code
+        condition: DISPLAYED
+      - element: *about
+        condition: DISPLAYED

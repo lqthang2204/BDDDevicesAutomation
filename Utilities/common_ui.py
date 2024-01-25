@@ -200,7 +200,7 @@ class common_device:
                     return value_attribute.lower()
             else:
                 return element.get_attribute(value)
-        elif device['platformName'] == "ANDROID":
+        elif device['platformName'] == "ANDROID" or device['platformName'] == "IOS":
             try:
                 return element.get_attribute(value)
             except Exception as e:

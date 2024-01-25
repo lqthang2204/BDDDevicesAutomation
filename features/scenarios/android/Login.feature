@@ -66,6 +66,27 @@ Feature: login mobile
 #     And I scroll up to element product-two
     And I scroll up to element product-one
     And I click element product-one
+  And I wait for element menu-bar to be ENABLED
+  And I click element menu-bar
+     And I change the page spec to MenuPage
+  And I perform verify-menu action
+  And I click element all-items
+     And I change the page spec to indexRN
+    And I wait for element product-one to be ENABLED
+#    And I click element product-one
+     And I save text for element price-for-pr1 with key "price1"
+     And I wait for element add-to-card-pr1 to be ENABLED
+  And I click element add-to-card-pr1
+     And I wait for element add-to-card-pr1 to be ENABLED
+  And I click element cart-button
+  And I wait for element total-price to be DISPLAYED
+  And I verify that following elements with below attributes
+    | Field           | Value             | Status    | Helpers |
+    | total-price     | KEY.price1        | DISPLAYED |         |
+    | remove-button   | REMOVE            | ENABLED   |         |
+    | continue-button | CONTINUE SHOPPING | ENABLED   |         |
+    | checkout-button | CHECKOUT          | ENABLED   |         |
+
 #    And I click element product-six
 #    //XCUIElementTypeStaticText[@name="Sauce Labs Backpack"]
 #    And I click element selenium-button

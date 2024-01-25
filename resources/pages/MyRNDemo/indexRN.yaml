@@ -107,4 +107,99 @@ elements:
       - device: IOS
         type: XPATH
         value: (//XCUIElementTypeStaticText[@name="test-Item title"])[4]
-
+  - id: menu-bar
+    description: Product One
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: test-Menu
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeStaticText[@name="test-Item title"])[4]
+  - id: price-for-pr1
+    description: Product One
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: (//android.widget.TextView[@content-desc="test-Price"])[1]
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeStaticText[@name="test-Item title"])[4]
+  - id: add-to-card-pr1
+    description: Product One
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: (//android.view.ViewGroup[@content-desc="test-ADD TO CART"])[1]
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeStaticText[@name="test-Item title"])[4]
+  - id: cart-button
+    description: Product One
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: test-Cart
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeStaticText[@name="test-Item title"])[4]
+  - id: total-price
+    description: Product One
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.ViewGroup[@content-desc="test-Price"]/android.widget.TextView
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeStaticText[@name="test-Item title"])[4]
+  - id: remove-button
+    description: remove button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.ViewGroup[@content-desc="test-REMOVE"]/android.widget.TextView
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeStaticText[@name="test-Item title"])[4]
+  - id: continue-button
+    description: remove button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.ViewGroup[@content-desc="test-CONTINUE SHOPPING"]/android.widget.TextView
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeStaticText[@name="test-Item title"])[4]
+  - id: checkout-button
+    description: remove button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.ViewGroup[@content-desc="test-CHECKOUT"]/android.widget.TextView
+      - device: IOS
+        type: XPATH
+        value: (//XCUIElementTypeStaticText[@name="test-Item title"])[4]
