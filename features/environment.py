@@ -4,7 +4,7 @@ import os
 from Utilities.action_web import ManagementFile
 from Utilities.read_configuration import read_configuration
 from project_runner import logger, project_folder
-from sauceclient import SauceClient
+from sauceclient import SauceClient, SauceException
 from steps.execute_open_mobile import manage_hook_mobile as manage_remote
 
 
@@ -88,14 +88,18 @@ def after_step(context, step):
 
 def after_scenario(context, scenario):
     if context.driver:
-        context.driver.quit()
         if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-            config = manage_remote().read_config_remote()
-            sauce_client = SauceClient(config.get("remote", "username"), config.get("remote", "accessKey"))
-            test_status = scenario.status == 'passed'
-            sauce_client.jobs.update_job(context.driver.session_id, passed=test_status, name=scenario.name)
+            try:
+                config = manage_remote().read_config_remote()
+                sauce_client = SauceClient(config.get("remote", "username"), config.get("remote", "accessKey"))
+                test_status = scenario.status == 'passed'
+                sauce_client.jobs.update_job(context.driver.session_id, passed=test_status, name=scenario.name)
+            except SauceException as e:
+                print(e)
+                print('can not update status for sauce lab')
+                assert True
+        context.driver.quit()
     logger.info(f'Scenario {scenario.name} Ended')
-
 def after_all(context):
     if context.driver and context.platform == 'WEB':
         logger.info('Closing driver from After_ALL')
