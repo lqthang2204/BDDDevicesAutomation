@@ -16,18 +16,14 @@ from execute_open_mobile import manage_hook_mobile as manage_remote
 import json
 class manage_hook_browser:
     def open_browser(self, context, table, name):
-        try:
             if context.device['is_headless']:
                 context.highlight = 'false'
             if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
                 self.cross_browser_with_web(context, context.device, table, name)
             else:
                  self.launch_browser(context, context.device, context.browser, table, name)
-        except:
-            logger.info('Framework only is support for chrome, firefox and safari..., script is supporting for browser')
-            assert False, f"Framework only is support for chrome, firefox and safari..., script is supporting for browser"
     def launch_browser(self, context, device, browser, table, name):
-        option = self.get_option_from_browser(browser, device, table)
+        option = self.get_option_from_browser(context, browser, device, table)
         if device['auto_download_driver'] is False:
             self.get_driver_from_path(context, browser, device, option)
         else:
@@ -67,7 +63,7 @@ class manage_hook_browser:
                 executable_path=project_folder + '\\' + device['driver_version'])
             context.driver = webdriver.Chrome(service=service, options=option)
 
-    def get_option_from_browser(self, browser, device, table):
+    def get_option_from_browser(self, context, browser, device, table):
         supported_browsers = {
             'chrome': chrome_option,
             'firefox': firefox_option,
@@ -78,13 +74,19 @@ class manage_hook_browser:
             for rows in table:
                 if rows[0] == 'argument':
                     option.add_argument(rows[1])
+                elif rows[0] == 'extension':
+                    folder_path = os.path.join(context.root_path, 'extensions/')
+                    option.add_extension(folder_path + rows[1])
+                else:
+                    logger.info(f'Framework only is support for argument, extension parameter not support for {rows[0]}')
+                    assert False, f'Framework only is support for argument, extension parameter not support for {rows[0]}'
         if device['is_headless'] and browser.lower() in ['chrome', 'firefox']:
             option.add_argument('--headless')
         return option
 
     def cross_browser_with_web(self, context, device, table, name):
         config = manage_remote().read_config_remote()
-        options = self.get_option_from_browser(config.get("remote", "browser"), device, table)
+        options = self.get_option_from_browser(context, config.get("remote", "browser"), device, table)
         options.browser_version = 'latest'
         options.platform_name = config.get("remote", "platform_name")
         sauce_options = {}
