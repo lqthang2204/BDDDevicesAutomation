@@ -23,6 +23,9 @@ class manage_hook_mobile:
                     self.launch_mobile(context, context.device, table, True)
                     context.wait = context.device['wait']
                     context.highlight = 'false'
+            case _:
+                assert False, f"platformName {context.device['platformName'].upper()} not support in framework"
+
 
     def cross_browser_with_mobile(self, context, device, table):
         config = self.read_config_remote()

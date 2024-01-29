@@ -35,11 +35,11 @@ class manage_hook_browser:
                     context.driver = webdriver.Firefox(options=option)
                 case 'safari':
                     context.driver = webdriver.Safari()
-                case fail:
+                case _:
                     logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
                     context.driver = webdriver.Chrome(options=option)
-        context.wait = device['wait']
-        context.time_page_load = device['time_page_load']
+        context.wait = self.check_attr_exist(device, 'wait')
+        context.time_page_load = self.check_attr_exist(device, 'time_page_load')
         if any("--window-size" in argument for argument in option.__getattribute__("arguments")) is False:
             context.driver.maximize_window()
         context.driver.get(context.url[name])
@@ -103,3 +103,17 @@ class manage_hook_browser:
         context.time_page_load = device['time_page_load']
         context.driver.maximize_window()
         context.driver.get(context.url[name])
+    def check_attr_exist(self, device, label):
+        match label:
+            case "wait":
+                if hasattr(device, label):
+                    return device[label]
+                else:
+                    return 30
+            case "time_page_load":
+                if hasattr(device, label):
+                    return device[label]
+                else:
+                    return 30
+            case _:
+                assert False, f'attribute {label} not support in framework'
