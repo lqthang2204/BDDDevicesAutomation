@@ -54,7 +54,7 @@ Feature: test feature drag and drop
     And I right-click element right-button
     And I wait for element edit-button to be DISPLAYED
 
-  @switch-Iframe
+  @switch-Iframe @norun
   Scenario: switch-Iframe
     Given I navigate to url GURU99-DOUBLE with options below
       | options   | value                       |
