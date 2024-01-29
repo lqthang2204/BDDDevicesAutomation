@@ -3,7 +3,7 @@
 
 ### About this project
 
-* The project holds all automation tests for multi-project by browser
+* The project holds all automation tests for multi-project by browser and mobile (android and ios)
 
 ### Why do I need this project?
 
