@@ -24,8 +24,9 @@ class manage_hook_browser:
                  self.launch_browser(context, context.device, context.browser, table, name)
     def launch_browser(self, context, device, browser, table, name):
         option = self.get_option_from_browser(context, browser, device, table)
-        if device['auto_download_driver'] is False:
-            self.get_driver_from_path(context, browser, device, option)
+        if hasattr(device, 'auto_download_driver'):
+            if context.device['auto_download_driver'] is False:
+                self.get_driver_from_path(context, browser, device, option)
         else:
             match browser:
                 case 'chrome':

@@ -18,7 +18,7 @@ def launchBrowser(context, name):
     if context.device['platformName'] == 'WEB':
         manage_hook_browser().open_browser(context, None, name)
     else:
-        context.driver.get(context.url[name])
+        manage_hook_browser().launch_browser(context, context.device, context.browser, None, context.url[name])
 
 @step(u'I open application with config below')
 def step_impl(context):
