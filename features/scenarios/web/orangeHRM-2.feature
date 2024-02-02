@@ -46,7 +46,7 @@ Feature: orange HRM 2 web
 
   @norun
   Scenario: This should not be included
-    Given I navigate to url have index 1
+    Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
