@@ -19,9 +19,9 @@ elements:
       - device: WEB
         type: ID
         value: com.android.chrome:id/signin_fre_dismiss_button
-      - device: ANDROID
+      - device: IOS
         type: ID
         value: com.google.android.deskclock:id/material_timepicker_cancel_button
       - device: ANDROID
         type: ID
-        value: com.android.chrome:id/signin_fre_dismiss_button
+        value: android:id/button2

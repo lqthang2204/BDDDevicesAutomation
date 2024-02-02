@@ -4,7 +4,7 @@ import os
 from Utilities.action_web import ManagementFile
 from Utilities.read_configuration import read_configuration
 from project_runner import logger, project_folder
-from sauceclient import SauceClient
+from sauceclient import SauceClient, SauceException
 from steps.execute_open_mobile import manage_hook_mobile as manage_remote
 
 
@@ -88,65 +88,20 @@ def after_step(context, step):
 
 def after_scenario(context, scenario):
     if context.driver:
-        context.driver.quit()
         if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-            config = manage_remote().read_config_remote()
-            sauce_client = SauceClient(config.get("remote", "username"), config.get("remote", "accessKey"))
-            test_status = scenario.status == 'passed'
-            sauce_client.jobs.update_job(context.driver.session_id, passed=test_status, name=scenario.name)
+            try:
+                config = manage_remote().read_config_remote()
+                sauce_client = SauceClient(config.get("remote", "username"), config.get("remote", "accessKey"))
+                test_status = scenario.status == 'passed'
+                sauce_client.jobs.update_job(context.driver.session_id, passed=test_status, name=scenario.name)
+            except SauceException as e:
+                print(e)
+                print('can not update status for sauce lab')
+                assert True
+        context.driver.quit()
     logger.info(f'Scenario {scenario.name} Ended')
-
 def after_all(context):
     if context.driver and context.platform == 'WEB':
         logger.info('Closing driver from After_ALL')
         context.driver.close()
         context.driver.quit()
-
-# def get_driver_from_path(context, browser, device, option):
-#     # //change due to update form selenium 4.10.0 , removed executable_path
-#     # https://github.com/SeleniumHQ/selenium/commit/9f5801c82fb3be3d5850707c46c3f8176e3ccd8e
-#     if browser == 'chrome':
-#         service = chrome_service(
-#             executable_path=project_folder + '\\' + device['driver_path'])
-#         context.driver = webdriver.Chrome(service=service, options=option)
-#     elif browser == 'firefox':
-#         service = firefox_service(
-#             executable_path=project_folder + '\\' + device['driver_path'])
-#         context.driver = webdriver.Firefox(service=service, options=option)
-#     elif browser == 'safari':
-#         service = safari_service(
-#             executable_path=project_folder + '\\' + device['driver_path'])
-#         context.driver = webdriver.Safari(service=service, options=option)
-#     else:
-#         logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
-#         service = chrome_service(
-#             executable_path=project_folder + '\\' + device['driver_version'])
-#         context.driver = webdriver.Chrome(service=service, options=option)
-
-# def get_option_from_browser(browser, device):
-#     supported_browsers = {
-#         'chrome': chrome_option,
-#         'firefox': firefox_option,
-#         'safari': safari_option,
-#     }
-#     option = supported_browsers.get(browser.lower(), chrome_option)()
-#     if device['is_headless'] and browser.lower() in ['chrome', 'firefox']:
-#         option.add_argument('--headless')
-#     return option
-# def cross_browser_with_web(context, device):
-#     config = manage_remote().read_config_remote()
-#     options = get_option_from_browser(config.get("remote", "browser"), device)
-#     options.browser_version = 'latest'
-#     options.platform_name = config.get("remote", "platform_name")
-#     sauce_options = {}
-#     sauce_options['username'] = config.get("remote", "username")
-#     sauce_options['accessKey'] = config.get("remote", "accessKey")
-#     sauce_options['build'] = config.get("remote", "build")
-#     sauce_options['name'] = config.get("remote", "name")
-#     options.set_capability('sauce:options', sauce_options)
-#     url = config.get("remote", "url")
-#     context.driver = webdriver.Remote(command_executor=url, options=options)
-#     context.wait = device['wait']
-#     context.device = device
-#     context.time_page_load = device['time_page_load']
-#     context.driver.maximize_window()
