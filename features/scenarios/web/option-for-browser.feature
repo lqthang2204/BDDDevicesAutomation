@@ -13,6 +13,7 @@ Feature: add option for browser
 #make-default-browser	          Makes Chrome default browser
 #version	                          Prints chrome browser version
 #disable-infobars	              Prevents Chrome from displaying the notification ‘Chrome is being controlled by automated software
+#  list option for chrome : https://gist.github.com/ntamvl/4f93bbb7c9b4829c601104a2d2f91fe5
   @option-for-arguments
   Scenario: test options arguments browser
     Given I navigate to url OPEN_MRS with options below
