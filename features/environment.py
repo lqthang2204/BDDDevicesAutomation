@@ -9,55 +9,61 @@ from steps.execute_open_mobile import manage_hook_mobile as manage_remote
 
 
 def before_all(context):
-    context.dict_save_value = {}
-    context.driver = None
-    context.root_path = project_folder
-    config_file_path = os.path.join(context.root_path, 'config_env.ini')
-    file = open(config_file_path, 'r')
-    context.config_env = configparser.RawConfigParser(allow_no_value=True)
-    context.config_env.read_file(file)
-    context.platform = context.config_env.get("drivers_config", "platform").upper()
-    context.highlight = context.config_env.get("drivers_config", "is_highlight").lower()
-    context.project_folder = project_folder
-    context.stage_name = context.config_env.get("drivers_config", "stage").upper()
-    if context.config_env.has_option("drivers_config", "browser"):
-        context.browser = context.config_env.get("drivers_config", "browser")
-    else:
-        context.browser = "chrome"
-    context.env = read_configuration().read(context.stage_name)
+    try:
+        context.dict_save_value = {}
+        context.driver = None
+        context.root_path = project_folder
+        config_file_path = os.path.join(context.root_path, 'config_env.ini')
+        file = open(config_file_path, 'r')
+        context.config_env = configparser.RawConfigParser(allow_no_value=True)
+        context.config_env.read_file(file)
+        context.platform = context.config_env.get("drivers_config", "platform").upper()
+        context.highlight = context.config_env.get("drivers_config", "is_highlight").lower()
+        context.project_folder = project_folder
+        context.stage_name = context.config_env.get("drivers_config", "stage").upper()
+        if context.config_env.has_option("drivers_config", "browser"):
+            context.browser = context.config_env.get("drivers_config", "browser")
+        else:
+            context.browser = "chrome"
+        context.env = read_configuration().read(context.stage_name)
+    except Exception as e:
+        logger.error(str(e))
 
 
 def before_scenario(context, scenario):
-    if context.platform != 'API':
-        device = context.env['devices']
-        context.device = list(filter(
-            lambda device: device['platformName'] == context.platform, device
-        ))
-        if len(context.device) == 0:
-            logger.error('Framework only is support for chrome, firefox and safari..., trying open with chrome')
-        context.device = context.device[0]
-        match context.device['platformName'].upper():
-            case "WEB":
-                # if context.device['is_headless']: context.highlight = 'false'
-                # if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-                #     cross_browser_with_web(context, context.device)
-                # else:
-                #     launch_browser(context, context.device, context.browser)
-                pass
-            case "ANDROID":
-                pass
-            case "IOS":
-                pass
-            case fail:
-                logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
-                assert False, "Framework only is support for chrome, firefox and safari..., trying open with chrome"
-        context.url = context.env['link']
+    try:
+        if context.platform != 'API':
+            device = context.env['devices']
+            context.device = list(filter(
+                lambda device: device['platformName'] == context.platform, device
+            ))
+            if len(context.device) == 0:
+                logger.error('Framework only is support for chrome, firefox and safari..., trying open with chrome')
+            context.device = context.device[0]
+            match context.device['platformName'].upper():
+                case "WEB":
+                    # if context.device['is_headless']: context.highlight = 'false'
+                    # if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+                    #     cross_browser_with_web(context, context.device)
+                    # else:
+                    #     launch_browser(context, context.device, context.browser)
+                    pass
+                case "ANDROID":
+                    pass
+                case "IOS":
+                    pass
+                case fail:
+                    logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
+                    assert False, "Framework only is support for chrome, firefox and safari..., trying open with chrome"
+            context.url = context.env['link']
 
-    context.apiurls = context.env['apifacets']['link']
-    context.endpoints = read_configuration().read_api_endpoints()
-    logger.info(f'Scenario {scenario.name} started')
-    context.dict_yaml = ManagementFile().get_dict_path_yaml()
-    context.dict_page_element = {}
+        context.apiurls = context.env['apifacets']['link']
+        context.endpoints = read_configuration().read_api_endpoints()
+        logger.info(f'Scenario {scenario.name} started')
+        context.dict_yaml = ManagementFile().get_dict_path_yaml()
+        context.dict_page_element = {}
+    except Exception as e:
+        logger.error(str(e) + "with scenario "+scenario.name)
 
 
 # def launch_browser(context, device, browser):

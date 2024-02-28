@@ -372,7 +372,27 @@ class common_device:
                 driver.switch_to.window(tab)
                 flag = True
                 break
-        assert flag, f'can now switch to tab has {title}, please verify title in page'
+        assert flag, f'can not switch to tab has {title}, please verify title in page'
+    def close_web_page(self, driver, title):
+        tab_list = driver.window_handles
+        flag = False
+        for tab in tab_list:
+            driver.switch_to.window(tab)
+            if driver.title == title:
+                driver.close()
+                flag = True
+                break
+        assert flag, f'can not close to tab has {title}, please verify title in page'
+
+    def close_by_index(self, driver, index):
+        try:
+            driver.switch_to.window(driver.window_handles[int(index)-1])
+            driver.close()
+        except IndexError as index:
+            logger.error(" can not close web driver with index "+index)
+            assert False,  index
+
+
 
 
 

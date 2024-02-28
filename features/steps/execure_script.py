@@ -212,3 +212,11 @@ def step_impl(context, element, action):
 @step("I navigate to refresh-page")
 def step_impl(context):
     context.driver.refresh()
+
+@step(u'I close the tab with title "{title}"')
+def step_impl(context, title):
+    context.element_page = common_device().close_web_page(context.driver, title)
+
+@step(u'I close the tab with index {index}')
+def step_impl(context, index):
+    context.element_page = common_device().close_by_index(context.driver, index)
