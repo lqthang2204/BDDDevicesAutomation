@@ -220,3 +220,6 @@ def step_impl(context, title):
 @step(u'I close the tab with index {index}')
 def step_impl(context, index):
     context.element_page = common_device().close_by_index(context.driver, index)
+@step(u'I close application')
+def step_impl(context):
+    ManagementFileAndroid().close_application(driver=context.driver)

@@ -13,14 +13,16 @@ class manage_hook_mobile:
                 if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
                     self.cross_browser_with_mobile(context, context.device, table)
                 else:
-                    self.launch_mobile(context, context.device, table, True)
+                    options = self.create_android_driver(context, context.device, table)
+                    self.launch_mobile(options, context)
                     context.wait = context.device['wait']
                     context.highlight = 'false'
             case "IOS":
                 if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
                     self.cross_browser_with_mobile(context, context.device, table)
                 else:
-                    self.launch_mobile(context, context.device, table, True)
+                    options = self.create_ios_driver(context, context.device, table)
+                    self.launch_mobile(options, context)
                     context.wait = context.device['wait']
                     context.highlight = 'false'
             case _:
@@ -54,19 +56,38 @@ class manage_hook_mobile:
         config.read_file(file)
         return config
 
-    def launch_mobile(self, context, device, table, flag):
+    def launch_mobile(self, options, context):
         try:
-            desired_caps = self.get_data_config_mobile(context, device, table)
-            context.wait = device['wait']
-            if flag:
-                appium_url = self.check_att_exist(desired_caps, "appium_url")
-                context.driver = appium_driver.Remote(appium_url, desired_capabilities=desired_caps, strict_ssl = False)
+            appium_url = self.check_att_exist(options, "appium_url")
+            context.driver = appium_driver.Remote(appium_url, options = options, strict_ssl = False)
         except SessionNotCreatedException as ex:
             logger.error('Config file updated based on user provided command line arguments')
             print("not connect with remote saucelab, please check configuration again!")
             assert False, f'{ex.msg}'
     def check_att_exist(self, obj, key):
-        if obj.get(key) is None:
+        if obj.get_capability(key) is None or obj.get_capability('appium:'+key) is None:
             return "127.0.0.1:4723"
         else:
-            return obj.get(key)
+            try:
+                return obj.get_capability(key)
+            except Exception as e:
+                print("please check file input json" , e)
+                assert False, e
+
+    def create_ios_driver(self, context, device, table):
+        desired_caps = self.get_data_config_mobile(context, device, table)
+        from appium.options.ios import XCUITestOptions
+        options = XCUITestOptions()
+        options.load_capabilities(desired_caps)
+        # Appium1 points to http://127.0.0.1:4723/wd/hub by default
+        return options
+    def create_android_driver(self, context, device, table):
+        desired_caps = self.get_data_config_mobile(context, device, table)
+        from appium.options.android import UiAutomator2Options
+        options = UiAutomator2Options()
+        options.load_capabilities(desired_caps)
+        # Appium1 points to http://127.0.0.1:4723/wd/hub by default
+        return options
+
+
+

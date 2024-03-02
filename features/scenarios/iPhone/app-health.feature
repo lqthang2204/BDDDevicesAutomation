@@ -6,6 +6,11 @@ Feature:  mobile ios
     Given I open application with config below
       | file config |
       | capabilities_app_health_ios            |
+     And I close application
+    And I open application with config below
+      | file config |
+      | capabilities_app_health_ios            |
+#    And I close application
     Given I change the page spec to index_health
     And I click element continue-button
     And I wait for element continue-button-page-2 to be ENABLED
