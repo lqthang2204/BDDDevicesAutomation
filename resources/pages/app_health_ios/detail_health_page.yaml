@@ -64,6 +64,19 @@ elements:
       - device: IOS
         type: ACCESSIBILITY_ID
         value: Date of Birth
+  - &dob-year
+    id: dob-year
+    description: Continue button at page 2
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeApplication[@name="Health"]/XCUIElementTypeWindow[3]/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther[3]/XCUIElementTypeDatePicker/XCUIElementTypePicker/XCUIElementTypePickerWheel[3]
   - &sex
     id: sex
     description: sex field

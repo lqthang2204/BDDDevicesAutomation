@@ -13,6 +13,8 @@ Feature:  mobile ios
     And I wait for element 1a-button to be DISPLAYED
     And I hover-over element 1a-button
    And I drag and drop element 1a-button to element 2a-button
+    And I navigate to refresh-page
+
 #    And I click element continue-button
 #    And I wait for element continue-button-pageÏ-2 to be ENABLED
 #    And I click element continue-button-page-2
@@ -24,7 +26,11 @@ Feature:  mobile ios
     Given I open application with config below
       | file config             |
       | capabilities_ios_safari |
-    Given I navigate to url GURU99-DOUBLE
+    And I close application
+     And I open application with config below
+       | file config             |
+       | capabilities_ios_safari |
+    And I navigate to url GURU99-DOUBLE
     And I change the page spec to double-example
     And I click element selenium-button
     And I click element selenium-demo-page

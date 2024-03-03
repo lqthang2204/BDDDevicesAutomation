@@ -63,7 +63,7 @@ def before_scenario(context, scenario):
         context.dict_yaml = ManagementFile().get_dict_path_yaml()
         context.dict_page_element = {}
     except Exception as e:
-        logger.error(str(e) + "with scenario "+scenario.name)
+        logger.error(str(e) + "with scenario " + scenario.name)
 
 
 # def launch_browser(context, device, browser):
@@ -92,6 +92,7 @@ def after_step(context, step):
             current_time.microsecond)
         context.driver.get_screenshot_as_file(context.evidence_path + '/' + step.name + '_' + date_time + '.png')
 
+
 def after_scenario(context, scenario):
     if context.driver:
         if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
@@ -106,8 +107,9 @@ def after_scenario(context, scenario):
                 assert True
         context.driver.quit()
     logger.info(f'Scenario {scenario.name} Ended')
+
+
 def after_all(context):
     if context.driver and context.platform == 'WEB':
         logger.info('Closing driver from After_ALL')
         context.driver.close()
-        context.driver.quit()

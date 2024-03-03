@@ -14,14 +14,17 @@ from project_runner import logger, project_folder
 from appium import webdriver as appium_driver
 from execute_open_mobile import manage_hook_mobile as manage_remote
 import json
+
+
 class manage_hook_browser:
     def open_browser(self, context, table, name):
-            if context.device['is_headless']:
-                context.highlight = 'false'
-            if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
-                self.cross_browser_with_web(context, context.device, table, name)
-            else:
-                 self.launch_browser(context, context.device, context.browser, table, name)
+        if context.device['is_headless']:
+            context.highlight = 'false'
+        if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+            self.cross_browser_with_web(context, context.device, table, name)
+        else:
+            self.launch_browser(context, context.device, context.browser, table, name)
+
     def launch_browser(self, context, device, browser, table, name):
         option = self.get_option_from_browser(context, browser, device, table)
         if hasattr(device, 'auto_download_driver'):
@@ -43,6 +46,7 @@ class manage_hook_browser:
         if any("--window-size" in argument for argument in option.__getattribute__("arguments")) is False:
             context.driver.maximize_window()
         context.driver.get(context.url[name])
+
     def get_driver_from_path(context, browser, device, option):
         # //change due to update form selenium 4.10.0 , removed executable_path
         # https://github.com/SeleniumHQ/selenium/commit/9f5801c82fb3be3d5850707c46c3f8176e3ccd8e
@@ -79,7 +83,8 @@ class manage_hook_browser:
                     folder_path = os.path.join(context.root_path, 'extensions/')
                     option.add_extension(folder_path + rows[1])
                 else:
-                    logger.info(f'Framework only is support for argument, extension parameter not support for {rows[0]}')
+                    logger.info(
+                        f'Framework only is support for argument, extension parameter not support for {rows[0]}')
                     assert False, f'Framework only is support for argument, extension parameter not support for {rows[0]}'
         if device['is_headless'] and browser.lower() in ['chrome', 'firefox']:
             option.add_argument('--headless')
@@ -103,6 +108,7 @@ class manage_hook_browser:
         context.time_page_load = device['time_page_load']
         context.driver.maximize_window()
         context.driver.get(context.url[name])
+
     def check_attr_exist(self, device, label):
         match label:
             case "wait":

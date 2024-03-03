@@ -88,6 +88,8 @@ class manage_hook_mobile:
         options.load_capabilities(desired_caps)
         # Appium1 points to http://127.0.0.1:4723/wd/hub by default
         return options
+    def navigate_url(self, driver, url):
+        driver.get(url)
 
 
 
