@@ -6,6 +6,11 @@ Feature:  mobile ios
     Given I open application with config below
       | file config |
       | capabilities_app_health_ios            |
+     And I close application
+    And I open application with config below
+      | file config |
+      | capabilities_app_health_ios            |
+#    And I close application
     Given I change the page spec to index_health
     And I click element continue-button
     And I wait for element continue-button-page-2 to be ENABLED
@@ -34,4 +39,9 @@ Feature:  mobile ios
     And I click element done-button
     And I click element dob
 #    And I drag and drop element date-picker-month to element first-name
-   And I type "March" into element date-picker-month
+#    And I save text for element dob-year with key "dob-year"
+    And I drag and drop element dob-year to element sex
+    And I click element done-button
+    And I wait 10 seconds
+
+

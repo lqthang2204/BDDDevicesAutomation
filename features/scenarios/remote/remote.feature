@@ -6,6 +6,10 @@ Feature:  test feature remote in saucelab
      Given I open application with config below
        | file config                            |
        | capabilities_android_app_demo_saucelab |
+     And I close application
+     Given I open application with config below
+       | file config                            |
+       | capabilities_android_app_demo_saucelab |
     And I change the page spec to indexRN
      And I click element username
      And I type "standard_user" into element username

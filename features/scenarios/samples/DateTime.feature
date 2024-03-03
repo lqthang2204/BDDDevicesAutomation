@@ -49,3 +49,12 @@ Feature: How to get Data Time random data
       | random_number_3.random_number_2         | randomPrice1D           |
       | random_number_10-15.random_number_10-15 | randomPrice2D           |
     And I print all the dictionary keys
+
+
+      @dates-2
+  Scenario: Get Random Date Time Data
+    Given I create a set of keys with below attributes
+      | Pattern to create data from | Save into Key Name |
+      | month_current_text          | FormatedDate1      |
+      | month_current_number        | FormatedDate1      |
+        And I print all the dictionary keys

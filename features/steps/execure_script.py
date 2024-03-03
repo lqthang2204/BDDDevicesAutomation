@@ -18,7 +18,7 @@ def launchBrowser(context, name):
     if context.device['platformName'] == 'WEB':
         manage_hook_browser().open_browser(context, None, name)
     else:
-        manage_hook_browser().launch_browser(context, context.device, context.browser, None, context.url[name])
+        manage_hook_mobile().navigate_url(context.driver, context.url[name])
 
 @step(u'I open application with config below')
 def step_impl(context):
@@ -211,4 +211,16 @@ def step_impl(context, element, action):
 
 @step("I navigate to refresh-page")
 def step_impl(context):
+    #now support for web browser, not support for mobile
     context.driver.refresh()
+
+@step(u'I close the tab with title "{title}"')
+def step_impl(context, title):
+    context.element_page = common_device().close_web_page(context.driver, title)
+
+@step(u'I close the tab with index {index}')
+def step_impl(context, index):
+    context.element_page = common_device().close_by_index(context.driver, index)
+@step(u'I close application')
+def step_impl(context):
+    ManagementFileAndroid().close_application(driver=context.driver)

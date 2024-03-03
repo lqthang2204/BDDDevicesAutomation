@@ -290,3 +290,15 @@ class ManagementFileAndroid:
         else:
             assert False, "can not execute scroll to element with action " + action + " in framework"
         assert flag, f'not found element when scroll'
+    def close_application(self, driver):
+        if driver.session_id:
+            try:
+                driver.quit()
+                # driver.terminateApp('com.apple.Health')
+            except Exception as e:
+                logger.error('can not close application ', e)
+                assert False, 'can not close application'
+
+
+
+
