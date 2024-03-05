@@ -224,3 +224,9 @@ def step_impl(context, index):
 @step(u'I close application')
 def step_impl(context):
     ManagementFileAndroid().close_application(driver=context.driver)
+
+@step(u'I click keyboard {key_board} button on element {element}')
+def step_impl(context, key_board, element):
+    context.element_page = common_device().get_element(context.page_present, element,
+                                                       context.device['platformName'], context.dict_save_value)
+    common_device().execute_send_key_board(context.driver, key_board,context.element_page, context.device)

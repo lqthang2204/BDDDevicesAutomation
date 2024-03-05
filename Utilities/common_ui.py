@@ -1,7 +1,9 @@
+import logging
 from time import sleep
 
 from appium.webdriver.common.touch_action import TouchAction
 from faker import Faker
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -391,6 +393,19 @@ class common_device:
         except IndexError as index:
             logger.error(" can not close web driver with index "+index)
             assert False,  index
+    def execute_send_key_board(self, driver, key_board, element_page, device):
+        try:
+            element = self.get_element_by_from_device(element_page, device, driver)
+            for attribute, value in Keys.__dict__.items():
+                print("attribute ", attribute)
+                print("value ", value)
+                if key_board.replace("'", "") == attribute:
+                    element.send_keys(value)
+                    break
+            # action.send_keys(Keys)
+        except Exception as e:
+            print('can not execute action with keyboard ', key_board )
+            assert False, f'can not execute action with keyboard {key_board}'
 
 
 
