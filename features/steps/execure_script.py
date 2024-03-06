@@ -229,4 +229,8 @@ def step_impl(context):
 def step_impl(context, key_board, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
-    common_device().execute_send_key_board(context.driver, key_board,context.element_page, context.device)
+    common_device().execute_keyboard_with_element(context.driver, key_board,context.element_page, context.device)
+
+@step(u'I execute {key_action} with keyboard {keyboard}')
+def step_impl(context, key_action, keyboard):
+    common_device().execute_keyboard_without_element(context.driver, key_action, keyboard, context.device)

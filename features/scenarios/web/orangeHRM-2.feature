@@ -51,3 +51,26 @@ Feature: orange HRM 2 web
     And I wait for element user-field to be DISPLAYED
     And I wait for element pass-field to be DISPLAYED
     And I type "Admin" into element user-field
+
+      @keyboard-1
+  Scenario: execute keyboard with element
+    Given I navigate to url OPEN_MRS
+    And I change the page spec to LoginPage
+    And I wait for element user-field to be DISPLAYED
+    And I wait for element pass-field to be DISPLAYED
+    And I type "Admin" into element user-field
+    And I click keyboard NUMPAD1 button on element user-field
+        And I wait 50 seconds
+
+      @keyboard-2
+  Scenario: execute keyboard without element
+    Given I navigate to url OPEN_MRS
+    And I change the page spec to LoginPage
+    And I wait for element user-field to be DISPLAYED
+    And I wait for element pass-field to be DISPLAYED
+    And I type "Admin" into element user-field
+    And I execute KEY_DOWN with keyboard CONTROL+a
+    And I execute KEY_DOWN with keyboard CONTROL+c
+    And I click element pass-field
+    And I execute KEY_DOWN with keyboard CONTROL+v
+    And I wait 50 seconds
