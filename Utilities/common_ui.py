@@ -1,7 +1,9 @@
+import logging
 from time import sleep
 
 from appium.webdriver.common.touch_action import TouchAction
 from faker import Faker
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -391,6 +393,43 @@ class common_device:
         except IndexError as index:
             logger.error(" can not close web driver with index "+index)
             assert False,  index
+
+            #list key board  NULL = "\ue000", CANCEL = "\ue001"  # ^break,HELP = "\ue002",BACKSPACE = "\ue003",BACK_SPACE = BACKSPACE,TAB = "\ue004",CLEAR = "\ue005",RETURN = "\ue006",ENTER = "\ue007",SHIFT = "\ue008",LEFT_SHIFT = SHIFT,CONTROL = "\ue009",LEFT_CONTROL = CONTROL,ALT = "\ue00a",LEFT_ALT = ALT,PAUSE = "\ue00b",ESCAPE = "\ue00c",SPACE = "\ue00d",PAGE_UP = "\ue00e",PAGE_DOWN = "\ue00f",END = "\ue010",HOME = "\ue011",LEFT = "\ue012",ARROW_LEFT = LEFT,UP = "\ue013",ARROW_UP = UP,RIGHT = "\ue014",ARROW_RIGHT = RIGHT,DOWN = "\ue015",ARROW_DOWN = DOWN,INSERT = "\ue016",DELETE = "\ue017",SEMICOLON = "\ue018",EQUALS = "\ue019",NUMPAD0 = "\ue01a" # number pad keys,NUMPAD1 = "\ue01b",NUMPAD2 = "\ue01c",NUMPAD3 = "\ue01d",NUMPAD4 = "\ue01e",NUMPAD5 = "\ue01f",NUMPAD6 = "\ue020",NUMPAD7 = "\ue021",NUMPAD8 = "\ue022",NUMPAD9 = "\ue023",MULTIPLY = "\ue024",ADD = "\ue025",SEPARATOR = "\ue026",SUBTRACT = "\ue027",DECIMAL = "\ue028",DIVIDE = "\ue029",,F1 = "\ue031" # function keys,F2 = "\ue032",F3 = "\ue033",F4 = "\ue034",F5 = "\ue035",F6 = "\ue036",F7 = "\ue037",F8 = "\ue038",F9 = "\ue039",F10 = "\ue03a",F11 = "\ue03b",F12 = "\ue03c",,META = "\ue03d",COMMAND = "\ue03d",ZENKAKU_HANKAKU = "\ue040"
+            # https: // github.com / SeleniumHQ / selenium / blob / trunk / py / selenium / webdriver / common / keys.py
+    def execute_keyboard_with_element(self, driver, key_board, element_page, device):
+        try:
+            element = self.get_element_by_from_device(element_page, device, driver)
+            attribute, value, list_key = self.get_value_key_code(key_board)
+            element.send_keys(value)
+            # action.send_keys(Keys)
+        except Exception as e:
+            print('can not execute action with keyboard ', key_board )
+            assert False, f'can not execute action with keyboard {key_board}'
+    def execute_keyboard_without_element(self, driver, key_board, key_action, device):
+        try:
+            action = ActionChains(driver)
+            attribute, value, list_key = self.get_value_key_code(key_action)
+            if key_board == 'KEY_DOWN':
+                if list_key[1]:
+                    action.key_down(Keys().__getattribute__(attribute)).send_keys(list_key[1]).perform()
+                else:
+                    action.key_down(Keys().__getattribute__(attribute)).perform()
+            elif key_board == 'KEY_UP':
+                if list_key[1]:
+                    action.key_up(Keys().__getattribute__(attribute)).send_keys(list_key[1]).perform()
+                else:
+                    action.key_up(Keys().__getattribute__(attribute)).perform()
+            # action.send_keys(Keys)
+        except Exception as e:
+            print('can not execute action with keyboard ', key_action )
+            assert False, f'can not execute action with keyboard {key_action}'
+
+    def get_value_key_code(self, key_name):
+        list_key = key_name.split('+')
+        for attribute, value in Keys.__dict__.items():
+            if list_key[0].replace("'", "") == attribute:
+                return attribute, value, list_key
+
 
 
 
