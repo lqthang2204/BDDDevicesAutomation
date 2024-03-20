@@ -73,4 +73,7 @@ Feature: orange HRM 2 web
     And I execute KEY_DOWN with keyboard CONTROL+c
     And I click element pass-field
     And I execute KEY_DOWN with keyboard CONTROL+v
-    And I wait 50 seconds
+        And I verify that following elements with below attributes
+          | Field      | Value | Status    | Helpers |
+          | pass-field | Admin | DISPLAYED |         |
+        And I wait 50 seconds

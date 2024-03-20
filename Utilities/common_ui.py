@@ -409,6 +409,7 @@ class common_device:
         try:
             action = ActionChains(driver)
             attribute, value, list_key = self.get_value_key_code(key_action)
+            attribute = self.change_keyboard_with_mac_env(attribute)
             if key_board == 'KEY_DOWN':
                 if list_key[1]:
                     action.key_down(Keys().__getattribute__(attribute)).send_keys(list_key[1]).perform()
@@ -429,6 +430,11 @@ class common_device:
         for attribute, value in Keys.__dict__.items():
             if list_key[0].replace("'", "") == attribute:
                 return attribute, value, list_key
+    def change_keyboard_with_mac_env(self, attribute):
+        import platform
+        os = platform.platform()
+        if os.__contains__('macOS') and attribute == 'CONTROL':
+            return 'COMMAND'
 
 
 
