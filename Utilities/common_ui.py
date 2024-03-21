@@ -435,6 +435,8 @@ class common_device:
         os = platform.platform()
         if os.__contains__('macOS') and attribute == 'CONTROL':
             return 'COMMAND'
+        else:
+            return attribute
 
 
 
