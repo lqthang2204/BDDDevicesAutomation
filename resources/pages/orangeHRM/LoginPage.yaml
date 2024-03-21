@@ -66,6 +66,18 @@ elements:
       - device: WEB
         type: XPATH
         value: //*[contains(text(), "{text}")]
+  - id: form-login
+    description: Location session
+    locators:
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+      - device: WEB
+        type: ID
+        value: login-form
 actions:
   - id: login-page
     description: login page
