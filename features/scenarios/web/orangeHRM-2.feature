@@ -76,4 +76,16 @@ Feature: orange HRM 2 web
         And I verify that following elements with below attributes
           | Field      | Value | Status    | Helpers |
           | pass-field | Admin | DISPLAYED |         |
-        And I wait 50 seconds
+    And I save text for element form-login with key "expect"
+    And I verify that following elements with below attributes
+          | Field      | Value             | Status    | Helpers  |
+          | form-login | Inpatient Ward    | DISPLAYED | CONTAINS |
+          | form-login | Isolation Ward    | DISPLAYED | CONTAINS |
+          | form-login | Laboratory        | DISPLAYED | CONTAINS |
+          | form-login | Outpatient Clinic | DISPLAYED | CONTAINS |
+          | form-login | Pharmacy          | DISPLAYED | CONTAINS |
+          | form-login | Registration Desk | DISPLAYED | CONTAINS |
+          | form-login | Can't log in?     | DISPLAYED | CONTAINS |
+    And I verify that following elements with below attributes
+      | Field      | Value      | Status    | Helpers  |
+      | form-login | KEY.expect | DISPLAYED | CONTAINS |
