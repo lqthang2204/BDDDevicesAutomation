@@ -129,7 +129,7 @@ class common_device:
             arr_locator[0]['value'] = arr_locator[0]['value'].replace("{text}", text)
             return arr_locator[0]
         except IndexError as e:
-            print(e)
+            logger.error(f'element {element} not exist in page spec, with platform {platform_name}')
             assert False, f'element {element} not exist in page spec, with platform {platform_name}'
 
     def verify_elements_with_status(self, page, table, platform_name, dict_save_value, driver, device, wait):
