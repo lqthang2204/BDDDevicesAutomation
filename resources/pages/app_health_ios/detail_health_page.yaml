@@ -36,8 +36,8 @@ elements:
         type: ACCESSIBILITY_ID
         value: Add alarm
       - device: IOS
-        type: IOS_CLASS_CHAIN
-        value: /**/XCUIElementTypeTextField[`value == "Optional"`][1]
+        type: XPATH
+        value: //XCUIElementTypeStaticText[@name="First Name"]/following-sibling::XCUIElementTypeTextField
   - &last-name
     id: last-name
     description: Continue button at page 2
@@ -51,6 +51,19 @@ elements:
       - device: IOS
         type: IOS_PREDICATE
         value: label == "Last Name"
+  - &last-name-field
+    id: last-name-field
+    description: Continue button
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeStaticText[@name="Last Name"]/following-sibling::XCUIElementTypeTextField
   - &dob
     id: dob
     description: Continue button at page 2
@@ -112,3 +125,10 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[XCUIElementTypePicker/XCUIElementTypePickerWheel][1]
+  - &button
+    id: button
+    description: Next button
+    locators:
+      - device: IOS
+        type: XPATH
+        value: //XCUIElementTypeButton[@name="{text}"]
