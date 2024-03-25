@@ -1,0 +1,13 @@
+elements:
+  - id: customer-id
+    description: Customer ID field
+    locators:
+      - device: WEB
+        type: NAME
+        value: cusid
+  - id: submit-button
+    description: Debit side
+    locators:
+      - device: WEB
+        type: NAME
+        value: submit

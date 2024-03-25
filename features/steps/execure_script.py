@@ -234,3 +234,15 @@ def step_impl(context, key_board, element):
 @step(u'I execute {key_action} with keyboard {keyboard}')
 def step_impl(context, key_action, keyboard):
     common_device().execute_keyboard_without_element(context.driver, key_action, keyboard, context.device)
+
+@step(u'I perform javascript {file} on element {element}')
+def step_impl(context, file, element):
+    context.element_page = common_device().get_element(context.page_present, element,
+                                                       context.device['platformName'], context.dict_save_value)
+    common_device().execute_javascript_file(context.root_path, context.element_page, file, context.driver, context.device)
+
+@step(u'I perform javascript {file}')
+def step_impl(context, file):
+    common_device().execute_javascript_without_file(context.root_path, file, context.driver,
+                                            context.device)
+

@@ -86,7 +86,7 @@ def before_scenario(context, scenario):
 #     context.driver.maximize_window()
 
 def after_step(context, step):
-    if step.status == 'failed':
+    if step.status == 'failed' and hasattr(context, 'evidence_path'):
         current_time = datetime.datetime.now()
         date_time = str(current_time.year) + '_' + str(current_time.month) + '_' + str(current_time.day) + '_' + str(
             current_time.microsecond)

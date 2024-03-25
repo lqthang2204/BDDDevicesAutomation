@@ -23,3 +23,8 @@ class read_configuration:
         with open(api_endpoint_path) as api_endpoints_file:
             api_endpoint = yaml.safe_load(api_endpoints_file.read())
         return api_endpoint
+    def get_content_javascript(self,root_path, javascript):
+        config_file_path = os.path.join(root_path+"/javascripts/", javascript+".js")
+        with open(config_file_path) as dataFile:
+            data = dataFile.read()
+            return data

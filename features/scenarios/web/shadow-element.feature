@@ -1,4 +1,4 @@
-@shadow
+@shadow @web
 Feature: test shadow elements
 
   @mc-chrome-shadow
@@ -30,6 +30,7 @@ Feature: test shadow elements
     And I change the page spec to settingpage
     And I click shadow element sync data
     And I wait 5 seconds
+
 
 #    And I type "Customize your Chrome profile" into shadow element search field
 ##    And I wait 5 seconds

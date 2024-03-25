@@ -103,6 +103,7 @@ elements:
       - device: WEB
         type: XPATH
         value: //*[text()='Close']
+
 actions:
   - id: click-if-exist-button
     description: dismiss action

@@ -453,3 +453,26 @@ class common_device:
             return 'COMMAND'
         else:
             return attribute
+
+    def execute_javascript_file(self, root_path, element_page, javascript_file, driver, device):
+        from Utilities.read_configuration import read_configuration
+        logger.info(f"perform with action javascript {javascript_file}")
+        try:
+            element = self.get_element_by_from_device(element_page, device, driver)
+            data = read_configuration().get_content_javascript(root_path, javascript_file)
+            result = driver.execute_script(data, element)
+            if isinstance(result, bool):
+                assert result, f"fail when execute javascript file {javascript_file}"
+        except Exception as e:
+            print('fail when execute javascript file', e)
+            assert result, f"fail when execute javascript file {javascript_file}"
+
+    def execute_javascript_without_file(self, root_path, javascript_file, driver, device):
+        from Utilities.read_configuration import read_configuration
+        logger.info(f"perform with action javascript {javascript_file}")
+        try:
+            data = read_configuration().get_content_javascript(root_path, javascript_file)
+            result = driver.execute_script(data)
+        except Exception as e:
+            print('fail when execute javascript file', e)
+            assert result, f"fail when execute javascript file {javascript_file}"
