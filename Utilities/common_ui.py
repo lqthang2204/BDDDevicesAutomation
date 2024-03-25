@@ -465,7 +465,7 @@ class common_device:
                 assert result, f"fail when execute javascript file {javascript_file}"
         except Exception as e:
             print('fail when execute javascript file', e)
-            assert result, f"fail when execute javascript file {javascript_file}"
+            assert False, f"fail when execute javascript file {javascript_file}"
 
     def execute_javascript_without_file(self, root_path, javascript_file, driver, device):
         from Utilities.read_configuration import read_configuration
@@ -475,4 +475,4 @@ class common_device:
             result = driver.execute_script(data)
         except Exception as e:
             print('fail when execute javascript file', e)
-            assert result, f"fail when execute javascript file {javascript_file}"
+            assert False, f"fail when execute javascript file {javascript_file}"

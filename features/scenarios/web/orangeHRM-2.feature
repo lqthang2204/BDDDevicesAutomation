@@ -147,12 +147,20 @@ Feature: orange HRM 2 web
 
        @javascript-mouse-hover
   Scenario: test javascript function
-    Given I navigate to url GURU99
+     Given I perform javascript scrollToElement with below arguments
+       | arguments              | value |
+       | bank_label, debit_side |       |
+     And I navigate to url GURU99
     And I change the page spec to demoguru99
     And I wait for element bank_label to be DISPLAYED
     And I wait for element debit_side to be DISPLAYED
 #    And I hover-over element bank_label
 #    And I drag and drop element bank_label to element debit_side
-         And I perform javascript mouseHover on element bank_label
+     And I perform javascript mouseHover on element bank_label
 #         And I perform javascript mouseHover on element debit_side
+     And I perform javascript openNewTab
+     And I switch active tab with index 2
+     And I navigate to url GURU99
+     And I perform javascript scrollToBottom
+     And I perform javascript scrollToTop
     And I wait 5 seconds

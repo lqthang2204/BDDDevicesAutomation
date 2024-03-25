@@ -27,24 +27,25 @@ class manage_hook_browser:
 
     def launch_browser(self, context, device, browser, table, name):
         option = self.get_option_from_browser(context, browser, device, table)
-        if hasattr(device, 'auto_download_driver'):
-            if context.device['auto_download_driver'] is False:
-                self.get_driver_from_path(context, browser, device, option)
-        else:
-            match browser:
-                case 'chrome':
-                    context.driver = webdriver.Chrome(options=option)
-                case 'firefox':
-                    context.driver = webdriver.Firefox(options=option)
-                case 'safari':
-                    context.driver = webdriver.Safari()
-                case _:
-                    logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
-                    context.driver = webdriver.Chrome(options=option)
-        context.wait = self.check_attr_exist(device, 'wait')
-        context.time_page_load = self.check_attr_exist(device, 'time_page_load')
-        if any("--window-size" in argument for argument in option.__getattribute__("arguments")) is False:
-            context.driver.maximize_window()
+        if context.driver is None:
+            if hasattr(device, 'auto_download_driver'):
+                if context.device['auto_download_driver'] is False:
+                    self.get_driver_from_path(context, browser, device, option)
+            else:
+                match browser:
+                    case 'chrome':
+                        context.driver = webdriver.Chrome(options=option)
+                    case 'firefox':
+                        context.driver = webdriver.Firefox(options=option)
+                    case 'safari':
+                        context.driver = webdriver.Safari()
+                    case _:
+                        logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
+                        context.driver = webdriver.Chrome(options=option)
+            context.wait = self.check_attr_exist(device, 'wait')
+            context.time_page_load = self.check_attr_exist(device, 'time_page_load')
+            if any("--window-size" in argument for argument in option.__getattribute__("arguments")) is False:
+                context.driver.maximize_window()
         context.driver.get(context.url[name])
 
     def get_driver_from_path(context, browser, device, option):
@@ -91,22 +92,23 @@ class manage_hook_browser:
         return option
 
     def cross_browser_with_web(self, context, device, table, name):
-        config = manage_remote().read_config_remote()
-        options = self.get_option_from_browser(context, config.get("remote", "browser"), device, table)
-        options.browser_version = 'latest'
-        options.platform_name = config.get("remote", "platform_name")
-        sauce_options = {}
-        sauce_options['username'] = config.get("remote", "username")
-        sauce_options['accessKey'] = config.get("remote", "accessKey")
-        sauce_options['build'] = config.get("remote", "build")
-        sauce_options['name'] = config.get("remote", "name")
-        options.set_capability('sauce:options', sauce_options)
-        url = config.get("remote", "url")
-        context.driver = webdriver.Remote(command_executor=url, options=options)
-        context.wait = device['wait']
-        context.device = device
-        context.time_page_load = device['time_page_load']
-        context.driver.maximize_window()
+        if context.driver is None:
+            config = manage_remote().read_config_remote()
+            options = self.get_option_from_browser(context, config.get("remote", "browser"), device, table)
+            options.browser_version = 'latest'
+            options.platform_name = config.get("remote", "platform_name")
+            sauce_options = {}
+            sauce_options['username'] = config.get("remote", "username")
+            sauce_options['accessKey'] = config.get("remote", "accessKey")
+            sauce_options['build'] = config.get("remote", "build")
+            sauce_options['name'] = config.get("remote", "name")
+            options.set_capability('sauce:options', sauce_options)
+            url = config.get("remote", "url")
+            context.driver = webdriver.Remote(command_executor=url, options=options)
+            context.wait = device['wait']
+            context.device = device
+            context.time_page_load = device['time_page_load']
+            context.driver.maximize_window()
         context.driver.get(context.url[name])
 
     def check_attr_exist(self, device, label):

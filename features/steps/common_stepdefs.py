@@ -76,3 +76,13 @@ def navigate_with_option(context, name):
     if context.table:
         context_table = sanitize_datatable(context.table)
         manage_hook_browser().open_browser(context, context_table, name)
+@step(u'I perform javascript {file} with below arguments')
+def step_impl(context, file):
+    if context.table:
+        print("test")
+        context_table = sanitize_datatable(context.table)
+        # for row in context_table:
+        #     context.element_page = common_device().verify_elements_below_attributes(context.page_present, row,
+        #                                                                        context.device['platformName'],
+        #                                                                        context.dict_save_value, context.driver,
+        #                                                                        context.device, context.wait, context.highlight)
