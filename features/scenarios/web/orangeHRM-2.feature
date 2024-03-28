@@ -123,7 +123,7 @@ Feature: orange HRM 2 web
     And I accept for popup
     And I wait 10 seconds
 
-    @function-read-javascript-2
+  @function-read-javascript-2
   Scenario: execute keyboard without element
     Given I navigate to url GURU99-DOUBLE with options below
       | options   | value                       |
@@ -136,31 +136,46 @@ Feature: orange HRM 2 web
     And I switch active tab with title "Simple Context Menu"
     And I navigate to refresh-page
     And I change the page spec to checkBoxPage
-      And I wait for element option-button with text "Selenium" to be ENABLED
-      And I click element option-button with text "Selenium"
+    And I wait for element option-button with text "Selenium" to be ENABLED
+    And I click element option-button with text "Selenium"
     And I wait for element option-button with text "Radio & Checkbox Demo" to be ENABLED
     And I click element option-button with text "Radio & Checkbox Demo"
     And I wait for element radio-one to be DISPLAYED
-      And I click element radio-one
-      And I perform javascript getCheckBxState on element radio-one
-      And I perform javascript getCheckBxState on element radio-two
+    And I click element radio-one
+    And I perform javascript getCheckBxState on element radio-one
+    And I perform javascript getCheckBxState on element radio-two
 
-       @javascript-mouse-hover
+  @javascript-mouse-hover
   Scenario: test javascript function
-     Given I perform javascript scrollToElement with below arguments
-       | arguments              | value |
-       | bank_label, debit_side |       |
-     And I navigate to url GURU99
+    And I navigate to url GURU99
     And I change the page spec to demoguru99
     And I wait for element bank_label to be DISPLAYED
     And I wait for element debit_side to be DISPLAYED
 #    And I hover-over element bank_label
 #    And I drag and drop element bank_label to element debit_side
-     And I perform javascript mouseHover on element bank_label
+    And I perform javascript mouseHover on element bank_label
 #         And I perform javascript mouseHover on element debit_side
-     And I perform javascript openNewTab
-     And I switch active tab with index 2
-     And I navigate to url GURU99
-     And I perform javascript scrollToBottom
-     And I perform javascript scrollToTop
+    And I perform javascript openNewTab
+    And I switch active tab with index 2
+    And I navigate to url GURU99
+    And I perform javascript scrollToBottom
+    And I perform javascript scrollToTop
     And I wait 5 seconds
+
+  @scroll-to-element-3
+  Scenario: test scroll to element 2
+    Given I navigate to url INDEX_GURU
+    And I change the page spec to index_guru
+#    And I scroll by java-script to element header-python-tutorial
+    And I wait 10 seconds
+    And I perform javascript scrollToElement with below arguments
+      | arguments              |
+      | title-page             |
+      | header-python-tutorial |
+    And I wait 5 seconds
+    And I perform javascript scrollToElement with below arguments
+      | arguments                           |
+      | title-page , header-python-tutorial |
+    And I wait 5 seconds
+
+    

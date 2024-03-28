@@ -454,7 +454,7 @@ class common_device:
         else:
             return attribute
 
-    def execute_javascript_file(self, root_path, element_page, javascript_file, driver, device):
+    def execute_javascript_with_element(self, root_path, element_page, javascript_file, driver, device):
         from Utilities.read_configuration import read_configuration
         logger.info(f"perform with action javascript {javascript_file}")
         try:
@@ -467,12 +467,33 @@ class common_device:
             print('fail when execute javascript file', e)
             assert False, f"fail when execute javascript file {javascript_file}"
 
-    def execute_javascript_without_file(self, root_path, javascript_file, driver, device):
+    def execute_javascript_without_element(self, root_path, javascript_file, driver, device):
         from Utilities.read_configuration import read_configuration
         logger.info(f"perform with action javascript {javascript_file}")
         try:
             data = read_configuration().get_content_javascript(root_path, javascript_file)
             result = driver.execute_script(data)
+            if isinstance(result, bool):
+                assert result, f"fail when execute javascript file {javascript_file}"
         except Exception as e:
             print('fail when execute javascript file', e)
             assert False, f"fail when execute javascript file {javascript_file}"
+
+    def execute_javascript_with_table(self, root_path, arr_element_page, javascript_file, driver, device):
+        from Utilities.read_configuration import read_configuration
+        logger.info(f"perform with action javascript {javascript_file}")
+        data = read_configuration().get_content_javascript(root_path, javascript_file)
+        try:
+            args = []
+            for element in arr_element_page:
+                args.append(self.get_element_by_from_device(element, device, driver))
+            result = driver.execute_script(data, *args)
+            if isinstance(result, bool):
+                assert result, f"fail when execute javascript file {javascript_file}"
+        except Exception as e:
+            print('fail when execute javascript file', e)
+            assert False, f"fail when execute javascript file {javascript_file}"
+
+    # def convert(self, lst):
+    #     res_dct = {lst[i]: lst[i + 1] for i in range(0, len(lst), 2)}
+    #     return res_dct
