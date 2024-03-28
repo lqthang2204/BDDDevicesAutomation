@@ -2,6 +2,7 @@ from time import sleep
 
 from behave import *
 
+from Utilities.common_ui import common_device
 from libraries.accessibility_report import perform_accessibility_verification
 from libraries.data_generators import get_test_data_for
 from libraries.misc_operations import sanitize_datatable
@@ -76,3 +77,17 @@ def navigate_with_option(context, name):
     if context.table:
         context_table = sanitize_datatable(context.table)
         manage_hook_browser().open_browser(context, context_table, name)
+@step(u'I perform javascript {file} with below arguments')
+def step_impl(context, file):
+    if context.table:
+        print("test")
+        context_table = sanitize_datatable(context.table)
+        for row in context_table:
+            arr_args = []
+            for value in row[0].split(","):
+                element = common_device().get_element(context.page_present, value.strip(),
+                                                      context.device['platformName'], context.dict_save_value)
+                arr_args.append(element)
+                print("arr_args ", arr_args)
+            common_device().execute_javascript_with_table(context.root_path, arr_args, file, context.driver,
+                                                        context.device)

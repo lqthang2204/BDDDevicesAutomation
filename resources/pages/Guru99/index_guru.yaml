@@ -5,6 +5,12 @@ elements:
       - device: WEB
         type: XPATH
         value: //a[text()='Selenium']
+  - id: title-page
+    description: selenium icon
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //h1[text()="Tutorials Library"]
   - id: header-tutorial
     description: header selenium tutorial
     locators:
@@ -17,10 +23,21 @@ elements:
       - device: WEB
         type: XPATH
         value: //h4[text()="Python"]
+  - id: header-ethical-hacking-tutorial
+    description: header Ethical Hacking tutorial
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //h4[text()="Ethical Hacking"]
   - id: python-tutorial
     description: python tutorial
     locators:
       - device: WEB
         type: XPATH
         value: //a[text()="{text}"]
-
+  - id: python-tutorial-bot
+    description: python tutorial
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //a[text()="Execute Python"]
