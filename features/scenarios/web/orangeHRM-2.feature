@@ -178,4 +178,21 @@ Feature: orange HRM 2 web
       | title-page , header-python-tutorial |
     And I wait 5 seconds
 
+
+      @test-failed-rerun
+  Scenario: test scroll to element 2
+    Given I navigate to url INDEX_GURU
+    And I change the page spec to index_guru
+#    And I scroll by java-script to element header-python-tutorial
+    And I wait 10 seconds
+    And I perform javascript scrToElement with below arguments
+      | arguments              |
+      | title-page             |
+      | header-python-tutorial |
+    And I wait 5 seconds
+    And I perform javascript scrollToElement with below arguments
+      | arguments                           |
+      | title-page , header-python-tutorial |
+    And I wait 5 seconds
+
     
