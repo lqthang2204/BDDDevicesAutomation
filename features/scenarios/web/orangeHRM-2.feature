@@ -166,7 +166,7 @@ Feature: orange HRM 2 web
   Scenario: test scroll to element 4
     Given I navigate to url INDEX_GURU
     And I change the page spec to index_guru
-    And I wait for element header-python-tutorial to be NOT_DISPLAYED
+    And I wait for element header-python-tutorial to be DISPLAYED
 #    And I scroll by java-script to element header-python-tutorial
     And I wait 10 seconds
     And I perform javascript scrollToElement with below arguments
