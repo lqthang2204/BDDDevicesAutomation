@@ -6,6 +6,7 @@ from Utilities.read_configuration import read_configuration
 from project_runner import logger, project_folder
 from sauceclient import SauceClient, SauceException
 from steps.execute_open_mobile import manage_hook_mobile as manage_remote
+from behave.contrib.scenario_autoretry import patch_scenario_with_autoretry
 
 
 def before_all(context):
@@ -28,7 +29,8 @@ def before_all(context):
         context.env = read_configuration().read(context.stage_name)
     except Exception as e:
         logger.error(str(e))
-
+# def before_feature(context, feature):
+    # rerun_failed_scenarios(context)
 
 def before_scenario(context, scenario):
     try:
@@ -65,7 +67,11 @@ def before_scenario(context, scenario):
     except Exception as e:
         logger.error(str(e) + "with scenario " + scenario.name)
 
-
+def before_feature(context, feature):
+    if context.config_env.get("config_retry", "auto_retry").lower() == 'true':
+        for scenario in feature.scenarios:
+            if "final" in scenario.effective_tags:
+                patch_scenario_with_autoretry(scenario, max_attempts=int(context.config_env.get("config_retry", "max_attempts")))
 # def launch_browser(context, device, browser):
 #     option = get_option_from_browser(browser, device)
 #     if device['auto_download_driver'] is False:
@@ -109,7 +115,16 @@ def after_scenario(context, scenario):
     logger.info(f'Scenario {scenario.name} Ended')
 
 
+# def after_feature(context, feature):
+#     for scenario in feature.walk_scenarios():
+#         if "final" in scenario.effective_tags:
+#             patch_scenario_with_autoretry(scenario, max_attempts=60)
+
+
 def after_all(context):
+    # rerun_failed_scenarios(context)
     if context.driver and context.platform == 'WEB':
         logger.info('Closing driver from After_ALL')
         context.driver.close()
+
+

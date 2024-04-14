@@ -447,12 +447,24 @@ class common_device:
                 return attribute, value, list_key
 
     def change_keyboard_with_mac_env(self, attribute):
+        """
+        Change the keyboard attribute based on the macOS environment.
+
+        Args:
+            attribute (str): The original keyboard attribute.
+
+        Returns:
+            str: The updated keyboard attribute.
+        """
         import platform
+        # Get the current operating system
         os = platform.platform()
+        # Check if the OS is macOS and if the attribute is 'CONTROL'
         if os.__contains__('macOS') and attribute == 'CONTROL':
             return 'COMMAND'
         else:
             return attribute
+
 
     def execute_javascript_with_element(self, root_path, element_page, javascript_file, driver, device):
         from Utilities.read_configuration import read_configuration

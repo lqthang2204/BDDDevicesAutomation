@@ -1,4 +1,4 @@
-@regression @web
+@regression @web @autoretry
 Feature: orange HRM 2 web
 
 #  @Windows10_Chrome_76.0
@@ -63,7 +63,7 @@ Feature: orange HRM 2 web
     And I wait 50 seconds
 
   @keyboard-2
-  Scenario: execute keyboard without element
+  Scenario: execute keyboard without element keyboard
     Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
@@ -91,7 +91,7 @@ Feature: orange HRM 2 web
       | form-login | KEY.expect | DISPLAYED | CONTAINS |
 
   @function-read-javascript
-  Scenario: execute keyboard without element
+  Scenario: read javascript
     Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
@@ -124,7 +124,7 @@ Feature: orange HRM 2 web
     And I wait 10 seconds
 
   @function-read-javascript-2
-  Scenario: execute keyboard without element
+  Scenario: function-read-javascript-2
     Given I navigate to url GURU99-DOUBLE with options below
       | options   | value                       |
       | extension | AdBlock-best-ad-blocker.crx |
@@ -163,9 +163,10 @@ Feature: orange HRM 2 web
     And I wait 5 seconds
 
   @scroll-to-element-3
-  Scenario: test scroll to element 2
+  Scenario: test scroll to element 4
     Given I navigate to url INDEX_GURU
     And I change the page spec to index_guru
+    And I wait for element header-python-tutorial to be NOT_DISPLAYED
 #    And I scroll by java-script to element header-python-tutorial
     And I wait 10 seconds
     And I perform javascript scrollToElement with below arguments
@@ -184,7 +185,7 @@ Feature: orange HRM 2 web
     Given I navigate to url INDEX_GURU
     And I change the page spec to index_guru
 #    And I scroll by java-script to element header-python-tutorial
-    And I wait 10 seconds
+#    And I wait 10 seconds
     And I perform javascript scrToElement with below arguments
       | arguments              |
       | title-page             |
