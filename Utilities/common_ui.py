@@ -474,7 +474,7 @@ class common_device:
             data = read_configuration().get_content_javascript(root_path, javascript_file)
             result = driver.execute_script(data, element)
             if isinstance(result, bool):
-                assert result, f"fail when execute javascript file {javascript_file}"
+                assert result, f"failed when execute javascript file {javascript_file}"
         except Exception as e:
             print('fail when execute javascript file', e)
             assert False, f"fail when execute javascript file {javascript_file}"

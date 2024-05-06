@@ -36,11 +36,10 @@ Feature: test feature drag and drop
     And I change the page spec to index_guru
     And I scroll by java-script to element header-python-tutorial
     And I wait 10 seconds
-    And I scroll to element python-tutorial with text "Execute Python"
+    And I scroll to element python-tutorial with text "➤ Execute Python"
     And I wait 10 seconds
     And I scroll to element header-python-tutorial
     And I wait 10 seconds
-
 
   @right-and-double-click
   Scenario: action right and double cliclk
@@ -87,7 +86,7 @@ Feature: test feature drag and drop
     And I wait 5 seconds
 
 @switch-Iframe-2 @norun
-  Scenario: switch-Iframe
+  Scenario: switch-Iframe drag
     Given I navigate to url GURU99-DOUBLE with options below
       | options   | value                       |
       | extension | AdBlock-best-ad-blocker.crx |

@@ -108,7 +108,7 @@ Feature: orange HRM 2 web
     And I wait 50 seconds
 
   @test-javascript-auto-accept
-  Scenario: switch-Iframe
+  Scenario: switch-Iframe  test-javascript-auto-accept
     Given I navigate to url GURU99-DELETE
     And I change the page spec to delelePage
     And I click element customer-id
@@ -143,7 +143,6 @@ Feature: orange HRM 2 web
     And I wait for element radio-one to be DISPLAYED
     And I click element radio-one
     And I perform javascript getCheckBxState on element radio-one
-    And I perform javascript getCheckBxState on element radio-two
 
   @javascript-mouse-hover
   Scenario: test javascript function
@@ -186,7 +185,7 @@ Feature: orange HRM 2 web
     And I change the page spec to index_guru
 #    And I scroll by java-script to element header-python-tutorial
 #    And I wait 10 seconds
-    And I perform javascript scrToElement with below arguments
+    And I perform javascript scrollToElement with below arguments
       | arguments              |
       | title-page             |
       | header-python-tutorial |
