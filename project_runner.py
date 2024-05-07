@@ -34,13 +34,9 @@ def main(context):
               default='false', help='specify the remote with cross browser')
 @click.option('--is_highlight', '-hl', 'is_highlight', type=click.Choice(['true', 'false']),
               default='false', help='specify the highlight for elements')
-@click.option('--auto_retry', '-ar', 'auto_retry', type=click.Choice(['true', 'false']),
-              default='false', help='specify the auto retry for scenarios when failed')
-@click.option('--max_attempts', '-ma', 'max_attempts', type=click.IntRange(1, 10), default=1, show_default=True,
-              help='number of attempts. Default value is 1')
 @click.option('--browser', '-br', 'browser', type=click.Choice(['chrome', 'safari', 'firefox']), default='chrome',
               help='specify browser to run. Default value is chrome')
-def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme, is_remote, is_highlight, auto_retry, max_attempts, browser):
+def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme, is_remote, is_highlight, browser):
 
     # ensure all the packages are installed
     ensure_package_versions()
@@ -60,12 +56,12 @@ def run(feature_dir, tags, forks, stage_name, platform_name, parallel_scheme, is
     }
 
     if total_scenarios > 0:
-        _run_feature(args, stage_name, platform_name, is_remote, is_highlight, auto_retry, max_attempts, browser)
+        _run_feature(args, stage_name, platform_name, is_remote, is_highlight, browser)
 
 
-def config_from_command_line(stage_name, platform_name, is_remote, is_highlight, auto_retry, max_attempts, browser):
+def config_from_command_line(stage_name, platform_name, is_remote, is_highlight, browser):
     config = configparser.ConfigParser()
-    print(stage_name, platform_name, is_remote, is_highlight, auto_retry, max_attempts, browser)
+    print(stage_name, platform_name, is_remote, is_highlight, browser)
     config.read('config_env.ini')
 
     config.set('project_folder', 'project_folder', project_folder)
@@ -74,9 +70,6 @@ def config_from_command_line(stage_name, platform_name, is_remote, is_highlight,
     config.set('drivers_config', 'remote-saucelabs', is_remote)
     config.set('drivers_config', 'is_highlight', is_highlight)
     config.set('drivers_config', 'browser', browser)
-    if auto_retry:
-        config.set('config_retry', 'auto_retry', auto_retry)
-        config.set('config_retry', 'max_attempts', str(max_attempts))
 
 
     # Save the changes to the config.ini file
@@ -85,8 +78,8 @@ def config_from_command_line(stage_name, platform_name, is_remote, is_highlight,
     logger.info('Config file updated based on user provided command line arguments')
 
 
-def _run_feature(args, stage_name, platform_name, is_remote, is_highlight, auto_retry, max_attempts, browser):
-    config_from_command_line(stage_name, platform_name, is_remote, is_highlight, auto_retry, max_attempts, browser)
+def _run_feature(args, stage_name, platform_name, is_remote, is_highlight, browser):
+    config_from_command_line(stage_name, platform_name, is_remote, is_highlight, browser)
     cmd = f"behavex {args['params']}"
     logger.info(f'Command prepared: {cmd}')
     # Get the start time in seconds since the epoch
@@ -121,6 +114,6 @@ if __name__ == '__main__':
     # 1. disable the @click definition mentioned above main() and run()
     # 2. disable main() below
     # 3. enabled the statement below
-    # run("features/scenarios/web", "{~@norun and (@test1 or @test2)}", 1, 'QA', 'WEB','scenario', 'false', 'true', 'true', '1', 'firefox')
+    # run("features/scenarios/web", "{~@norun and @function-read-javascript-2}", 1, 'QA', 'WEB','scenario', 'false', 'true', 'chrome')
     # run("features/scenarios/iPhone", "{~@norun and (@scroll_element_ios)}", 2, 'QA', 'IOS', 'scenario', 'true')
     main()
