@@ -35,11 +35,8 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test project_runner.py - fd features/scenarios/api -tg {@api_fake_rest}
-      run: |
-        if: matrix.os == 'windows-latest'
-          python project_runner.py run -fd 'features/scenarios/web' -tg '{@api_fake_rest}' -fk 3 -sg QA -ps scenario -pl WEB --browser chrome
-        elif matrix.os == 'macos-latest'
-          python project_runner.py run -fd 'features/scenarios/web' -tg '{@api_fake_rest}' -fk 3 -sg QA -ps scenario -pl WEB --browser safari
-        elif matrix.os == 'ubuntu-latest'
-          python project_runner.py run -fd 'features/scenarios/web' -tg '{@api_fake_rest}' -fk 3 -sg QA -ps scenario -pl WEB --browser firefox
+    - uses: knicknic/os-specific-run@v1
+        with:
+          macos: python project_runner.py run -fd 'features/scenarios/web' -tg '{@api_fake_rest}' -fk 3 -sg QA -ps scenario -pl WEB --browser safari
+          linux: python project_runner.py run -fd 'features/scenarios/web' -tg '{@api_fake_rest}' -fk 3 -sg QA -ps scenario -pl WEB --browser firefox
+          windows: python project_runner.py run -fd 'features/scenarios/web' -tg '{@api_fake_rest}' -fk 3 -sg QA -ps scenario -pl WEB --browser chrome
