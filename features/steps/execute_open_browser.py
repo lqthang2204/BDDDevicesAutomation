@@ -158,7 +158,9 @@ class manage_hook_browser:
         # Add headless mode if specified for Chrome or Firefox
         if device['is_headless'] and browser.lower() in ['chrome', 'firefox']:
             option.add_argument('--headless')
-
+        if device['is_headless'] and browser.lower() == 'safari':
+            logger.info(f'Safari does not support headless mode, please use chrome or firefox instead')
+            print(f'Safari does not support headless mode, please use chrome or firefox instead')
         return option
 
 

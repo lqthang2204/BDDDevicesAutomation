@@ -186,7 +186,7 @@ class common_device:
 
     def get_value_element_form_device(self, element, device):
         if device['platformName'] == "WEB":
-            if element.get_attribute("value") and element.tag_name == "input":
+            if element.get_attribute("value") and element.tag_name == "input" or element.tag_name == "INPUT":
                 return element.get_attribute('value')
             else:
                 return element.text

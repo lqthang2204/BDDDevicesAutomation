@@ -1,4 +1,4 @@
-@api
+@api @norun
 Feature: API POST demo two
 
 

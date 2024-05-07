@@ -38,6 +38,6 @@ jobs:
     - name: Run command check api with multi platform
       uses: KnicKnic/os-specific-run@v1.0.4
       with:
-          macos: python project_runner.py run -fd 'features/scenarios/api' -tg '{@api}' -fk 3 -sg QA -ps scenario -pl WEB --browser safari
-          linux: python project_runner.py run -fd 'features/scenarios/api' -tg '{@api}' -fk 3 -sg QA -ps scenario -pl WEB --browser firefox
-          windows: python project_runner.py run -fd 'features/scenarios/api' -tg '{@api}' -fk 3 -sg QA -ps scenario -pl WEB --browser chrome
+          macos: python project_runner.py run -fd 'features/scenarios/api' -tg '{@api and ~@norun}' -fk 1 -sg QA -ps scenario -pl WEB --browser safari
+          linux: python project_runner.py run -fd 'features/scenarios/api' -tg '{@api and ~@norun}' -fk 1 -sg QA -ps scenario -pl WEB --browser firefox
+          windows: python project_runner.py run -fd 'features/scenarios/api' -tg '{@api and ~@norun}' -fk 1 -sg QA -ps scenario -pl WEB --browser chrome

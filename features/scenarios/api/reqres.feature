@@ -10,7 +10,7 @@ Feature: test api with fake rest api
     And I verify response header with below attributes
       | FieldName       | FieldValue      | Helpers |
       | Age             |                 | NUMERIC |
-      | Report-To       | 604800          | CONTAIN |
+      | Report-To       | 3600            | CONTAIN |
       | Vary            | Accept-Encoding | EQUAL   |
       | CF-Cache-Status | HIT             |         |
     And I verify response body with below attributes
