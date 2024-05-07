@@ -37,9 +37,9 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test project_runner.py - fd features/scenarios/api -tg {@api_fake_rest}
       run: |
-            if: matrix.os == 'windows-latest'
-              python project_runner.py run -fd 'features/scenarios/web' -tg '{@api_fake_rest}' -fk 3 -sg QA -ps scenario -pl WEB --browser chrome
-            elif matrix.os == 'macos-latest'
-              python project_runner.py run -fd 'features/scenarios/web' -tg '{@api_fake_rest}' -fk 3 -sg QA -ps scenario -pl WEB --browser safari
-            elif matrix.os == 'ubuntu-latest'
-              python project_runner.py run -fd 'features/scenarios/web' -tg '{@api_fake_rest}' -fk 3 -sg QA -ps scenario -pl WEB --browser firefox
+        if: matrix.os == 'windows-latest'
+          python project_runner.py run -fd 'features/scenarios/web' -tg '{@api_fake_rest}' -fk 3 -sg QA -ps scenario -pl WEB --browser chrome
+        elif matrix.os == 'macos-latest'
+          python project_runner.py run -fd 'features/scenarios/web' -tg '{@api_fake_rest}' -fk 3 -sg QA -ps scenario -pl WEB --browser safari
+        elif matrix.os == 'ubuntu-latest'
+          python project_runner.py run -fd 'features/scenarios/web' -tg '{@api_fake_rest}' -fk 3 -sg QA -ps scenario -pl WEB --browser firefox

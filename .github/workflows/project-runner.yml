@@ -37,9 +37,9 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test project_runner.py - fd features/scenarios/web tg {@web}
       run: |
-            if: matrix.os == 'windows-latest'
-              python project_runner.py run -fd 'features/scenarios/web' -tg '{@web and ~@shadow}' -fk 3 -sg QA -ps scenario --browser chrome
-            elif matrix.os == 'macos-latest'
-              python project_runner.py run -fd 'features/scenarios/web' -tg '{@web and ~@shadow}' -fk 3 -sg QA -ps scenario --browser safari
-            elif matrix.os == 'ubuntu-latest'
-              python project_runner.py run -fd 'features/scenarios/web' -tg '{@web and ~@shadow}' -fk 3 -sg QA -ps scenario --browser firefox
+        if: matrix.os == 'windows-latest'
+          python project_runner.py run -fd 'features/scenarios/web' -tg '{@web and ~@shadow}' -fk 3 -sg QA -ps scenario --browser chrome
+        elif matrix.os == 'macos-latest'
+          python project_runner.py run -fd 'features/scenarios/web' -tg '{@web and ~@shadow}' -fk 3 -sg QA -ps scenario --browser safari
+        elif matrix.os == 'ubuntu-latest'
+          python project_runner.py run -fd 'features/scenarios/web' -tg '{@web and ~@shadow}' -fk 3 -sg QA -ps scenario --browser firefox
