@@ -104,7 +104,22 @@ class common_device:
             assert False, e
 
     def get_element(self, page, element, platform_name, dict_save_value):
+        """
+           This function retrieves the locator for a given element from a page specification.
+
+           Args:
+               page (dict): The page specification.
+               element (str): The element to retrieve the locator for.
+               platform_name (str): The platform for which the locator is needed.
+               dict_save_value (dict): A dictionary of values to be used for substitution in the locator.
+           Returns:
+               dict: The locator for the given element.
+           Raises:
+               AssertionError: If the element does not exist in the page spec.
+           """
+        # Initialize text variable
         text = ""
+        # Check if the element has a text condition
         if "with text" in element:
             arr_value = element.split("with text")
             # remove blank in array
@@ -117,23 +132,37 @@ class common_device:
             page_temp = copy.deepcopy(page)
         else:
             page_temp = page
-        arr_element = page_temp['elements']
-        arr_element = list(filter(
-            lambda loc: loc['id'] == element, arr_element
-        ))
-        try:
-            arr_locator = arr_element[0]['locators']
-            arr_locator = list(filter(
-                lambda loc: loc['device'] == platform_name, arr_locator
-            ))
-            arr_locator[0]['value'] = arr_locator[0]['value'].replace("{text}", text)
-            return arr_locator[0]
-        except IndexError as e:
-            logger.error(f'element {element} not exist in page spec, with platform {platform_name}')
-            assert False, f'element {element} not exist in page spec, with platform {platform_name}'
+        # Find the element in the page spec
+        element_spec = next((el for el in page_temp['elements'] if el['id'] == element), None)
+        if element_spec is None:
+            logger.error(f'Element {element} not found in page spec, with platform {platform_name}')
+            raise ValueError(f'Element {element} not found in page spec, with platform {platform_name}')
+
+        # Find the locator for the specified platform
+        locator = next((loc for loc in element_spec['locators'] if loc['device'] == platform_name), None)
+        if locator is None:
+            logger.error(f'Locator for element {element} not found for platform {platform_name}')
+            raise ValueError(f'Locator for element {element} not found for platform {platform_name}')
+
+        # Substitute the text in the locator value
+        locator['value'] = locator['value'].replace("{text}", text)
+
+        return locator
 
     def verify_elements_with_status(self, page, table, platform_name, dict_save_value, driver, device, wait):
-        # arr_element = page['elements']
+        """
+           This function verifies the status of elements in a given page.
+           Args:
+               page (dict): The page specification.
+               table (list): The table containing the elements to verify.
+               platform_name (str): The platform for which the elements are needed.
+               dict_save_value (dict): A dictionary of values to be used for substitution in the elements.
+               driver (WebDriver): The Selenium WebDriver instance.
+               device (dict): The device information.
+               wait (WebDriverWait): The WebDriverWait instance.
+           Raises:
+               AssertionError: If the table is not set for elements.
+           """
         if table:
             for row in table:
                 arr_element = page['elements']
