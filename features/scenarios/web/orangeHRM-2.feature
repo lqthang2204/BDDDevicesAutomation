@@ -24,7 +24,7 @@ Feature: orange HRM 2 web
 #    And I wait for element pass-field to be DISPLAYED
 #    And I type "Admin" into element user-field
 
-  @test2
+  @web
   Scenario: test login page2
     Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage
@@ -44,7 +44,7 @@ Feature: orange HRM 2 web
 #    And I wait for element pass-field to be DISPLAYED
 #    And I type "Admin" into element user-field
 
-  @norun
+  @web
   Scenario: This should not be included
     Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage

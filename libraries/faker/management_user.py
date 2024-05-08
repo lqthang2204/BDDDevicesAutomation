@@ -11,27 +11,27 @@ def get_user(list_user, key):
     if key == 'email':
         return user.email
     elif key == 'first_name':
-        return user.first_name
+        return user[key]
     elif key == 'last_name':
-        return user.last_name
+        return user[key]
     elif key == 'full_name':
-        return user.first_name +' '+user.last_name
+        return user['first_name'] +' '+user['last_name']
     elif key == 'job':
-        return user.job
+        return user[key]
     elif key == 'address':
-        return user.address
+        return user[key]
     elif key == 'phone_number':
-        return user.phone_number
+        return user[key]
     elif key == 'city':
-        return user.city
+        return user[key]
     elif key == 'state':
-        return user.state
+        return user[key]
     elif key == 'postcode':
-        return user.postcode
+        return user[key]
     elif key == 'prefix':
-        return user.prefix
+        return user[key]
     elif key == 'suffix':
-        return user.suffix
+        return user[key]
     else:
         assert False, f'user do not contain attribute {key}'
 

@@ -1,4 +1,4 @@
-@testLogin @web @regression @norun
+@testLogin @web @regression
 Feature: login web for norun
 
   @test-1
