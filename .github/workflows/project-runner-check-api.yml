@@ -41,12 +41,12 @@ jobs:
           macos: python project_runner.py run -fd 'features/scenarios/api' -tg '{@api and ~@norun}' -fk 1 -sg QA -ps scenario -pl WEB --browser safari
           linux: python project_runner.py run -fd 'features/scenarios/api' -tg '{@api and ~@norun}' -fk 1 -sg QA -ps scenario -pl WEB --browser firefox
           windows: python project_runner.py run -fd 'features/scenarios/api' -tg '{@api and ~@norun}' -fk 1 -sg QA -ps scenario -pl WEB --browser chrome
+
     - name: set Output
       id: results
-      run: |
-        echo "$(artifactsPath = output/report.html )" >> $GITHUB_OUTPUT
+      run: echo "artifactPath=output/*" >> $GITHUB_OUTPUT
 
     - uses: actions/upload-artifact@v3
       with:
         name: report
-        path: ${{step.results.outputs.artifactsPath}}
+        path: ${{step.results.outputs.artifactPath}}
