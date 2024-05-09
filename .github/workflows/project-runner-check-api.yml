@@ -49,4 +49,4 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: report
-        path: ${{step.results.outputs.artifactPath}}
+        path: ${{ steps.results.outputs.artifactPath }}
