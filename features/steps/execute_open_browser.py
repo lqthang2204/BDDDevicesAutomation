@@ -56,35 +56,39 @@ class manage_hook_browser:
         option = self.get_option_from_browser(context, browser, device, table)
 
         # Check if the driver is not already initialized
-        if context.driver is None:
-            # Check if the device requires auto-download of the driver
-            if hasattr(device, 'auto_download_driver'):
-                if context.device['auto_download_driver'] is False:
-                    self.get_driver_from_path(context, browser, device, option)
-            else:
-                # Initialize the driver based on the browser type
-                match browser:
-                    case 'chrome':
-                        context.driver = webdriver.Chrome(options=option)
-                    case 'firefox':
-                        context.driver = webdriver.Firefox(options=option)
-                    case 'safari':
-                        context.driver = webdriver.Safari()
-                    case _:
-                        logger.info(
-                            'Framework only supports chrome, firefox, and safari..., trying to open with chrome')
-                        context.driver = webdriver.Chrome(options=option)
+        try:
+            if context.driver is None:
+                # Check if the device requires auto-download of the driver
+                if hasattr(device, 'auto_download_driver'):
+                    if context.device['auto_download_driver'] is False:
+                        self.get_driver_from_path(context, browser, device, option)
+                else:
+                    # Initialize the driver based on the browser type
+                    match browser:
+                        case 'chrome':
+                            context.driver = webdriver.Chrome(options=option)
+                        case 'firefox':
+                            context.driver = webdriver.Firefox(options=option)
+                        case 'safari':
+                            context.driver = webdriver.Safari()
+                        case _:
+                            logger.info(
+                                'Framework only supports chrome, firefox, and safari..., trying to open with chrome')
+                            context.driver = webdriver.Chrome(options=option)
 
-            # Set wait and time_page_load attributes from the device
-            context.wait = self.check_attr_exist(device, 'wait')
-            context.time_page_load = self.check_attr_exist(device, 'time_page_load')
+                # Set wait and time_page_load attributes from the device
+                context.wait = self.check_attr_exist(device, 'wait')
+                context.time_page_load = self.check_attr_exist(device, 'time_page_load')
 
-            # Maximize the window if --window-size argument is not present
-            if any("--window-size" in argument for argument in option.__getattribute__("arguments")) is False:
-                context.driver.maximize_window()
+                # Maximize the window if --window-size argument is not present
+                if any("--window-size" in argument for argument in option.__getattribute__("arguments")) is False:
+                    context.driver.maximize_window()
 
-        # Open the provided URL in the browser
-        context.driver.get(context.url[name])
+            # Open the provided URL in the browser
+            context.driver.get(context.url[name])
+        except SessionNotCreatedException as e:
+            logger.error(f"Failed to open browser: {e}")
+            assert False, f"Failed to open browser: {e}"
 
     def get_driver_from_path(context, browser, device, option):
         """
