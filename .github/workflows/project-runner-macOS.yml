@@ -39,4 +39,15 @@ jobs:
       run: |
         python project_runner.py run -fd 'features/scenarios/web' -tg '{@web and ~@norun}' -fk 3 -sg QA -ps scenario --browser safari
 
+    - name: set Output
+      if: success() || failure()
+      id: results
+      run: echo "artifactPath=output/*" >> $GITHUB_OUTPUT
+
+    - uses: actions/upload-artifact@v3
+      if: success() || failure()
+      with:
+        name: report
+        path: ${{ steps.results.outputs.artifactPath }}
+
 
