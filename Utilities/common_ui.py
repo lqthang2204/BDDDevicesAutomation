@@ -353,7 +353,8 @@ class common_device:
             'postcode': faker.postcode(),
             'domain_name': faker.domain_name(),
             'prefix': faker.prefix(),
-            'suffix': faker.suffix()
+            'suffix': faker.suffix(),
+            'email': faker.unique.email()
         }
         return user
 
