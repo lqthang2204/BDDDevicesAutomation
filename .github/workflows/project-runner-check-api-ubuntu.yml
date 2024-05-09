@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: project runner pipeline check api
+name: project runner pipeline check api on window ubuntu.
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.11.3"]
-        os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
+        os: [ 'ubuntu-latest' ]
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -35,12 +35,9 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Run command check api with multi platform
-      uses: KnicKnic/os-specific-run@v1.0.4
-      with:
-          macos: python project_runner.py run -fd 'features/scenarios/api' -tg '{@api and ~@norun}' -fk 1 -sg QA -ps scenario -pl WEB --browser safari
-          linux: python project_runner.py run -fd 'features/scenarios/api' -tg '{@api and ~@norun}' -fk 1 -sg QA -ps scenario -pl WEB --browser firefox
-          windows: python project_runner.py run -fd 'features/scenarios/api' -tg '{@api and ~@norun}' -fk 1 -sg QA -ps scenario -pl WEB --browser chrome
+    - name: Run command check api with ubuntu
+      run: |
+        python project_runner.py run -fd 'features/scenarios/api' -tg '{@api and ~@norun}' -fk 1 -sg QA -ps scenario -pl WEB --browser firefox
 
     - name: set Output
       id: results
