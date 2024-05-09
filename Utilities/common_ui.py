@@ -21,11 +21,8 @@ import copy
 
 class common_device:
 
-    def check_att_is_exist(self, obj_action_elements, key):
-        if obj_action_elements.get(key) is None:
-            return None
-        else:
-            return obj_action_elements.get(key)
+    def check_att_is_exist(self, obj_action_elements, key, default=None):
+        return obj_action_elements.get(key, default)
 
     def action_page(self, element_page, action, driver, value, wait, dict_save_value, device, context):
         locator_from_wait = self.get_locator_for_wait_from_device(element_page, device)

@@ -112,6 +112,8 @@ def after_step(context, step):
         step (obj): The step object representing the current step being executed.
     """
     if step.status == 'failed' and hasattr(context, 'evidence_path'):
+        logger.error(f"Error occurred in step '{step.name}' of feature '{context.feature.name}'")
+        print(f"Error occurred in step '{step.name}' of feature '{context.feature.name}'")
         current_time = datetime.datetime.now()
         date_time = str(current_time.year) + '_' + str(current_time.month) + '_' + str(current_time.day) + '_' + str(
             current_time.microsecond)
