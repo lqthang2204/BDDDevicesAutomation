@@ -45,7 +45,8 @@ jobs:
       id: results
       run: |
         echo "$(artifactsPath = output/report.html )" >> $GITHUB_OUTPUT
-      uses: actions/upload-artifact@v3
+
+    - uses: actions/upload-artifact@v3
       with:
         name: report
         path: ${{step.results.outputs.artifactsPath}}
