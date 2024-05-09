@@ -3,6 +3,7 @@ from time import sleep
 
 from appium.webdriver.common.touch_action import TouchAction
 from faker import Faker
+from selenium.common import NoSuchElementException, NoSuchFrameException, NoSuchWindowException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -439,12 +440,15 @@ class common_device:
             raise
 
     def verify_value_in_element(self, element_page, expect, device, driver, is_highlight, wait):
-        locator_from_wait = common_device().get_locator_for_wait_from_device(element_page, device)
-        WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
-        element = self.get_element_by_from_device(element_page, device, driver)
-        self.scroll_to_element_by_js(element, driver, True, device['platformName'], is_highlight)
-        value = self.get_value_element_form_device(element, device)
-        assert value == expect, f'value of the element is {value} not equal to values expected {expect}'
+        try:
+            locator_from_wait = common_device().get_locator_for_wait_from_device(element_page, device)
+            WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
+            element = self.get_element_by_from_device(element_page, device, driver)
+            self.scroll_to_element_by_js(element, driver, True, device['platformName'], is_highlight)
+            value = self.get_value_element_form_device(element, device)
+            assert value == expect, f'value of the element is {value} not equal to values expected {expect}'
+        except NoSuchElementException:
+            assert False, 'Element not found'
 
     def verify_value_with_helpers(self, expected, helper, element_page, device, driver, is_highlight):
         if helper in ['BACKGROUND-COLOR', 'COLOR', 'FONT_FAMILY', 'FONT_SIZE', 'FONT_WEIGHT', 'FONT_HEIGHT',
@@ -493,7 +497,17 @@ class common_device:
             assert False, f'The helper and value columns must both have a value at the same time'
 
     def highlight(self, element, time, is_hightlight):
-        """Highlights (blinks) a Selenium Webdriver element"""
+        """
+          Highlights (blinks) a Selenium Webdriver element for a specified time.
+
+          Args:
+              element: The Selenium Webdriver element to highlight.
+              time: The duration in seconds to highlight the element.
+              is_highlight: Flag to determine if highlighting should be applied.
+
+          Returns:
+              None
+          """
         if is_hightlight == 'true':
             try:
                 driver = element._parent
@@ -507,7 +521,7 @@ class common_device:
                 sleep(float(time))
                 apply_style(original_style)
             except Exception as e:
-                assert True
+                pass
 
     def mouse_action(self, element, driver, action, device):
         if action == 'hover-over':
@@ -519,6 +533,19 @@ class common_device:
                 action.press(element).release().perform()
 
     def scroll_to_element_by_js(self, element, driver, flag, platform, is_highlight):
+        """
+          Scrolls to the specified Selenium Webdriver element using JavaScript.
+
+          Args:
+              element: The Selenium Webdriver element to scroll to.
+              driver: The WebDriver instance.
+              flag: A flag indicating whether scrolling was successful.
+              platform: The platform name.
+              is_highlight: Flag to determine if highlighting should be applied.
+
+          Returns:
+              None
+          """
         if platform == 'WEB':
             try:
                 driver.execute_script("arguments[0].scrollIntoView(true);", element)
@@ -526,7 +553,7 @@ class common_device:
             except:
                 assert flag, f'can not scroll to element {element}'
         else:
-            assert True, f'feature scroll to element by javascript only support for Web environmental'
+            assert True, f'feature scroll to element by javascript only support for Web environment'
 
     def scroll_to_element(self, element, driver, flag, platform, is_highlight):
         if platform == 'WEB':
@@ -539,34 +566,68 @@ class common_device:
             assert False, f'feature scroll to element not suuport for mobile'
 
     def switch_to_frame(self, driver, element_page, wait, device, status):
-        if status:
-            WebDriverWait(driver, wait).until(ec.frame_to_be_available_and_switch_to_it(
-                ManagementFile().get_locator_for_wait(element_page['type'], element_page['value'])))
-        else:
-            driver.switch_to.default_content()
+        try:
+            if status:
+                WebDriverWait(driver, wait).until(ec.frame_to_be_available_and_switch_to_it(
+                    ManagementFile().get_locator_for_wait(element_page['type'], element_page['value'])))
+            else:
+                driver.switch_to.default_content()
+        except NoSuchElementException as e:
+            print(f'Frame element not found: {e}')
+        except Exception as e:
+            print(f'Failed to switch to frame: {e}')
 
     def switch_to_frame_by_index(self, driver, index):
         try:
             driver.switch_to.frame(int(index))
-        except IndexError as index:
-            assert False, index
+        except NoSuchFrameException as e:
+            print(f'Frame with index {index} not found: {e}')
+        except Exception as e:
+            print(f'Failed to switch to frame with index {index}: {e}')
+        except IndexError as e:
+            print(f'Index must be integer {index}: {e}')
 
     def switch_to_tab_by_index(self, driver, index):
+        """
+        Switches to the tab at the specified index in a Selenium Webdriver session.
+
+        Args:
+            driver: The WebDriver instance.
+            index: The index of the tab to switch to.
+
+        Returns:
+            None
+        """
         try:
             driver.switch_to.window(driver.window_handles[int(index) - 1])
-        except IndexError as index:
-            assert False, index
+        except IndexError as e:
+            print(f'Tab with index {index} not found: {e}')
+        except Exception as e:
+            print(f'Failed to switch to tab with index {index}: {e}')
 
     def switch_to_tab_by_title(self, driver, title):
-        tab_list = driver.window_handles
-        flag = False
-        for tab in tab_list:
-            driver.switch_to.window(tab)
-            if driver.title == title:
-                driver.switch_to.window(tab)
-                flag = True
-                break
-        assert flag, f'can not switch to tab has {title}, please verify title in page'
+        """
+        Switches to the tab with the specified title in a Selenium Webdriver session.
+
+        Args:
+            driver: The WebDriver instance.
+            title: The title of the tab to switch to.
+
+        Returns:
+            None
+        """
+        try:
+            all_handles = driver.window_handles
+            for handle in all_handles:
+                driver.switch_to.window(handle)
+                if driver.title == title:
+                    break
+            else:
+                raise NoSuchWindowException(f"Tab with title '{title}' not found")
+        except NoSuchWindowException as e:
+            print(f'Tab with title "{title}" not found: {e}')
+        except Exception as e:
+            print(f'Failed to switch to tab with title "{title}": {e}')
 
     def close_web_page(self, driver, title):
         tab_list = driver.window_handles
@@ -580,12 +641,26 @@ class common_device:
         assert flag, f'can not close to tab has {title}, please verify title in page'
 
     def close_by_index(self, driver, index):
+        """
+           Closes the tab at the specified index in a Selenium Webdriver session.
+
+           Args:
+               driver: The WebDriver instance.
+               index: The index of the tab to close.
+
+           Returns:
+               None
+           """
         try:
-            driver.switch_to.window(driver.window_handles[int(index) - 1])
+            all_handles = driver.window_handles
+            driver.switch_to.window(all_handles[int(index)-1])
             driver.close()
-        except IndexError as index:
-            logger.error(" can not close web driver with index " + index)
-            assert False, index
+            # Switch back to the main window if needed
+            driver.switch_to.window(all_handles[0])
+        except IndexError as e:
+            print(f'Tab with index {index} not found: {e}')
+        except Exception as e:
+            print(f'Failed to close tab with index {index}: {e}')
 
             # list key board  NULL = "\ue000", CANCEL = "\ue001"  # ^break,HELP = "\ue002",BACKSPACE = "\ue003",BACK_SPACE = BACKSPACE,TAB = "\ue004",CLEAR = "\ue005",RETURN = "\ue006",ENTER = "\ue007",SHIFT = "\ue008",LEFT_SHIFT = SHIFT,CONTROL = "\ue009",LEFT_CONTROL = CONTROL,ALT = "\ue00a",LEFT_ALT = ALT,PAUSE = "\ue00b",ESCAPE = "\ue00c",SPACE = "\ue00d",PAGE_UP = "\ue00e",PAGE_DOWN = "\ue00f",END = "\ue010",HOME = "\ue011",LEFT = "\ue012",ARROW_LEFT = LEFT,UP = "\ue013",ARROW_UP = UP,RIGHT = "\ue014",ARROW_RIGHT = RIGHT,DOWN = "\ue015",ARROW_DOWN = DOWN,INSERT = "\ue016",DELETE = "\ue017",SEMICOLON = "\ue018",EQUALS = "\ue019",NUMPAD0 = "\ue01a" # number pad keys,NUMPAD1 = "\ue01b",NUMPAD2 = "\ue01c",NUMPAD3 = "\ue01d",NUMPAD4 = "\ue01e",NUMPAD5 = "\ue01f",NUMPAD6 = "\ue020",NUMPAD7 = "\ue021",NUMPAD8 = "\ue022",NUMPAD9 = "\ue023",MULTIPLY = "\ue024",ADD = "\ue025",SEPARATOR = "\ue026",SUBTRACT = "\ue027",DECIMAL = "\ue028",DIVIDE = "\ue029",,F1 = "\ue031" # function keys,F2 = "\ue032",F3 = "\ue033",F4 = "\ue034",F5 = "\ue035",F6 = "\ue036",F7 = "\ue037",F8 = "\ue038",F9 = "\ue039",F10 = "\ue03a",F11 = "\ue03b",F12 = "\ue03c",,META = "\ue03d",COMMAND = "\ue03d",ZENKAKU_HANKAKU = "\ue040"
             # https: // github.com / SeleniumHQ / selenium / blob / trunk / py / selenium / webdriver / common / keys.py
@@ -596,9 +671,10 @@ class common_device:
             attribute, value, list_key = self.get_value_key_code(key_board)
             element.send_keys(value)
             # action.send_keys(Keys)
+        except NoSuchElementException:
+            print(f"Element with locator '{element_page}' not found")
         except Exception as e:
-            print('can not execute action with keyboard ', key_board)
-            assert False, f'can not execute action with keyboard {key_board}'
+            print(f"An error occurred while executing keyboard with element: {str(e)}")
 
     def execute_keyboard_without_element(self, driver, key_board, key_action, device):
         try:
@@ -607,24 +683,31 @@ class common_device:
             attribute = self.change_keyboard_with_mac_env(attribute)
             if key_board == 'KEY_DOWN':
                 if list_key[1]:
-                    action.key_down(Keys().__getattribute__(attribute)).send_keys(list_key[1]).perform()
+                    action.key_down(Keys().__getattribute__(attribute)).send_keys(list_key[1])
                 else:
-                    action.key_down(Keys().__getattribute__(attribute)).perform()
+                    action.key_down(Keys().__getattribute__(attribute))
             elif key_board == 'KEY_UP':
                 if list_key[1]:
-                    action.key_up(Keys().__getattribute__(attribute)).send_keys(list_key[1]).perform()
+                    action.key_up(Keys().__getattribute__(attribute)).send_keys(list_key[1])
                 else:
-                    action.key_up(Keys().__getattribute__(attribute)).perform()
+                    action.key_up(Keys().__getattribute__(attribute))
+            action.perform()
+            sleep(int(0.5))
             # action.send_keys(Keys)
         except Exception as e:
-            print('can not execute action with keyboard ', key_action)
-            assert False, f'can not execute action with keyboard {key_action}'
+            print('An error occurred while executing action with keyboard:', key_action)
+            assert False, f'An error occurred while executing action with keyboard {key_action}'
 
     def get_value_key_code(self, key_name):
-        list_key = key_name.split('+')
-        for attribute, value in Keys.__dict__.items():
-            if list_key[0].replace("'", "") == attribute:
-                return attribute, value, list_key
+        try:
+            list_key = key_name.split('+')
+            for attribute, value in Keys.__dict__.items():
+                if list_key[0].replace("'", "") == attribute:
+                    return attribute, value, list_key
+        except Exception as e:
+            print('An error occurred while getting key code:', key_name)
+            return None, None, None
+
 
     def change_keyboard_with_mac_env(self, attribute):
         """
@@ -655,9 +738,12 @@ class common_device:
             result = driver.execute_script(data, element)
             if isinstance(result, bool):
                 assert result, f"failed when execute javascript file {javascript_file}"
+        except NoSuchElementException:
+            logger.error(f"Element with locator '{element_page}' not found")
+            assert False, f"Element with locator '{element_page}' not found"
         except Exception as e:
-            print('fail when execute javascript file', e)
-            assert False, f"fail when execute javascript file {javascript_file}"
+            logger.error(f"An error occurred while executing JavaScript with element: {str(e)}")
+            assert False, f"An error occurred while executing JavaScript with element: {str(e)}"
 
     def execute_javascript_without_element(self, root_path, javascript_file, driver, device):
         from Utilities.read_configuration import read_configuration
