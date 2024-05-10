@@ -27,6 +27,7 @@ class APIAsserts:
                             field_value = get_test_data_for(row[1], context.dict_save_value)
                             helpers = row[2]
                             value_header = response_dict['headers'][field_name]
+                            logger.info(f'header value : {value_header}')
                             if helpers.startswith('KEY'):
                                 context.dict_save_value[helpers] = value_header
                             elif len(field_value) == 0 and field_name:

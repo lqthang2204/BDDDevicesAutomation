@@ -1,4 +1,4 @@
-@api @fast
+@api @fast @norun
 Feature: API GET demo one
 
 

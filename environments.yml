@@ -13,9 +13,10 @@ env:
       DHTMLGOODIES: http://www.dhtmlgoodies.com/scripts/drag-drop-custom/demo-drag-drop-3.html
       CODESANDBOX: https://codesandbox.io/s/mobile-drag-drop-test-byuq7
       GURU99-DOUBLE: https://demo.guru99.com/test/simple_context_menu.html
+      GURU99-DELETE: https://demo.guru99.com/test/delete_customer.php
     devices:
     - platformName: WEB
-      is_headless: true
+      is_headless: false
       wait: 30
       time_page_load: 30
       auto_download_driver: true

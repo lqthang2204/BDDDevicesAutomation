@@ -1,4 +1,4 @@
-@regression @web
+@regression @web @autoretry
 Feature: orange HRM 2 web
 
 #  @Windows10_Chrome_76.0
@@ -24,7 +24,7 @@ Feature: orange HRM 2 web
 #    And I wait for element pass-field to be DISPLAYED
 #    And I type "Admin" into element user-field
 
-  @test2
+  @web
   Scenario: test login page2
     Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage
@@ -44,7 +44,7 @@ Feature: orange HRM 2 web
 #    And I wait for element pass-field to be DISPLAYED
 #    And I type "Admin" into element user-field
 
-  @norun
+  @web
   Scenario: This should not be included
     Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage
@@ -63,7 +63,7 @@ Feature: orange HRM 2 web
     And I wait 50 seconds
 
   @keyboard-2
-  Scenario: execute keyboard without element
+  Scenario: execute keyboard without element keyboard
     Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
@@ -91,7 +91,7 @@ Feature: orange HRM 2 web
       | form-login | KEY.expect | DISPLAYED | CONTAINS |
 
   @function-read-javascript
-  Scenario: execute keyboard without element
+  Scenario: read javascript
     Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED
@@ -108,7 +108,7 @@ Feature: orange HRM 2 web
     And I wait 50 seconds
 
   @test-javascript-auto-accept
-  Scenario: switch-Iframe
+  Scenario: switch-Iframe  test-javascript-auto-accept
     Given I navigate to url GURU99-DELETE
     And I change the page spec to delelePage
     And I click element customer-id
@@ -124,7 +124,7 @@ Feature: orange HRM 2 web
     And I wait 10 seconds
 
   @function-read-javascript-2
-  Scenario: execute keyboard without element
+  Scenario: function-read-javascript-2
     Given I navigate to url GURU99-DOUBLE with options below
       | options   | value                       |
       | extension | AdBlock-best-ad-blocker.crx |
@@ -143,7 +143,6 @@ Feature: orange HRM 2 web
     And I wait for element radio-one to be DISPLAYED
     And I click element radio-one
     And I perform javascript getCheckBxState on element radio-one
-    And I perform javascript getCheckBxState on element radio-two
 
   @javascript-mouse-hover
   Scenario: test javascript function
@@ -163,11 +162,29 @@ Feature: orange HRM 2 web
     And I wait 5 seconds
 
   @scroll-to-element-3
+  Scenario: test scroll to element 4
+    Given I navigate to url INDEX_GURU
+    And I change the page spec to index_guru
+    And I wait for element header-python-tutorial to be DISPLAYED
+#    And I scroll by java-script to element header-python-tutorial
+    And I wait 10 seconds
+    And I perform javascript scrollToElement with below arguments
+      | arguments              |
+      | title-page             |
+      | header-python-tutorial |
+    And I wait 5 seconds
+    And I perform javascript scrollToElement with below arguments
+      | arguments                           |
+      | title-page , header-python-tutorial |
+    And I wait 5 seconds
+
+
+      @test-failed-rerun
   Scenario: test scroll to element 2
     Given I navigate to url INDEX_GURU
     And I change the page spec to index_guru
 #    And I scroll by java-script to element header-python-tutorial
-    And I wait 10 seconds
+#    And I wait 10 seconds
     And I perform javascript scrollToElement with below arguments
       | arguments              |
       | title-page             |

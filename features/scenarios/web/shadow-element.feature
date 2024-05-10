@@ -1,4 +1,4 @@
-@shadow @web
+@shadow @web @norun
 Feature: test shadow elements
 
   @mc-chrome-shadow

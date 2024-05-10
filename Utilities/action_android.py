@@ -78,11 +78,8 @@ class ManagementFileAndroid:
             if locator['device'].__eq__(device):
                 return locator
 
-    def check_att_is_exist(self, obj_action_elements, key):
-        if obj_action_elements.get(key) is None:
-            return None
-        else:
-            return obj_action_elements.get(key)
+    def check_att_is_exist(self, obj_action_elements, key, default=None):
+        return obj_action_elements.get(key, default)
 
     def get_locator_for_wait(self, type, value):
         logger.info(f'get locator for wait with type by {type} with value is {value}')
