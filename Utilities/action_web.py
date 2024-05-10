@@ -174,11 +174,9 @@ class ManagementFile:
                 raise ValueError(
                     "Invalid locator type. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
         except NoSuchElementException as e:
-            print(f"Element not found: {str(e)}")
-            return None
+            assert False, f"Element not found: {str(e)}"
         except Exception as e:
-            print(f"Error locating element: {str(e)}")
-            return None
+            assert False, f"Error locating element: {str(e)}"
 
     def get_list_element_by(self, type, driver, value):
         try:
