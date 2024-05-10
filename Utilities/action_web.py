@@ -51,6 +51,23 @@ class ManagementFile:
             return None
 
     def execute_action(self, page, action_id, driver, wait, table, dict_save_value, platform_name):
+        """
+            Executes a specified action on a web page.
+            Args:
+                page (dict): The page object containing the actions.
+                action_id (str): The ID of the action to execute.
+                driver (WebDriver): The web driver instance.
+                wait (WebDriverWait): The web driver wait instance.
+                table (list): The table data.
+                dict_save_value (dict): The dictionary containing saved values.
+                platform_name (str): The name of the platform.
+            Returns:
+                None
+            Raises:
+                AssertionError: If the action or element cannot be executed.
+                FileNotFoundError: If the page file is not found.
+                YAMLError: If there is an error reading the YAML file.
+            """
         dict_action = page['actions']
         dict_action = list(filter(
             lambda action: action['id'] == action_id, dict_action
