@@ -48,6 +48,6 @@ jobs:
       if: success() || failure()
       with:
         name: report
-        path: ${{ steps.results.outputs.artifactPath }}
+        path: output/
 
 
