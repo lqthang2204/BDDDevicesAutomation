@@ -36,7 +36,7 @@ Feature: test feature drag and drop
     And I change the page spec to index_guru
     And I scroll by java-script to element header-python-tutorial
     And I wait 10 seconds
-    And I scroll to element python-tutorial with text "➤ Execute Python"
+    And I scroll to element python-tutorial with text "Execute Python"
     And I wait 10 seconds
     And I scroll to element header-python-tutorial
     And I wait 10 seconds
