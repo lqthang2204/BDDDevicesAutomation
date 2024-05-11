@@ -123,7 +123,7 @@ Feature: orange HRM 2 web
     And I accept for popup
     And I wait 10 seconds
 
-  @function-read-javascript-2
+  @function-read-javascript-2 @safari
   Scenario: function-read-javascript-2
     Given I navigate to url GURU99-DOUBLE with options below
       | options   | value                       |

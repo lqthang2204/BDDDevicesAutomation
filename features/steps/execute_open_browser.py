@@ -144,19 +144,26 @@ class manage_hook_browser:
         }
 
         # Get the option based on the browser type, default to chrome_option if not found
-        option = supported_browsers.get(browser.lower(), chrome_option)()
+        option_func = supported_browsers.get(browser.lower())
+        if option_func:
+            option = option_func()
+            if browser.lower() == 'safari':
+                option.SAFARI_TECH_PREVIEW = True
+        else:
+            logger.error(f'Unsupported browser: {browser}')
+            assert False, f'Unsupported browser: {browser}'
 
         # Process additional parameters from the table
         if table:
             for rows in table:
-                if rows[0] == 'argument':
+                if rows[0] == 'argument' and hasattr(option, 'add_argument'):
                     option.add_argument(rows[1])
-                elif rows[0] == 'extension':
+                elif rows[0] == 'extension' and hasattr(option, 'add_extension'):
                     folder_path = os.path.join(context.root_path, 'extensions/')
                     option.add_extension(folder_path + rows[1])
                 else:
                     logger.info(
-                        f'Framework only is support for argument, extension parameter not support for {rows[0]}')
+                        f'feature use extension and argument only support for chrome not support for {browser.lower()} browser')
                     assert False, f'Framework only is support for argument, extension parameter not support for {rows[0]}'
 
         # Add headless mode if specified for Chrome or Firefox

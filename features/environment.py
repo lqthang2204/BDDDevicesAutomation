@@ -17,6 +17,7 @@ def before_all(context):
         context.dict_save_value = {}
         context.driver = None
         context.root_path = project_folder
+        context.driver = context.driver
 
         # Read configuration file
         config_file_path = os.path.join(context.root_path, 'config_env.ini')

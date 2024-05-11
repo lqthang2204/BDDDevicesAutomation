@@ -42,11 +42,17 @@ Feature: test feature drag and drop
     And I wait 10 seconds
 
   @right-and-double-click
-  Scenario: action right and double cliclk
+  Scenario: action right and double click
     Given I navigate to url GURU99-DOUBLE
     And I change the page spec to double-example
     And I wait for element double-button to be ENABLED
-    And I double-click element double-button
+    And I wait 2 seconds
+#    And I double-click element double-button
+    And I click element double-button
+    And I click element double-button
+#    And I perform javascript clickElement on element double-button
+#        And I perform javascript clickElement on element double-button
+    And I wait 1000 seconds
     And I accept for popup
     And I double-click element double-button
     And I dismiss for popup
@@ -114,6 +120,7 @@ Feature: test feature drag and drop
 #      | Field        | Value                                                      | Status    | Helpers |
 #      | title_header | Selenium Live Project: FREE Real Time Project for Practice | DISPLAYED |         |
 #    And I wait 5 seconds
+
 
 
 
