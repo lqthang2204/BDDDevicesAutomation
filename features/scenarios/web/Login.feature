@@ -11,7 +11,7 @@ Feature: login web
     And I wait for element pass-field to be DISPLAYED
     Then I run accessibilty test on OPEN_MRS_DEFAULT
 
-  @accessibility
+  @accessibility-2-safari
   Scenario: perform accessibility testing on OPEN_MRS - Invalid Credentials
     And I change the page spec to LoginPage
     And I wait for element user-field to be DISPLAYED

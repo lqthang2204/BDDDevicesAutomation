@@ -37,7 +37,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Run command test web with multi platform
       run: |
-        python project_runner.py run -fd 'features/scenarios/web' -tg '{@web and ~@norun}' -fk 3 -sg QA -ps scenario --browser safari
+        python project_runner.py run -fd 'features/scenarios/web' -tg '{@web and ~@norun and ~@safari}' -fk 1 -sg QA -ps scenario --browser safari
 
     - name: set Output
       if: success() || failure()

@@ -14,7 +14,18 @@ from yaml import SafeLoader
 from pyshadow.main import Shadow
 from project_runner import logger, project_folder
 
+
 class ManagementFile:
+    SUPPORTED_LOCATOR_TYPES = {
+        'ID': By.ID,
+        'NAME': By.NAME,
+        'XPATH': By.XPATH,
+        'LINK TEXT': By.LINK_TEXT,
+        'PARTIAL LINK TEXT': By.PARTIAL_LINK_TEXT,
+        'CLASS NAME': By.CLASS_NAME,
+        'CSS': By.CSS_SELECTOR
+    }
+
     def get_dict_path_yaml(self):
         """
            This function retrieves the paths of all YAML files in the 'resources/pages' directory
@@ -91,7 +102,8 @@ class ManagementFile:
                     type_action = action_elements['inputType']
                     try:
                         element = self.get_locator_for_wait(locator['type'], locator['value'])
-                        if self.check_field_exist(action_elements, "condition") and self.check_field_exist(action_elements, "timeout"):
+                        if self.check_field_exist(action_elements, "condition") and self.check_field_exist(
+                                action_elements, "timeout"):
                             if action_elements['condition'] == "ENABLED":
                                 WebDriverWait(driver, action_elements['timeout']).until(
                                     ec.element_to_be_clickable(element))
@@ -132,7 +144,8 @@ class ManagementFile:
                     except Exception as e:
                         logger.info(f'can not execute action with element have value  {locator} in framework')
                         assert True, "can not execute action with element have value" + locator + "in framework"
-                elif self.check_field_exist(action_elements, 'condition') and self.check_field_exist(action_elements, 'timeout') is False:
+                elif self.check_field_exist(action_elements, 'condition') and self.check_field_exist(action_elements,
+                                                                                                     'timeout') is False:
                     try:
                         element = self.get_element_by(locator['type'], driver, locator['value'])
                         self.process_execute_action(driver, wait, element, type_action, value, locator, action_elements)
@@ -153,27 +166,37 @@ class ManagementFile:
             logger.error(f'Not Found Action {action_id} in page yaml')
             assert False, "Not Found Action " + action_id + " in page yaml"
 
-    def get_element_by(self, type, driver, value):
+    def get_element_by(self, type, driver, value) -> WebElement:
+        """
+        Find and return a WebElement based on the given type and value.
+
+        Args:
+            type (str): The type of locator to use. Supported types are 'id', 'name', 'xpath', 'link_text',
+                        'partial_link_text', 'class_name', and 'css_selector'.
+            driver (WebDriver): The WebDriver instance to use for finding the element.
+            value (str): The value to use for finding the element.
+
+        Returns:
+            WebElement: The found WebElement.
+
+        Raises:
+            ValueError: If the given type is not supported.
+            NoSuchElementException: If the element is not found.
+            TimeoutException: If the element is not found within the specified timeout.
+            Exception: If there is an error locating the element.
+        """
+        logger.info(f'Getting list element by {type} with value is {value}')
+        locator = self.SUPPORTED_LOCATOR_TYPES.get(type)
+        if locator is None:
+            raise ValueError(
+                f"Invalid locator type: {type}. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
+
         try:
             logger.info(f'Get element by {type} with value is {value}')
-            if type.__eq__("ID"):
-                return driver.find_element(By.ID, value)
-            elif type.__eq__("NAME"):
-                return driver.find_element(By.NAME, value)
-            elif type.__eq__("XPATH"):
-                return driver.find_element(By.XPATH, value)
-            elif type.__eq__("LINK TEXT"):
-                return driver.find_element(By.LINK_TEXT, value)
-            elif type.__eq__("PARTIAL LINK TEXT"):
-                return driver.find_element(By.PARTIAL_LINK_TEXT, value)
-            elif type.__eq__("CLASS NAME"):
-                return driver.find_element(By.CLASS_NAME, value)
-            elif type.__eq__("CSS"):
-                return driver.find_element(By.CSS_SELECTOR, value)
-            else:
-                raise ValueError(
-                    "Invalid locator type. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
-        except NoSuchElementException as e:
+
+            locator = self.SUPPORTED_LOCATOR_TYPES.get(type)
+            return driver.find_element(locator, value)
+        except (NoSuchElementException, TimeoutException) as e:
             assert False, f"Element not found: {str(e)}"
         except Exception as e:
             assert False, f"Error locating element: {str(e)}"
@@ -181,23 +204,11 @@ class ManagementFile:
     def get_list_element_by(self, type, driver, value):
         try:
             logger.info(f'Getting list element by {type} with value is {value}')
-            if type.__eq__("ID"):
-                return driver.find_elements(By.ID, value)
-            elif type.__eq__("NAME"):
-                return driver.find_elements(By.NAME, value)
-            elif type.__eq__("XPATH"):
-                return driver.find_elements(By.XPATH, value)
-            elif type.__eq__("LINK TEXT"):
-                return driver.find_elements(By.LINK_TEXT, value)
-            elif type.__eq__("PARTIAL LINK TEXT"):
-                return driver.find_elements(By.PARTIAL_LINK_TEXT, value)
-            elif type.__eq__("CLASS NAME"):
-                return driver.find_elements(By.CLASS_NAME, value)
-            elif type.__eq__("CSS"):
-                return driver.find_elements(By.CSS_SELECTOR, value)
-            else:
+            locator = self.SUPPORTED_LOCATOR_TYPES.get(type)
+            if locator is None:
                 raise ValueError(
-                    "Invalid locator type. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
+                    f"Invalid locator type: {type}. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
+            return driver.find_elements(locator, value)
         except NoSuchElementException as e:
             print(f"Element not found: {str(e)}")
             return None
@@ -206,31 +217,16 @@ class ManagementFile:
             return None
 
     def get_locator_for_wait(self, type, value):
+        logger.info(f'getting locator for wait with type {type} with value is {value}')
         try:
-            logger.info(f'getting locator for wait with type {type} with value is {value}')
-            if type.__eq__("ID"):
-                return (By.ID, value)
-            elif type.__eq__("NAME"):
-                return  (By.NAME, value)
-            elif type.__eq__("XPATH"):
-                return  (By.XPATH, value)
-            elif type.__eq__("LINK TEXT"):
-                return (By.LINK_TEXT, value)
-            elif type.__eq__("PARTIAL LINK TEXT"):
-                return (By.PARTIAL_LINK_TEXT, value)
-            elif type.__eq__("CLASS NAME"):
-                return (By.CLASS_NAME, value)
-            elif type.__eq__("CSS"):
-                return  (By.CSS_SELECTOR, value)
-            else:
+            logger.info(f'Getting locator for wait with type {type} with value is {value}')
+            locator = self.SUPPORTED_LOCATOR_TYPES.get(type)
+            if locator is None:
                 raise ValueError(
-                    "Invalid locator type. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
-        except NoSuchElementException as e:
-            print(f"Element not found: {str(e)}")
-            return None
+                    f"Invalid locator type: {type}. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
+            return locator, value
         except Exception as e:
-            print(f"Error locating element: {str(e)}")
-            return None
+            raise Exception(f"Error locating element: {str(e)}")
 
     def get_locator(self, element_page, device):
         """
@@ -309,7 +305,8 @@ class ManagementFile:
         try:
             if dict[key]:
                 return True
-        except:
+        except Exception as e:
+            print(f'not found attribute in dictionary: {str(e)}')
             return False
 
     def wait_for_action(self, action_elements, wait, driver, element, locator):
@@ -374,6 +371,7 @@ class ManagementFile:
             return ec.element_located_to_be_selected(locator)
         else:
             raise ValueError(f"Unsupported condition: {condition}")
+
     def get_shadow_element(self, type, driver, value, wait, is_highlight):
         """
             This method finds a shadow element based on the provided type, driver, value, wait, and highlight settings.
@@ -409,6 +407,7 @@ class ManagementFile:
         except NoSuchElementException:
             logger.error(f'Shadow element {value} not found')
             raise NoSuchElementException(f'Shadow element {value} not found')
+
     def action_with_shadow_element(self, element_page, action, driver, value, wait, dict_save_value, is_highlight):
         """
             Perform actions on a shadow element.
@@ -450,7 +449,8 @@ class ManagementFile:
         except Exception as e:
             logger.error(f"An error occurred: {e}")
             raise Exception(f"An error occurred: {e}")
-    def action_mouse(self,action, element_page_from, element_page_to, context):
+
+    def action_mouse(self, action, element_page_from, element_page_to, context):
         """
             Performs a mouse action on web elements.
             Args:
@@ -471,7 +471,8 @@ class ManagementFile:
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, f"Unsupported action: {action}"
-    def handle_popup(self,driver, status, wait):
+
+    def handle_popup(self, driver, status, wait):
         """
            Handles a popup dialog on a web page.
            Args:

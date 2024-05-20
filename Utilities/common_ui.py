@@ -57,14 +57,23 @@ class common_device:
 
     def click_action(self, element, wait, element_page, device, driver):
         if device['platformName'] == "WEB":
-            if element.get_attribute("disabled") is None:
-                element.click()
-            else:
-                WebDriverWait(driver, wait).until_not(
-                    ec.element_attribute_to_include(
-                        ManagementFile().get_locator_for_wait(element_page['type'], element_page['value']),
-                        "disabled"))
-                element.click()
+            try:
+                if element.get_attribute("disabled") is None:
+                    element.click()
+                else:
+                    WebDriverWait(driver, wait).until_not(
+                        ec.element_attribute_to_include(
+                            ManagementFile().get_locator_for_wait(element_page['type'], element_page['value']),
+                            "disabled"))
+                    element.click()
+            except:
+                logger.info(f"do not click with element {element} trying to click by javascript")
+                try:
+                    driver.execute_script("arguments[0].click();", element)
+                except:
+                    logger.error(f"do not click with element {element} by javascript")
+                    assert False, f"do not click with element {element}"
+
         else:
             locator_from_wait = ManagementFileAndroid().get_locator_for_wait(element_page['type'],
                                                                              element_page['value'])
@@ -554,12 +563,29 @@ class common_device:
             assert True, f'feature scroll to element by javascript only support for Web environment'
 
     def scroll_to_element(self, element, driver, flag, platform, is_highlight):
+        """
+           Scroll to the specified element on the webpage.
+
+           Args:
+               element: The Selenium Webdriver element to scroll to.
+               driver: The WebDriver instance.
+               platform: The platform name (default is 'WEB').
+               is_smooth_scroll: Flag to enable smooth scrolling (default is True).
+
+           Returns:
+               None
+           """
         if platform == 'WEB':
             try:
                 ActionChains(driver).scroll_to_element(element).perform()
                 self.highlight(element, 0.3, is_highlight)
             except:
-                assert flag, f'can not scroll to element {element}'
+                try:
+                    logger.info(f'can not scroll to element {element} trying to scroll by javascript')
+                    driver.execute_script(
+                    "arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });", element)
+                except:
+                    assert flag, f'can not scroll to element {element}'
         else:
             assert False, f'feature scroll to element not suuport for mobile'
 

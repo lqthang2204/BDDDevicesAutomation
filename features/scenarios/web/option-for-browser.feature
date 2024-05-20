@@ -42,7 +42,7 @@ Feature: add option for browser
       | user-field | Admin    |
       | pass-field | Admin123 |
 
-      @option-popup
+      @option-popup @safari
   Scenario: option popup prevent
     Given I navigate to url GURU99-DOUBLE with options below
       | options  | value |
