@@ -47,12 +47,9 @@ Feature: test feature drag and drop
     And I change the page spec to double-example
     And I wait for element double-button to be ENABLED
     And I wait 2 seconds
-#    And I double-click element double-button
-    And I click element double-button
-    And I click element double-button
+    And I double-click element double-button
 #    And I perform javascript clickElement on element double-button
 #        And I perform javascript clickElement on element double-button
-    And I wait 1000 seconds
     And I accept for popup
     And I double-click element double-button
     And I dismiss for popup

@@ -128,7 +128,7 @@ Feature: orange HRM 2 web
     Given I navigate to url GURU99-DOUBLE with options below
       | options   | value                       |
       | extension | AdBlock-best-ad-blocker.crx |
-    And I wait 5 seconds
+    And I wait 20 seconds
     And I switch active tab with title "AdBlock is now installed!"
     And I wait 10 seconds
 #    And I close the tab with title "AdBlock is now installed!"
