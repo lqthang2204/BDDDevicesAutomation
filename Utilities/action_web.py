@@ -15,6 +15,15 @@ from pyshadow.main import Shadow
 from project_runner import logger, project_folder
 
 class ManagementFile:
+    SUPPORTED_LOCATOR_TYPES = {
+        'ID': By.ID,
+        'NAME': By.NAME,
+        'XPATH': By.XPATH,
+        'LINK TEXT': By.LINK_TEXT,
+        'PARTIAL LINK TEXT': By.PARTIAL_LINK_TEXT,
+        'CLASS NAME': By.CLASS_NAME,
+        'CSS': By.CSS_SELECTOR
+    }
     def get_dict_path_yaml(self):
         """
            This function retrieves the paths of all YAML files in the 'resources/pages' directory
@@ -153,27 +162,36 @@ class ManagementFile:
             logger.error(f'Not Found Action {action_id} in page yaml')
             assert False, "Not Found Action " + action_id + " in page yaml"
 
-    def get_element_by(self, type, driver, value):
+    def get_element_by(self, type, driver, value) -> WebElement:
+        """
+        Find and return a WebElement based on the given type and value.
+
+        Args:
+            type (str): The type of locator to use. Supported types are 'id', 'name', 'xpath', 'link_text',
+                        'partial_link_text', 'class_name', and 'css_selector'.
+            driver (WebDriver): The WebDriver instance to use for finding the element.
+            value (str): The value to use for finding the element.
+
+        Returns:
+            WebElement: The found WebElement.
+
+        Raises:
+            ValueError: If the given type is not supported.
+            NoSuchElementException: If the element is not found.
+            TimeoutException: If the element is not found within the specified timeout.
+            Exception: If there is an error locating the element.
+        """
+        supported_types = ['id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', 'css_selector']
+
+        if type not in supported_types:
+            raise ValueError(f"Invalid locator type. Supported types are {', '.join(supported_types)}.")
+
         try:
             logger.info(f'Get element by {type} with value is {value}')
-            if type.__eq__("ID"):
-                return driver.find_element(By.ID, value)
-            elif type.__eq__("NAME"):
-                return driver.find_element(By.NAME, value)
-            elif type.__eq__("XPATH"):
-                return driver.find_element(By.XPATH, value)
-            elif type.__eq__("LINK TEXT"):
-                return driver.find_element(By.LINK_TEXT, value)
-            elif type.__eq__("PARTIAL LINK TEXT"):
-                return driver.find_element(By.PARTIAL_LINK_TEXT, value)
-            elif type.__eq__("CLASS NAME"):
-                return driver.find_element(By.CLASS_NAME, value)
-            elif type.__eq__("CSS"):
-                return driver.find_element(By.CSS_SELECTOR, value)
-            else:
-                raise ValueError(
-                    "Invalid locator type. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
-        except NoSuchElementException as e:
+
+            locator = self.SUPPORTED_LOCATOR_TYPES.get(type)
+            return driver.find_element(locator, value)
+        except (NoSuchElementException, TimeoutException) as e:
             assert False, f"Element not found: {str(e)}"
         except Exception as e:
             assert False, f"Error locating element: {str(e)}"
@@ -181,23 +199,11 @@ class ManagementFile:
     def get_list_element_by(self, type, driver, value):
         try:
             logger.info(f'Getting list element by {type} with value is {value}')
-            if type.__eq__("ID"):
-                return driver.find_elements(By.ID, value)
-            elif type.__eq__("NAME"):
-                return driver.find_elements(By.NAME, value)
-            elif type.__eq__("XPATH"):
-                return driver.find_elements(By.XPATH, value)
-            elif type.__eq__("LINK TEXT"):
-                return driver.find_elements(By.LINK_TEXT, value)
-            elif type.__eq__("PARTIAL LINK TEXT"):
-                return driver.find_elements(By.PARTIAL_LINK_TEXT, value)
-            elif type.__eq__("CLASS NAME"):
-                return driver.find_elements(By.CLASS_NAME, value)
-            elif type.__eq__("CSS"):
-                return driver.find_elements(By.CSS_SELECTOR, value)
-            else:
+            locator = self.SUPPORTED_LOCATOR_TYPES.get(type)
+            if locator is None:
                 raise ValueError(
-                    "Invalid locator type. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
+                    f"Invalid locator type: {type}. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
+            return driver.find_elements(locator, value)
         except NoSuchElementException as e:
             print(f"Element not found: {str(e)}")
             return None
@@ -206,31 +212,16 @@ class ManagementFile:
             return None
 
     def get_locator_for_wait(self, type, value):
+        logger.info(f'getting locator for wait with type {type} with value is {value}')
         try:
-            logger.info(f'getting locator for wait with type {type} with value is {value}')
-            if type.__eq__("ID"):
-                return (By.ID, value)
-            elif type.__eq__("NAME"):
-                return  (By.NAME, value)
-            elif type.__eq__("XPATH"):
-                return  (By.XPATH, value)
-            elif type.__eq__("LINK TEXT"):
-                return (By.LINK_TEXT, value)
-            elif type.__eq__("PARTIAL LINK TEXT"):
-                return (By.PARTIAL_LINK_TEXT, value)
-            elif type.__eq__("CLASS NAME"):
-                return (By.CLASS_NAME, value)
-            elif type.__eq__("CSS"):
-                return  (By.CSS_SELECTOR, value)
-            else:
+            logger.info(f'Getting locator for wait with type {type} with value is {value}')
+            locator = self.SUPPORTED_LOCATOR_TYPES.get(type.lower())
+            if locator is None:
                 raise ValueError(
-                    "Invalid locator type. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
-        except NoSuchElementException as e:
-            print(f"Element not found: {str(e)}")
-            return None
+                    f"Invalid locator type: {type}. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
+            return locator
         except Exception as e:
-            print(f"Error locating element: {str(e)}")
-            return None
+                raise Exception(f"Error locating element: {str(e)}")
 
     def get_locator(self, element_page, device):
         """
