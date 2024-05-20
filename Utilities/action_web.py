@@ -302,10 +302,12 @@ class ManagementFile:
             logger.error(f'An error occurred during action execution: {str(e)}')
 
     def check_field_exist(self, dict, key):
+        try:
             if dict[key]:
                 return True
-            else:
-                return False
+        except Exception as e:
+            print(f'not found attribute in dictionary: {str(e)}')
+            return False
 
     def wait_for_action(self, action_elements, wait, driver, element, locator):
         """
