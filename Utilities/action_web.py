@@ -14,6 +14,7 @@ from yaml import SafeLoader
 from pyshadow.main import Shadow
 from project_runner import logger, project_folder
 
+
 class ManagementFile:
     SUPPORTED_LOCATOR_TYPES = {
         'ID': By.ID,
@@ -24,6 +25,7 @@ class ManagementFile:
         'CLASS NAME': By.CLASS_NAME,
         'CSS': By.CSS_SELECTOR
     }
+
     def get_dict_path_yaml(self):
         """
            This function retrieves the paths of all YAML files in the 'resources/pages' directory
@@ -100,7 +102,8 @@ class ManagementFile:
                     type_action = action_elements['inputType']
                     try:
                         element = self.get_locator_for_wait(locator['type'], locator['value'])
-                        if self.check_field_exist(action_elements, "condition") and self.check_field_exist(action_elements, "timeout"):
+                        if self.check_field_exist(action_elements, "condition") and self.check_field_exist(
+                                action_elements, "timeout"):
                             if action_elements['condition'] == "ENABLED":
                                 WebDriverWait(driver, action_elements['timeout']).until(
                                     ec.element_to_be_clickable(element))
@@ -141,7 +144,8 @@ class ManagementFile:
                     except Exception as e:
                         logger.info(f'can not execute action with element have value  {locator} in framework')
                         assert True, "can not execute action with element have value" + locator + "in framework"
-                elif self.check_field_exist(action_elements, 'condition') and self.check_field_exist(action_elements, 'timeout') is False:
+                elif self.check_field_exist(action_elements, 'condition') and self.check_field_exist(action_elements,
+                                                                                                     'timeout') is False:
                     try:
                         element = self.get_element_by(locator['type'], driver, locator['value'])
                         self.process_execute_action(driver, wait, element, type_action, value, locator, action_elements)
@@ -181,10 +185,11 @@ class ManagementFile:
             TimeoutException: If the element is not found within the specified timeout.
             Exception: If there is an error locating the element.
         """
-        supported_types = ['id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', 'css_selector']
-
-        if type not in supported_types:
-            raise ValueError(f"Invalid locator type. Supported types are {', '.join(supported_types)}.")
+        logger.info(f'Getting list element by {type} with value is {value}')
+        locator = self.SUPPORTED_LOCATOR_TYPES.get(type)
+        if locator is None:
+            raise ValueError(
+                f"Invalid locator type: {type}. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
 
         try:
             logger.info(f'Get element by {type} with value is {value}')
@@ -215,13 +220,13 @@ class ManagementFile:
         logger.info(f'getting locator for wait with type {type} with value is {value}')
         try:
             logger.info(f'Getting locator for wait with type {type} with value is {value}')
-            locator = self.SUPPORTED_LOCATOR_TYPES.get(type.lower())
+            locator = self.SUPPORTED_LOCATOR_TYPES.get(type)
             if locator is None:
                 raise ValueError(
                     f"Invalid locator type: {type}. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
-            return locator
+            return locator, value
         except Exception as e:
-                raise Exception(f"Error locating element: {str(e)}")
+            raise Exception(f"Error locating element: {str(e)}")
 
     def get_locator(self, element_page, device):
         """
@@ -297,11 +302,10 @@ class ManagementFile:
             logger.error(f'An error occurred during action execution: {str(e)}')
 
     def check_field_exist(self, dict, key):
-        try:
             if dict[key]:
                 return True
-        except:
-            return False
+            else:
+                return False
 
     def wait_for_action(self, action_elements, wait, driver, element, locator):
         """
@@ -365,6 +369,7 @@ class ManagementFile:
             return ec.element_located_to_be_selected(locator)
         else:
             raise ValueError(f"Unsupported condition: {condition}")
+
     def get_shadow_element(self, type, driver, value, wait, is_highlight):
         """
             This method finds a shadow element based on the provided type, driver, value, wait, and highlight settings.
@@ -400,6 +405,7 @@ class ManagementFile:
         except NoSuchElementException:
             logger.error(f'Shadow element {value} not found')
             raise NoSuchElementException(f'Shadow element {value} not found')
+
     def action_with_shadow_element(self, element_page, action, driver, value, wait, dict_save_value, is_highlight):
         """
             Perform actions on a shadow element.
@@ -441,7 +447,8 @@ class ManagementFile:
         except Exception as e:
             logger.error(f"An error occurred: {e}")
             raise Exception(f"An error occurred: {e}")
-    def action_mouse(self,action, element_page_from, element_page_to, context):
+
+    def action_mouse(self, action, element_page_from, element_page_to, context):
         """
             Performs a mouse action on web elements.
             Args:
@@ -462,7 +469,8 @@ class ManagementFile:
         else:
             logger.error("Can not execute %s with element have is %s", action)
             assert False, f"Unsupported action: {action}"
-    def handle_popup(self,driver, status, wait):
+
+    def handle_popup(self, driver, status, wait):
         """
            Handles a popup dialog on a web page.
            Args:
