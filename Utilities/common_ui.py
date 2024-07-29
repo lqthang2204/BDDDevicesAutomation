@@ -17,7 +17,11 @@ from project_runner import logger
 from selenium.webdriver.support.color import Color
 from libraries.data_generators import check_match_pattern
 import copy
-
+import re
+from libraries.data_generators import generate_date_time_zone
+from libraries.data_generators import generate_random_numeric_alpha_string
+from libraries.data_generators import find_value_with_pattern
+from libraries.data_generators import get_test_data_for
 
 class common_device:
 
@@ -41,11 +45,14 @@ class common_device:
             action_chains.context_click(on_element=element)
             action_chains.perform()
         elif action.__eq__("type"):
+            if '{' in value:
+                value = re.sub("[{}]", "$", value)
+                value = value.split('$')
+                value = "".join([get_test_data_for(item, dict_save_value) for item in value])
+            if 'USER.' in value:
+                value = self.get_value_from_user_random(value, dict_save_value)
             if dict_save_value:
-                if 'USER.' in value:
-                    value = self.get_value_from_user_random(value, dict_save_value)
-                else:
-                    value = dict_save_value.get(value, value)
+                value = dict_save_value.get(value, value)
             element.send_keys(value)
         elif action.__eq__("clear"):
             element.clear()
@@ -429,10 +436,8 @@ class common_device:
 
             arr_user = value.split('USER.')
             list_user = dict_save_value['USER.']
-
             if len(arr_user) < 2:
                 raise ValueError("Invalid format for value. Expected 'USER.' followed by a key.")
-
             value = management_user.get_user(list_user, arr_user[1])
             logging.info(f"Value '{value}' retrieved successfully for key '{arr_user[1]}'")
             return value
@@ -795,7 +800,3 @@ class common_device:
         except Exception as e:
             print('fail when execute javascript file', e)
             assert False, f"fail when execute javascript file {javascript_file}"
-
-    # def convert(self, lst):
-    #     res_dct = {lst[i]: lst[i + 1] for i in range(0, len(lst), 2)}
-    #     return res_dct

@@ -102,17 +102,16 @@ def for_rand_string_when_value_contains_hyphen(value):
 
 
 def for_rand_string_when_value_contains_else(value):
-    result = ''
     if ALPHABETPREFIX in value:
         value = value.replace(ALPHABETPREFIX, '')
-        result = get_random_alphabetic(int(value))
+        return get_random_alphabetic(int(value))
     elif ALPHANUMERIC in value:
         value = value.replace(ALPHANUMERIC, '')
-        result = get_random_alphanumeric(int(value))
+        return get_random_alphanumeric(int(value))
     elif NUMBERPREFIX in value:
         value = value.replace(NUMBERPREFIX, '')
-        result = get_random_number(int(value))
-    return result
+        return get_random_number(int(value))
+    return value
 
 
 def get_random_alphanumeric(random_str_length):
@@ -143,8 +142,10 @@ def get_desired_date_time(property_str):
     if "current" in property_str:
         return now
 
-    value = int(find_value_with_pattern(property_str, r"[+-]\d*"))
-
+    value = find_value_with_pattern(property_str, r"[+-]\d*")
+    if value is None:
+        return property_str
+    value = int(value)
     if verify_text_using_regex(property_str, r"[+-]\d*ms"):
         return now + timedelta(milliseconds=value)
     elif verify_text_using_regex(property_str, r"[+-]\d*mi"):
@@ -198,7 +199,7 @@ def generate_date_time_zone(value):
             return now.strftime(req_date_formatter)
         else:
             return now.strftime('%H:%M:%S')
-    return ''
+    return value
 
 
 def get_result_value(now, value):
@@ -254,6 +255,7 @@ def check_match_pattern(regex, value, message):
 # Example Usage:
 if __name__ == '__main__':
     formats = [
+        'date_current_MM-dd-mm',
         'date_current_yyyy-MM-dd',
         'date_+3dt_yyyy-MM-dd',
         'date_+3dt_yyyy/MM/dd',
@@ -294,4 +296,4 @@ if __name__ == '__main__':
     ]
 
     for format_str in formats:
-        print(f"Given-Format: {format_str}    Output: {get_test_data_for(format_str)}")
+        print(f"Given-Format: {format_str}    Output: {get_test_data_for(format_str, None)}")
