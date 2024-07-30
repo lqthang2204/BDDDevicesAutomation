@@ -45,7 +45,8 @@ class common_device:
             action_chains.context_click(on_element=element)
             action_chains.perform()
         elif action.__eq__("type"):
-            if '{' in value:
+            result = re.search(r"\{.*?\}", value)
+            if result:
                 value = re.sub("[{}]", "$", value)
                 value = value.split('$')
                 value = "".join([get_test_data_for(item, dict_save_value) for item in value])
