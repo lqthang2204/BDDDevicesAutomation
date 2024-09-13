@@ -41,7 +41,10 @@ class manage_hook_mobile:
         caps['sauce:options']['deviceOrientation'] = 'PORTRAIT'
         context.wait = device['wait']
         context.device = device
-        context.driver = appium_driver.Remote(config.get("remote", "url"), desired_capabilities=caps)
+        from appium.options.android import UiAutomator2Options
+        options = UiAutomator2Options()
+        options.load_capabilities(caps)
+        context.driver = appium_driver.Remote(config.get("remote", "url"), options=options)
 
     def get_data_config_mobile(self,context, device, table):
         config_file_path = os.path.join(context.root_path+"/configuration_env/", table[0][0]+".json")
