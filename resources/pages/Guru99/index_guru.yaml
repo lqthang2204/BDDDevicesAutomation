@@ -34,7 +34,7 @@ elements:
     locators:
       - device: WEB
         type: XPATH
-        value: //a[contains(text(),"{text}")]
+        value: //span[contains(text(),"{text}")]
   - id: python-tutorial-bot
     description: python tutorial
     locators:
