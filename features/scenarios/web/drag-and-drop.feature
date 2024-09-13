@@ -27,7 +27,7 @@ Feature: test feature drag and drop
     And I change the page spec to index_guru
     And I verify that following elements with below attributes
       | Field                  | Value  | Status    | Helpers |
-      | header-python-tutorial | Python | DISPLAYED |         |
+      | header-python-tutorial | Big Data | DISPLAYED |         |
     And I wait 10 seconds
 
   @scroll-to-element-2
@@ -36,7 +36,7 @@ Feature: test feature drag and drop
     And I change the page spec to index_guru
     And I scroll by java-script to element header-python-tutorial
     And I wait 10 seconds
-    And I scroll to element python-tutorial with text "Execute Python"
+    And I scroll to element python-tutorial with text "Python"
     And I wait 10 seconds
     And I scroll to element header-python-tutorial
     And I wait 10 seconds
@@ -47,8 +47,8 @@ Feature: test feature drag and drop
     And I change the page spec to double-example
     And I wait for element double-button to be ENABLED
     And I wait 2 seconds
-    And I double-click element double-button
-#    And I perform javascript clickElement on element double-button
+#    And I double-click element double-button
+    And I perform javascript clickElement on element double-button
 #        And I perform javascript clickElement on element double-button
     And I accept for popup
     And I double-click element double-button

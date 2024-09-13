@@ -3,20 +3,21 @@ from time import sleep
 
 from appium.webdriver.common.touch_action import TouchAction
 from faker import Faker
-from selenium.common import NoSuchElementException, NoSuchFrameException, NoSuchWindowException
+from selenium.common import NoSuchElementException, NoSuchFrameException, NoSuchWindowException, StaleElementReferenceException, ElementNotInteractableException, InvalidElementStateException, ElementNotVisibleException
 from selenium.webdriver import Keys
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 from libraries.faker import management_user
-from libraries.faker.User import generate_user
 from project_runner import logger
 from selenium.webdriver.support.color import Color
 from libraries.data_generators import check_match_pattern
 import copy
+import re
+from selenium.webdriver.support.ui import Select
+from libraries.data_generators import get_test_data_for
 
 
 class common_device:
@@ -30,30 +31,39 @@ class common_device:
         element = self.get_element_by_from_device(element_page, device, driver)
         logger.info(f'execute {action} with element have is {element_page["value"]}')
         self.highlight(element, 0.3, context.highlight)
-        if action.__eq__("click"):
-            self.click_action(element, wait, element_page, device, driver)
-        elif action.__eq__('double-click'):
-            action_chains = ActionChains(driver)
-            action_chains.double_click(on_element=element)
-            action_chains.perform()
-        elif action.__eq__('right-click'):
-            action_chains = ActionChains(driver)
-            action_chains.context_click(on_element=element)
-            action_chains.perform()
-        elif action.__eq__("type"):
-            if dict_save_value:
+        try:
+            if action.__eq__("click"):
+                self.click_action(element, wait, element_page, device, driver)
+            elif action.__eq__('double-click'):
+                action_chains = ActionChains(driver)
+                action_chains.double_click(on_element=element)
+                action_chains.perform()
+            elif action.__eq__('right-click'):
+                action_chains = ActionChains(driver)
+                action_chains.context_click(on_element=element)
+                action_chains.perform()
+            elif action.__eq__('select'):
+                Select(element).select_by_visible_text(value)
+            elif action.__eq__("type"):
+                result = re.search(r"\{.*?\}", value)
+                if result:
+                    value = re.sub("[{}]", "$", value)
+                    value = value.split('$')
+                    value = "".join([get_test_data_for(item, dict_save_value) for item in value])
                 if 'USER.' in value:
                     value = self.get_value_from_user_random(value, dict_save_value)
-                else:
+                if dict_save_value:
                     value = dict_save_value.get(value, value)
-            element.send_keys(value)
-        elif action.__eq__("clear"):
-            element.clear()
-        elif action.__eq__('hover-over'):
-            self.mouse_action(element, driver, action, device)
-        else:
-            logger.error("Can not execute %s with element have is %s", action)
-            assert False, "Not support action in framework"
+                element.send_keys(value)
+            elif action.__eq__("clear"):
+                element.clear()
+            elif action.__eq__('hover-over'):
+                self.mouse_action(element, driver, action, device)
+            else:
+                logger.error("Can not execute %s with element have is %s", action)
+                assert False, "Not support action in framework"
+        except (ElementNotInteractableException, StaleElementReferenceException):
+            self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action, 1)
 
     def click_action(self, element, wait, element_page, device, driver):
         if device['platformName'] == "WEB":
@@ -66,19 +76,20 @@ class common_device:
                             ManagementFile().get_locator_for_wait(element_page['type'], element_page['value']),
                             "disabled"))
                     element.click()
-            except:
+            except (ElementNotInteractableException, StaleElementReferenceException):
+                self.handle_element_not_interactable_exception("", wait, element_page, device, driver, "click", 1)
+            except Exception as e:
                 logger.info(f"do not click with element {element} trying to click by javascript")
+                logger.error(e)
                 try:
                     driver.execute_script("arguments[0].click();", element)
                 except:
                     logger.error(f"do not click with element {element} by javascript")
                     assert False, f"do not click with element {element}"
-
         else:
             locator_from_wait = ManagementFileAndroid().get_locator_for_wait(element_page['type'],
                                                                              element_page['value'])
-            WebDriverWait(driver, wait).until(
-                ec.element_to_be_clickable(locator_from_wait))
+            WebDriverWait(driver, wait).until(ec.element_to_be_clickable(locator_from_wait))
             element.click()
 
     def wait_element_for_status(self, element_page, status, driver, device, wait):
@@ -233,7 +244,7 @@ class common_device:
             self.scroll_to_element_by_js(element, driver, True, device['platformName'], True)
 
             # Get the value of the element
-            value = self.get_value_element_form_device(element, device)
+            value = self.get_value_element_form_device(element, device, element_page, driver)
 
             # Save the value to the dictionary
             dict_save_value["KEY." + key] = value
@@ -277,7 +288,7 @@ class common_device:
         else:
             raise ValueError("Unknown device platform: {}".format(device['platformName']))
 
-    def get_value_element_form_device(self, element, device):
+    def get_value_element_form_device(self, element, device, element_page, driver):
         """
             Returns the value of the element based on the platform.
             Args:
@@ -288,11 +299,14 @@ class common_device:
             """
         if device['platformName'] == "WEB":
             # Check if the element has a value attribute and is an input tag
-            if element.get_attribute("value") and element.tag_name.lower() == "input":
-                return element.get_attribute('value')
-            else:
-                # If the element is not an input tag, return its text content
-                return element.text
+            try:
+                if element.get_attribute("value") and element.tag_name.lower() == "input":
+                    return element.get_attribute('value')
+                else:
+                    # If the element is not an input tag, return its text content
+                    return element.text
+            except (ElementNotInteractableException, StaleElementReferenceException):
+                self.handle_element_not_interactable_exception("", None, element_page, device, driver, "get_value", 1)
         else:
             # For non-web platforms, return the element's text content
             return element.text
@@ -429,10 +443,8 @@ class common_device:
 
             arr_user = value.split('USER.')
             list_user = dict_save_value['USER.']
-
             if len(arr_user) < 2:
                 raise ValueError("Invalid format for value. Expected 'USER.' followed by a key.")
-
             value = management_user.get_user(list_user, arr_user[1])
             logging.info(f"Value '{value}' retrieved successfully for key '{arr_user[1]}'")
             return value
@@ -452,7 +464,7 @@ class common_device:
             WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
             element = self.get_element_by_from_device(element_page, device, driver)
             self.scroll_to_element_by_js(element, driver, True, device['platformName'], is_highlight)
-            value = self.get_value_element_form_device(element, device)
+            value = self.get_value_element_form_device(element, device, element_page, driver)
             assert value == expect, f'value of the element is {value} not equal to values expected {expect}'
         except NoSuchElementException:
             assert False, 'Element not found'
@@ -465,16 +477,16 @@ class common_device:
             element = self.get_element_by_from_device(element_page, device, driver)
             self.scroll_to_element_by_js(element, driver, True, device['platformName'], is_highlight)
             if helper == 'REGEX':
-                value_element = self.get_value_element_form_device(element, device)
+                value_element = self.get_value_element_form_device(element, device, element_page, driver)
                 check_match_pattern(expected, value_element, 'value of element not match with pattern')
             elif helper == 'STARTS_WITH':
-                value_element = self.get_value_element_form_device(element, device)
+                value_element = self.get_value_element_form_device(element, device, element_page, driver)
                 assert value_element.startswith(expected), f'value of element is {expected} not start with {expected}'
             elif helper == 'ENDS_WITH':
-                value_element = self.get_value_element_form_device(element, device)
+                value_element = self.get_value_element_form_device(element, device, element_page, driver)
                 assert value_element.endswith(expected), f'value of element is {expected} not ends with {expected}'
             elif helper == 'CONTAINS':
-                value_element = self.get_value_element_form_device(element, device)
+                value_element = self.get_value_element_form_device(element, device, element_page, driver)
                 assert expected in value_element, f'value of element is {value_element} not contains {expected}'
             elif helper == 'BACKGROUND-COLOR':
                 bg_color = self.get_value_attribute_element_form_device(element, device, 'background-color', True)
@@ -583,11 +595,10 @@ class common_device:
                 try:
                     logger.info(f'can not scroll to element {element} trying to scroll by javascript')
                     driver.execute_script(
-                    "arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });", element)
+                        "arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });",
+                        element)
                 except:
                     assert flag, f'can not scroll to element {element}'
-        else:
-            assert False, f'feature scroll to element not suuport for mobile'
 
     def switch_to_frame(self, driver, element_page, wait, device, status):
         try:
@@ -677,7 +688,7 @@ class common_device:
            """
         try:
             all_handles = driver.window_handles
-            driver.switch_to.window(all_handles[int(index)-1])
+            driver.switch_to.window(all_handles[int(index) - 1])
             driver.close()
             # Switch back to the main window if needed
             driver.switch_to.window(all_handles[0])
@@ -732,7 +743,6 @@ class common_device:
             print('An error occurred while getting key code:', key_name)
             return None, None, None
 
-
     def change_keyboard_with_mac_env(self, attribute):
         """
         Change the keyboard attribute based on the macOS environment.
@@ -751,7 +761,6 @@ class common_device:
             return 'COMMAND'
         else:
             return attribute
-
 
     def execute_javascript_with_element(self, root_path, element_page, javascript_file, driver, device):
         from Utilities.read_configuration import read_configuration
@@ -796,6 +805,39 @@ class common_device:
             print('fail when execute javascript file', e)
             assert False, f"fail when execute javascript file {javascript_file}"
 
-    # def convert(self, lst):
-    #     res_dct = {lst[i]: lst[i + 1] for i in range(0, len(lst), 2)}
-    #     return res_dct
+    def handle_element_not_interactable_exception(self, value, wait, element_page, device, driver, action, count):
+        element = self.get_element_by_from_device(element_page, device, driver)
+        try:
+            driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });", element)
+        except Exception as e:
+            assert True, f"fail when scroll to element {element}, skip step scroll to element"
+        match action:
+            case "click":
+                try:
+                    for count in range(10):
+                        sleep(1)
+                        self.click_action(element, wait, element_page, device, driver)
+                        break
+                except (ElementNotInteractableException, StaleElementReferenceException):
+                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action, count+1)
+            case "type":
+                try:
+                    for count in range(10):
+                        sleep(1)
+                        element.send_keys(value)
+                        break
+                except (ElementNotInteractableException, StaleElementReferenceException):
+                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action, count+1)
+            case "get_value":
+                try:
+                    for count in range(10):
+                        if element.get_attribute("value") and element.tag_name.lower() == "input":
+                            return element.get_attribute('value')
+                        else:
+                            # If the element is not an input tag, return its text content
+                            return element.text
+                except (ElementNotInteractableException, StaleElementReferenceException):
+                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action, count+1)
+            case _:
+                print(f'not exist {action} in element not interactable exception')
+                assert False, f"not exist {action} in element not interactable exception"

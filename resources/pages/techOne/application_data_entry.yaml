@@ -1,0 +1,61 @@
+elements:
+  - id: button-page
+    description: button with text field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: note-field
+    description: button with text field
+    locators:
+      - device: WEB
+        type: ID
+        value: Notes
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: saved-button
+    description: button with text field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(@class, "bgColGreen")]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: section-menu
+    description: section student detail
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[@class="summary"]//*[contains(text(), "{text}")]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: spinner
+    description: spinner
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="itemSpinner newSpinner48 dark"])[4]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
