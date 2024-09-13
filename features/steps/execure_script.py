@@ -13,6 +13,7 @@ from execute_open_mobile import manage_hook_mobile
 from execute_open_browser import manage_hook_browser
 
 
+
 @step(u'I navigate to url {name}')
 def launchBrowser(context, name):
     if context.device['platformName'] == 'WEB':
@@ -90,6 +91,12 @@ def step_impl(context, element):
     common_device().action_page(context.element_page, "clear", context.driver, "", context.wait,
                                 context.dict_save_value, context.device, context)
 
+@step(u'I select the option with the value "{text}" for element {element}')
+def step_impl(context, text, element):
+    context.element_page = common_device().get_element(context.page_present, element,
+                                                       context.device['platformName'], context.dict_save_value)
+    common_device().action_page(context.element_page, "select", context.driver, text, context.wait,
+                                context.dict_save_value, context.device, context)
 
 @step(u'I save text for element {element} with key "{key}"')
 def step_impl(context, element, key):

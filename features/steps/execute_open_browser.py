@@ -59,9 +59,8 @@ class manage_hook_browser:
         try:
             if context.driver is None:
                 # Check if the device requires auto-download of the driver
-                if hasattr(device, 'auto_download_driver'):
-                    if context.device['auto_download_driver'] is False:
-                        self.get_driver_from_path(context, browser, device, option)
+                if 'auto_download_driver' in device and context.device['auto_download_driver'] is False:
+                    self.get_driver_from_path(context, browser, device, option)
                 else:
                     # Initialize the driver based on the browser type
                     match browser:
@@ -90,7 +89,7 @@ class manage_hook_browser:
             logger.error(f"Failed to open browser: {e}")
             assert False, f"Failed to open browser: {e}"
 
-    def get_driver_from_path(context, browser, device, option):
+    def get_driver_from_path(self, context, browser, device, option):
         """
         This function gets the driver from the path based on the browser type and device.
 
@@ -241,7 +240,7 @@ class manage_hook_browser:
         """
         # Check for specific attributes in the device configuration
         if label == "wait":
-            if hasattr(device, label):
+            if label in device:
                 return device[label]
             else:
                 return 30

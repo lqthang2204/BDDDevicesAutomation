@@ -182,7 +182,7 @@ def generate_date_time_zone(value):
     split_format = value.split('_')
     if len(split_format) == 3 and (
             verify_text_using_regex(split_format[2], r'[-/][dMy]') or verify_text_using_regex(split_format[2],
-                                                                                              r'[-/:][hms]')):
+                                                                                              r'[-/:][hms]')) or verify_text_using_regex(split_format[2], r'[dMy]'):
         req_date_formatter = date_accessor_mapper(split_format[2])
 
     if 'dateTime_' in value:
@@ -255,7 +255,7 @@ def check_match_pattern(regex, value, message):
 # Example Usage:
 if __name__ == '__main__':
     formats = [
-        'date_current_MM-dd-mm',
+        'date_current_MMddmm',
         'date_current_yyyy-MM-dd',
         'date_+3dt_yyyy-MM-dd',
         'date_+3dt_yyyy/MM/dd',
