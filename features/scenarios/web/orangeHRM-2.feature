@@ -3,6 +3,7 @@ Feature: orange HRM 2 web
 
 #  @Windows10_Chrome_76.0
 #  @Windows10_Firefox_68.0
+  @test-navigate-2-times
   Scenario: negative to url2
     Given I navigate to url GOOGLE
     And I change the page spec to pageGoogle

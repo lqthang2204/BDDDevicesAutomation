@@ -4,7 +4,7 @@ Feature: run regression tech one
   # Enter feature description here
 
   @T1 @Application-Data-Entry
-  Scenario: # Enter scenario name here
+  Scenario:  create student from staff
     # Enter steps here
   Given I navigate to url T1
     And I change the page spec to login_t1_page
@@ -129,7 +129,7 @@ Feature: run regression tech one
       | saved-button | #74bd00 | DISPLAYED | BACKGROUND-COLOR |
 
     @T1 @register-student
-  Scenario: # Enter scenario name here
+  Scenario: create student from student portal
     # Enter steps here
   Given I navigate to url T1
     And I change the page spec to login_t1_page
