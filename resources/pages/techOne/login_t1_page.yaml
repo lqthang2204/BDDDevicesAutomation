@@ -1,0 +1,53 @@
+elements:
+  - &user-name
+    id: user-name
+    description: field user name
+    locators:
+      - device: WEB
+        type: ID
+        value: LogonName
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &password
+    id: password
+    description: field password
+    locators:
+      - device: WEB
+        type: ID
+        value: Password
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &login-button
+    id: login-buttonlogin-button
+    description: login button
+    locators:
+      - device: WEB
+        type: ID
+        value: BtnLogOn
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+actions:
+  - id: login-page
+    description: login page
+    actionElements:
+      - element: *user-name
+        condition: DISPLAYED
+        inputType: text
+      - element: *password
+        condition: DISPLAYED
+        inputType: text
+      - element: *login-button
+        condition: ENABLED
+        inputType: click

@@ -3,7 +3,7 @@ from time import sleep
 
 from appium.webdriver.common.touch_action import TouchAction
 from faker import Faker
-from selenium.common import NoSuchElementException, NoSuchFrameException, NoSuchWindowException, StaleElementReferenceException, ElementNotInteractableException, InvalidElementStateException, ElementNotVisibleException
+from selenium.common import NoSuchElementException, NoSuchFrameException, NoSuchWindowException,StaleElementReferenceException, ElementNotInteractableException, InvalidElementStateException,ElementNotVisibleException
 from selenium.webdriver import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -13,11 +13,10 @@ from Utilities.action_web import ManagementFile
 from libraries.faker import management_user
 from project_runner import logger
 from selenium.webdriver.support.color import Color
-from libraries.data_generators import check_match_pattern
+from libraries.data_generators import check_match_pattern, get_test_data_for
 import copy
 import re
 from selenium.webdriver.support.ui import Select
-from libraries.data_generators import get_test_data_for
 
 
 class common_device:
@@ -212,7 +211,7 @@ class common_device:
             logger.error("user must set data table for elements")
             assert False, "can not execute verify status for elements"
 
-    def save_text_from_element(self, element_page, driver, key, dict_save_value, wait, device):
+    def save_text_from_element(self, element_page, driver, key, dict_save_value, wait, device, is_regex, pattern):
         """
             Save the text from an element on a web page.
             Args:
@@ -245,7 +244,8 @@ class common_device:
 
             # Get the value of the element
             value = self.get_value_element_form_device(element, device, element_page, driver)
-
+            if is_regex:
+                value = re.search(pattern, value).group(0)
             # Save the value to the dictionary
             dict_save_value["KEY." + key] = value
 
@@ -808,7 +808,8 @@ class common_device:
     def handle_element_not_interactable_exception(self, value, wait, element_page, device, driver, action, count):
         element = self.get_element_by_from_device(element_page, device, driver)
         try:
-            driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });", element)
+            driver.execute_script(
+                "arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });", element)
         except Exception as e:
             assert True, f"fail when scroll to element {element}, skip step scroll to element"
         match action:
@@ -819,7 +820,8 @@ class common_device:
                         self.click_action(element, wait, element_page, device, driver)
                         break
                 except (ElementNotInteractableException, StaleElementReferenceException):
-                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action, count+1)
+                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action,
+                                                                   count + 1)
             case "type":
                 try:
                     for count in range(10):
@@ -827,7 +829,8 @@ class common_device:
                         element.send_keys(value)
                         break
                 except (ElementNotInteractableException, StaleElementReferenceException):
-                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action, count+1)
+                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action,
+                                                                   count + 1)
             case "get_value":
                 try:
                     for count in range(10):
@@ -837,7 +840,10 @@ class common_device:
                             # If the element is not an input tag, return its text content
                             return element.text
                 except (ElementNotInteractableException, StaleElementReferenceException):
-                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action, count+1)
+                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action,
+                                                                   count + 1)
             case _:
                 print(f'not exist {action} in element not interactable exception')
                 assert False, f"not exist {action} in element not interactable exception"
+
+

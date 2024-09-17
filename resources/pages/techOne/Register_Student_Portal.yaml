@@ -1,0 +1,145 @@
+elements:
+  - &family_name_field
+    id: family_name_field
+    description: Family name field
+    locators:
+      - device: WEB
+        type: ID
+        value: FamilyName
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &given_name_field
+    id: given_name_field
+    description: Given name field
+    locators:
+      - device: WEB
+        type: ID
+        value: GivenName
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &dob_field
+    id: dob_field
+    description: DOB field
+    locators:
+      - device: WEB
+        type: ID
+        value: BirthDate
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &gender_field
+    id: gender_field
+    description: gender field
+    locators:
+      - device: WEB
+        type: ID
+        value: Gender
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &email_field
+    id: email_field
+    description: email field
+    locators:
+      - device: WEB
+        type: ID
+        value: EmailAddress
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &citizen_field
+    id: citizen_field
+    description: Citizen field
+    locators:
+      - device: WEB
+        type: ID
+        value: Nationality
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &password_field
+    id: password_field
+    description: Passwrod field
+    locators:
+      - device: WEB
+        type: ID
+        value: Password
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &confirm_password_field
+    id: confirm_password_field
+    description: Confirm password field
+    locators:
+      - device: WEB
+        type: ID
+        value: ConfirmPassword
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: spinner
+    description: spinner
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="itemSpinner newSpinner48 dark"])[4]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+actions:
+  - id: register_applicant
+    description: Register applicant page
+    actionElements:
+      - element: *family_name_field
+        condition: DISPLAYED
+        inputType: text
+      - element: *given_name_field
+        condition: DISPLAYED
+        inputType: text
+      - element: *dob_field
+        condition: ENABLED
+        inputType: text
+      - element: *gender_field
+        condition: ENABLED
+        inputType: text
+      - element: *email_field
+        condition: ENABLED
+        inputType: text
+      - element: *citizen_field
+        condition: ENABLED
+        inputType: text
+      - element: *password_field
+        condition: ENABLED
+        inputType: text
+      - element: *confirm_password_field
+        condition: ENABLED
+        inputType: text

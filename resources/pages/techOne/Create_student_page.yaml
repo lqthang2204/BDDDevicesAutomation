@@ -1,0 +1,109 @@
+elements:
+  - id: dob
+    description: dob field
+    locators:
+      - device: WEB
+        type: ID
+        value: BirthDate
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: family-name
+    description: family name field
+    locators:
+      - device: WEB
+        type: ID
+        value: FamilyName
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: given-name
+    description: Given name field
+    locators:
+      - device: WEB
+        type: ID
+        value: GivenName
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: middle-name
+    description: Given name field
+    locators:
+      - device: WEB
+        type: ID
+        value: OtherName
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: Nationality_picker
+    description: family name field
+    locators:
+      - device: WEB
+        type: ID
+        value: Nationality_picker
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: Nationality_Au
+    description: Nationality Au
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //td[text()="Australian Citizen"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: spinner
+    description: spinner
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="itemSpinner newSpinner48 dark"])[4]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: email-field
+    description: Email field
+    locators:
+      - device: WEB
+        type: ID
+        value: PreferredEmail
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: button-page
+    description: button with text field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]

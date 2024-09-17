@@ -1,0 +1,193 @@
+elements:
+  - id: header
+    description: dob field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[@class="headerText" and text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: address-type-field
+    description: Address type field
+    locators:
+      - device: WEB
+        type: ID
+        value: Addresses_1_AddressType
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: drop-down-value
+    description: Address type field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(@class, "picklistDataCell") and text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: element-page
+    description: This is element of page show
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: field-country
+    description: This is element of page show
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[@id="Addresses_1_Country"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: button-field-country
+    description: This is element of page show
+    locators:
+      - device: WEB
+        type: CSS
+        value: button[class*='picklist displayAutoSuggest'][id='Addresses_1_Country_picker'] >span
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: Addresses_1
+    description: This is element of page show
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //section[@id="Addresses_1"]//input[@id="Addresses_1_Line1"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: state-field
+    description: State field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //section[@id="Addresses_1"]//input[@id="Addresses_1_State"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: post-code
+    description: State field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //section[@id="Addresses_1"]//input[@id="Addresses_1_Postcode"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: city-field
+    description: This is element of page show
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //section[@id="Addresses_1"]//input[@id="Addresses_1_Suburb"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: country-of-birth
+    description: This is element of page show
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[@id="BirthCountry"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: main-language
+    description: main language field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[@id="HomeLanguage"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: save-button
+    description: main language field
+    locators:
+      - device: WEB
+        type: ID
+        value: StudentDetailSection_TopSaveButton
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: gender-field
+    description: main language field
+    locators:
+      - device: WEB
+        type: ID
+        value: Gender
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: saved-button
+    description: button with text field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(@class, "bgColGreen")]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: spinner
+    description: spinner
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="itemSpinner newSpinner48 dark"])[4]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]

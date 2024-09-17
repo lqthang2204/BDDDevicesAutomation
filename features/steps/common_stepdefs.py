@@ -91,3 +91,12 @@ def step_impl(context, file):
                 print("arr_args ", arr_args)
             common_device().execute_javascript_with_table(context.root_path, arr_args, file, context.driver,
                                                         context.device)
+@step(u'I save text for element {element} have pattern match "{pattern}" with key "{key}"')
+def step_impl(context, element, pattern, key):
+    context.element_page = common_device().get_element(context.page_present, element,
+                                                       context.device['platformName'], context.dict_save_value)
+    context.dict_save_value = common_device().save_text_from_element(context.element_page, context.driver, key,
+                                                                     context.dict_save_value, context.wait,
+                                                                     context.device, True, pattern)
+    return context.dict_save_value
+

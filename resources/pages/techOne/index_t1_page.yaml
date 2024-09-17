@@ -1,0 +1,37 @@
+elements:
+  - id: menu-ci
+    description: student management
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: search-field
+    description: student management
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //input[@placeholder="Enterprise Search"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: ApplicationSM-label
+    description: student management
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]

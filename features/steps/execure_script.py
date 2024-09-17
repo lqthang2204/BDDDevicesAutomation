@@ -27,10 +27,13 @@ def step_impl(context):
         manage_hook_mobile().open_application(context, context.table)
 @step(u'I change the page spec to {page}')
 def change_page(context, page):
-    path_file = context.dict_yaml[page + ".yaml"]
-    page = ManagementFile().read_yaml_file(os.path.join(path_file, page+'.yaml'), page, context.dict_page_element)
-    context.page_present = page
-    return context.page_present
+    try:
+        path_file = context.dict_yaml[page + ".yaml"]
+        page = ManagementFile().read_yaml_file(os.path.join(path_file, page+'.yaml'), page, context.dict_page_element)
+        context.page_present = page
+        return context.page_present
+    except Exception as e:
+        print(e)
 
 
 @step(u'I click element {element}')
@@ -104,7 +107,7 @@ def step_impl(context, element, key):
                                                        context.device['platformName'], context.dict_save_value)
     context.dict_save_value = common_device().save_text_from_element(context.element_page, context.driver, key,
                                                                      context.dict_save_value, context.wait,
-                                                                     context.device)
+                                                                     context.device, False, pattern=None)
     return context.dict_save_value
 
 
