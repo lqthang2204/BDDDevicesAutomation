@@ -10,13 +10,13 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
-from libraries.faker import management_user
 from project_runner import logger
 from selenium.webdriver.support.color import Color
 from libraries.data_generators import check_match_pattern, get_test_data_for
 import copy
 import re
 from selenium.webdriver.support.ui import Select
+from Utilities.process_value_input import procees_value
 
 
 class common_device:
@@ -30,6 +30,8 @@ class common_device:
         element = self.get_element_by_from_device(element_page, device, driver)
         logger.info(f'execute {action} with element have is {element_page["value"]}')
         self.highlight(element, 0.3, context.highlight)
+        if value:
+            value = procees_value().get_value(value, dict_save_value)
         try:
             if action.__eq__("click"):
                 self.click_action(element, wait, element_page, device, driver)
@@ -44,15 +46,6 @@ class common_device:
             elif action.__eq__('select'):
                 Select(element).select_by_visible_text(value)
             elif action.__eq__("type"):
-                result = re.search(r"\{.*?\}", value)
-                if result:
-                    value = re.sub("[{}]", "$", value)
-                    value = value.split('$')
-                    value = "".join([get_test_data_for(item, dict_save_value) for item in value])
-                if 'USER.' in value:
-                    value = self.get_value_from_user_random(value, dict_save_value)
-                if dict_save_value:
-                    value = dict_save_value.get(value, value)
                 element.send_keys(value)
             elif action.__eq__("clear"):
                 element.clear()
@@ -201,8 +194,7 @@ class common_device:
                 ))
                 logger.info(f'Verifying for {row["Field"]} have value {row["Value"]} and status {row["Status"]}')
                 value = row["Value"]
-                if dict_save_value:
-                    value = dict_save_value.get(value, value)
+                value = procees_value().get_value(value, dict_save_value)
                 element_yaml = self.get_element(page, arr_element[0]['id'] + " with text " + value, platform_name,
                                                 dict_save_value)
                 self.wait_element_for_status(element_yaml, row["Status"], driver, device, wait)
@@ -412,12 +404,8 @@ class common_device:
         helper = row[3]
         if value is None:
             value = ''
-
-        if dict_save_value:
-            if 'USER.' in value:
-                value = self.get_value_from_user_random(value, dict_save_value)
-            else:
-                value = dict_save_value.get(value, value)
+        else:
+            value = procees_value().get_value(value, dict_save_value)
 
         element_yaml = self.get_element(page, arr_element[0]['id'] + " with text " + value, platform_name,
                                         dict_save_value)
@@ -436,27 +424,27 @@ class common_device:
 
         self.verify_value_with_helpers(value, helper, element_yaml, device, driver, is_highlight)
 
-    def get_value_from_user_random(self, value, dict_save_value):
-        try:
-            if 'USER.' not in dict_save_value:
-                raise KeyError("'USER.' key not found in dict_save_value")
-
-            arr_user = value.split('USER.')
-            list_user = dict_save_value['USER.']
-            if len(arr_user) < 2:
-                raise ValueError("Invalid format for value. Expected 'USER.' followed by a key.")
-            value = management_user.get_user(list_user, arr_user[1])
-            logging.info(f"Value '{value}' retrieved successfully for key '{arr_user[1]}'")
-            return value
-        except KeyError as ke:
-            logging.error(f"KeyError: {ke}")
-            raise
-        except ValueError as ve:
-            logging.error(f"ValueError: {ve}")
-            raise
-        except Exception as e:
-            logging.error(f"An error occurred: {e}")
-            raise
+    # def get_value_from_user_random(self, value, dict_save_value):
+    #     try:
+    #         if 'USER.' not in dict_save_value:
+    #             raise KeyError("'USER.' key not found in dict_save_value")
+    #
+    #         arr_user = value.split('USER.')
+    #         list_user = dict_save_value['USER.']
+    #         if len(arr_user) < 2:
+    #             raise ValueError("Invalid format for value. Expected 'USER.' followed by a key.")
+    #         value = management_user.get_user(list_user, arr_user[1])
+    #         logging.info(f"Value '{value}' retrieved successfully for key '{arr_user[1]}'")
+    #         return value
+    #     except KeyError as ke:
+    #         logging.error(f"KeyError: {ke}")
+    #         raise
+    #     except ValueError as ve:
+    #         logging.error(f"ValueError: {ve}")
+    #         raise
+    #     except Exception as e:
+    #         logging.error(f"An error occurred: {e}")
+    #         raise
 
     def verify_value_in_element(self, element_page, expect, device, driver, is_highlight, wait):
         try:

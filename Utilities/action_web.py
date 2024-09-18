@@ -12,6 +12,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from yaml import SafeLoader
 from pyshadow.main import Shadow
+from Utilities.process_value_input import procees_value
 from project_runner import logger, project_folder
 
 
@@ -93,8 +94,7 @@ class ManagementFile:
                     for row in table:
                         if action_elements['element']['id'] == row["Field"]:
                             value = row["Value"]
-                            if dict_save_value:
-                                value = dict_save_value.get(value, value)
+                            value = procees_value().get_value(value, dict_save_value)
                             break
                 element_page = action_elements['element']
                 locator = self.get_locator_from_action(element_page, platform_name)
@@ -148,7 +148,7 @@ class ManagementFile:
                                                                                                      'timeout') is False:
                     try:
                         element = self.get_element_by(locator['type'], driver, locator['value'])
-                        self.process_execute_action(driver, wait, element, type_action, value, locator, action_elements)
+                        self.process_execute_action(driver, wait, element, type_action, value, locator, action_elements, dict_save_value)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action,
                                      locator['value'])
@@ -157,7 +157,7 @@ class ManagementFile:
                 else:
                     try:
                         element = self.get_element_by(locator['type'], driver, locator['value'])
-                        self.process_execute_action(driver, wait, element, type_action, value, locator)
+                        self.process_execute_action(driver, wait, element, type_action, value, locator, dict_save_value)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action,
                                      locator.value)
@@ -266,7 +266,7 @@ class ManagementFile:
     def check_att_is_exist(self, obj_action_elements, key, default=None):
         return obj_action_elements.get(key, default)
 
-    def process_execute_action(self, driver, wait, element, type_action, value, locator, action_elements):
+    def process_execute_action(self, driver, wait, element, type_action, value, locator, action_elements, dict_save_value):
         """
             Process and execute an action on a web element.
             Args:
@@ -282,6 +282,7 @@ class ManagementFile:
                 Exception: If an error occurs during action execution.
             """
         try:
+            value = procees_value().get_value(value, dict_save_value)
             logger.info(f'execute action  {type_action} with element have value {locator}')
             WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
             if type_action == 'click':
@@ -425,6 +426,7 @@ class ManagementFile:
                 Exception: If any other error occurs.
             """
         try:
+            value = procees_value().get_value(value, dict_save_value)
             element = self.get_shadow_element(element_page['type'], driver, element_page['value'], wait, is_highlight)
             logger.info(f'Executing {action} on element: {element_page["value"]}')
             if action == "click":
