@@ -4,16 +4,19 @@ from libraries.faker import management_user
 import logging
 class procees_value:
     def get_value(self, value_input, dict_save_value):
-        result = re.search(r"\{.*?\}", value_input)
-        if result:
-            value_input = re.sub("[{}]", "$", value_input)
-            value_input = value_input.split('$')
-            value_input = "".join([get_test_data_for(item, dict_save_value) for item in value_input])
-        if 'USER.' in value_input:
-            value_input = self.get_value_from_user_random(value_input, dict_save_value)
-        if dict_save_value:
-            value_input = dict_save_value.get(value_input, value_input)
-        return value_input
+        try:
+            result = re.search(r"\{.*?\}", value_input)
+            if result:
+                value_input = re.sub("[{}]", "$", value_input)
+                value_input = value_input.split('$')
+                value_input = "".join([get_test_data_for(item, dict_save_value) for item in value_input])
+            if 'USER.' in value_input:
+                value_input = self.get_value_from_user_random(value_input, dict_save_value)
+            if dict_save_value:
+                value_input = dict_save_value.get(value_input, value_input)
+            return value_input
+        except Exception as e:
+            logging.error(f"An error occurred: {e}")
 
     def get_value_from_user_random(self, value, dict_save_value):
         try:

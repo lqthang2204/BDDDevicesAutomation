@@ -103,7 +103,21 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
-  - id: spinner
+  - &option-Male
+    id: option-Male
+    description: Confirm password field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //td[text()="Male"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &spinner
+    id: spinner
     description: spinner
     locators:
       - device: WEB
@@ -121,25 +135,44 @@ actions:
     actionElements:
       - element: *family_name_field
         condition: DISPLAYED
-        inputType: text
+        inputType: student_{date_current_MMddmm_{random_alphabet_5}
+      - element: *spinner
+        condition: NOT_DISPLAYED
       - element: *given_name_field
         condition: DISPLAYED
         inputType: text
+      - element: *spinner
+        condition: NOT_DISPLAYED
       - element: *dob_field
         condition: ENABLED
         inputType: text
+      - element: *spinner
+        condition: NOT_DISPLAYED
       - element: *gender_field
         condition: ENABLED
         inputType: text
+      - element: *option-Male
+        condition: DISPLAYED
+        inputType: click
+      - element: *spinner
+        condition: NOT_DISPLAYED
       - element: *email_field
         condition: ENABLED
         inputType: text
+      - element: *spinner
+        condition: NOT_DISPLAYED
       - element: *citizen_field
         condition: ENABLED
         inputType: text
+      - element: *spinner
+        condition: NOT_DISPLAYED
       - element: *password_field
+        timeout: 5
         condition: ENABLED
         inputType: text
+      - element: *spinner
+        condition: NOT_DISPLAYED
       - element: *confirm_password_field
         condition: ENABLED
-        inputType: text
+        inputType: random_alphanumeric_8
+        timeout: 5

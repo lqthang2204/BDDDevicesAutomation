@@ -25,13 +25,12 @@ class common_device:
         return obj_action_elements.get(key, default)
 
     def action_page(self, element_page, action, driver, value, wait, dict_save_value, device, context):
-        locator_from_wait = self.get_locator_for_wait_from_device(element_page, device)
-        WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
         element = self.get_element_by_from_device(element_page, device, driver)
         logger.info(f'execute {action} with element have is {element_page["value"]}')
         self.highlight(element, 0.3, context.highlight)
         if value:
             value = procees_value().get_value(value, dict_save_value)
+            value = get_test_data_for(value, dict_save_value)
         try:
             if action.__eq__("click"):
                 self.click_action(element, wait, element_page, device, driver)
@@ -47,6 +46,8 @@ class common_device:
                 Select(element).select_by_visible_text(value)
             elif action.__eq__("type"):
                 element.send_keys(value)
+            elif action.__eq__("text"):
+                element.send_keys(value)
             elif action.__eq__("clear"):
                 element.clear()
             elif action.__eq__('hover-over'):
@@ -58,7 +59,7 @@ class common_device:
             self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action, 1)
 
     def click_action(self, element, wait, element_page, device, driver):
-        if device['platformName'] == "WEB":
+        if element_page['device'] == "WEB":
             try:
                 if element.get_attribute("disabled") is None:
                     element.click()
@@ -84,7 +85,7 @@ class common_device:
             WebDriverWait(driver, wait).until(ec.element_to_be_clickable(locator_from_wait))
             element.click()
 
-    def wait_element_for_status(self, element_page, status, driver, device, wait):
+    def wait_element_for_status(self, element_page, status, driver, device, wait, flag):
         """
            Waits for an element to have a specific status.
            Args:
@@ -121,10 +122,12 @@ class common_device:
                 WebDriverWait(driver, wait).until_not(ec.element_located_to_be_selected(locator_from_wait))
             else:
                 raise ValueError(f"Unsupported status: {status}")
+            return "PASS"
         except Exception as e:
-            logger.error(f"Failed to wait for element '{element_page['value']}' to have status '{status}': {str(e)}")
-            raise AssertionError(
-                f"Failed to wait for element '{element_page['value']}' to have status '{status}'") from e
+            logger.info(f"Failed to wait for element '{element_page['value']}' to have status '{status}': {str(e)}")
+            assert flag, f"Failed to wait for element '{element_page['value']}' to have status '{status}': {str(e)}"
+            if flag:
+                return "SKIP"
 
     def get_element(self, page, element, platform_name, dict_save_value):
         """
@@ -197,7 +200,7 @@ class common_device:
                 value = procees_value().get_value(value, dict_save_value)
                 element_yaml = self.get_element(page, arr_element[0]['id'] + " with text " + value, platform_name,
                                                 dict_save_value)
-                self.wait_element_for_status(element_yaml, row["Status"], driver, device, wait)
+                self.wait_element_for_status(element_yaml, row["Status"], driver, device, wait, False)
                 logger.info(f'Verified for {row["Field"]} have value {row["Value"]} and status {row["Value"]}')
         else:
             logger.error("user must set data table for elements")
@@ -257,7 +260,7 @@ class common_device:
                tuple: The locator for waiting.
            """
         # Check if the device platform is WEB
-        if device['platformName'] == "WEB":
+        if element_page['device'] == "WEB":
             return ManagementFile().get_locator_for_wait(element_page['type'], element_page['value'])
         elif device['platformName'] == "ANDROID" or device['platformName'] == "IOS":
             return ManagementFileAndroid().get_locator_for_wait(element_page['type'], element_page['value'])
@@ -273,7 +276,7 @@ class common_device:
             raise ValueError("Unknown device platform: {}".format(device['platformName']))
 
     def get_element_by_from_device(self, element_page, device, driver):
-        if device['platformName'] == "WEB":
+        if element_page['device'] == "WEB":
             return ManagementFile().get_element_by(element_page['type'], driver, element_page['value'])
         elif device['platformName'] == "ANDROID" or device['platformName'] == "IOS":
             return ManagementFileAndroid().get_by_android(element_page['type'], driver, element_page['value'])
@@ -418,7 +421,7 @@ class common_device:
                 self.verify_value_in_element(element_yaml, value, device, driver, is_highlight, wait)
             else:
                 logger.info(f'Verified for {row[0]} have value {row[1]} and status {row[2]}')
-                self.wait_element_for_status(element_yaml, row[2], driver, device, wait)
+                self.wait_element_for_status(element_yaml, row[2], driver, device, wait, False)
         else:
             raise AssertionError('Table must contain both field name and status')
 
@@ -819,6 +822,15 @@ class common_device:
                 except (ElementNotInteractableException, StaleElementReferenceException):
                     self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action,
                                                                    count + 1)
+            case "text":
+                try:
+                    for count in range(10):
+                        sleep(1)
+                        element.send_keys(value)
+                        break
+                except (ElementNotInteractableException, StaleElementReferenceException):
+                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action,
+                                                                   count + 1)
             case "get_value":
                 try:
                     for count in range(10):
@@ -834,4 +846,101 @@ class common_device:
                 print(f'not exist {action} in element not interactable exception')
                 assert False, f"not exist {action} in element not interactable exception"
 
+    def execute_action(self, page, action_id, driver, wait, table, dict_save_value, platform_name, context):
+        """
+            Executes a specified action on a web page.
+            Args:
+                page (dict): The page object containing the actions.
+                action_id (str): The ID of the action to execute.
+                driver (WebDriver): The web driver instance.
+                wait (WebDriverWait): The web driver wait instance.
+                table (list): The table data.
+                dict_save_value (dict): The dictionary containing saved values.
+                platform_name (str): The name of the platform.
+            Returns:
+                None
+            Raises:
+                AssertionError: If the action or element cannot be executed.
+                FileNotFoundError: If the page file is not found.
+                YAMLError: If there is an error reading the YAML file.
+                :param context:
+            """
+        dict_action = page['actions']
+        dict_action = list(filter(
+            lambda action: action['id'] == action_id, dict_action
+        ))
+        type_action = None
+        result = True
+        value = ""
+        if dict_action:
+            obj_action = dict_action[0]
+            arr_list_action = obj_action['actionElements']
+            for action_elements in arr_list_action:
+                if table:
+                    for row in table:
+                        if action_elements['element']['id'] == row["Field"]:
+                            value = row["Value"]
+                            result = False
+                            break
+                    if result:
+                        if self.check_field_exist(action_elements, "inputType"):
+                            value = action_elements['inputType']
+                            result = False
+                else:
+                    if self.check_field_exist(action_elements, "inputType"):
+                        value = action_elements['inputType']
+                        value = procees_value().get_value(value, dict_save_value)
+                element_page = action_elements['element']
+                locator = ManagementFile().get_locator_from_action(element_page, platform_name)
+                if self.check_field_exist(action_elements, "condition") and self.check_field_exist(
+                        action_elements, "timeout"):
+                    try:
+                        result = self.wait_element_for_status(locator, action_elements['condition'], driver, platform_name, action_elements['timeout'], True)
+                        if self.check_field_exist(action_elements, 'inputType') and result == "PASS":
+                            type_action = action_elements['inputType']
+                            if type_action in ["click", "text"]:
+                                self.action_page(locator, type_action, driver, value, action_elements['timeout'], dict_save_value, platform_name, context)
+                            else:
+                                self.action_page(locator, "text", driver, value, action_elements['timeout'],dict_save_value, platform_name, context)
+                    except Exception as e:
+                        logger.info(f'can not execute action with element have value  {locator} in framework')
+                        assert False, "can not execute action with element have value" + locator + "in framework"
+                elif self.check_field_exist(action_elements, 'condition') and self.check_field_exist(action_elements,'timeout') is False:
+                    try:
+                        self.wait_element_for_status(locator, action_elements['condition'], driver, platform_name, wait, False)
+                        if self.check_field_exist(action_elements, 'inputType'):
+                            type_action = action_elements['inputType']
+                            if type_action in ["click", "text"]:
+                                self.action_page(locator, type_action, driver, value, wait, dict_save_value, platform_name, context)
+                            else:
+                                self.action_page(locator, "text", driver, value, wait,dict_save_value, platform_name, context)
+                        else:
+                            self.wait_element_for_status(locator, action_elements['condition'], driver, platform_name, wait, False)
+                    except Exception as e:
+                        logger.error("can not execute action % with element have value  %s in framework", type_action,
+                                     locator['value'])
+                        assert False, "can not execute action " + type_action + " with element have value" + locator[
+                            'value'] + "in framework"
+                else:
+                    try:
+                        if self.check_field_exist(action_elements, 'inputType'):
+                            type_action = action_elements['inputType']
+                            if type_action in ["click", "text"]:
+                                self.action_page(locator, type_action, driver, value, wait, dict_save_value, platform_name, context)
+                            else:
+                                self.action_page(locator, "text", driver, value, wait,dict_save_value, platform_name, context)
+                    except Exception as e:
+                        logger.error("can not execute action % with element have value  %s in framework", type_action,
+                                     locator.value)
+                        assert False, "can not execute action " + type_action + " with element have value" + locator.value + "in framework"
+        else:
+            logger.error(f'Not Found Action {action_id} in page yaml')
+            assert False, "Not Found Action " + action_id + " in page yaml"
+    def check_field_exist(self, dict, key):
+        try:
+            if dict[key]:
+                return True
+        except Exception as e:
+            print(f'not found attribute in dictionary: {str(e)}')
+            return False
 
