@@ -7,7 +7,7 @@ elements:
         value: //*[text()="{text}"]
       - device: ANDROID
         type: XPATH
-        value: //*[contains(text(), "android")]
+        value: //*[@resource-id="727"]
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
@@ -19,7 +19,7 @@ elements:
         value: //input[@placeholder="Enterprise Search"]
       - device: ANDROID
         type: XPATH
-        value: //*[contains(text(), "android")]
+        value: //*[@resource-id="FunctionSearch"][1]
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
@@ -31,7 +31,7 @@ elements:
         value: //*[text()="{text}"]
       - device: ANDROID
         type: XPATH
-        value: //*[contains(text(), "android")]
+        value: //*[@text="{text}"]
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]

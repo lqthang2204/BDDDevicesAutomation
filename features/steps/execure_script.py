@@ -71,23 +71,14 @@ def step_impl(context):
 
 @step(u'I perform {action} action')
 def step_impl(context, action):
-    if context.device['platformName'] == "WEB":
-        common_device().execute_action(context.page_present, action, context.driver, context.wait, None, None,
+    common_device().execute_action(context.page_present, action, context.driver, context.wait, None, context.dict_save_value,
                                        context.device['platformName'], context)
-    else:
-        ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver,
-                                                       context.wait, None, None, context.device['platformName'])
 
 
 @step(u'I perform {action} action with override values')
 def step_impl(context, action):
-    if context.device['platformName'] == "WEB":
         common_device().execute_action(context.page_present, action, context.driver, context.wait, context.table,
                                        context.dict_save_value, context.device['platformName'], context)
-    else:
-        ManagementFileAndroid().execute_action_android(context.page_present, action, context.driver,
-                                                       context.wait, context.table,
-                                                       context.dict_save_value, context.device['platformName'])
 
 
 @step(u'I clear text from element {element}')
@@ -176,7 +167,7 @@ def step_impl(context, element):
 def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
-    locator_from_wait = common_device().get_locator_for_wait_from_device(context.element_page, context.device)
+    locator_from_wait = common_device().get_locator_for_wait_from_device(context.element_page)
     WebDriverWait(context.driver, context.wait).until(ec.presence_of_element_located(locator_from_wait))
     element = common_device().get_element_by_from_device(context.element_page, context.device, context.driver)
     common_device().scroll_to_element(element, context.driver, False, context.device['platformName'], context.highlight)
@@ -186,7 +177,7 @@ def step_impl(context, element):
 def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
-    locator_from_wait = common_device().get_locator_for_wait_from_device(context.element_page, context.device)
+    locator_from_wait = common_device().get_locator_for_wait_from_device(context.element_page)
     WebDriverWait(context.driver, context.wait).until(ec.presence_of_element_located(locator_from_wait))
     element = common_device().get_element_by_from_device(context.element_page, context.device, context.driver)
     common_device().scroll_to_element_by_js(element, context.driver, False, context.device['platformName'],

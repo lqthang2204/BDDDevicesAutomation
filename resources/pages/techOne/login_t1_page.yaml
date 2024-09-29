@@ -8,7 +8,7 @@ elements:
         value: LogonName
       - device: ANDROID
         type: XPATH
-        value: //*[contains(text(), "android")]
+        value: //*[@resource-id="LogonName"]
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
@@ -21,7 +21,7 @@ elements:
         value: Password
       - device: ANDROID
         type: XPATH
-        value: //*[contains(text(), "android")]
+        value: //*[@resource-id="Password"]
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
@@ -34,7 +34,7 @@ elements:
         value: BtnLogOn
       - device: ANDROID
         type: XPATH
-        value: //*[contains(text(), "android")]
+        value: //*[@resource-id="BtnLogOn"]
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]

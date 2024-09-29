@@ -8,15 +8,13 @@ Feature: run regression tech one
     # Enter steps here
   Given I navigate to url T1
     And I change the page spec to login_t1_page
-    And I perform login-page action with override values
+    And I perform login-page action
     And I change the page spec to index_t1_page
     And I wait for element menu-ci with text "Forms" to be DISPLAYED
     And I wait for element search-field to be DISPLAYED
     And I type "Applications Application" into element search-field
     And I wait for element ApplicationSM-label with text "Applications" to be DISPLAYED
     And I click element ApplicationSM-label with text "Applications"
-    And I wait for element ApplicationSM-label to be DISPLAYED
-    And I click element ApplicationSM-label
     And I change the page spec to Application_page
     And I wait for element Add-new-Application to be ENABLED
     And I click element Add-new-Application
@@ -133,7 +131,7 @@ Feature: run regression tech one
     # Enter steps here
   Given I navigate to url T1
     And I change the page spec to login_t1_page
-    And I perform login-page action with override values
+    And I perform login-page action
       And I change the page spec to index_t1_page
     And I wait for element menu-ci with text "Forms" to be DISPLAYED
     And I wait for element search-field to be DISPLAYED
@@ -151,18 +149,22 @@ Feature: run regression tech one
       And I create a random user
       And I change the page spec to Register_Student_Portal
       And I wait for element spinner to be NOT_DISPLAYED
-      And I wait 1 seconds
       And I wait for element family_name_field to be DISPLAYED
+       And I create a set of keys with below attributes
+         | Pattern to create data from | Save into Key Name |
+         | random_alphanumeric_8-12    | family_name        |
+         | random_alphanumeric_8       | given              |
+      And I wait 1 seconds
+      And I create a random user
       And I perform register_applicant action with override values
-        | Field             | Value                      |
-        | family_name_field | {random_alphanumeric_8-12}            |
-        | given_name_field  | {random_alphanumeric_8-12}          |
-        | dob_field         | 10-Oct-2005                |
-        | gender_field      | Male                       |
-        | email_field       | {random_alphanumeric_8-12}              |
-        | citizen_field     | Australian Citizen         |
-        | password_field    | {random_alphanumeric_8-12}  |
-      And I wait 100 seconds
+        | Field            | Value                    |
+        | given_name_field | KEY.given                |
+        | dob_field        | 10-Oct-2005              |
+        | gender_field     | Male                     |
+        | email_field      | USER.email               |
+        | citizen_field    | Australian Citizen       |
+        | password_field   | random_alphanumeric_8-12 |
+      And I wait 1 seconds
 
 
 
