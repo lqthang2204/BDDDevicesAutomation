@@ -150,21 +150,63 @@ Feature: run regression tech one
       And I change the page spec to Register_Student_Portal
       And I wait for element spinner to be NOT_DISPLAYED
       And I wait for element family_name_field to be DISPLAYED
+            And I create a random user
        And I create a set of keys with below attributes
          | Pattern to create data from | Save into Key Name |
          | random_alphanumeric_8-12    | family_name        |
          | random_alphanumeric_8       | given              |
-      And I wait 1 seconds
-      And I create a random user
+         | random_alphanumeric_12      | password           |
+       And I perform operations with below attributes
+         | Left                                                       | Operator | Right                  | SaveAs       |
+         | chien_nguyen+SAAS-2024B-{USER.first_name}_{USER.last_name} | concat   | @technologyonecorp.com | unique-gmail |
       And I perform register_applicant action with override values
-        | Field            | Value                    |
-        | given_name_field | KEY.given                |
-        | dob_field        | 10-Oct-2005              |
-        | gender_field     | Male                     |
-        | email_field      | USER.email               |
-        | citizen_field    | Australian Citizen       |
-        | password_field   | random_alphanumeric_8-12 |
-      And I wait 1 seconds
+        | Field            | Value              |
+        | given_name_field | USER.last_name     |
+        | dob_field        | 10-Oct-2005        |
+        | gender_field     | Male               |
+        | email_field      | KEY.unique-gmail   |
+        | citizen_field    | Australian Citizen |
+      And I wait for element term_and_condition to be ENABLED
+      And I click element term_and_condition
+      And I wait for element spinner to be NOT_DISPLAYED
+      And I click element term_and_condition
+      And I wait for element register-button to be ENABLED
+      And I click element register-button
+      And I wait for element continue-button to be ENABLED
+      And I click element continue-button
+      And I change the page spec to make_application
+      And I wait for element search-course to be DISPLAYED
+      And I type "Associate Degree of Computer Systems" into element search-course
+      And I click element search-button
+      And I wait for element spinner to be NOT_DISPLAYED
+      And I wait for element course-section to be DISPLAYED
+      And I wait for element add-to-application-button to be ENABLED
+      And I click element add-to-application-button
+      And I wait for element spinner to be NOT_DISPLAYED
+      And I wait for element message to be DISPLAYED
+      And I wait for element next-button to be ENABLED
+      And I click element next-button
+      And I wait for element header-section with text "Select a Scholarship" to be DISPLAYED
+      And I wait for element next-button to be ENABLED
+      And I click element next-button
+      And I wait for element header-section with text "Apply For Advanced Standing" to be DISPLAYED
+      And I wait for element next-button to be ENABLED
+      And I click element next-button
+       And I wait for element header-section with text "Applicant Details" to be DISPLAYED
+      And I perform input_application_detail action with override values
+        | Field                | Value                        |
+        | phone-number         | random_number_8              |
+        | Country              | Australia                    |
+        | address              | Male                         |
+        | city                 | Brisbane                     |
+        | state                | Australian Capital Territory |
+        | postcode             | 2000                         |
+        | country_of_birth     | Australia                    |
+        | main_language        | English                      |
+        | Proficiency_language | Very good                    |
+      And I wait for element next-button to be ENABLED
+      And I click element next-button
+      And I wait 1000 seconds
 
 
 

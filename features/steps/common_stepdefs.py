@@ -5,6 +5,7 @@ from behave import *
 from Utilities.common_ui import common_device
 from libraries.accessibility_report import perform_accessibility_verification
 from libraries.data_generators import get_test_data_for
+from Utilities.process_value_input import procees_value
 from libraries.misc_operations import sanitize_datatable
 from libraries.number_string_operations import check_and_call_operator
 from project_runner import logger
@@ -38,8 +39,10 @@ def step_impl(context):
         for row in context_table:
             operator_func = check_and_call_operator(row[1])
             if operator_func is not None:
-                left_data = get_test_data_for(row[0], context.dict_save_value)
-                right_data = get_test_data_for(row[2], context.dict_save_value)
+                value = procees_value().get_value(row[0], context.dict_save_value)
+                left_data = get_test_data_for(value, context.dict_save_value)
+                value_right = procees_value().get_value(row[2], context.dict_save_value)
+                right_data = get_test_data_for(value_right, context.dict_save_value)
                 result = operator_func(left_data, right_data)
                 if not result:
                     to_display_left, to_display_right = [(' as ' + left_data) if left_data != row[0] else '',

@@ -116,6 +116,19 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
+  - &option-nation
+    id: option-nation
+    description: Confirm password field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //td[text()="Australian Citizen"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
   - &spinner
     id: spinner
     description: spinner
@@ -129,13 +142,50 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
+  - &term_and_condition
+    id: term_and_condition
+    description: term_and_condition
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(text(),"You must agree to")]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: register-button
+    description: Register button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//button[@title="Register and Apply"])[2]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: continue-button
+    description: Continue button
+    locators:
+      - device: WEB
+        type: ID
+        value: PrimaryAction_DefaultButton
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
 actions:
   - id: register_applicant
     description: Register applicant page
     actionElements:
       - element: *family_name_field
         condition: DISPLAYED
-        inputType: student_{date_current_MMddmm_{random_alphabet_5}
+        inputType: USER.first_name
       - element: *spinner
         condition: NOT_DISPLAYED
       - element: *given_name_field
@@ -164,15 +214,18 @@ actions:
       - element: *citizen_field
         condition: ENABLED
         inputType: text
+      - element: *option-nation
+        condition: ENABLED
+        inputType: click
       - element: *spinner
         condition: NOT_DISPLAYED
       - element: *password_field
         timeout: 5
         condition: ENABLED
-        inputType: text
+        inputType: KEY.password
       - element: *spinner
         condition: NOT_DISPLAYED
       - element: *confirm_password_field
         condition: ENABLED
-        inputType: random_alphanumeric_8
+        inputType: KEY.password
         timeout: 5

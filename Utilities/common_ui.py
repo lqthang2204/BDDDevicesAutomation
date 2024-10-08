@@ -5,7 +5,7 @@ from appium.webdriver.common.touch_action import TouchAction
 from faker import Faker
 from selenium.common import NoSuchElementException, NoSuchFrameException, NoSuchWindowException, \
     StaleElementReferenceException, ElementNotInteractableException, InvalidElementStateException, \
-    ElementNotVisibleException
+    ElementNotVisibleException, ElementClickInterceptedException
 from selenium.webdriver import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -85,6 +85,9 @@ class common_device:
                     element.click()
             except (ElementNotInteractableException, StaleElementReferenceException):
                 self.handle_element_not_interactable_exception("", wait, element_page, device, driver, "click", 1)
+            except (ElementClickInterceptedException):
+                sleep(1)
+                element.click()
             except Exception as e:
                 logger.info(f"do not click with element {element} trying to click by javascript")
                 logger.error(e)
@@ -909,11 +912,11 @@ class common_device:
         ))
         type_action = None
         result = True
-        value = ""
         if dict_action:
             obj_action = dict_action[0]
             arr_list_action = obj_action['actionElements']
             for action_elements in arr_list_action:
+                value=""
                 if table:
                     for row in table:
                         if action_elements['element']['id'] == row["Field"]:
@@ -941,7 +944,7 @@ class common_device:
                                 self.action_page(locator, type_action, driver, value, action_elements['timeout'],
                                                  dict_save_value, platform_name, context)
                             else:
-                                self.action_page(locator, "text", driver, value, action_elements['timeout'],
+                                self.action_page(locator, "text", driver, type_action, action_elements['timeout'],
                                                  dict_save_value, platform_name, context)
                     except Exception as e:
                         logger.info(f'can not execute action with element have value  {locator} in framework')
@@ -957,7 +960,7 @@ class common_device:
                                 self.action_page(locator, type_action, driver, value, wait, dict_save_value,
                                                  platform_name, context)
                             else:
-                                self.action_page(locator, "text", driver, value, wait, dict_save_value, platform_name,
+                                self.action_page(locator, "text", driver, type_action, wait, dict_save_value, platform_name,
                                                  context)
                         else:
                             self.wait_element_for_status(locator, action_elements['condition'], driver, platform_name,
@@ -975,7 +978,7 @@ class common_device:
                                 self.action_page(locator, type_action, driver, value, wait, dict_save_value,
                                                  platform_name, context)
                             else:
-                                self.action_page(locator, "text", driver, value, wait, dict_save_value, platform_name,
+                                self.action_page(locator, "text", driver, type_action, wait, dict_save_value, platform_name,
                                                  context)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action,
