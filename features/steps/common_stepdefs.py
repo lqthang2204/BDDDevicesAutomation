@@ -68,7 +68,7 @@ def step_impl(context):
 def step_impl(context):
     logger.info('------ Displaying Dictionary keys ------')
     for keys, value in context.dict_save_value.items():
-        logger.info(f'{keys}, {value}')
+        logger.debug(f'{keys}, {value}')
 
 
 @step(u'I wait {wait_duration} seconds')

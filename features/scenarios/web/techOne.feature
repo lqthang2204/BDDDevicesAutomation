@@ -30,6 +30,7 @@ Feature: run regression tech one
     And I click element given-name
     And I wait for element spinner to be NOT_DISPLAYED
      And I type "student_{date_current_MMddmm_{random_alphabet_5}" into element given-name
+    And I save text for element given-name with key "given_name"
     And I wait for element spinner to be NOT_DISPLAYED
     And I save text for element given-name with key "given_student"
     And I wait for element spinner to be NOT_DISPLAYED
@@ -121,6 +122,7 @@ Feature: run regression tech one
     And I wait for element save-button to be ENABLED
     And I click element save-button
      And I wait for element spinner to be NOT_DISPLAYED
+    And I print all the dictionary keys
     And I verify that following elements with below attributes
       | Field        | Value   | Status    | Helpers          |
       | saved-button | Saved   | DISPLAYED | CONTAINS         |

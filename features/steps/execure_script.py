@@ -3,7 +3,6 @@ import os
 from behave import *
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-
 from libraries.misc_operations import sanitize_datatable
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
