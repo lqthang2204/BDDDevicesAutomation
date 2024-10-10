@@ -82,9 +82,20 @@ class manage_hook_browser:
                 # Maximize the window if --window-size argument is not present
                 if any("--window-size" in argument for argument in option.__getattribute__("arguments")) is False:
                     context.driver.maximize_window()
-
             # Open the provided URL in the browser
-            context.driver.get(context.url[name])
+                    try:
+                        context.driver.get(context.url[name])
+                    except Exception as e:
+                        logger.error(f"not open browser with url {name} please check file envriroment" ,)
+            elif 'KEY.' in name and context.driver is not None:
+                temp_url = context.dict_save_value[name]
+                context.driver.get(temp_url)
+            else:
+                try:
+                    context.driver.get(context.url[name])
+                except Exception as e:
+                    logger.error(f"not open browser with url {name} please check file envriroment", )
+                # context.driver.get(context.dict_save_value[name[0]])
         except SessionNotCreatedException as e:
             logger.error(f"Failed to open browser: {e}")
             assert False, f"Failed to open browser: {e}"
@@ -222,7 +233,14 @@ class manage_hook_browser:
             context.driver.maximize_window()
 
         # Navigate to the specified URL
-        context.driver.get(context.url[name])
+
+            context.driver.get(context.url[name])
+        elif 'KEY.' in name and context.driver is not None:
+            temp_url = context.dict_save_value[name]
+            context.driver.get(temp_url)
+
+        else:
+            context.driver.get(context.url[name])
 
     def check_attr_exist(self, device, label):
         """

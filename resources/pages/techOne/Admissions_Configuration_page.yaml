@@ -1,0 +1,37 @@
+elements:
+  - id: section_tab
+    description: Section tab
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //span[contains(text(),"{text}")]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: link_register_student
+    description: Section tab
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="furtherInformationMessage"]//div[@class="htmlText"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: header_text
+    description: Header text
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]

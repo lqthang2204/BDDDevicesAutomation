@@ -1,0 +1,308 @@
+elements:
+  - &search-course
+    id: search-course
+    description: field user name
+    locators:
+      - device: WEB
+        type: ID
+        value: SelectCourseListSection_RDP_SearchValue
+      - device: ANDROID
+        type: XPATH
+        value: //*[@resource-id="LogonName"]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: search-button
+    description: field user name
+    locators:
+      - device: WEB
+        type: ID
+        value: SearchButton
+      - device: ANDROID
+        type: XPATH
+        value: //*[@resource-id="LogonName"]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &spinner
+    id: spinner
+    description: spinner
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="itemSpinner newSpinner48 dark"])[4]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: course-section
+    description: Course section
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="itemWrapper clearFix"])[2]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: add-to-application-button
+    description: Add to application button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//button[@title="Add to application"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: message
+    description: message
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //span[text()="1 information message"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: next-button
+    description: message
+    locators:
+      - device: WEB
+        type: ID
+        value: NextButton
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: header-section
+    description: message
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &phone-number
+    id: phone-number
+    description: message
+    locators:
+      - device: WEB
+        type: ID
+        value: StudentContactDetails_PhoneNumber
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &Country
+    id: Country
+    description: Country
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //input[@id="StudentAddressDetails_Country"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &address
+    id: address
+    description: Address
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //input[@id="StudentAddressDetails_Line1"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &city
+    id: city
+    description: City
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //input[@id="StudentAddressDetails_Suburb"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &state
+    id: state
+    description: State
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //input[@id="StudentAddressDetails_State"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &postcode
+    id: postcode
+    description: Postcode
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //input[@id="StudentAddressDetails_Postcode"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &country_of_birth
+    id: country_of_birth
+    description: Country of birth
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //input[@id="StudentCulturalDetails_BirthCountry"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &main_language
+    id: main_language
+    description: Main language
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //input[@id="StudentCulturalDetails_HomeLanguage"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &Proficiency_language
+    id: Proficiency_language
+    description: Proficiency  language
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //input[@id="StudentCulturalDetails_EnglishSpokenProficiency"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &option-country_of_birth
+    id: option-country_of_birth
+    description: Proficiency  language
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //td[text()="Australia"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &option_main_language
+    id: option_main_language
+    description: Main  language
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //td[text()="English"]
+  - &option_Proficiency
+    id: option_Proficiency
+    description: Main  language
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //td[text()="Very good"]
+actions:
+  - id: input_application_detail
+    description: login page
+    actionElements:
+      - element: *phone-number
+        condition: DISPLAYED
+        inputType: text
+      - element: *spinner
+        condition: NOT_DISPLAYED
+      - element: *Country
+        condition: DISPLAYED
+        inputType: text
+      - element: *spinner
+        condition: NOT_DISPLAYED
+      - element: *address
+        condition: DISPLAYED
+        inputType: text
+      - element: *spinner
+        condition: NOT_DISPLAYED
+      - element: *city
+        condition: DISPLAYED
+        inputType: text
+      - element: *spinner
+        condition: NOT_DISPLAYED
+      - element: *state
+        condition: DISPLAYED
+        inputType: text
+      - element: *spinner
+        condition: NOT_DISPLAYED
+      - element: *postcode
+        condition: DISPLAYED
+        inputType: text
+      - element: *spinner
+        condition: NOT_DISPLAYED
+      - element: *country_of_birth
+        condition: DISPLAYED
+        inputType: text
+      - element: *option-country_of_birth
+        timeout: 5
+        condition: DISPLAYED
+        inputType: click
+      - element: *spinner
+        condition: NOT_DISPLAYED
+      - element: *main_language
+        condition: DISPLAYED
+        inputType: click
+      - element: *main_language
+        condition: DISPLAYED
+        inputType: text
+      - element: *option_main_language
+        timeout: 5
+        condition: DISPLAYED
+        inputType: click
+      - element: *spinner
+        condition: NOT_DISPLAYED
+      - element: *Proficiency_language
+        condition: DISPLAYED
+        inputType: click
+      - element: *Proficiency_language
+        condition: DISPLAYED
+        inputType: text
+      - element: *option_Proficiency
+        timeout: 5
+        condition: DISPLAYED
+        inputType: click

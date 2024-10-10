@@ -1,0 +1,13 @@
+elements:
+  - id: Add-new-Application
+    description: Add new application button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //span[text()="Add a new application"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]

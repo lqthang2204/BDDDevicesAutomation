@@ -110,68 +110,6 @@ class ManagementFileAndroid:
             raise Exception("Not support type in framework", type)
         return locator
 
-    def execute_action_android(self, page, action_id, driver, wait, table, dict_save_value, platform_name):
-        dict_action = page['actions']
-        dict_action = list(filter(
-            lambda action: action['id'] == action_id, dict_action
-        ))
-        type_action = None
-        value = None
-        if dict_action:
-            obj_action = dict_action[0]
-            arr_list_action = obj_action['actionElements']
-            for action_elements in arr_list_action:
-                if table:
-                    for row in table:
-                        if action_elements['element']['id'] == row["Field"]:
-                            value = row["Value"]
-                            if dict_save_value:
-                                value = dict_save_value.get(value, value)
-                            break
-                element_page = action_elements['element']
-                if self.check_field_exist(action_elements, 'inputType'):
-                    type_action = action_elements['inputType']
-                locator = self.get_locator_from_action(element_page, platform_name)
-                # element = self.get_by_android(locator.type, driver, locator.value)
-                locator_from_wait = self.get_locator_for_wait(locator['type'], locator['value'])
-                if self.check_field_exist(action_elements, "condition") and self.check_field_exist(action_elements,
-                                                                                                   "timeout"):
-                    self.wait_for_action(action_elements, action_elements['timeout'], driver, locator_from_wait,
-                                         locator, type_action, value, True)
-                elif self.check_field_exist(action_elements, 'condition') and self.check_field_exist(action_elements,
-                                                                                                     'timeout') is False:
-                    try:
-                        if type_action:
-                            self.process_execute_action(driver, wait, type_action, value, locator_from_wait, locator)
-                        else:
-                            self.wait_for_action(action_elements, wait, driver, locator_from_wait, locator, type_action,
-                                                 value, False)
-                    except Exception as e:
-                        logger.error("can not execute action % with element have value  %s in framework", type_action,
-                                     locator)
-                        assert False, "can not execute action " + type_action + " with element have value" + locator[
-                            'value'] + "in framework"
-                else:
-                    logger.error("please add condition when execute action  %s in framework", type_action,
-                                 locator['value'])
-                    assert False, "can not execute action " + type_action + " with element have value" + locator[
-                        'value'] + "in framework"
-
-        else:
-            logger.error(f'Not Found Action {action_id} in page yaml')
-            assert False, "Not Found Action " + action_id + " in page yaml"
-
-    def process_execute_action(self, driver, wait, type_action, value, locator_from_wait, locator):
-        WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
-        element = self.get_by_android(locator['type'], driver, locator['value'])
-        logger.info(f'execute action {type_action} with element have value {locator}')
-        if type_action:
-            WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
-            if type_action.__eq__("click"):
-                element.click()
-            elif type_action.__eq__("text"):
-                element.send_keys(value)
-
     def check_field_exist(self, dict, key):
         try:
             if dict[key]:
@@ -179,51 +117,6 @@ class ManagementFileAndroid:
         except:
             return False
 
-    def wait_for_action(self, action_elements, wait, driver, locator_from_wait, locator, type_action, value, is_check):
-        try:
-            if action_elements['condition'] == "ENABLED":
-                WebDriverWait(driver, wait).until(
-                    ec.element_to_be_clickable(locator_from_wait))
-            elif action_elements['condition'] == "NOT_ENABLED":
-                WebDriverWait(driver, action_elements['timeout']).until_not(
-                    ec.element_to_be_clickable(locator_from_wait))
-            elif action_elements['condition'] == "DISPLAYED":
-                WebDriverWait(driver, wait).until(
-                    ec.presence_of_element_located(locator_from_wait))
-            elif action_elements['condition'] == "NOT_DISPLAYED":
-                WebDriverWait(driver, wait).until(
-                    ec.presence_of_element_located(locator_from_wait))
-            elif action_elements['condition'] == "EXISTED":
-                elements = self.get_list_element_by(locator['type'], driver, locator['value'])
-                WebDriverWait(driver, wait).until(
-                    lambda driver: len(elements) > int(0))
-            elif action_elements['condition'] == "NOT_EXISTED":
-                elements = self.get_list_element_by(locator['type'], driver, locator['value'])
-                WebDriverWait(driver, wait).until_not(
-                    lambda driver: len(elements) > int(0))
-            elif action_elements['condition'] == "SELECTED":
-                WebDriverWait(driver, wait).until(
-                    ec.element_located_to_be_selected(locator_from_wait))
-            elif action_elements['condition'] == "NOT_SELECTED":
-                WebDriverWait(driver, wait).until_not(
-                    ec.element_located_to_be_selected(locator_from_wait))
-            else:
-                logger.error(f'Not support condition {action_elements} in framework')
-                assert False, "Not support condition"
-            if is_check:
-                if type_action.__eq__("click"):
-                    WebDriverWait(driver, wait).until(
-                        ec.element_to_be_clickable(locator_from_wait))
-                    element = self.get_by_android(locator['type'], driver, locator['value'])
-                    element.click()
-                elif type_action.__eq__("text"):
-                    WebDriverWait(driver, wait).until(
-                        ec.presence_of_element_located(locator_from_wait))
-                    element = self.get_by_android(locator['type'], driver, locator['value'])
-                    element.send_keys(value)
-        except Exception as e:
-            logger.info(f'can not execute action with element have value  {locator} in framework')
-            assert is_check, "can not execute action with element have value" + locator['value'] + "in framework"
     def action_mouse_mobile(self,action, element_page_from, element_page_to, context):
         element_from = self.get_by_android(element_page_from['type'], context.driver, element_page_from['value'])
         logger.info(f'execute {action} with element have is {element_page_from["value"]}')

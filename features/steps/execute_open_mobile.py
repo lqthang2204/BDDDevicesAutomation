@@ -91,8 +91,16 @@ class manage_hook_mobile:
         options.load_capabilities(desired_caps)
         # Appium1 points to http://127.0.0.1:4723/wd/hub by default
         return options
-    def navigate_url(self, driver, url):
-        driver.get(url)
-
+    def navigate_url(self, context, name):
+        try:
+            if context.driver is None:
+                context.driver.get(context.url[name])
+            elif 'KEY.' in name and context.driver is not None:
+                temp_url = context.dict_save_value[name]
+                context.driver.get(temp_url)
+            else:
+                context.driver.get(context.url[name])
+        except Exception as e:
+            logger.error(f"An error occurred while navigating to URL: {str(e)}")
 
 
