@@ -4,7 +4,7 @@ import os
 from time import sleep
 
 from selenium.common import NoSuchElementException, TimeoutException, ElementNotInteractableException, \
-    StaleElementReferenceException
+    StaleElementReferenceException, NoAlertPresentException
 from selenium.webdriver.common.action_chains import ActionChains
 import yaml
 from selenium.webdriver.common.by import By
@@ -13,6 +13,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from yaml import SafeLoader
 from pyshadow.main import Shadow
+from libraries.data_generators import check_match_pattern, get_test_data_for
 from Utilities.process_value_input import procees_value
 from project_runner import logger, project_folder
 
@@ -485,7 +486,9 @@ class ManagementFile:
                 Exception: If any other error occurs.
             """
         try:
-            value = procees_value().get_value(value, dict_save_value)
+            if value:
+                value = procees_value().get_value(value, dict_save_value)
+                value = get_test_data_for(value, dict_save_value)
             element = self.get_shadow_element(element_page['type'], driver, element_page['value'], wait, is_highlight)
             logger.info(f'Executing {action} on element: {element_page["value"]}')
             if action == "click":
@@ -543,12 +546,18 @@ class ManagementFile:
            Raises:
                AssertionError: If the status is not supported.
            """
-        alert = driver.switch_to.alert
-        WebDriverWait(driver, wait).until(ec.alert_is_present(), 'Timed out waiting for simple alert to appear')
-        if status == 'accept':
-            alert.accept()
-        elif status == 'dismiss':
-            alert.dismiss()
-        else:
-            logger.error("Unsupported status: %s", status)
-            assert False, "Not supported status in framework"
+        try:
+            alert = driver.switch_to.alert
+            WebDriverWait(driver, wait).until(ec.alert_is_present(), 'Timed out waiting for simple alert to appear')
+            if status == 'accept':
+                alert.accept()
+            elif status == 'dismiss':
+                alert.dismiss()
+            else:
+                logger.error("Unsupported status: %s", status)
+                assert False, "Not supported status in framework"
+        except NoAlertPresentException:
+            logger.info("No alert present")
+        except Exception as e:
+            logger.info(f"Failed to handle popup: {e}")
+            assert False, f"Failed to handle popup: {e}"

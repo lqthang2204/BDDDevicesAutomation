@@ -10,6 +10,7 @@ Feature: run regression tech one
     And I change the page spec to login_t1_page
     And I perform login-page action
     And I change the page spec to index_t1_page
+    And I perform javascript getTitle
     And I wait for element menu-ci with text "Forms" to be DISPLAYED
     And I wait for element search-field to be DISPLAYED
     And I type "Applications Application" into element search-field
