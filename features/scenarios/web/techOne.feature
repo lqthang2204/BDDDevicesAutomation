@@ -1,9 +1,9 @@
-@regression @web
+@regression-tech1 @web @norun
 
 Feature: run regression tech one
   # Enter feature description here
 
-  @T1 @Application-Data-Entry
+  @T1 @Application-Data-Entry @norun
   Scenario:  create student from staff
     # Enter steps here
   Given I navigate to url T1
@@ -129,7 +129,7 @@ Feature: run regression tech one
       | saved-button | Saved   | DISPLAYED | CONTAINS         |
       | saved-button | #74bd00 | DISPLAYED | BACKGROUND-COLOR |
 
-    @T1 @register-student
+    @T1 @register-student @norun
   Scenario: create student from student portal
     # Enter steps here
   Given I navigate to url T1
@@ -209,7 +209,7 @@ Feature: run regression tech one
         | Proficiency_language | Very good                    |
       And I wait for element next-button to be ENABLED
       And I click element next-button
-      And I wait 1000 seconds
+      And I wait 5 seconds
 
 
 

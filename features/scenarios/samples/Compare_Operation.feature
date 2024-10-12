@@ -63,7 +63,7 @@ Feature: Numerical, String Compare and Math Calculations
       | hello_ | concat   | user  | Concatenated |
     And I print all the dictionary keys
 
-  @norun
+  @norun @set_key
   Scenario: Incorrect Implementation
     Given I create a set of keys with below attributes
       | Pattern to create data from | Save into Key Name |

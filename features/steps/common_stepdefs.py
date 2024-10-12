@@ -85,14 +85,12 @@ def step_impl(context, file):
     if context.table:
         print("test")
         context_table = sanitize_datatable(context.table)
+        arr_args = []
         for row in context_table:
-            arr_args = []
-            for value in row[0].split(","):
-                element = common_device().get_element(context.page_present, value.strip(),
-                                                      context.device['platformName'], context.dict_save_value)
-                arr_args.append(element)
-                print("arr_args ", arr_args)
-            common_device().execute_javascript_with_table(context.root_path, arr_args, file, context.driver,
+            element = common_device().get_element(context.page_present, row[0].strip(),
+                                                  context.device['platformName'], context.dict_save_value)
+            arr_args.append(element)
+        common_device().execute_javascript_with_table(context.root_path, arr_args, file, context.driver,
                                                         context.device)
 @step(u'I save text for element {element} have pattern match "{pattern}" with key "{key}"')
 def step_impl(context, element, pattern, key):

@@ -1,7 +1,7 @@
 @test @mobile @login_mobile
 Feature: login mobile
 
-  @norun
+  @login_android
   Scenario: test login page2 mobile
     Given I open application with config below
           | file config |
