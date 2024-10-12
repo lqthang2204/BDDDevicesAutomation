@@ -34,19 +34,19 @@ jobs:
         appium &>/dev/null &
     - name: run appium android remote tests
       run: |
-          python project_runner.py run -fd 'features/scenarios/remote' -tg '{@remote-android}' -sg QA -ps scenario -pl ANDROID -rm false
+#          python project_runner.py run -fd 'features/scenarios/remote' -tg '{@remote-android}' -sg QA -ps scenario -pl ANDROID -rm true
     - name: Sleep for 60s
       uses: juliangruber/sleep-action@v2.0.0
       with:
         time: 60s
     - name: run appium ios remote tests
       run: |
-          python project_runner.py run -fd 'features/scenarios/remote' -tg '{@remote-ios}' -sg QA -ps scenario -pl IOS -rm false
+#          python project_runner.py run -fd 'features/scenarios/remote' -tg '{@remote-ios}' -sg QA -ps scenario -pl IOS -rm true
     - name: Sleep for 60s
       uses: juliangruber/sleep-action@v2.0.0
       with:
         time: 60s
     - name: run web remote tests
       run: |
-          python project_runner.py run -fd 'features/scenarios/remote' -tg '{@remote-web}' -sg QA -ps scenario -pl WEB -rm false        
+#          python project_runner.py run -fd 'features/scenarios/remote' -tg '{@remote-web}' -sg QA -ps scenario -pl WEB -rm true
 
