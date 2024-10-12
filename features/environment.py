@@ -48,12 +48,14 @@ def before_all(context):
 # def before_feature(context, feature):
     # rerun_failed_scenarios(context)
 
+
 def before_scenario(context, scenario):
     """
     This function runs before a scenario is executed.
     It initializes the context based on the specific platform and environment settings.
     """
     try:
+        check_tags(scenario)
         if context.platform != 'API':
             device = context.env['devices']
             context.device = list(filter(
@@ -82,6 +84,11 @@ def before_scenario(context, scenario):
     except Exception as e:
         logger.error(str(e) + "with scenario " + scenario.name)
 
+def check_tags(scenario):
+    for tag in scenario.tags:
+        if tag in ['wip', 'blocked', 'skip', 'manual', 'norun']:
+            scenario.mark_skipped()
+            logger.warning(f'Scenario {scenario.name} marked as skipped')
 
 # def launch_browser(context, device, browser):
 #     option = get_option_from_browser(browser, device)

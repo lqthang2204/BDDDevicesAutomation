@@ -5,6 +5,7 @@ from behave import *
 from Utilities.common_ui import common_device
 from libraries.accessibility_report import perform_accessibility_verification
 from libraries.data_generators import get_test_data_for
+from Utilities.process_value_input import procees_value
 from libraries.misc_operations import sanitize_datatable
 from libraries.number_string_operations import check_and_call_operator
 from project_runner import logger
@@ -38,8 +39,10 @@ def step_impl(context):
         for row in context_table:
             operator_func = check_and_call_operator(row[1])
             if operator_func is not None:
-                left_data = get_test_data_for(row[0], context.dict_save_value)
-                right_data = get_test_data_for(row[2], context.dict_save_value)
+                value = procees_value().get_value(row[0], context.dict_save_value)
+                left_data = get_test_data_for(value, context.dict_save_value)
+                value_right = procees_value().get_value(row[2], context.dict_save_value)
+                right_data = get_test_data_for(value_right, context.dict_save_value)
                 result = operator_func(left_data, right_data)
                 if not result:
                     to_display_left, to_display_right = [(' as ' + left_data) if left_data != row[0] else '',
@@ -65,7 +68,7 @@ def step_impl(context):
 def step_impl(context):
     logger.info('------ Displaying Dictionary keys ------')
     for keys, value in context.dict_save_value.items():
-        logger.info(f'{keys}, {value}')
+        logger.debug(f'{keys}, {value}')
 
 
 @step(u'I wait {wait_duration} seconds')
@@ -82,12 +85,19 @@ def step_impl(context, file):
     if context.table:
         print("test")
         context_table = sanitize_datatable(context.table)
+        arr_args = []
         for row in context_table:
-            arr_args = []
-            for value in row[0].split(","):
-                element = common_device().get_element(context.page_present, value.strip(),
-                                                      context.device['platformName'], context.dict_save_value)
-                arr_args.append(element)
-                print("arr_args ", arr_args)
-            common_device().execute_javascript_with_table(context.root_path, arr_args, file, context.driver,
+            element = common_device().get_element(context.page_present, row[0].strip(),
+                                                  context.device['platformName'], context.dict_save_value)
+            arr_args.append(element)
+        common_device().execute_javascript_with_table(context.root_path, arr_args, file, context.driver,
                                                         context.device)
+@step(u'I save text for element {element} have pattern match "{pattern}" with key "{key}"')
+def step_impl(context, element, pattern, key):
+    context.element_page = common_device().get_element(context.page_present, element,
+                                                       context.device['platformName'], context.dict_save_value)
+    context.dict_save_value = common_device().save_text_from_element(context.element_page, context.driver, key,
+                                                                     context.dict_save_value, context.wait,
+                                                                     context.device, True, pattern)
+    return context.dict_save_value
+

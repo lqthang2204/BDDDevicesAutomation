@@ -46,7 +46,7 @@ def check_and_call_operator(key_to_check):
     elif key_to_check in other_operations:
         return other_operations[key_to_check]
     else:
-        return None
+        return key_to_check
 
 
 if __name__ == '__main__':

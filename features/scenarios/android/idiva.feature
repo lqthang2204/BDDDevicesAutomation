@@ -27,6 +27,8 @@ Feature: idiva mobile
     And I click element sneaker-product
     And I change the page spec to product_sneaker
     And I wait for element sort-product to be DISPLAYED
+    And I navigate to url GOOGLE
+    And I wait 2 seconds
 
   @test-idiva-2 @MUTE
   Scenario: idiva-2 mobile
@@ -71,6 +73,12 @@ Feature: idiva mobile
     And I perform search-sneaker action with override values
       | Field          | Value       |
       | search-product | KEY.sneaker |
+    And I click element menu-toogle
+    And I wait for element search-product to be DISPLAYED
+    And I type "https://google.com" into element search-product
+    And I save text for element search-product with key "url_google"
+    And I navigate to url KEY.url_google
+    And I wait 2 seconds
 
   @test-idiva-4
   Scenario: search productmobile2

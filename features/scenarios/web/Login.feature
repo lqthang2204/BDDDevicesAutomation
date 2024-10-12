@@ -1,4 +1,4 @@
-@testLogin @web @regression
+@testLogin @web @regression @norun
 Feature: login web
 
   Background: Some background

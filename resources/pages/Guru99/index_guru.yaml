@@ -2,7 +2,7 @@ elements:
   - id: selenium-icon
     description: selenium icon
     locators:
-      - device: WEB
+      - device: WEBtitle-page
         type: XPATH
         value: //a[text()='Selenium']
   - id: title-page
@@ -10,7 +10,7 @@ elements:
     locators:
       - device: WEB
         type: XPATH
-        value: //h1[text()="Tutorials Library"]
+        value: //*[text()="Tutorials Library"]
   - id: header-tutorial
     description: header selenium tutorial
     locators:

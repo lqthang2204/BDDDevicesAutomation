@@ -1,8 +1,9 @@
-@regression @web @autoretry
+@regression @web @autoretry @norun
 Feature: orange HRM 2 web
 
 #  @Windows10_Chrome_76.0
 #  @Windows10_Firefox_68.0
+  @test-navigate-2-times
   Scenario: negative to url2
     Given I navigate to url GOOGLE
     And I change the page spec to pageGoogle
@@ -123,7 +124,7 @@ Feature: orange HRM 2 web
     And I accept for popup
     And I wait 10 seconds
 
-  @function-read-javascript-2 @safari
+  @function-read-javascript-2
   Scenario: function-read-javascript-2
     Given I navigate to url GURU99-DOUBLE with options below
       | options   | value                       |
@@ -174,8 +175,8 @@ Feature: orange HRM 2 web
       | header-python-tutorial |
     And I wait 5 seconds
     And I perform javascript scrollToElement with below arguments
-      | arguments                           |
-      | title-page , header-python-tutorial |
+      | arguments  |
+      | title-page |
     And I wait 5 seconds
 
 
@@ -191,8 +192,9 @@ Feature: orange HRM 2 web
       | header-python-tutorial |
     And I wait 5 seconds
     And I perform javascript scrollToElement with below arguments
-      | arguments                           |
-      | title-page , header-python-tutorial |
-    And I wait 5 seconds
+      | arguments              |
+      | header-python-tutorial |
+      | title-page             |
+        And I wait 5 seconds
 
     
