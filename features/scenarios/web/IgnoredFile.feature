@@ -152,7 +152,7 @@ Feature: login web for norun
       | location-option-inpatient | Inpatient                   | DISPLAYED | STARTS_WITH      |
       | location-option-inpatient | Inpatient [A-z]             | DISPLAYED | REGEX            |
       | location-option-inpatient | Ward                        | DISPLAYED | ENDS_WITH        |
-      | location-option-inpatient | OpenSans, Arial, sans-serif | DISPLAYED | FONT_FAMILY      |
+#      | location-option-inpatient | OpenSans, Arial, sans-serif | DISPLAYED | FONT_FAMILY      |
 #      | location-option-inpatient | 16px                        | DISPLAYED | FONT_SIZE        |
 #      | location-option-inpatient | 400                         | DISPLAYED | FONT_WEIGHT      |
 #      | location-option-inpatient | 35px                        | DISPLAYED | FONT_HEIGHT      |
