@@ -1,0 +1,85 @@
+elements:
+  - id: header-background
+    description: Header background
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[@class="headerText" and text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: Participation-Level
+    description: Participation Level
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //input[@id="StudentHighestLevelParticipations_-9_ParticipationLevel"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: Highest-School-Level-Completed
+    description: Highest School Level Completed
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //input[@id="AustralianStudyDetail_SchoolingLevelCompleted"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: year-study
+    description: Highest School Level Completed
+    locators:
+      - device: WEB
+        type: ID
+        value: AustralianStudyDetail_Year12Year
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: student-id-field
+    description: Student id field
+    locators:
+      - device: WEB
+        type: ID
+        value: AustralianStudyDetail_Year12StudentId
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: drop-down-value
+    description: Address type field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(@class, "picklistDataCell") and text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: drop-down-year--school
+    description: Address type field
+    locators:
+      - device: WEB
+        type: ID
+        value: AustralianStudyDetail_Year12ExternalOrganisationId_picker
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]

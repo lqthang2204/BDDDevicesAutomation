@@ -42,7 +42,7 @@ def click_action(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "click", context.driver, "", context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I type "{text}" into element {element}')
@@ -50,7 +50,7 @@ def type_action(context, text, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "type", context.driver, text, context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I wait for element {element} to be {status}')
@@ -85,7 +85,7 @@ def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "clear", context.driver, "", context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I select the option with the value "{text}" for element {element}')
@@ -93,7 +93,7 @@ def step_impl(context, text, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "select", context.driver, text, context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I save text for element {element} with key "{key}"')
@@ -122,7 +122,7 @@ def step_impl(context):
                                                                                     context.dict_save_value,
                                                                                     context.driver,
                                                                                     context.device, context.wait,
-                                                                                    context.highlight)
+                                                                                    context.highlight, context.page_present)
 
 
 @step(u'I {action} shadow element {element}')
@@ -159,7 +159,7 @@ def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "hover-over", context.driver, '', context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I scroll to element {element}')
@@ -188,7 +188,7 @@ def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "double-click", context.driver, "", context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I right-click element {element}')
@@ -196,7 +196,7 @@ def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "right-click", context.driver, "", context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I {status} for popup')
