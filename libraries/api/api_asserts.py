@@ -15,7 +15,7 @@ class APIAsserts:
 
     def response_has_key(response_dict, context, table, status_code, title):
         try:
-            if title == "response_code":
+            if title == "code":
                 assert response_dict['code'] == int(
                     status_code), f'response status code failed when return {response_dict["code"]}'
             else:

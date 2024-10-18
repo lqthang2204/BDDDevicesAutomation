@@ -1,13 +1,14 @@
-@regression-tech1 @web @norun
+@regression-tech1 @web
 
 Feature: run regression tech one
+  Background: open web T1
+    Given I navigate to url T1
   # Enter feature description here
 
   @T1 @Application-Data-Entry @norun
   Scenario:  create student from staff
     # Enter steps here
-  Given I navigate to url T1
-    And I change the page spec to login_t1_page
+    Given I change the page spec to login_t1_page
     And I perform login-page action
     And I change the page spec to index_t1_page
     And I perform javascript getTitle
@@ -30,7 +31,8 @@ Feature: run regression tech one
     And I wait for element given-name to be ENABLED
     And I click element given-name
     And I wait for element spinner to be NOT_DISPLAYED
-     And I type "student_{date_current_MMddmm_{random_alphabet_5}" into element given-name
+    And I create a random user
+     And I type "{USER.first_name}{date_current_MMddmm_{random_alphabet_5}" into element given-name
     And I save text for element given-name with key "given_name"
     And I wait for element spinner to be NOT_DISPLAYED
     And I save text for element given-name with key "given_student"
@@ -123,17 +125,40 @@ Feature: run regression tech one
     And I wait for element save-button to be ENABLED
     And I click element save-button
      And I wait for element spinner to be NOT_DISPLAYED
-    And I print all the dictionary keys
+#    And I verify that following elements with below attributes
+#      | Field        | Value   | Status    | Helpers          |
+#      | saved-button | Saved   | DISPLAYED | CONTAINS         |
+#      | saved-button | #74bd00 | DISPLAYED | BACKGROUND-COLOR |
+    And I save text for element form-title have pattern match "(\d+)[\s\S]+[a-zA-Z]" with key "student-id"
     And I verify that following elements with below attributes
-      | Field        | Value   | Status    | Helpers          |
-      | saved-button | Saved   | DISPLAYED | CONTAINS         |
-      | saved-button | #74bd00 | DISPLAYED | BACKGROUND-COLOR |
+      | Field              | Value          | Status      | Helpers  |
+      | gender-field       | Male           | DISPLAYED   |          |
+      | address-type-field | Mailing        | NOT_ENABLED | CONTAINS |
+      | field-country      | Australia      | ENABLED     |          |
+      | Addresses_1        | 123 Ann Street | ENABLED     |          |
+      | city-field         | Brisbane       | ENABLED     |          |
+      | state-field        | NSW            | ENABLED     | CONTAINS |
+      | post-code          | 2000           | ENABLED     |          |
+      | country-of-birth   | Australia      | ENABLED     |          |
+      | main-language      | English        | ENABLED     |          |
+    And I print all the dictionary keys
+    And I change the page spec to application_data_entry
+    And I click element section-menu with text "Educational Background"
+    And I change the page spec to Educational_Background
+    And I wait for element header-background with text "Australian (or Equivalent) Study" to be DISPLAYED
+    And I type "Year 8 or below" into element Highest-School-Level-Completed
+     And I wait for element drop-down-value with text "Year 8 or below" to be DISPLAYED
+    And I click element drop-down-value with text "Year 8 or below"
+    And I type "2012" into element year-study
+    And I wait 1 seconds
+    And I type "random_number_8" into element student-id-field
+    And I wait 10000 seconds
+
 
     @T1 @register-student @norun
   Scenario: create student from student portal
     # Enter steps here
-  Given I navigate to url T1
-    And I change the page spec to login_t1_page
+    Given I change the page spec to login_t1_page
     And I perform login-page action
       And I change the page spec to index_t1_page
     And I wait for element menu-ci with text "Forms" to be DISPLAYED

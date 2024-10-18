@@ -191,3 +191,15 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
+  - id: form-title
+    description: form title
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[@class="formTitleControlHeadingContainer "]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]

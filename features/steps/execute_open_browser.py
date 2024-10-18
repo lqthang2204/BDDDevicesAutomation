@@ -86,7 +86,8 @@ class manage_hook_browser:
                     try:
                         context.driver.get(context.url[name])
                     except Exception as e:
-                        logger.error(f"not open browser with url {name} please check file envriroment" ,)
+                        logger.error(f"not open browser with url {name} please check file envriroment")
+                        assert False, f"not open browser with url {name} please check file envriroment"
             elif 'KEY.' in name and context.driver is not None:
                 temp_url = context.dict_save_value[name]
                 context.driver.get(temp_url)
@@ -95,6 +96,7 @@ class manage_hook_browser:
                     context.driver.get(context.url[name])
                 except Exception as e:
                     logger.error(f"not open browser with url {name} please check file envriroment", )
+                    assert False, f"not open browser with url {name} please check file envriroment"
                 # context.driver.get(context.dict_save_value[name[0]])
         except SessionNotCreatedException as e:
             logger.error(f"Failed to open browser: {e}")

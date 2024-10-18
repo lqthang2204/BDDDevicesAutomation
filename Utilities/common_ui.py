@@ -27,7 +27,7 @@ class common_device:
     def check_att_is_exist(self, obj_action_elements, key, default=None):
         return obj_action_elements.get(key, default)
 
-    def action_page(self, element_page, action, driver, value, wait, dict_save_value, device, context):
+    def action_page(self, element_page, action, driver, value, wait, dict_save_value, device, context, count_number=0):
         element = self.get_element_by_from_device(element_page, device, driver)
         logger.info(f'execute {action} with element have is {element_page["value"]}')
         self.highlight(element, 0.3, context.highlight)
@@ -58,10 +58,9 @@ class common_device:
             else:
                 logger.error("Can not execute %s with element have is %s", action)
                 assert False, "Not support action in framework"
-        except (ElementNotInteractableException, StaleElementReferenceException):
-            self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action,
-                                                           count_number=0)
-        except (InvalidElementStateException):
+        except (ElementNotInteractableException, StaleElementReferenceException, ElementClickInterceptedException):
+            self.handle_element_not_interactable_exception(element_page, action, driver, value, wait, dict_save_value, device, context, count_number=0)
+        except InvalidElementStateException:
             self.handle_invalid_element_state_exception(value, element_page, device, driver, action)
         except Exception as e:
             logger.info(f"do not {action} with element {element} trying to {action} by javascript")
@@ -74,28 +73,14 @@ class common_device:
 
     def click_action(self, element, wait, element_page, device, driver):
         if element_page['device'] == "WEB":
-            try:
-                if element.get_attribute("disabled") is None:
-                    element.click()
-                else:
-                    WebDriverWait(driver, wait).until_not(
-                        ec.element_attribute_to_include(
-                            ManagementFile().get_locator_for_wait(element_page['type'], element_page['value']),
-                            "disabled"))
-                    element.click()
-            except (ElementNotInteractableException, StaleElementReferenceException):
-                self.handle_element_not_interactable_exception("", wait, element_page, device, driver, "click", 1)
-            except (ElementClickInterceptedException):
-                sleep(1)
+            if element.get_attribute("disabled") is None:
                 element.click()
-            except Exception as e:
-                logger.info(f"do not click with element {element} trying to click by javascript")
-                logger.error(e)
-                try:
-                    driver.execute_script("arguments[0].click();", element)
-                except:
-                    logger.error(f"do not click with element {element} by javascript")
-                    assert False, f"do not click with element {element}"
+            else:
+                WebDriverWait(driver, wait).until_not(
+                    ec.element_attribute_to_include(
+                        ManagementFile().get_locator_for_wait(element_page['type'], element_page['value']),
+                        "disabled"))
+                element.click()
         else:
             locator_from_wait = ManagementFileAndroid().get_locator_for_wait(element_page['type'],
                                                                              element_page['value'])
@@ -257,7 +242,7 @@ class common_device:
             # Get the value of the element
             value = self.get_value_element_form_device(element, device, element_page, driver)
             if is_regex:
-                value = re.search(pattern, value).group(0)
+                value = re.search(pattern, value).group(1)
             # Save the value to the dictionary
             dict_save_value["KEY." + key] = value
 
@@ -319,7 +304,10 @@ class common_device:
                     return element.text
 
             except (ElementNotInteractableException, StaleElementReferenceException):
-                self.handle_element_not_interactable_exception("", None, element_page, device, driver, "get_value")
+                sleep(2)
+                element = self.get_element_by_from_device(element_page, device, driver)
+                self.get_value_element_form_device(element, device, element_page, driver)
+
         else:
             # For non-web platforms, return the element's text content
             return element.text
@@ -396,7 +384,7 @@ class common_device:
         return user
 
     def verify_elements_below_attributes(self, page, row, platform_name, dict_save_value, driver, device, wait,
-                                         is_highlight):
+                                         is_highlight, page_present):
         """
         Verify the attributes of elements in a given page.
 
@@ -413,13 +401,15 @@ class common_device:
         Raises:
             AssertionError: If the element is not found or the status does not match.
 
+
         """
         arr_element = page['elements']
         arr_element = list(filter(
             lambda element: element['id'] == row[0], arr_element
         ))
         if not arr_element:
-            raise AssertionError(f'Element with ID {row[0]} not found in the page')
+            logger.error(f'Element with ID {row[0]} not found in the page {page_present}.yaml')
+            assert False, f'Element with ID {row[0]} not found in the page'
 
         logger.info(f'Verifying for {row[0]} have value {row[1]} and status {row[2]}')
         value = row[1]
@@ -815,8 +805,8 @@ class common_device:
             print('fail when execute javascript file', e)
             assert False, f"fail when execute javascript file {javascript_file}"
 
-    def handle_element_not_interactable_exception(self, value, wait, element_page, device, driver, action,
-                                                  count_number):
+    def handle_element_not_interactable_exception(self, element_page, action, driver, value, wait, dict_save_value, device, context, count_number=0):
+        logger.debug(f'handle element not interactable exception {element_page}')
         element = self.get_element_by_from_device(element_page, device, driver)
         try:
             if device['platformName'] == "WEB":
@@ -824,46 +814,13 @@ class common_device:
                     "arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });", element)
         except Exception as e:
             assert True, f"fail when scroll to element {element}, skip step scroll to element"
-        match action:
-            case "click":
-                try:
-                    for count_number in range(10):
-                        sleep(1)
-                        self.click_action(element, wait, element_page, device, driver)
-                        break
-                except (ElementNotInteractableException, StaleElementReferenceException):
-                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action,
-                                                                   count_number+1)
-            case "type":
-                try:
-                    for count_number in range(10):
-                        sleep(1)
-                        logger.info(f"perform with action type {value} and count {count_number}")
-                        element.send_keys(value)
-                        break
-                except (ElementNotInteractableException, StaleElementReferenceException):
-                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action, count_number+1)
-            case "text":
-                try:
-                    for count_number in range(10):
-                        sleep(1)
-                        element.send_keys(value)
-                        break
-                except (ElementNotInteractableException, StaleElementReferenceException):
-                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action, count_number+1)
-            case "get_value":
-                try:
-                    for count_number in range(10):
-                        if element.get_attribute("value") and element.tag_name.lower() == "input":
-                            return element.get_attribute('value')
-                        else:
-                            # If the element is not an input tag, return its text content
-                            return element.text
-                except (ElementNotInteractableException, StaleElementReferenceException):
-                    self.handle_element_not_interactable_exception(value, wait, element_page, device, driver, action, count_number+1)
-            case _:
-                print(f'not exist {action} in element not interactable exception')
-                assert False, f"not exist {action} in element not interactable exception"
+        while count_number < 10:
+            sleep(1)
+            count_number += 1
+            logger.debug(f'count number {count_number}')
+            self.action_page(element_page, action, driver, value, wait, dict_save_value, device, context, count_number)
+            break
+
     def handle_invalid_element_state_exception(self, value, element_page, device, driver, action):
         element = self.get_element_by_from_device(element_page, device, driver)
         action_chains = ActionChains(driver)
@@ -942,10 +899,10 @@ class common_device:
                             type_action = action_elements['inputType']
                             if type_action in ["click", "text"]:
                                 self.action_page(locator, type_action, driver, value, action_elements['timeout'],
-                                                 dict_save_value, platform_name, context)
+                                                 dict_save_value, platform_name, context, count_number=0)
                             else:
                                 self.action_page(locator, "text", driver, type_action, action_elements['timeout'],
-                                                 dict_save_value, platform_name, context)
+                                                 dict_save_value, platform_name, context, count_number=0)
                     except Exception as e:
                         logger.info(f'can not execute action with element have value  {locator} in framework')
                         assert False, "can not execute action with element have value" + locator + "in framework"
@@ -958,10 +915,10 @@ class common_device:
                             type_action = action_elements['inputType']
                             if type_action in ["click", "text"]:
                                 self.action_page(locator, type_action, driver, value, wait, dict_save_value,
-                                                 platform_name, context)
+                                                 platform_name, context, count_number=0)
                             else:
                                 self.action_page(locator, "text", driver, type_action, wait, dict_save_value, platform_name,
-                                                 context)
+                                                 context, count_number=0)
                         else:
                             self.wait_element_for_status(locator, action_elements['condition'], driver, platform_name,
                                                          wait, False)
@@ -976,10 +933,10 @@ class common_device:
                             type_action = action_elements['inputType']
                             if type_action in ["click", "text"]:
                                 self.action_page(locator, type_action, driver, value, wait, dict_save_value,
-                                                 platform_name, context)
+                                                 platform_name, context, count_number=0)
                             else:
                                 self.action_page(locator, "text", driver, type_action, wait, dict_save_value, platform_name,
-                                                 context)
+                                                 context, count_number=0)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action,
                                      locator.value)
