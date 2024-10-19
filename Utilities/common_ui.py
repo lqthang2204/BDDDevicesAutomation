@@ -467,6 +467,7 @@ class common_device:
             value = self.get_value_element_form_device(element, device, element_page, driver)
             assert value == expect, f'value of the element is {value} not equal to values expected {expect}'
         except NoSuchElementException:
+            logger.error('Element not found')
             assert False, 'Element not found'
 
     def verify_value_with_helpers(self, expected, helper, element_page, device, driver, is_highlight):
@@ -513,7 +514,8 @@ class common_device:
                 value_attribute = self.get_value_attribute_element_form_device(element, device, helper, False)
                 assert value_attribute == expected, f'value attribute of element not same with {expected}, need to check attribute of element'
         elif helper and expected == '':
-            assert False, f'The helper and value columns must both have a value at the same time'
+            logger.error('The helper and value columns must both contain a value simultaneously.')
+            assert False, f'The helper and value columns must both contain a value simultaneously.  helper = {helper}, value = {expected}'
 
     def highlight(self, element, time, is_hightlight):
         """
@@ -730,7 +732,7 @@ class common_device:
             sleep(int(0.5))
             # action.send_keys(Keys)
         except Exception as e:
-            print('An error occurred while executing action with keyboard:', key_action)
+            logger.error(f"An error occurred while executing keyboard with element: {str(e)}")
             assert False, f'An error occurred while executing action with keyboard {key_action}'
 
     def get_value_key_code(self, key_name):
@@ -787,7 +789,7 @@ class common_device:
             if isinstance(result, bool):
                 assert result, f"fail when execute javascript file {javascript_file}"
         except Exception as e:
-            print('fail when execute javascript file', e)
+            logger.error(f"fail when execute javascript file {javascript_file}")
             assert False, f"fail when execute javascript file {javascript_file}"
 
     def execute_javascript_with_table(self, root_path, arr_element_page, javascript_file, driver, device):
@@ -802,7 +804,7 @@ class common_device:
             if isinstance(result, bool):
                 assert result, f"fail when execute javascript file {javascript_file}"
         except Exception as e:
-            print('fail when execute javascript file', e)
+            logger.error(f"fail when execute javascript file {javascript_file}")
             assert False, f"fail when execute javascript file {javascript_file}"
 
     def handle_element_not_interactable_exception(self, element_page, action, driver, value, wait, dict_save_value, device, context, count_number=0):
@@ -841,7 +843,7 @@ class common_device:
                 action_chains.send_keys(value)
                 action_chains.perform()
             case _:
-                print(f'not exist {action} in element not interactable exception')
+                logger.error(f"not exist {action} in element not interactable exception")
                 assert False, f"not exist {action} in element not interactable exception"
 
     def execute_action(self, page, action_id, driver, wait, table, dict_save_value, platform_name, context):
@@ -904,7 +906,7 @@ class common_device:
                                 self.action_page(locator, "text", driver, type_action, action_elements['timeout'],
                                                  dict_save_value, platform_name, context, count_number=0)
                     except Exception as e:
-                        logger.info(f'can not execute action with element have value  {locator} in framework')
+                        logger.error("can not execute action % with element have value  %s in framework", type_action, locator['value'])
                         assert False, "can not execute action with element have value" + locator + "in framework"
                 elif self.check_field_exist(action_elements, 'condition') and self.check_field_exist(action_elements,
                                                                                                      'timeout') is False:
@@ -950,5 +952,5 @@ class common_device:
             if dict[key]:
                 return True
         except Exception as e:
-            print(f'not found attribute in dictionary: {str(e)}')
+            logger.warning(f'{str(e)}, ignore this error as this field is not exist')
             return False

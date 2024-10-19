@@ -106,8 +106,10 @@ class ManagementFile:
             locator = self.SUPPORTED_LOCATOR_TYPES.get(type)
             return driver.find_element(locator, value)
         except (NoSuchElementException, TimeoutException) as e:
+            logger.error(f"Element not found: {str(e)}")
             assert False, f"Element not found: {str(e)}"
         except Exception as e:
+            logger.error(f"Error locating element: {str(e)}")
             assert False, f"Error locating element: {str(e)}"
 
     def get_list_element_by(self, type, driver, value):
@@ -175,7 +177,8 @@ class ManagementFile:
     def check_att_is_exist(self, obj_action_elements, key, default=None):
         return obj_action_elements.get(key, default)
 
-    def process_execute_action(self, driver, wait, element, type_action, value, locator, action_elements, dict_save_value):
+    def process_execute_action(self, driver, wait, element, type_action, value, locator, action_elements,
+                               dict_save_value):
         """
             Process and execute an action on a web element.
             Args:
@@ -299,8 +302,7 @@ class ManagementFile:
         logger.info(f'Finding shadow element {value}')
 
         shadow = Shadow(driver)
-        shadow.set_explicit_wait(wait, 1)
-
+        shadow.set_explicit_wait(wait, 0.2)
         try:
             if type == 'CSS':
                 element = shadow.find_element(value, False)
@@ -309,10 +311,9 @@ class ManagementFile:
             else:
                 logger.error(f'The type of shadow element must be CSS or XPATH, type is {type}')
                 raise AssertionError(f'The type of shadow element must be CSS or XPATH')
-
             if is_highlight:
                 shadow.highlight(element, color='red', time_in_mili_seconds=0.2)
-
+            logger.debug(f'Shadow element {value} found')
             return element
         except NoSuchElementException:
             logger.error(f'Shadow element {value} not found')
@@ -349,7 +350,10 @@ class ManagementFile:
             elif action == "clear":
                 element.clear()
             elif action == "wait":
-                WebDriverWait(driver, wait).until(ec.presence_of_element_located(element))
+                # The current framework only supports waiting for elements with status set to ENABLED.
+                # This restriction ensures that elements are fully loaded and interactive before proceeding with actions.
+                # Future updates may include support for additional statuses like DISABLED or HIDDEN based on requirements and use cases.
+                WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
             else:
                 logger.error(f"Unsupported action: {action}")
                 raise ValueError(f"Unsupported action: {action}")
@@ -406,7 +410,8 @@ class ManagementFile:
                 logger.error("Unsupported status: %s", status)
                 assert False, "Not supported status in framework"
         except NoAlertPresentException:
-            logger.info("No alert present")
+            logger.error("No alert present")
+            assert False, "No alert present"
         except Exception as e:
-            logger.info(f"Failed to handle popup: {e}")
+            logger.error(f"Failed to handle popup: {e}")
             assert False, f"Failed to handle popup: {e}"

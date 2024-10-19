@@ -3,13 +3,15 @@ import os
 from behave import *
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from libraries.misc_operations import sanitize_datatable
+
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 from Utilities.common_ui import common_device
-from libraries.faker import management_user
-from execute_open_mobile import manage_hook_mobile
 from execute_open_browser import manage_hook_browser
+from execute_open_mobile import manage_hook_mobile
+from libraries.faker import management_user
+from libraries.misc_operations import sanitize_datatable
+from project_runner import logger
 
 
 @step(u'I navigate to url {name}')
@@ -127,6 +129,13 @@ def step_impl(context):
 
 @step(u'I {action} shadow element {element}')
 def step_impl(context, action, element):
+    # status_element = None
+    # if "to be" in element:
+    #     element = element.replace("to be", "")
+    #     logger.debug('thang nay la %s', element)
+    #     element_arr = element.split("  ")
+    #     element = element_arr[0]
+    #     status_element = element_arr[1]
     if context.device['platformName'] == "WEB":
         context.element_page = common_device().get_element(context.page_present, element,
                                                            context.device['platformName'], context.dict_save_value)
@@ -139,6 +148,7 @@ def step_impl(context, action, element):
         ManagementFile().action_with_shadow_element(context.element_page, action, context.driver, value, context.wait,
                                                     context.dict_save_value, context.highlight)
     else:
+        logger.error("Only support WEB ENVIRONMENT")
         assert False, "only support action script with WEB ENVIRONMENT in framework"
 
 
@@ -234,6 +244,7 @@ def step_impl(context, title):
 @step(u'I scroll {action} to element {element}')
 def step_impl(context, element, action):
     if context.device['platformName'] == "WEB":
+        logger.error('feature scroll down,up only support for mobile')
         assert False, 'feature scroll down,up only support for mobile'
     else:
         context.element_page = common_device().get_element(context.page_present, element,

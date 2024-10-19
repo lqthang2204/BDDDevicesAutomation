@@ -174,7 +174,7 @@ class manage_hook_browser:
                     folder_path = os.path.join(context.root_path, 'extensions/')
                     option.add_extension(folder_path + rows[1])
                 else:
-                    logger.info(
+                    logger.error(
                         f'feature use extension and argument only support for chrome not support for {browser.lower()} browser')
                     assert False, f'Framework only is support for argument, extension parameter not support for {rows[0]}'
 
@@ -270,5 +270,6 @@ class manage_hook_browser:
             else:
                 return 30
         else:
+            logger.error(f'attribute {label} not supported in the framework')
             assert False, f'attribute {label} not supported in the framework'
 

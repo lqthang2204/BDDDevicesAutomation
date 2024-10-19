@@ -75,6 +75,7 @@ class APIAsserts:
                                     APIAsserts.check_condition_have_result_body(field_value, helpers, value_body)
 
         except json.decoder.JSONDecodeError:
+            logger.error("Response is not in JSON format")
             assert False, f'Response is not in JSON format'
 
     def find_value_from_key(json_object, target_key):
@@ -123,8 +124,10 @@ class APIAsserts:
                 for val in value:
                     assert field_value in val, f'Response json does not contain have value {value}'
             elif field_value != "":
+                logger.debug("field_value: " + field_value)
                 assert field_value in value, f'Response json does not equal alpha have value {value}'
             else:
+                logger.error("Not found expected value in datatable")
                 assert False, f'Not found expected value in datatable {field_value}'
         elif helpers == "BOOL" and field_value != "":
             if field_value != "" and isinstance(value, list):
@@ -147,14 +150,17 @@ class APIAsserts:
             elif field_value != "":
                 assert field_value == value, f'Response json does not equal a field name {value}'
             else:
+                logger.error("Not found expected value in datatable")
                 assert False, f'Not found expected value in datatable {field_value}'
         elif helpers == "":
             if field_value != "":
                 # when helper = "" => default is check value same with value of key
                 assert field_value == value, f'Response json does not equal a field name {value}'
             else:
+                logger.error("Not found expected value in datatable")
                 assert False, f'Not found expected value in datatable {field_value}'
         else:
+            logger.error("not contain helper in data table do not check")
             assert False, f'not contain helper in data table do not check'
 
     def convert_string_to_bool(expect):
@@ -163,5 +169,6 @@ class APIAsserts:
         elif expect in ['false', 'False', 'FALSE']:
             return False
         else:
+            logger.error(f'framework does not support convert type bool as {expect}')
             assert False, f'framework does not support convert type bool as {expect}'
 

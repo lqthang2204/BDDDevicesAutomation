@@ -178,6 +178,7 @@ class ManagementFileAndroid:
         elif action.__eq__('right'):
             print('right')
         else:
+            logger.error("Can not execute %s with element have is %s", action)
             assert False, "can not execute scroll to element with action " + action + " in framework"
         assert flag, f'not found element when scroll'
     def close_application(self, driver):

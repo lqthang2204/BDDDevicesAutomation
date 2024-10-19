@@ -27,7 +27,7 @@ def before_all(context):
 
         # Get platform and highlighting info from config
         context.platform = context.config_env.get("drivers_config", "platform").upper()
-        context.highlight = context.config_env.get("drivers_config", "is_highlight").lower()
+        context.highlight = convert_string_to_bool(context.config_env.get("drivers_config", "is_highlight").lower())
 
         # Set project folder and stage name
         context.project_folder = project_folder
@@ -72,7 +72,7 @@ def before_scenario(context, scenario):
                 case "IOS":
                     pass
                 case fail:
-                    logger.info('Framework only is support for chrome, firefox and safari..., trying open with chrome')
+                    logger.error(f'Framework only is support for chrome, firefox and safari..., trying open with chrome')
                     assert False, "Framework only is support for chrome, firefox and safari..., trying open with chrome"
             context.url = context.env['link']
 
@@ -139,7 +139,8 @@ def after_scenario(context, scenario):
 
     # Check if there is a driver present in the context
     if context.driver:
-        if context.config_env.get("drivers_config", "remote-saucelabs").lower() == "true":
+        is_remote_saucelabs = convert_string_to_bool(context.config_env.get("drivers_config", "remote-saucelabs").lower())
+        if is_remote_saucelabs:
             try:
                 # Read the configuration settings for remote execution
                 config = manage_remote().read_config_remote()
@@ -151,7 +152,7 @@ def after_scenario(context, scenario):
                 sauce_client.jobs.update_job(context.driver.session_id, passed=test_status, name=scenario.name)
             except SauceException as e:
                 # Handle exceptions if status update fails
-                print(e)
+                logger.debug(f'can not update status for sauce lab: {str(e)}')
                 print('can not update status for sauce lab')
                 assert True  # Assert to fail the scenario
         # Quit the driver
@@ -167,5 +168,24 @@ def after_all(context):
     if context.driver and context.platform == 'WEB':
         logger.info('Closing driver from After_ALL')
         context.driver.close()
+def convert_string_to_bool(value):
+    """
+    Converts a string value to a boolean value.
+
+    Args:
+        value (str): The string value to convert.
+
+    Returns:
+        bool: The boolean value corresponding to the string value.
+
+    Raises:
+        ValueError: If the string value is not 'true' or 'false'.
+    """
+    if value.lower() == 'true':
+        return True
+    elif value.lower() == 'false':
+        return False
+    else:
+        raise ValueError(f"Invalid boolean value: {value}")
 
 
