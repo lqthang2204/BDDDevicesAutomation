@@ -6,7 +6,7 @@ Feature: API GET demo one
   Scenario: DEMO for GET call in API one
     Given I set apifacet as SFCLOUD-TOKEN without endpoint
     And I set form sfcloud_token with below attributes
-    Then I trigger POST call with below attributes
+    Then I trigger POST call request
     Then I verify response body with below attributes
       | FieldName      | FieldValue | Helpers          |
       | $.access_token |            | KEY.access_token |

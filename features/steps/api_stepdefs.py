@@ -73,19 +73,23 @@ def step_impl(context, api_method):
     context.req._send(api_method)
 
 
-@step(u'I verify response body with below attributes')
-def step_impl(context):
-    APIAsserts.response_has_key(context.req.response_dict, context, context.table, "", "body")
+# @step(u'I verify response {body} with below attributes')
+# def step_impl(context, response):
+#     APIAsserts.response_has_key(context.req.response_dict, context, context.table, "", response)
+
+@step(u'I trigger {api_method} call request')
+def step_impl(context, api_method):
+    context.req._send(api_method)
 
 
-@step(u'I verify response header with below attributes')
-def step_impl(context):
-    APIAsserts.response_has_key(context.req.response_dict, context, context.table, "", "header")
+@step(u'I verify response {response} with below attributes')
+def step_impl(context, response):
+    APIAsserts.response_has_key(context.req.response_dict, context, context.table, "", response)
 
 
-@step(u'I verify response code with status is "{status_code}"')
-def step_impl(context, status_code):
-    APIAsserts.response_has_key(context.req.response_dict, context, context.table, status_code, "response_code")
+@step(u'I verify response {code} with status is "{status_code}"')
+def step_impl(context, status_code, code):
+    APIAsserts.response_has_key(context.req.response_dict, context, context.table, status_code, code)
 
 
 @given(u'I poll the {api_method} call "{times_number}" times until below conditions')
@@ -98,7 +102,7 @@ def step_impl(context, api_method, times_number):
             try:
                 if row[0] == 'response_code':
                     APIAsserts.response_has_key(context.req.response_dict, context, context.table, row[1],
-                                                "response_code")
+                                                "code")
                 else:
                     APIAsserts.response_has_key(context.req.response_dict, context, context.table, "", "body")
                 success = True

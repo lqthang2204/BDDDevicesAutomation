@@ -1,5 +1,5 @@
 elements:
-  - id: import borkmarks
+  - id: import_borkmarks
     description: First name
     locators:
       - device: WEB

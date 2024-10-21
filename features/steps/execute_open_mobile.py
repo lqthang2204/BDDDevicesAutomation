@@ -26,6 +26,7 @@ class manage_hook_mobile:
                     context.wait = context.device['wait']
                     context.highlight = 'false'
             case _:
+                logger.error(f"platformName {context.device['platformName'].upper()} not support in framework")
                 assert False, f"platformName {context.device['platformName'].upper()} not support in framework"
 
 
@@ -65,7 +66,6 @@ class manage_hook_mobile:
             context.driver = appium_driver.Remote(appium_url, options = options, strict_ssl = False)
         except SessionNotCreatedException as ex:
             logger.error('Config file updated based on user provided command line arguments')
-            print("not connect with remote saucelab, please check configuration again!")
             assert False, f'{ex.msg}'
     def check_att_exist(self, obj, key):
         if obj.get_capability(key) is None or obj.get_capability('appium:'+key) is None:
@@ -74,7 +74,7 @@ class manage_hook_mobile:
             try:
                 return obj.get_capability(key)
             except Exception as e:
-                print("please check file input json" , e)
+                logger.error(f"please check file input json: {str(e)}")
                 assert False, e
 
     def create_ios_driver(self, context, device, table):

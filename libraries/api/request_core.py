@@ -38,11 +38,11 @@ class Requests(RequestProps):
             self.response_dict['redirect'] = self.response.is_redirect
             logger.info(self.response_dict['content'])
         except requests.RequestException as e:
-            logger.info(f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n')
+            logger.error(f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n')
             logger.info(f'Exception {e}')
             assert False, f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n'
         except Exception as e:
-            logger.info(f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n')
+            logger.error(f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n')
             logger.info(f'Exception {e}')
             assert False, f'Method: {method} \n API URL {self.api_base_url} \n Params {self.params} \n Headers {self.headers} \n'
         except:

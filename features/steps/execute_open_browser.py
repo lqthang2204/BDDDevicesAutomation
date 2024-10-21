@@ -86,7 +86,8 @@ class manage_hook_browser:
                     try:
                         context.driver.get(context.url[name])
                     except Exception as e:
-                        logger.error(f"not open browser with url {name} please check file envriroment" ,)
+                        logger.error(f"not open browser with url {name} please check file envriroment")
+                        assert False, f"not open browser with url {name} please check file envriroment"
             elif 'KEY.' in name and context.driver is not None:
                 temp_url = context.dict_save_value[name]
                 context.driver.get(temp_url)
@@ -95,6 +96,7 @@ class manage_hook_browser:
                     context.driver.get(context.url[name])
                 except Exception as e:
                     logger.error(f"not open browser with url {name} please check file envriroment", )
+                    assert False, f"not open browser with url {name} please check file envriroment"
                 # context.driver.get(context.dict_save_value[name[0]])
         except SessionNotCreatedException as e:
             logger.error(f"Failed to open browser: {e}")
@@ -172,7 +174,7 @@ class manage_hook_browser:
                     folder_path = os.path.join(context.root_path, 'extensions/')
                     option.add_extension(folder_path + rows[1])
                 else:
-                    logger.info(
+                    logger.error(
                         f'feature use extension and argument only support for chrome not support for {browser.lower()} browser')
                     assert False, f'Framework only is support for argument, extension parameter not support for {rows[0]}'
 
@@ -268,5 +270,6 @@ class manage_hook_browser:
             else:
                 return 30
         else:
+            logger.error(f'attribute {label} not supported in the framework')
             assert False, f'attribute {label} not supported in the framework'
 
