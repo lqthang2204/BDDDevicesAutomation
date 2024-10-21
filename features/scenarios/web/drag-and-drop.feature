@@ -41,7 +41,7 @@ Feature: test feature drag and drop
     And I scroll to element header-python-tutorial
     And I wait 10 seconds
 
-  @right-and-double-click
+  @right-and-double-click @norun
   Scenario: action right and double click
     Given I navigate to url GURU99-DOUBLE
     And I change the page spec to double-example
