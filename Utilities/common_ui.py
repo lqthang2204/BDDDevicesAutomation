@@ -59,17 +59,12 @@ class common_device:
                 logger.error("Can not execute %s with element have is %s", action)
                 assert False, "Not support action in framework"
         except (ElementNotInteractableException, StaleElementReferenceException, ElementClickInterceptedException):
-            self.handle_element_not_interactable_exception(element_page, action, driver, value, wait, dict_save_value, device, context, count_number=0)
+            self.handle_element_not_interactable_exception(element_page, action, driver, value, wait, dict_save_value, device, context, count_number)
         except InvalidElementStateException:
             self.handle_invalid_element_state_exception(value, element_page, device, driver, action)
         except Exception as e:
-            logger.info(f"do not {action} with element {element} trying to {action} by javascript")
+            logger.debug(f"do not {action} with element {element} have error {e}")
             logger.error(e)
-            try:
-                driver.execute_script("arguments[0].%s(arguments[1]);" % action, element, value)
-            except:
-                logger.error(f"do not {action} with element {element} by javascript")
-                assert False, f"do not {action} with element {element}"
 
     def click_action(self, element, wait, element_page, device, driver):
         if element_page['device'] == "WEB":
@@ -126,7 +121,7 @@ class common_device:
                 raise ValueError(f"Unsupported status: {status}")
             return "PASS"
         except Exception as e:
-            logger.info(f"Failed to wait for element '{element_page['value']}' to have status '{status}': {str(e)}")
+            logger.error(f"Failed to wait for element '{element_page['value']}' to have status '{status}': {str(e)}")
             assert flag, f"Failed to wait for element '{element_page['value']}' to have status '{status}': {str(e)}"
             if flag:
                 return "SKIP"
@@ -163,8 +158,8 @@ class common_device:
         # Find the element in the page spec
         element_spec = next((el for el in page_temp['elements'] if el['id'] == element), None)
         if element_spec is None:
-            logger.error(f'Element {element} not found in page spec, with platform {platform_name}')
-            raise ValueError(f'Element {element} not found in page spec, with platform {platform_name}')
+            logger.error(f'Element {element} not found in page spec {page_temp}, with platform {platform_name}')
+            assert False, f'Element {element} not found in page spec {page_temp}, with platform {platform_name}'
 
         # Find the locator for the specified platform
         locator = next((loc for loc in element_spec['locators'] if loc['device'] == platform_name), None)
@@ -298,6 +293,7 @@ class common_device:
             # Check if the element has a value attribute and is an input tag
             try:
                 if element.get_attribute("value") and element.tag_name.lower() == "input":
+                    print( element.get_attribute('value'))
                     return element.get_attribute('value')
                 else:
                     # If the element is not an input tag, return its text content
@@ -370,6 +366,7 @@ class common_device:
         user = {
             'first_name': faker.unique.first_name(),
             'last_name': faker.unique.last_name(),
+            'middle_name': faker.unique.first_name_male(),
             'job': faker.job(),
             'address': faker.address(),
             'phone_number': faker.phone_number(),
@@ -427,6 +424,7 @@ class common_device:
         if row[2] and element_yaml:
             if value != '' and helper is None:
                 logger.info(f'Verified for {row[0]} have value {row[1]} and status {row[2]}')
+                self.wait_element_for_status(element_yaml, row[2], driver, device, wait, False)
                 self.verify_value_in_element(element_yaml, value, device, driver, is_highlight, wait)
             else:
                 logger.info(f'Verified for {row[0]} have value {row[1]} and status {row[2]}')
@@ -465,7 +463,9 @@ class common_device:
             element = self.get_element_by_from_device(element_page, device, driver)
             self.scroll_to_element_by_js(element, driver, True, device['platformName'], is_highlight)
             value = self.get_value_element_form_device(element, device, element_page, driver)
-            assert value == expect, f'value of the element is {value} not equal to values expected {expect}'
+            logger.debug(f'value of the element is "{value}"')
+            logger.debug(f'values expected "{expect}"')
+            assert value == expect, f'value of the element is "{value}" not equal to values expected "{expect}"'
         except NoSuchElementException:
             logger.error('Element not found')
             assert False, 'Element not found'
@@ -846,7 +846,7 @@ class common_device:
                 logger.error(f"not exist {action} in element not interactable exception")
                 assert False, f"not exist {action} in element not interactable exception"
 
-    def execute_action(self, page, action_id, driver, wait, table, dict_save_value, platform_name, context):
+    def execute_action(self, page, action_id, driver, wait, table, dict_save_value, platform_name, context, is_loop):
         """
             Executes a specified action on a web page.
             Args:
@@ -871,10 +871,11 @@ class common_device:
         ))
         type_action = None
         result = True
+        is_break = False
         if dict_action:
             obj_action = dict_action[0]
             arr_list_action = obj_action['actionElements']
-            for action_elements in arr_list_action:
+            for index, action_elements in enumerate(arr_list_action):
                 value=""
                 if table:
                     for row in table:
@@ -905,6 +906,7 @@ class common_device:
                             else:
                                 self.action_page(locator, "text", driver, type_action, action_elements['timeout'],
                                                  dict_save_value, platform_name, context, count_number=0)
+                            is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action, locator['value'])
                         assert False, "can not execute action with element have value" + locator + "in framework"
@@ -921,9 +923,11 @@ class common_device:
                             else:
                                 self.action_page(locator, "text", driver, type_action, wait, dict_save_value, platform_name,
                                                  context, count_number=0)
+                            is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action)
                         else:
                             self.wait_element_for_status(locator, action_elements['condition'], driver, platform_name,
                                                          wait, False)
+                            is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action,
                                      locator['value'])
@@ -936,13 +940,16 @@ class common_device:
                             if type_action in ["click", "text"]:
                                 self.action_page(locator, type_action, driver, value, wait, dict_save_value,
                                                  platform_name, context, count_number=0)
+                                is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action)
                             else:
                                 self.action_page(locator, "text", driver, type_action, wait, dict_save_value, platform_name,
                                                  context, count_number=0)
+                                is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action,
                                      locator.value)
                         assert False, "can not execute action " + type_action + " with element have value" + locator.value + "in framework"
+            return is_break
         else:
             logger.error(f'Not Found Action {action_id} in page yaml')
             assert False, "Not Found Action " + action_id + " in page yaml"
@@ -954,3 +961,9 @@ class common_device:
         except Exception as e:
             logger.warning(f'{str(e)}, ignore this error as this field is not exist')
             return False
+    def check_status_to_break_loop(self, is_loop, index, array):
+        if index == len(array) - 1 and is_loop:
+            return True
+        return False
+
+

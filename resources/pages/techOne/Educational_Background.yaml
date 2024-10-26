@@ -83,3 +83,250 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
+  - id: External_Organisation_Code
+    description: External Organisation Code
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//td[@class="picklistDataCell"])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: year_12_school
+    description: Year 12 School
+    locators:
+      - device: WEB
+        type: ID
+        value: AustralianStudyDetail_Year12ExternalOrganisationId
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: state_education
+    description: External Organisation Code
+    locators:
+      - device: WEB
+        type: ID
+        value: AustralianStudyDetail_Year12State
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: save-button
+    description: main language field
+    locators:
+      - device: WEB
+        type: ID
+        value: StudentEducationalBackgroundSection_TopSaveButton
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: show-filter-button
+    description: main language field
+    locators:
+      - device: WEB
+        type: ID
+        value: SelectCourseListSection_RDP_SearchValue_BuilderButtonDiv
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &spinner
+    id: spinner
+    description: spinner
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="itemSpinner newSpinner48 dark"])[4]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: button_add_criteria
+    description: main language field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//button[@title="Add criteria"])[2]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: select_criteria_field
+    description: Select criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//input[@placeholder="Select criteria"])[3]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: option_criteria_field
+    description: Value criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(@class, "nlsChoice")]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: value_criteria_field
+    description: Value criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[contains(@class, "nlsValue1Input ")])[2]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: button_add_index_2
+    description: main language field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//button[@title="Add criteria"])[5]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: select_criteria_field_index_2
+    description: Select criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//input[@placeholder="Select criteria"])[5]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: value_criteria_field_index_2
+    description: Value criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[contains(@class, "nlsValue1Input ")])[4]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: button_ok_filter
+    description: button ok filter
+    locators:
+      - device: WEB
+        type: ID
+        value: Popup0_popupOk
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: Natural_Language_Keywords
+    description: NaturalLanguageKeywords
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//input[@id="NaturalLanguageKeywords"])[2]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: button_add_course
+    description: NaturalLanguageKeywords
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[contains(@class, "defaultAction primary")])[1]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: button_edit_course
+    description: NaturalLanguageKeywords
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //button[@title="Edit"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: option_criteria_field_value
+    description: Value criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(@class, "picklistDataCell") and text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: search_button
+    description: SearchButton
+    locators:
+      - device: WEB
+        type: ID
+        value: SearchButton
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: search-course
+    description: field user name
+    locators:
+      - device: WEB
+        type: ID
+        value: SelectCourseListSection_RDP_SearchValue
+  - id: spinner_load_page
+    description: spinner page load
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="durationSpinner initialised"])
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]

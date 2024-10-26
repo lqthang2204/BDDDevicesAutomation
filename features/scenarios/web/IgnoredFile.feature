@@ -161,3 +161,21 @@ Feature: login web for norun
 #      | location-option-inpatient | 0                           | DISPLAYED | data-key         |
 #      | location-option-inpatient | selected                    | DISPLAYED | class            |
 
+  @test-loop-action
+  Scenario: test login page
+    Given I navigate to url OPEN_MRS
+    And I change the page spec to LoginPage
+    And I wait for element user-field to be DISPLAYED
+    And I wait for element pass-field to be DISPLAYED
+     And I loop 10 times for login-and-logout action with polling is 1 seconds with override values
+       | Field      | Value    |
+       | user-field | Admin    |
+       | pass-field | Admin123 |
+    And I change the page spec to IndexPage
+#    And I wait for element welcome-user to be DISPLAYED
+#    And I wait for element log-out to be DISPLAYED
+    And I change the page spec to HomePageOrange
+    And I wait for element find-patient-button to be ENABLED
+    And I click element find-patient-button
+    And I wait for element search-input to be DISPLAYED
+

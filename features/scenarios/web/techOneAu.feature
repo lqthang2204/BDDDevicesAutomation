@@ -21,32 +21,38 @@ Feature: run regression tech one
     And I wait for element Add-new-Application to be ENABLED
     And I click element Add-new-Application
     And I change the page spec to Create_student_page
-    And I wait for element dob to be DISPLAYED
+    And I wait for element dob to be ENABLED
+    And I click element dob
+     And I wait for element spinner to be NOT_DISPLAYED
     And I type "10-Oct-2005" into element dob
     And I wait for element spinner to be NOT_DISPLAYED
     And I wait for element family-name to be DISPLAYED
+    And I create a random user
     And I click element family-name
-    And I type "chien" into element family-name
+    And I type "USER.last_name" into element family-name
     And I wait for element spinner to be NOT_DISPLAYED
     And I wait for element given-name to be ENABLED
     And I click element given-name
     And I wait for element spinner to be NOT_DISPLAYED
-    And I create a random user
-     And I type "{USER.first_name}{date_current_MMddmm_{random_alphabet_5}" into element given-name
+    And I type "USER.first_name" into element given-name
+#     And I type "{USER.first_name}{date_current_MMddmm_{random_alphabet_5}" into element given-name
     And I save text for element given-name with key "given_name"
     And I wait for element spinner to be NOT_DISPLAYED
     And I save text for element given-name with key "given_student"
     And I wait for element spinner to be NOT_DISPLAYED
     And I click element email-field
-     And I type "chien_nguyen+SAAS-2024B-{KEY.given_student}@technologyonecorp.com" into element email-field
+     And I type "chien_nguyen+SAAS-2024B-{KEY.given_student}_{date_current_MMddmm}_{random_alphabet_5}@technologyonecorp.com" into element email-field
     And I wait for element spinner to be NOT_DISPLAYED
-    And I type "student_{date_current_MM-dd-mm}_{random_alphabet_5} " into element middle-name
+#    And I type "student_{date_current_MM-dd-mm}_{random_alphabet_5} " into element middle-name
+     And I type "USER.middle_name" into element middle-name
     And I wait for element Nationality_picker to be ENABLED
     And I click element Nationality_picker
     And I wait for element spinner to be NOT_DISPLAYED
-    And I wait for element Nationality_Au to be DISPLAYED
-    And I wait for element spinner to be NOT_DISPLAYED
-    And I click element Nationality_Au
+    And I perform select_nationality action
+#    And I wait for element Nationality_Au to be DISPLAYED
+#    And I wait for element spinner to be NOT_DISPLAYED
+#    And I click element Nationality_Au
+    And I perform close-notification-if-exist action
     And I wait for element button-page with text "Create new student" to be ENABLED
     And I click element button-page with text "Create new student"
     And I change the page spec to application_data_entry
@@ -74,7 +80,8 @@ Feature: run regression tech one
     And I wait for element element-page with text "Preferred" to be ENABLED
     And I click element element-page with text "Preferred"
     And I wait for element spinner to be NOT_DISPLAYED
-    And I scroll to element header with text "Citizenship and Cultural Details"
+#    And I scroll to element header with text "Citizenship and Cultural Details"
+    And I scroll to element header with text "Nationality and Cultural Details"
     And I wait for element spinner to be NOT_DISPLAYED
 #    And I wait for element button-field-country to be ENABLED
 #    And I click element button-field-country
@@ -146,21 +153,136 @@ Feature: run regression tech one
     And I click element section-menu with text "Educational Background"
     And I change the page spec to Educational_Background
     And I wait for element header-background with text "Australian (or Equivalent) Study" to be DISPLAYED
+    And I click element Highest-School-Level-Completed
+    And I clear text from element Highest-School-Level-Completed
     And I type "Year 8 or below" into element Highest-School-Level-Completed
      And I wait for element drop-down-value with text "Year 8 or below" to be DISPLAYED
     And I click element drop-down-value with text "Year 8 or below"
     And I type "2012" into element year-study
-    And I wait 1 seconds
     And I type "random_number_8" into element student-id-field
-    And I wait 10000 seconds
+    And I save text for element student-id-field with key "student_id_random"
+    And I click element drop-down-year--school
+    And I wait for element External_Organisation_Code to be ENABLED
+    And I click element External_Organisation_Code
+    And I save text for element year_12_school with key "External_Organisation_Code"
+    And I click element state_education
+    And I clear text from element state_education
+    And I type "Western Australia" into element state_education
+    And I save text for element state_education with key "state_education"
+    And I wait for element drop-down-value with text "Western Australia" to be ENABLED
+    And I click element drop-down-value with text "Western Australia"
+    And I wait for element save-button to be ENABLED
+    And I click element save-button
+    And I change the page spec to application_data_entry
+    And I wait for element spinner to be NOT_DISPLAYED
+    And I verify that following elements with below attributes
+      | Field        | Value   | Status    | Helpers          |
+      | saved-button | Saved   | DISPLAYED | CONTAINS         |
+      | saved-button | #74bd00 | DISPLAYED | BACKGROUND-COLOR |
+     And I wait 1 seconds
+     And I change the page spec to Educational_Background
+    And I wait for element state_education to be DISPLAYED
+    And I verify that following elements with below attributes
+      | Field                          | Value                          | Status    | Helpers |
+      | Highest-School-Level-Completed | Year 8 or below                | DISPLAYED |         |
+      | year-study                     | 2012                           | DISPLAYED |         |
+      | student-id-field               | KEY.student_id_random          | DISPLAYED |         |
+      | year_12_school                 | KEY.External_Organisation_Code | DISPLAYED |         |
+      | state_education                | KEY.state_education            | DISPLAYED |         |
+    And I change the page spec to application_data_entry
+    And I click element section-menu with text "Courses"
+    And I change the page spec to Educational_Background
+    And I wait for element show-filter-button to be ENABLED
+    And I click element show-filter-button
+    And I wait for element spinner to be NOT_DISPLAYED
+    And I wait for element button_add_criteria to be ENABLED
+    And I click element button_add_criteria
+    And I wait for element select_criteria_field to be DISPLAYED
+    And I click element select_criteria_field
+    And I type "Year" into element select_criteria_field
+    And I wait for element option_criteria_field to be ENABLED
+    And I click element option_criteria_field
+    And I wait for element value_criteria_field to be ENABLED
+    And I click element value_criteria_field
+#    And I clear text from element value_criteria_field
+    And I execute KEY_DOWN with keyboard CONTROL+a
+    And I click keyboard BACKSPACE button on element value_criteria_field
+    And I type "2024" into element value_criteria_field
+    And I wait for element button_add_index_2 to be ENABLED
+    And I click element button_add_index_2
+    And I click element select_criteria_field_index_2
+    And I type "study Period - Code" into element select_criteria_field_index_2
+    And I wait for element option_criteria_field to be ENABLED
+    And I click element option_criteria_field
+    And I wait for element value_criteria_field_index_2 to be ENABLED
+    And I click element value_criteria_field_index_2
+    And I clear text from element value_criteria_field_index_2
+    And I type "HE Term 3" into element value_criteria_field_index_2
+     And I wait for element option_criteria_field_value with text "HE Term 3" to be ENABLED
+    And I click element option_criteria_field_value with text "HE Term 3"
+    And I click element Natural_Language_Keywords
+    And I type "CQ18" into element Natural_Language_Keywords
+    And I wait for element button_ok_filter to be ENABLED
+    And I click element button_ok_filter
+#    And I wait for element spinner to be DISPLAYED
+    And I wait for element button_add_course to be ENABLED
+    And I click element button_add_course
+#    And I wait for element spinner to be DISPLAYED
+#    And I wait for element spinner_load_page to be DISPLAYED
+#    And I wait 1 seconds
+#    And I wait for element search-course to be ENABLED
+##    And I wait for element search_button to be ENABLED
+#    And I click element search-course
+#    And I click keyboard ENTER button on element search-course
+#    And I click element search_button
+    And I wait for element button_edit_course to be ENABLED
+    And I verify that following elements with below attributes
+      | Field              | Value | Status  | Helpers |
+      | button_edit_course | Edit  | ENABLED |         |
+     And I change the page spec to application_data_entry
+    And I wait for element more-button to be ENABLED
+    And I click element more-button
+    And I wait for element more-action with text "Assess" to be ENABLED
+    And I click element more-action with text "Assess"
+#        And I wait for element spinner_load_page to be DISPLAYED
+#    And I wait for element spinner_load_page to be NOT_DISPLAYED
+    And I wait for element section-menu with text "Application Contents" to be ENABLED
+    And I click element section-menu with text "Application Contents"
+    And I change the page spec to Application_Contents
+    And I wait for element button-page with text "Assess" to be ENABLED
+    And I click element button-page with text "Assess"
+    And I wait for element Basis_of_Admission to be DISPLAYED
+    And I scroll to element Basis_of_Admission
+    And I click element Basis_of_Admission
+    And I wait for element cbb_basic_admission to be ENABLED
+    And I click element cbb_basic_admission
+    And I wait for element option_table_basic_index_1 to be DISPLAYED
+    And I click element option_table_basic_index_1
+    And I wait for element spinner to be NOT_DISPLAYED
+    And I wait for element header-page with text "Final Assessment Outcome" to be DISPLAYED
+    And I scroll to element header-page with text "Final Assessment Outcome"
+    And I wait for element outcome to be DISPLAYED
+    And I type "Successful" into element outcome
+     And I click element Basis_of_Admission
+#    And I wait for element option_picker with text "Successful" to be DISPLAYED
+#    And I click element option_picker with text "Successful"
+#    And I wait for element spinner to be NOT_DISPLAYED
+    And I wait for element button-page with text "Save" to be ENABLED
+    And I click element button-page with text "Save"
+    And I wait for element button-page with text "View" to be DISPLAYED
+    And I wait for element search_toggle to be ENABLED
+    And I click element search_toggle
+    And I wait for element SearchButton to be ENABLED
+    And I loop 10 times for wait-assess-status-for-course action with polling is 5 seconds
+    And I wait 2 seconds
 
 
-    @T1 @register-student @norun
+  @T1 @register-student @norun
   Scenario: create student from student portal
     # Enter steps here
     Given I change the page spec to login_t1_page
     And I perform login-page action
-      And I change the page spec to index_t1_page
+    And I change the page spec to index_t1_page
     And I wait for element menu-ci with text "Forms" to be DISPLAYED
     And I wait for element search-field to be DISPLAYED
     And I type "Admissions and Enrolments Configuration" into element search-field

@@ -59,3 +59,52 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
+  - &more-button
+    id: more-button
+    description: spinner
+    locators:
+      - device: WEB
+        type: ID
+        value: MoreActionsContainer
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &more-action
+    id: more-action
+    description: spinner
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //span[@class="syncLinkLabel" and contains(text(),"Assess")]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: spinner_load_page
+    description: spinner page load
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="durationSpinner initialised"])
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+actions:
+  - id: more_action_student
+    description: more action
+    actionElements:
+      - element: *more-button
+        condition: ENABLED
+        inputType: click
+      - element: *more-action
+        condition: ENABLED
+        inputType: click
+
