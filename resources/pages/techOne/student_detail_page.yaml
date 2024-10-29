@@ -203,3 +203,41 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
+  - &header_Au
+    id: header_Au
+    description: dob field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[@class="headerText" and text()="Nationality and Cultural Details"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &header_auto
+    id: header_auto
+    description: dob field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[@class="headerText" and text()="Citizenship and Cultural Details"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+actions:
+  - id: Scroll_to_element
+    description: login page
+    actionElements:
+      - element: *header_auto
+        condition: DISPLAYED
+        inputType: scroll
+        timeout: 3
+      - element: *header_Au
+        condition: DISPLAYED
+        inputType: scroll
+        timeout: 3

@@ -55,6 +55,8 @@ class common_device:
                 element.clear()
             elif action.__eq__('hover-over'):
                 self.mouse_action(element, driver, action, device)
+            elif action.__eq__('scroll'):
+                self.scroll_to_element(element, driver, False, device, False)
             else:
                 logger.error("Can not execute %s with element have is %s", action)
                 assert False, "Not support action in framework"
@@ -900,34 +902,33 @@ class common_device:
                                                               platform_name, action_elements['timeout'], True)
                         if self.check_field_exist(action_elements, 'inputType') and result == "PASS":
                             type_action = action_elements['inputType']
-                            if type_action in ["click", "text"]:
+                            if type_action in ["click", "text", "scroll"]:
                                 self.action_page(locator, type_action, driver, value, action_elements['timeout'],
                                                  dict_save_value, platform_name, context, count_number=0)
                             else:
                                 self.action_page(locator, "text", driver, type_action, action_elements['timeout'],
                                                  dict_save_value, platform_name, context, count_number=0)
-                            is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action)
+                        is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action, result)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action, locator['value'])
                         assert False, "can not execute action with element have value" + locator + "in framework"
                 elif self.check_field_exist(action_elements, 'condition') and self.check_field_exist(action_elements,
                                                                                                      'timeout') is False:
                     try:
-                        self.wait_element_for_status(locator, action_elements['condition'], driver, platform_name, wait,
+                        result = self.wait_element_for_status(locator, action_elements['condition'], driver, platform_name, wait,
                                                      False)
                         if self.check_field_exist(action_elements, 'inputType'):
                             type_action = action_elements['inputType']
-                            if type_action in ["click", "text"]:
+                            if type_action in ["click", "text", "scroll"]:
                                 self.action_page(locator, type_action, driver, value, wait, dict_save_value,
                                                  platform_name, context, count_number=0)
                             else:
                                 self.action_page(locator, "text", driver, type_action, wait, dict_save_value, platform_name,
                                                  context, count_number=0)
-                            is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action)
                         else:
                             self.wait_element_for_status(locator, action_elements['condition'], driver, platform_name,
                                                          wait, False)
-                            is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action)
+                        is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action, result)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action,
                                      locator['value'])
@@ -937,14 +938,13 @@ class common_device:
                     try:
                         if self.check_field_exist(action_elements, 'inputType'):
                             type_action = action_elements['inputType']
-                            if type_action in ["click", "text"]:
+                            if type_action in ["click", "text", "scroll"]:
                                 self.action_page(locator, type_action, driver, value, wait, dict_save_value,
                                                  platform_name, context, count_number=0)
-                                is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action)
                             else:
                                 self.action_page(locator, "text", driver, type_action, wait, dict_save_value, platform_name,
                                                  context, count_number=0)
-                                is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action)
+                            is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action)
                     except Exception as e:
                         logger.error("can not execute action % with element have value  %s in framework", type_action,
                                      locator.value)
@@ -961,8 +961,8 @@ class common_device:
         except Exception as e:
             logger.warning(f'{str(e)}, ignore this error as this field is not exist')
             return False
-    def check_status_to_break_loop(self, is_loop, index, array):
-        if index == len(array) - 1 and is_loop:
+    def check_status_to_break_loop(self, is_loop, index, array, result):
+        if index == len(array) - 1 and is_loop and result in ["PASS"]:
             return True
         return False
 

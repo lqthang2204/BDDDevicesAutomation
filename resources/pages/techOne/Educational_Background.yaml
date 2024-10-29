@@ -240,6 +240,18 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
+  - id: cbb_filter_field
+    description: Value criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="popupContentInnerContainer"]//button[@class="tbcPicker tbcP1 picklist displayAutoSuggest"])[3]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
   - id: button_ok_filter
     description: button ok filter
     locators:
@@ -288,12 +300,26 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
-  - id: option_criteria_field_value
+  - &option_criteria_field_Term_3
+    id: option_criteria_field_Term_3
     description: Value criteria
     locators:
       - device: WEB
         type: XPATH
-        value: //*[contains(@class, "picklistDataCell") and text()="{text}"]
+        value: //*[contains(@class, "picklistDataCell") and text()="HE Term 3"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &option_criteria_field_Semester_3
+    id: option_criteria_field_Semester_3
+    description: Value criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(@class, "picklistDataCell") and text()="Semester 3"]
       - device: ANDROID
         type: XPATH
         value: //*[contains(text(), "android")]
@@ -330,3 +356,15 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
+actions:
+  - id: select_option_value
+    description: login page
+    actionElements:
+      - element: *option_criteria_field_Term_3
+        condition: DISPLAYED
+        inputType: click
+        timeout: 3
+      - element: *option_criteria_field_Semester_3
+        condition: DISPLAYED
+        inputType: click
+        timeout: 3

@@ -48,17 +48,30 @@ class manage_hook_mobile:
         context.driver = appium_driver.Remote(config.get("remote", "url"), options=options)
 
     def get_data_config_mobile(self,context, device, table):
-        config_file_path = os.path.join(context.root_path+"/configuration_env/", table[0][0]+".json")
-        with open(config_file_path, 'r') as f:
-            data = json.load(f)
-        return data
+        config_file_path = os.path.join(context.root_path + "/configuration_env/", table[0][0] + ".json")
+        try:
+            with open(config_file_path, 'r') as f:
+                data = json.load(f)
+            return data
+        except FileNotFoundError as e:
+            print(f"File not found: {config_file_path}")
+            # Handle the error accordingly, e.g., return a default value or raise an exception
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON: {e}")
 
     def read_config_remote(self):
         config_file_path = os.path.join(project_folder, 'remote_config.ini')
-        file = open(config_file_path, 'r')
-        config = configparser.RawConfigParser(allow_no_value=True)
-        config.read_file(file)
-        return config
+
+        # Add error handling for file operations
+        try:
+            with open(config_file_path, 'r') as file:
+                config = configparser.RawConfigParser(allow_no_value=True)
+                config.read_file(file)
+                return config
+        except FileNotFoundError as e:
+            logger.error(f"Config file not found: {config_file_path}")
+        except configparser.Error as e:
+            logger.error(f"Error reading configuration file: {e}")
 
     def launch_mobile(self, options, context):
         try:

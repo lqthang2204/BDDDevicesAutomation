@@ -12,6 +12,7 @@ Feature: run regression tech one
     And I perform login-page action
     And I change the page spec to index_t1_page
     And I perform javascript getTitle
+    And I wait 1 seconds
     And I wait for element menu-ci with text "Forms" to be DISPLAYED
     And I wait for element search-field to be DISPLAYED
     And I type "Applications Application" into element search-field
@@ -80,8 +81,8 @@ Feature: run regression tech one
     And I wait for element element-page with text "Preferred" to be ENABLED
     And I click element element-page with text "Preferred"
     And I wait for element spinner to be NOT_DISPLAYED
-#    And I scroll to element header with text "Citizenship and Cultural Details"
-    And I scroll to element header with text "Nationality and Cultural Details"
+    And I scroll to element header with text "Citizenship and Cultural Details"
+    And I perform Scroll_to_element action
     And I wait for element spinner to be NOT_DISPLAYED
 #    And I wait for element button-field-country to be ENABLED
 #    And I click element button-field-country
@@ -179,9 +180,9 @@ Feature: run regression tech one
       | Field        | Value   | Status    | Helpers          |
       | saved-button | Saved   | DISPLAYED | CONTAINS         |
       | saved-button | #74bd00 | DISPLAYED | BACKGROUND-COLOR |
-     And I wait 1 seconds
      And I change the page spec to Educational_Background
     And I wait for element state_education to be DISPLAYED
+    And I wait 1 seconds
     And I verify that following elements with below attributes
       | Field                          | Value                          | Status    | Helpers |
       | Highest-School-Level-Completed | Year 8 or below                | DISPLAYED |         |
@@ -217,11 +218,14 @@ Feature: run regression tech one
     And I wait for element value_criteria_field_index_2 to be ENABLED
     And I click element value_criteria_field_index_2
     And I clear text from element value_criteria_field_index_2
-    And I type "HE Term 3" into element value_criteria_field_index_2
-     And I wait for element option_criteria_field_value with text "HE Term 3" to be ENABLED
-    And I click element option_criteria_field_value with text "HE Term 3"
+    And I click element cbb_filter_field
+    And I perform select_option_value action
+#    And I type "HE Term 3" into element value_criteria_field_index_2
+#     And I wait for element option_criteria_field_value with text "study " to be ENABLED
+#    And I click element option_criteria_field_value with text "HE Term 3"
     And I click element Natural_Language_Keywords
-    And I type "CQ18" into element Natural_Language_Keywords
+#    And I type "CQ18" into element Natural_Language_Keywords
+    And I type "0417" into element Natural_Language_Keywords
     And I wait for element button_ok_filter to be ENABLED
     And I click element button_ok_filter
 #    And I wait for element spinner to be DISPLAYED
@@ -273,8 +277,11 @@ Feature: run regression tech one
     And I wait for element search_toggle to be ENABLED
     And I click element search_toggle
     And I wait for element SearchButton to be ENABLED
-    And I loop 10 times for wait-assess-status-for-course action with polling is 5 seconds
-    And I wait 2 seconds
+    And I wait 1 seconds
+    And I loop 20 times for wait-assess-status-for-course action with polling is 5 seconds
+    And I wait for element manage_offer_button to be ENABLED
+    And I click element manage_offer_button
+    And I wait 100000 seconds
 
 
   @T1 @register-student @norun

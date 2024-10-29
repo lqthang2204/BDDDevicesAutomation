@@ -167,5 +167,4 @@ actions:
         inputType: click
       - element: *manage_offer_button
         condition: ENABLED
-        inputType: click
         timeout: 1
