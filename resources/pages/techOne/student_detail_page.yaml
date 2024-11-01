@@ -23,6 +23,42 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
+  - id: address-type-field-picker
+    description: Address type field
+    locators:
+      - device: WEB
+        type: ID
+        value: Addresses_1_AddressType_picker
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: address_index_1
+    description: Address type field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //td[@class="picklistDataCell picklistDescriptionColumn"][1]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: drop-down-value-emai
+    description: Address type field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(@class, "picklistDataCell") and text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
   - id: drop-down-value
     description: Address type field
     locators:

@@ -356,15 +356,144 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
+  - id: button_add_index_3
+    description: main language field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="popupContentInnerContainer"]//div[@class="nlsadd"])[7]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: button_add_index_4
+    description: main language field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="popupContentInnerContainer"]//div[@class="nlsadd"])[10]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &select_criteria_field_index_3
+    id: select_criteria_field_index_3
+    description: Select criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//input[@placeholder="Select criteria"])[7]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &cbb_filter_field_index_3
+    id: cbb_filter_field_index_3
+    description: Value criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="popupContentInnerContainer"]//button[@class="tbcPicker tbcP1 picklist displayAutoSuggest"])[7]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &option_criteria_field_oncampus_3
+    id: option_criteria_field_oncampus_3
+    description: Value criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(@class, "picklistDataCell") and text()="On Campus"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &select_criteria_field_index_4
+    id: select_criteria_field_index_4
+    description: Select criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//input[@placeholder="Select criteria"])[9]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &cbb_filter_field_index_4
+    id: cbb_filter_field_index_4
+    description: Value criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//*[@class="popupContentInnerContainer"]//button[@class="tbcPicker tbcP1 picklist displayAutoSuggest"])[11]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &label_index_4
+    id: label_index_4
+    description: Value criteria
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[text()="Attendance Mode - Code"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
 actions:
   - id: select_option_value
     description: login page
     actionElements:
-      - element: *option_criteria_field_Term_3
-        condition: DISPLAYED
+      - element: *select_criteria_field_index_3
+        condition: ENABLED
         inputType: click
         timeout: 3
       - element: *option_criteria_field_Semester_3
         condition: DISPLAYED
         inputType: click
         timeout: 3
+  - id: add_value_attendance_mode
+    description: login page
+    actionElements:
+      - element: *select_criteria_field_index_3
+        condition: DISPLAYED
+        inputType: Attendance Mode - Code
+      - element: *label_index_4
+        condition: DISPLAYED
+        inputType: click
+      - element: *cbb_filter_field_index_3
+        condition: DISPLAYED
+        inputType: click
+      - element: *option_criteria_field_oncampus_3
+        condition: ENABLED
+        inputType: click
+#  - id: Liability_Category_Code
+#    description: login page
+#    actionElements:
+#      - element: *select_criteria_field_index_4
+#        condition: DISPLAYED
+#        inputType: Liability Category - Code
+#      - element: *cbb_filter_field_index_4
+#        condition: DISPLAYED
+#        inputType: click
+#      - element: *option_criteria_field_oncampus_3
+#        condition: ENABLED
+#        inputType: click

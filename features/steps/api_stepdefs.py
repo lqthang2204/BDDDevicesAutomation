@@ -56,7 +56,7 @@ def step_impl(context, payload_file):
     context.req.payload = json.loads(payload_json)
 
 
-@step(u'I trigger {api_method} call with below attributes')
+@step(u'I trigger {api_method} call request with below attributes')
 def step_impl(context, api_method):
     # Below code to be re-written moved into a separate function as it will include a lot of detailing based on Issue #30
     if context.table:

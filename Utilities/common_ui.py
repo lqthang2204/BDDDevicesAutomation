@@ -154,25 +154,30 @@ class common_device:
             text = arr_value[1].replace('"', '')
             if dict_save_value:
                 text = dict_save_value.get(text, text)
-            page_temp = copy.deepcopy(page)
-        else:
-            page_temp = page
+            # page_temp = copy.deepcopy(page)
+            # page_temp = page.copy()
+        # else:
+            #Deep copy of page to avoid mutations
+            # page_temp = page
         # Find the element in the page spec
-        element_spec = next((el for el in page_temp['elements'] if el['id'] == element), None)
+        element_spec = next((el for el in page['elements'] if el['id'] == element), None)
         if element_spec is None:
-            logger.error(f'Element {element} not found in page spec {page_temp}, with platform {platform_name}')
-            assert False, f'Element {element} not found in page spec {page_temp}, with platform {platform_name}'
+            logger.error(f'Element {element} not found in page spec {page}, for platform {platform_name}')
+            raise AssertionError(f'Element {element} not found in page spec {page}, for platform {platform_name}')
 
         # Find the locator for the specified platform
         locator = next((loc for loc in element_spec['locators'] if loc['device'] == platform_name), None)
         if locator is None:
             logger.error(f'Locator for element {element} not found for platform {platform_name}')
             raise ValueError(f'Locator for element {element} not found for platform {platform_name}')
-
+        # Create a copy of the locator to avoid modifying the original
+        if "with text" in element:
+            locator_temp = locator.copy()
+        else:
+            locator_temp = locator
         # Substitute the text in the locator value
-        locator['value'] = locator['value'].replace("{text}", text)
-
-        return locator
+        locator_temp['value'] = locator_temp['value'].replace("{text}", text)
+        return locator_temp
 
     def verify_elements_with_status(self, page, table, platform_name, dict_save_value, driver, device, wait):
         """
@@ -571,7 +576,8 @@ class common_device:
           """
         if platform == 'WEB':
             try:
-                driver.execute_script("arguments[0].scrollIntoView(true);", element)
+                driver.execute_script(
+                    "arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });", element)
                 self.highlight(element, 0.3, is_highlight)
             except:
                 assert flag, f'can not scroll to element {element}'
@@ -598,9 +604,7 @@ class common_device:
             except:
                 try:
                     logger.info(f'can not scroll to element {element} trying to scroll by javascript')
-                    driver.execute_script(
-                        "arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });",
-                        element)
+                    self.scroll_to_element_by_js(element, driver, flag, platform, is_highlight)
                 except:
                     assert flag, f'can not scroll to element {element}'
 
@@ -850,23 +854,27 @@ class common_device:
 
     def execute_action(self, page, action_id, driver, wait, table, dict_save_value, platform_name, context, is_loop):
         """
-            Executes a specified action on a web page.
-            Args:
-                page (dict): The page object containing the actions.
-                action_id (str): The ID of the action to execute.
-                driver (WebDriver): The web driver instance.
-                wait (WebDriverWait): The web driver wait instance.
-                table (list): The table data.
-                dict_save_value (dict): The dictionary containing saved values.
-                platform_name (str): The name of the platform.
-            Returns:
-                None
-            Raises:
-                AssertionError: If the action or element cannot be executed.
-                FileNotFoundError: If the page file is not found.
-                YAMLError: If there is an error reading the YAML file.
-                :param context:
-            """
+           Executes a specified action on a web page.
+
+           Args:
+               page (dict): The page object containing the actions.
+               action_id (str): The ID of the action to execute.
+               driver (WebDriver): The web driver instance.
+               wait (WebDriverWait): The web driver wait instance.
+               table (list): The table data.
+               dict_save_value (dict): The dictionary containing saved values.
+               platform_name (str): The name of the platform.
+               context: The context of the action.
+               is_loop: Flag indicating if action is part of a loop.
+
+           Returns:
+               bool: Indicates if the loop should break.
+
+           Raises:
+               AssertionError: If the action or element cannot be executed.
+               FileNotFoundError: If the page file is not found.
+               YAMLError: If there is an error reading the YAML file.
+           """
         dict_action = page['actions']
         dict_action = list(filter(
             lambda action: action['id'] == action_id, dict_action
@@ -878,7 +886,7 @@ class common_device:
             obj_action = dict_action[0]
             arr_list_action = obj_action['actionElements']
             for index, action_elements in enumerate(arr_list_action):
-                value=""
+                value = ""
                 if table:
                     for row in table:
                         if action_elements['element']['id'] == row["Field"]:
@@ -893,6 +901,7 @@ class common_device:
                     if self.check_field_exist(action_elements, "inputType"):
                         value = action_elements['inputType']
                         value = procees_value().get_value(value, dict_save_value)
+
                 element_page = action_elements['element']
                 locator = ManagementFile().get_locator_from_action(element_page, platform_name)
                 if self.check_field_exist(action_elements, "condition") and self.check_field_exist(
