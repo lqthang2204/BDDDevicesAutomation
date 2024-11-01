@@ -23,6 +23,42 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
+  - id: address-type-field-picker
+    description: Address type field
+    locators:
+      - device: WEB
+        type: ID
+        value: Addresses_1_AddressType_picker
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: address_index_1
+    description: Address type field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //td[@class="picklistDataCell picklistDescriptionColumn"][1]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: drop-down-value-emai
+    description: Address type field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(@class, "picklistDataCell") and text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
   - id: drop-down-value
     description: Address type field
     locators:
@@ -191,3 +227,53 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
+  - id: form-title
+    description: form title
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[@class="formTitleControlHeadingContainer "]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &header_Au
+    id: header_Au
+    description: dob field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[@class="headerText" and text()="Nationality and Cultural Details"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &header_auto
+    id: header_auto
+    description: dob field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //div[@class="headerText" and text()="Citizenship and Cultural Details"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+actions:
+  - id: Scroll_to_element
+    description: login page
+    actionElements:
+      - element: *header_auto
+        condition: DISPLAYED
+        inputType: scroll
+        timeout: 3
+      - element: *header_Au
+        condition: DISPLAYED
+        inputType: scroll
+        timeout: 3

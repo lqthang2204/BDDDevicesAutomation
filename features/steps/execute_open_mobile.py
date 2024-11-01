@@ -26,6 +26,7 @@ class manage_hook_mobile:
                     context.wait = context.device['wait']
                     context.highlight = 'false'
             case _:
+                logger.error(f"platformName {context.device['platformName'].upper()} not support in framework")
                 assert False, f"platformName {context.device['platformName'].upper()} not support in framework"
 
 
@@ -47,17 +48,30 @@ class manage_hook_mobile:
         context.driver = appium_driver.Remote(config.get("remote", "url"), options=options)
 
     def get_data_config_mobile(self,context, device, table):
-        config_file_path = os.path.join(context.root_path+"/configuration_env/", table[0][0]+".json")
-        with open(config_file_path, 'r') as f:
-            data = json.load(f)
-        return data
+        config_file_path = os.path.join(context.root_path + "/configuration_env/", table[0][0] + ".json")
+        try:
+            with open(config_file_path, 'r') as f:
+                data = json.load(f)
+            return data
+        except FileNotFoundError as e:
+            print(f"File not found: {config_file_path}")
+            # Handle the error accordingly, e.g., return a default value or raise an exception
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON: {e}")
 
     def read_config_remote(self):
         config_file_path = os.path.join(project_folder, 'remote_config.ini')
-        file = open(config_file_path, 'r')
-        config = configparser.RawConfigParser(allow_no_value=True)
-        config.read_file(file)
-        return config
+
+        # Add error handling for file operations
+        try:
+            with open(config_file_path, 'r') as file:
+                config = configparser.RawConfigParser(allow_no_value=True)
+                config.read_file(file)
+                return config
+        except FileNotFoundError as e:
+            logger.error(f"Config file not found: {config_file_path}")
+        except configparser.Error as e:
+            logger.error(f"Error reading configuration file: {e}")
 
     def launch_mobile(self, options, context):
         try:
@@ -65,7 +79,6 @@ class manage_hook_mobile:
             context.driver = appium_driver.Remote(appium_url, options = options, strict_ssl = False)
         except SessionNotCreatedException as ex:
             logger.error('Config file updated based on user provided command line arguments')
-            print("not connect with remote saucelab, please check configuration again!")
             assert False, f'{ex.msg}'
     def check_att_exist(self, obj, key):
         if obj.get_capability(key) is None or obj.get_capability('appium:'+key) is None:
@@ -74,7 +87,7 @@ class manage_hook_mobile:
             try:
                 return obj.get_capability(key)
             except Exception as e:
-                print("please check file input json" , e)
+                logger.error(f"please check file input json: {str(e)}")
                 assert False, e
 
     def create_ios_driver(self, context, device, table):

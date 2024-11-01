@@ -78,6 +78,13 @@ elements:
       - device: WEB
         type: ID
         value: login-form
+  - &logout-button
+    id: logout-button
+    description: Log out
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(text(),'Logout')]
 actions:
   - id: login-page
     description: login page
@@ -123,3 +130,26 @@ actions:
         condition: DISPLAYED
       - element: *pass-field
         condition: DISPLAYED
+  - id: login-and-logout
+    description: login page
+    actionElements:
+      - element: *user-field
+        condition: DISPLAYED
+        inputType: text
+      - element: *pass-field
+        condition: DISPLAYED
+        inputType: text
+      - element: *location-option-inpatient
+        condition: ENABLED
+        timeout: 10
+        inputType: click
+      - element: *login-button
+        condition: ENABLED
+        timeout: 5
+        inputType: click
+#      - element: *logout-button
+#        condition: ENABLED
+#        inputType: click
+#      - element: *logout-button
+#        condition: NOT_ENABLED
+#        timeout: 5

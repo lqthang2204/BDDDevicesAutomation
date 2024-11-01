@@ -51,3 +51,15 @@ actions:
       - element: *login-button
         condition: ENABLED
         inputType: click
+  - id: login-page-with-paramter
+    description: login page
+    actionElements:
+      - element: *user-name
+        condition: DISPLAYED
+        inputType: text
+      - element: *password
+        condition: DISPLAYED
+        inputType: text
+      - element: *login-button
+        condition: ENABLED
+        inputType: click

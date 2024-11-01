@@ -8,7 +8,7 @@ def get_user(list_user, key):
             assert False, f'index of user must be integer {key}'
     else:
         user = list_user[0]
-    if key in ["email", "first_name", "last_name", "job", "address", "phone_number", "city", "state", "postcode", "prefix", "suffix"]:
+    if key.strip() in ["email", "first_name", "last_name", "job", "address", "phone_number", "city", "state", "postcode", "prefix", "suffix", "middle_name"]:
         return user[key]
     elif key == "full_name":
         return user['first_name'] +' '+user['last_name']

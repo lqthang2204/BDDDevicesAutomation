@@ -1,84 +1,59 @@
 elements:
-  - id: dob
-    description: dob field
+  - id: button-page
+    description: button with text field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //span[text()="{text}"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &manage_offer_button
+    id: manage_offer_button
+    description: button with text field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //span[text()="Manage offer"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: header-page
+    description: button with text field
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[contains(text(),"{text}")]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: outcome
+    description: outcome field
     locators:
       - device: WEB
         type: ID
-        value: BirthDate
+        value: AssessmentAndOutcomesSection_NewAssessmentOutcome_Outcome
       - device: ANDROID
         type: XPATH
         value: //*[contains(text(), "android")]
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
-  - id: family-name
-    description: family name field
-    locators:
-      - device: WEB
-        type: ID
-        value: FamilyName
-      - device: ANDROID
-        type: XPATH
-        value: //*[contains(text(), "android")]
-      - device: IOS
-        type: XPATH
-        value: //*[contains(text(), "ios")]
-  - id: given-name
-    description: Given name field
-    locators:
-      - device: WEB
-        type: ID
-        value: GivenName
-      - device: ANDROID
-        type: XPATH
-        value: //*[contains(text(), "android")]
-      - device: IOS
-        type: XPATH
-        value: //*[contains(text(), "ios")]
-  - id: middle-name
-    description: Given name field
-    locators:
-      - device: WEB
-        type: ID
-        value: OtherName
-      - device: ANDROID
-        type: XPATH
-        value: //*[contains(text(), "android")]
-      - device: IOS
-        type: XPATH
-        value: //*[contains(text(), "ios")]
-  - id: Nationality_picker
-    description: family name field
-    locators:
-      - device: WEB
-        type: ID
-        value: Nationality_picker
-      - device: ANDROID
-        type: XPATH
-        value: //*[contains(text(), "android")]
-      - device: IOS
-        type: XPATH
-        value: //*[contains(text(), "ios")]
-  - &Nationality_Au
-    id: Nationality_Au
-    description: Nationality
+  - id: option_picker
+    description: Value criteria
     locators:
       - device: WEB
         type: XPATH
-        value: //td[text()="Australian Citizen"]
-      - device: ANDROID
-        type: XPATH
-        value: //*[contains(text(), "android")]
-      - device: IOS
-        type: XPATH
-        value: //*[contains(text(), "ios")]
-  - &Nationality_uk
-    id: Nationality_uk
-    description: Nationality Uk
-    locators:
-      - device: WEB
-        type: XPATH
-        value: //td[text()="United Kingdom"]
+        value: //*[contains(@class, "picklistDataCell") and text()="{text}"]
       - device: ANDROID
         type: XPATH
         value: //*[contains(text(), "android")]
@@ -97,12 +72,36 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
-  - id: email-field
-    description: Email field
+  - id: Basis_of_Admission
+    description: AssessmentAndOutcomesSection_StudyLineItem_BasisOfAdmission
     locators:
       - device: WEB
         type: ID
-        value: PreferredEmail
+        value: AssessmentAndOutcomesSection_NewAssessmentOutcome_Outcome
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: cbb_basic_admission
+    description: AssessmentAndOutcomesSection_StudyLineItem_BasisOfAdmission
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[@class="tbcInputContainer"]/following::button[@id="AssessmentAndOutcomesSection_StudyLineItem_BasisOfAdmission_picker"]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - id: option_table_basic_index_1
+    description: External Organisation Code
+    locators:
+      - device: WEB
+        type: XPATH
+        value: (//td[@class="picklistDataCell picklistDescriptionColumn"])[1]
       - device: ANDROID
         type: XPATH
         value: //*[contains(text(), "android")]
@@ -121,13 +120,38 @@ elements:
       - device: IOS
         type: XPATH
         value: //*[contains(text(), "ios")]
-  - &close-icon
-    id: close-icon
-    description: button with text field
+  - id: spinner_load_page
+    description: spinner page load
     locators:
       - device: WEB
         type: XPATH
-        value: //*[@class="icon16 glyph pMsgClose"]
+        value: (//*[@class="durationSpinner initialised"])
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &search_toggle
+    id: search_toggle
+    description: External Organisation Code
+    locators:
+      - device: WEB
+        type: XPATH
+        value: //*[@class="searchToggle "]
+      - device: ANDROID
+        type: XPATH
+        value: //*[contains(text(), "android")]
+      - device: IOS
+        type: XPATH
+        value: //*[contains(text(), "ios")]
+  - &SearchButton
+    id: SearchButton
+    description: External Organisation Code
+    locators:
+      - device: WEB
+        type: ID
+        value: SearchButton
       - device: ANDROID
         type: XPATH
         value: //*[contains(text(), "android")]
@@ -135,21 +159,12 @@ elements:
         type: XPATH
         value: //*[contains(text(), "ios")]
 actions:
-  - id: select_nationality
-    description: Select nationality
+  - id: wait-assess-status-for-course
+    description: more action
     actionElements:
-      - element: *Nationality_Au
+      - element: *SearchButton
         condition: ENABLED
         inputType: click
-        timeout: 5
-      - element: *Nationality_uk
+      - element: *manage_offer_button
         condition: ENABLED
-        inputType: click
-        timeout: 5
-  - id: close-notification-if-exist
-    description: Select nationality
-    actionElements:
-      - element: *close-icon
-        condition: ENABLED
-        inputType: click
-        timeout: 5
+        timeout: 1

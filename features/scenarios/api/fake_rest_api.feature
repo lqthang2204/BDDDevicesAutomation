@@ -8,7 +8,7 @@ Feature: test api with fake rest api
     And I set headers with below attributes
       | FieldName    | fieldValue        |
       | Content-Type | text/plain; v=1.0 |
-    And I trigger GET call with below attributes
+    And I trigger GET call request
     And I verify response code with status is "200"
     And I verify response header with below attributes
       | FieldName              | FieldValue | Helpers  |
@@ -32,7 +32,7 @@ Feature: test api with fake rest api
     And I set headers with below attributes
       | FieldName    | fieldValue        |
       | Content-Type | text/plain; v=1.0 |
-    And I trigger GET call with below attributes
+    And I trigger GET call request
     And I verify response code with status is "200"
     Then I verify response header with below attributes
       | FieldName         | FieldValue | Helpers  |
@@ -55,7 +55,7 @@ Feature: test api with fake rest api
     And I set payload fake_rest_api with below attributes
       | FieldName | fieldValue    |
       | title     | KEY.user-name |
-    And I trigger POST call with below attributes
+    And I trigger POST call request
     And I verify response code with status is "200"
     And I verify response body with below attributes
       | FieldName | FieldValue | Helpers |
@@ -72,7 +72,7 @@ Feature: test api with fake rest api
     And I set headers with below attributes
       | FieldName    | fieldValue        |
       | Content-Type | text/plain; v=1.0 |
-    And I trigger GET call with below attributes
+    And I trigger GET call request
     And I verify response code with status is "200"
     And I poll the GET call "10" times until below conditions
       | FieldName     | FieldValue | Helpers |
@@ -99,7 +99,7 @@ Feature: test api with fake rest api
       | FieldName | fieldValue              |
       | email     | KEY.unique-gmail        |
       | name      | KEY.randomAplhabetLen10 |
-    And I trigger POST call with below attributes
+    And I trigger POST call request
     And I verify response code with status is "201"
     And I verify response body with below attributes
       | FieldName | FieldValue | Helpers     |
@@ -109,7 +109,7 @@ Feature: test api with fake rest api
       | FieldName     | fieldValue                                                       |
       | Authorization | f9ef81d9ea448aed0436d36b5b3b51dab7d467feeb403baad749844ea0d51d96 |
       | Content-Type  | application/json; charset=utf-8; v=1.0                           |
-    And I trigger GET call with below attributes
+    And I trigger GET call request with below attributes
       | Operation Level | AttributeName | AttributeValue |
       | path            | user-id       | KEY.id_user    |
     And I poll the GET call "10" times until below conditions
@@ -131,7 +131,7 @@ Feature: test api with fake rest api
       | FieldName | fieldValue      |
       | email     | USER.email      |
       | name      | USER.first_name |
-    And I trigger POST call with below attributes
+    And I trigger POST call request
     And I verify response code with status is "201"
     And I verify response body with below attributes
       | FieldName | FieldValue      | Helpers |
@@ -142,7 +142,7 @@ Feature: test api with fake rest api
       | FieldName | fieldValue        |
       | email     | USER.2.email      |
       | name      | USER.2.first_name |
-    And I trigger POST call with below attributes
+    And I trigger POST call request
     And I verify response code with status is "201"
     And I verify response body with below attributes
       | FieldName | FieldValue        | Helpers |

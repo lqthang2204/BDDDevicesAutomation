@@ -5,7 +5,7 @@ Feature: test shadow elements
   Scenario: test shadow feature function1
     Given I navigate to url CHROME-SETTING
     And I change the page spec to settingpage
-    And I click shadow element import borkmarks
+    And I click shadow element import_borkmarks
     And I click shadow element import button
     And I wait 5 seconds
     And I click shadow element toogle button
@@ -17,12 +17,12 @@ Feature: test shadow elements
     And I change the page spec to settingpage
     And I click shadow element search field
     And I type "Customize your Chrome profile" into shadow element search field
-#    And I wait 5 seconds
     And I clear shadow element search field
-#    And I wait 5 seconds
-    And I click shadow element import borkmarks
+    And I click shadow element import_borkmarks
+      And I wait 1 seconds
+      And I wait shadow element import_borkmarks
     And I click shadow element import button
-#    And I wait 5 seconds
+    And I wait 5 seconds
 
       @mc-chrome-shadow-3
   Scenario: test shadow feature function3

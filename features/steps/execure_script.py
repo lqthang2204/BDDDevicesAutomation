@@ -1,15 +1,18 @@
 import os
+from time import sleep
 
 from behave import *
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from libraries.misc_operations import sanitize_datatable
+
 from Utilities.action_android import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 from Utilities.common_ui import common_device
-from libraries.faker import management_user
-from execute_open_mobile import manage_hook_mobile
 from execute_open_browser import manage_hook_browser
+from execute_open_mobile import manage_hook_mobile
+from libraries.faker import management_user
+from libraries.misc_operations import sanitize_datatable
+from project_runner import logger
 
 
 @step(u'I navigate to url {name}')
@@ -30,11 +33,13 @@ def step_impl(context):
 def change_page(context, page):
     try:
         path_file = context.dict_yaml[page + ".yaml"]
+        if path_file is None:
+            raise KeyError(f"Page '{page}' not found in dict_yaml")
         page = ManagementFile().read_yaml_file(os.path.join(path_file, page + '.yaml'), page, context.dict_page_element)
         context.page_present = page
         return context.page_present
     except Exception as e:
-        print(e)
+        logger.error(f"Error changing page spec to '{page}': {e}")
 
 
 @step(u'I click element {element}')
@@ -42,7 +47,7 @@ def click_action(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "click", context.driver, "", context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I type "{text}" into element {element}')
@@ -50,14 +55,15 @@ def type_action(context, text, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "type", context.driver, text, context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I wait for element {element} to be {status}')
 def wait_element(context, element, status):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
-    common_device().wait_element_for_status(context.element_page, status, context.driver, context.device, context.wait, False)
+    common_device().wait_element_for_status(context.element_page, status, context.driver, context.device, context.wait,
+                                            False)
 
 
 @step(u'I wait for elements with below status')
@@ -70,14 +76,40 @@ def step_impl(context):
 
 @step(u'I perform {action} action')
 def step_impl(context, action):
-    common_device().execute_action(context.page_present, action, context.driver, context.wait, None, context.dict_save_value,
-                                       context.device['platformName'], context)
+    common_device().execute_action(context.page_present, action, context.driver, context.wait, None,
+                                   context.dict_save_value,
+                                   context.device['platformName'], context, is_loop=False)
+
+
+@step(u'I loop {loop_number} times for {action} action with polling is {polling} seconds')
+def step_impl(context, loop_number, action, polling):
+    for i in range(int(loop_number)):
+        is_break = common_device().execute_action(context.page_present, action, context.driver, context.wait, None,
+                                                  context.dict_save_value,
+                                                  context.device['platformName'], context, is_loop=True)
+        if is_break:
+            break
+        logger.debug(f'Loop {i + 1} times')
+        sleep(int(polling))
+
+
+@given(u'I loop {loop_number} times for {action} action with polling is {polling} seconds with override values')
+def step_impl(context, loop_number, action, polling):
+    for i in range(int(loop_number)):
+        is_break = common_device().execute_action(context.page_present, action, context.driver, context.wait,
+                                                  context.table,
+                                                  context.dict_save_value, context.device['platformName'], context,
+                                                  is_loop=True)
+        if is_break:
+            break
+        logger.debug(f'Loop {i + 1} times')
+        sleep(int(polling))
 
 
 @step(u'I perform {action} action with override values')
 def step_impl(context, action):
-        common_device().execute_action(context.page_present, action, context.driver, context.wait, context.table,
-                                       context.dict_save_value, context.device['platformName'], context)
+    common_device().execute_action(context.page_present, action, context.driver, context.wait, context.table,
+                                   context.dict_save_value, context.device['platformName'], context, is_loop=False)
 
 
 @step(u'I clear text from element {element}')
@@ -85,7 +117,7 @@ def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "clear", context.driver, "", context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I select the option with the value "{text}" for element {element}')
@@ -93,7 +125,7 @@ def step_impl(context, text, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "select", context.driver, text, context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I save text for element {element} with key "{key}"')
@@ -122,11 +154,19 @@ def step_impl(context):
                                                                                     context.dict_save_value,
                                                                                     context.driver,
                                                                                     context.device, context.wait,
-                                                                                    context.highlight)
+                                                                                    context.highlight,
+                                                                                    context.page_present)
 
 
 @step(u'I {action} shadow element {element}')
 def step_impl(context, action, element):
+    # status_element = None
+    # if "to be" in element:
+    #     element = element.replace("to be", "")
+    #     logger.debug('thang nay la %s', element)
+    #     element_arr = element.split("  ")
+    #     element = element_arr[0]
+    #     status_element = element_arr[1]
     if context.device['platformName'] == "WEB":
         context.element_page = common_device().get_element(context.page_present, element,
                                                            context.device['platformName'], context.dict_save_value)
@@ -139,6 +179,7 @@ def step_impl(context, action, element):
         ManagementFile().action_with_shadow_element(context.element_page, action, context.driver, value, context.wait,
                                                     context.dict_save_value, context.highlight)
     else:
+        logger.error("Only support WEB ENVIRONMENT")
         assert False, "only support action script with WEB ENVIRONMENT in framework"
 
 
@@ -159,7 +200,7 @@ def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "hover-over", context.driver, '', context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I scroll to element {element}')
@@ -188,7 +229,7 @@ def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "double-click", context.driver, "", context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I right-click element {element}')
@@ -196,7 +237,7 @@ def step_impl(context, element):
     context.element_page = common_device().get_element(context.page_present, element,
                                                        context.device['platformName'], context.dict_save_value)
     common_device().action_page(context.element_page, "right-click", context.driver, "", context.wait,
-                                context.dict_save_value, context.device, context)
+                                context.dict_save_value, context.device, context, count_number=0)
 
 
 @step(u'I {status} for popup')
@@ -234,6 +275,7 @@ def step_impl(context, title):
 @step(u'I scroll {action} to element {element}')
 def step_impl(context, element, action):
     if context.device['platformName'] == "WEB":
+        logger.error('feature scroll down,up only support for mobile')
         assert False, 'feature scroll down,up only support for mobile'
     else:
         context.element_page = common_device().get_element(context.page_present, element,
