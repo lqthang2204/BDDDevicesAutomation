@@ -45,6 +45,18 @@ def step_impl(context, payload_file):
     # After reading We can read the Datatable and replace the values with some Runtime values also using the function get_test_data_for()
     payload_json = json.loads(payload_json)
     context.req.set_payload(payload_json, context)
+@step(u'I set payload {payload_file}')
+def step_impl(context, payload_file):
+    if context.table:
+        logger.error('you are setting below attributes with datatable but it is not required, please choise script "set payload {payload_file} with below attributes"')
+    else:
+        payload_file = os.path.join(context.root_path, 'resources', 'api', 'request-json', payload_file + '.json')
+        logger.info(f'payload file : {payload_file}')
+        with open(payload_file, 'r') as file:
+            payload_json = file.read()
+        # After reading We can read the Datatable and replace the values with some Runtime values also using the function get_test_data_for()
+        payload_json = json.loads(payload_json)
+        context.req.set_payload(payload_json, context)
 
 
 @step(u'I set form {payload_file} with below attributes')
