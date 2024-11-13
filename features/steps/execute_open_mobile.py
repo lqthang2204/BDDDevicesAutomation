@@ -76,7 +76,7 @@ class manage_hook_mobile:
     def launch_mobile(self, options, context):
         try:
             appium_url = self.check_att_exist(options, "appium_url")
-            context.driver = appium_driver.Remote(appium_url, options = options, strict_ssl = False)
+            context.driver = appium_driver.Remote(appium_url, options = options)
         except SessionNotCreatedException as ex:
             logger.error('Config file updated based on user provided command line arguments')
             assert False, f'{ex.msg}'

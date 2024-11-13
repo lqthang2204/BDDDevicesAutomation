@@ -17,10 +17,10 @@ Feature: orange HRM web
       | Vary            | Accept-Encoding | EQUAL   |
       | CF-Cache-Status | HIT             |         |
     And I verify response body with below attributes
-      | FieldName    | FieldValue          | Helpers |
-      | page         | 2                   | NUMERIC |
-      | data[0].id   |                     | NUMERIC |
-      | support.text | To keep ReqRes free | CONTAIN |
+      | FieldName    | FieldValue                                                                            | Helpers |
+      | page         | 2                                                                                     | NUMERIC |
+      | data[0].id   |                                                                                       | NUMERIC |
+      | support.text | Tired of writing endless social media content? Let Content Caddy generate it for you. | CONTAIN |
 #    And I save text for response with below attributes
 #      | FieldName    | unique      |
 #      | page         | page        |
