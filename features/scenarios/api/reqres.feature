@@ -17,4 +17,4 @@ Feature: test api with fake rest api
       | FieldName    | FieldValue          | Helpers |
       | page         | 2                   | NUMERIC |
       | data[0].id   |                     | NUMERIC |
-      | support.text | To keep ReqRes free | CONTAIN |
+      | support.text | Tired of writing endless social media content? Let Content Caddy generate it for you. | CONTAIN |
