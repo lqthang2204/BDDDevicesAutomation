@@ -570,7 +570,7 @@ class common_device:
         else:
             value = procees_value().get_value(value, dict_save_value)
 
-        element_yaml = self.get_element(page, arr_element[0]['id'] + " with text " + value, platform_name,
+        element_yaml = self.get_element(page, arr_element[0]['id'], platform_name,
                                         dict_save_value)
         if not element_yaml:
             raise AssertionError(f'Element with ID {row[0]} and value {value} not found in the page')
