@@ -384,209 +384,410 @@ class common_device:
 
             # Get the value of the element
             value = self.get_value_element_form_device(element, device, element_page, driver)
+            # Apply regex if specified
             if is_regex:
-                value = re.search(pattern, value).group(1)
+                if not pattern:
+                    raise ValueError("Regex pattern must be provided when is_regex is True.")
+                match = re.search(pattern, value)
+                if not match:
+                    raise ValueError(f"Regex pattern '{pattern}' did not match any part of the value: '{value}'.")
+                value = match.group(1)
+                logger.debug(f"Value after regex extraction: '{value}'")
             # Save the value to the dictionary
-            dict_save_value["KEY." + key] = value
-
+                # Save the extracted value into the dictionary
+            dict_save_value[f"KEY.{key}"] = value
+            logger.info(f"Text saved successfully for key: 'KEY.{key}'")
             return dict_save_value
         except Exception as e:
             # Log the error if the wait fails
             logger.error(f"Failed to save text for element '{element_page['value']}' with key '{key}': {str(e)}")
             raise AssertionError(f"Failed to save text for element '{element_page['value']}' with key '{key}'") from e
 
-    def get_locator_for_wait_from_device(self, element_page):
+    def get_locator_for_wait_from_device(self, element_page: dict) -> tuple:
         """
-           Get the locator for waiting based on the device platform.
-           Args:
-               element_page (dict): The element page specification.
-               device (dict): The device information.
-           Returns:
-               tuple: The locator for waiting.
-           """
-        # Check if the device platform is WEB
-        if element_page['device'] == "WEB":
-            return ManagementFile().get_locator_for_wait(element_page['type'], element_page['value'])
-        elif element_page['device'] == "ANDROID" or element_page['device'] == "IOS":
-            return ManagementFileAndroid().get_locator_for_wait(element_page['type'], element_page['value'])
-        else:
-            raise ValueError("Unknown device platform: {}".format(element_page['device']))
-
-    def get_list_element_by_from_device(self, element_page, device, driver):
-        if device['platformName'] == "WEB":
-            return ManagementFile().get_list_element_by(element_page['type'], driver, element_page['value'])
-        elif device['platformName'] == "ANDROID" or device['platformName'] == "IOS":
-            return ManagementFileAndroid().get_list_element_by(element_page['type'], driver, element_page['value'])
-        else:
-            raise ValueError("Unknown device platform: {}".format(device['platformName']))
-
-    def get_element_by_from_device(self, element_page, device, driver):
-        if element_page['device'] == "WEB":
-            return ManagementFile().get_element_by(element_page['type'], driver, element_page['value'])
-        elif element_page['device'] == "ANDROID" or element_page['device'] == "IOS":
-            return ManagementFileAndroid().get_by_android(element_page['type'], driver, element_page['value'])
-        else:
-            raise ValueError("Unknown device platform: {}".format(device['platformName']))
-
-    def get_value_element_form_device(self, element, device, element_page, driver):
-        """
-            Returns the value of the element based on the platform.
-            Args:
-                element: The element to retrieve the value from.
-                device: The device platform information.
-            Returns:
-                The value of the element based on the platform.
-            """
-        if device['platformName'] == "WEB":
-            # Check if the element has a value attribute and is an input tag
-            try:
-                if element.get_attribute("value") and element.tag_name.lower() == "input":
-                    logger.info("Getting text on element: ")
-                    return element.get_attribute('value')
-                else:
-                    # If the element is not an input tag, return its text content
-                    text = element.text
-                    if len(text) == 0:
-                        text = element.get_attribute('innerText')
-                        return text
-                    if len(text) != 0:
-                        logger.info("Text on element: " + text)
-                        return text
-
-            except (ElementNotInteractableException, StaleElementReferenceException):
-                sleep(2)
-                element = self.get_element_by_from_device(element_page, device, driver)
-                self.get_value_element_form_device(element, device, element_page, driver)
-
-        else:
-            # For non-web platforms, return the element's text content
-            return element.text
-        self.count_number = 0
-
-    def get_value_attribute_element_form_device(self, element, device, value, flag):
-        """
-            Returns the value of the specified attribute of the element based on the platform.
-
-            Args:
-                element: The element to retrieve the attribute value from.
-                device: The device platform information.
-                value: The name of the attribute to retrieve.
-                flag: A flag indicating whether to retrieve the value using CSS property or attribute.
-
-            Returns:
-                The value of the specified attribute of the element based on the platform.
-
-            Raises:
-                ValueError: If the device platform is not supported.
-            """
-        if device['platformName'] == "WEB":
-            if flag:
-                value_attribute = element.value_of_css_property(value)
-                if 'color' in value:
-                    return Color.from_string(value_attribute).hex.lower()
-                else:
-                    return value_attribute.lower()
-            else:
-                return element.get_attribute(value)
-        elif device['platformName'] == "ANDROID" or device['platformName'] == "IOS":
-            return element.get_attribute(value)
-        else:
-            raise ValueError("Unknown device platform: {}".format(device['platformName']))
-
-    def create_random_user(self, locale: str) -> dict:
-        """
-        Create a random user with fake data.
+        Get the locator for waiting based on the device platform.
 
         Args:
-            locale (str): The locale to use for generating the fake data.
+            element_page (dict): The element page specification. Must include:
+                - 'device': The device platform (e.g., 'WEB', 'ANDROID', 'IOS').
+                - 'type': The locator type (e.g., 'id', 'xpath').
+                - 'value': The locator value.
+
+        Returns:
+            tuple: The locator for waiting, e.g., (By.ID, "some-id").
+
+        Raises:
+            ValueError: If the device platform is unknown or unsupported.
+        """
+        # Validate input
+        device_platform = element_page.get('device')
+        if not device_platform:
+            raise ValueError("Device platform is not specified in 'element_page'.")
+
+        logger.info(f"Fetching locator for device platform: {device_platform}")
+
+        # Map device platform to the corresponding management file
+        try:
+            if device_platform == "WEB":
+                locator = ManagementFile().get_locator_for_wait(element_page['type'], element_page['value'])
+            elif device_platform in {"ANDROID", "IOS"}:
+                locator = ManagementFileAndroid().get_locator_for_wait(element_page['type'], element_page['value'])
+            else:
+                raise ValueError(f"Unsupported device platform: {device_platform}")
+
+            logger.debug(f"Locator obtained: {locator}")
+            return locator
+
+        except Exception as e:
+            logger.error(f"Failed to get locator for platform '{device_platform}': {str(e)}")
+            raise
+
+    def get_list_element_by_from_device(
+            self,
+            element_page: dict,
+            device: dict,
+            driver
+    ) -> list:
+        """
+        Get a list of elements based on the device platform.
+
+        Args:
+            element_page (dict): The element page specification, including:
+                - 'type': The locator type (e.g., 'id', 'xpath').
+                - 'value': The locator value.
+            device (dict): The device information, including 'platformName'.
+            driver: The Selenium WebDriver instance.
+
+        Returns:
+            list: A list of WebElements found on the page.
+
+        Raises:
+            ValueError: If the device platform is unknown or unsupported.
+        """
+        platform_name = device.get('platformName')
+
+        if not platform_name:
+            raise ValueError("Device information is missing or 'platformName' is not specified.")
+
+        logger.info(f"Fetching list of elements for platform: {platform_name}")
+
+        try:
+            if platform_name == "WEB":
+                elements = ManagementFile().get_list_element_by(element_page['type'], driver, element_page['value'])
+            elif platform_name in {"ANDROID", "IOS"}:
+                elements = ManagementFileAndroid().get_list_element_by(element_page['type'], driver,
+                                                                       element_page['value'])
+            else:
+                raise ValueError(f"Unsupported device platform: {platform_name}")
+
+            logger.debug(f"Successfully fetched {len(elements)} elements for platform: {platform_name}")
+            return elements
+
+        except Exception as e:
+            logger.error(f"Failed to fetch list of elements for platform '{platform_name}': {str(e)}")
+            raise
+
+    def get_element_by_from_device(
+            self,
+            element_page: dict,
+            device: dict,
+            driver
+    ):
+        """
+        Get a single element based on the device platform.
+
+        Args:
+            element_page (dict): The element page specification, including:
+                - 'device': The device platform (e.g., 'WEB', 'ANDROID', 'IOS').
+                - 'type': The locator type (e.g., 'id', 'xpath').
+                - 'value': The locator value.
+            device (dict): The device information.
+            driver: The Selenium WebDriver instance.
+
+        Returns:
+            WebElement: The found WebElement.
+
+        Raises:
+            ValueError: If the device platform is unknown or unsupported.
+        """
+        platform_name = element_page.get('device')
+
+        if not platform_name:
+            raise ValueError("Device platform is not specified in 'element_page'.")
+
+        logger.info(f"Fetching element for platform: {platform_name}")
+
+        try:
+            if platform_name == "WEB":
+                element = ManagementFile().get_element_by(element_page['type'], driver, element_page['value'])
+            elif platform_name in {"ANDROID", "IOS"}:
+                element = ManagementFileAndroid().get_by_android(element_page['type'], driver, element_page['value'])
+            else:
+                raise ValueError(f"Unsupported device platform: {platform_name}")
+
+            logger.debug(f"Successfully fetched element for platform: {platform_name}")
+            return element
+
+        except Exception as e:
+            logger.error(f"Failed to fetch element for platform '{platform_name}': {str(e)}")
+            raise
+
+    def get_value_element_form_device(
+            self,
+            element,
+            device: dict,
+            element_page: dict,
+            driver
+    ) -> str:
+        """
+        Retrieves the value of the element based on the device platform.
+
+        Args:
+            element: The WebElement to retrieve the value from.
+            device (dict): The device platform information, including 'platformName'.
+            element_page (dict): The element page specification.
+            driver: The Selenium WebDriver instance.
+
+        Returns:
+            str: The value of the element based on the platform.
+
+        Raises:
+            Exception: If the element value cannot be retrieved.
+        """
+        try:
+            platform_name = device.get('platformName')
+            if not platform_name:
+                raise ValueError("Device platform name ('platformName') is missing in the device information.")
+
+            logger.info(f"Fetching value for element on platform: {platform_name}")
+
+            if platform_name == "WEB":
+                # Handle web elements specifically
+                try:
+                    if element.get_attribute("value") and element.tag_name.lower() == "input":
+                        logger.info("Element is an input field. Fetching 'value' attribute.")
+                        return element.get_attribute("value")
+
+                    # Fallback to text content
+                    text = element.text.strip()
+                    if not text:
+                        logger.debug("No visible text found. Trying 'innerText' attribute.")
+                        text = element.get_attribute("innerText").strip()
+                    if text:
+                        logger.info(f"Text found on element: {text}")
+                        return text
+
+                    raise ValueError("Unable to retrieve value from the web element.")
+
+                except (ElementNotInteractableException, StaleElementReferenceException) as e:
+                    logger.warning(f"Element not interactable or stale: {e}. Retrying...")
+                    sleep(2)
+                    element = self.get_element_by_from_device(element_page, device, driver)
+                    return self.get_value_element_form_device(element, device, element_page, driver)
+
+            else:
+                # Handle non-web elements (e.g., Android, iOS)
+                logger.info("Fetching text content for non-web element.")
+                return element.text.strip()
+
+        except Exception as e:
+            logger.error(f"Failed to fetch value for element: {str(e)}")
+            raise
+
+        finally:
+            self.count_number = 0
+
+    def get_value_attribute_element_form_device(
+            self,
+            element,
+            device: dict,
+            value: str,
+            flag: bool
+    ) -> str:
+        """
+        Retrieves the value of a specified attribute or CSS property from an element based on the platform.
+
+        Args:
+            element: The WebElement to retrieve the attribute value from.
+            device (dict): The device platform information, including 'platformName'.
+            value (str): The name of the attribute or CSS property to retrieve.
+            flag (bool): Whether to retrieve the value using a CSS property (True) or an attribute (False).
+
+        Returns:
+            str: The value of the specified attribute or CSS property.
+
+        Raises:
+            ValueError: If the device platform is not supported or invalid arguments are provided.
+        """
+        try:
+            platform_name = device.get('platformName')
+            if not platform_name:
+                raise ValueError("Device platform name ('platformName') is missing in the device information.")
+
+            logger.info(f"Fetching attribute '{value}' for platform: {platform_name}")
+
+            if platform_name == "WEB":
+                if flag:
+                    # Retrieve value using CSS property
+                    value_attribute = element.value_of_css_property(value)
+                    if 'color' in value:
+                        hex_color = Color.from_string(value_attribute).hex.lower()
+                        logger.debug(f"Retrieved color property: {hex_color}")
+                        return hex_color
+                    else:
+                        result = value_attribute.lower()
+                        logger.debug(f"Retrieved CSS property: {result}")
+                        return result
+                else:
+                    # Retrieve value using attribute
+                    attribute_value = element.get_attribute(value)
+                    logger.debug(f"Retrieved attribute value: {attribute_value}")
+                    return attribute_value
+
+            elif platform_name in {"ANDROID", "IOS"}:
+                # For mobile platforms, always retrieve the value using get_attribute
+                attribute_value = element.get_attribute(value)
+                logger.debug(f"Retrieved attribute value for mobile platform: {attribute_value}")
+                return attribute_value
+
+            else:
+                raise ValueError(f"Unsupported device platform: {platform_name}")
+
+        except Exception as e:
+            logger.error(f"Failed to retrieve attribute '{value}' for platform '{platform_name}': {str(e)}")
+            raise
+
+    from faker import Faker
+    import logging
+
+    logger = logging.getLogger(__name__)
+
+    def create_random_user(self, locale: str = "en_US") -> dict:
+        """
+        Generate a random user with fake data.
+
+        Args:
+            locale (str): The locale to use for generating the fake data. Defaults to 'en_US'.
 
         Returns:
             dict: A dictionary containing the generated user data.
 
         Raises:
-            ValueError: If the provided locale is not supported.
-
+            ValueError: If the provided locale is invalid or unsupported.
         """
-        # Create a Faker instance based on the provided locale or use the default 'en_US'
-        if locale:
+        try:
+            # Initialize Faker with the provided locale
             faker = Faker(locale)
-        else:
-            faker = Faker('en_US')
+            logger.info(f"Creating random user with locale: {locale}")
 
-        # Log the generated first name
-        logger.info(f'faker.unique.first_name() == {faker.unique.first_name()}')
+            # Generate user data
+            user = {
+                'first_name': faker.unique.first_name(),
+                'last_name': faker.unique.last_name(),
+                'middle_name': faker.unique.first_name_male(),
+                'job': faker.job(),
+                'address': faker.address(),
+                'phone_number': faker.phone_number(),
+                'city': faker.city(),
+                'state': faker.state(),
+                'postcode': faker.postcode(),
+                'domain_name': faker.domain_name(),
+                'prefix': faker.prefix(),
+                'suffix': faker.suffix(),
+                'email': faker.unique.email()
+            }
 
-        # Generate the user data using the Faker instance
-        user = {
-            'first_name': faker.unique.first_name(),
-            'last_name': faker.unique.last_name(),
-            'middle_name': faker.unique.first_name_male(),
-            'job': faker.job(),
-            'address': faker.address(),
-            'phone_number': faker.phone_number(),
-            'city': faker.city(),
-            'state': faker.state(),
-            'postcode': faker.postcode(),
-            'domain_name': faker.domain_name(),
-            'prefix': faker.prefix(),
-            'suffix': faker.suffix(),
-            'email': faker.unique.email()
-        }
-        return user
+            # Log the generated user data
+            logger.debug(f"Generated user data: {user}")
+            return user
 
-    def verify_elements_below_attributes(self, page, row, platform_name, dict_save_value, driver, device, wait,
-                                         is_highlight, page_present):
+        except ValueError as ve:
+            logger.error(f"Invalid locale provided: {locale}. Error: {str(ve)}")
+            raise ValueError(f"Unsupported or invalid locale: {locale}") from ve
+
+        except Exception as e:
+            logger.error(f"An error occurred while creating random user: {str(e)}")
+            raise RuntimeError("Failed to generate random user data.") from e
+
+    def verify_elements_below_attributes(
+            self,
+            page: dict,
+            row: list,
+            platform_name: str,
+            dict_save_value: dict,
+            driver,
+            device: dict,
+            wait,
+            is_highlight: bool,
+            page_present: str
+    ):
         """
-        Verify the attributes of elements in a given page.
+        Verify the attributes and status of elements on a given page.
 
         Args:
-            page (dict): The page specification.
+            page (dict): The page specification containing elements to verify.
             row (list): The row containing the element attributes to verify.
-            platform_name (str): The platform for which the elements are needed.
-            dict_save_value (dict): A dictionary of values to be used for substitution in the elements.
-            driver (WebDriver): The Selenium WebDriver instance.
+                        Format: [element_id, value, status, helper].
+            platform_name (str): The platform for which the elements are being verified.
+            dict_save_value (dict): A dictionary of saved values for substitutions.
+            driver: The Selenium WebDriver instance.
             device (dict): The device information.
-            wait (WebDriverWait): The WebDriverWait instance.
-            is_highlight (bool): Whether to highlight the element.
+            wait: The WebDriverWait instance.
+            is_highlight (bool): Whether to highlight the element during verification.
+            page_present (str): The current page name for logging and error messages.
 
         Raises:
-            AssertionError: If the element is not found or the status does not match.
-
-
+            AssertionError: If the element is not found or if verification fails.
         """
-        arr_element = page['elements']
-        arr_element = list(filter(
-            lambda element: element['id'] == row[0], arr_element
-        ))
-        if not arr_element:
-            logger.error(f'Element with ID {row[0]} not found in the page {page_present}.yaml')
-            assert False, f'Element with ID {row[0]} not found in the page'
+        try:
+            element_id, value, status, helper = row
 
-        logger.info(f'Verifying for {row[0]} have value {row[1]} and status {row[2]}')
-        value = row[1]
-        helper = row[3]
-        if value is None:
-            value = ''
-        else:
-            value = procees_value().get_value(value, dict_save_value)
+            # Filter for the target element by ID
+            arr_element = [el for el in page.get('elements', []) if el['id'] == element_id]
+            if not arr_element:
+                error_msg = f"Element with ID {element_id} not found in {page_present}.yaml"
+                logger.error(error_msg)
+                raise AssertionError(error_msg)
 
-        element_yaml = self.get_element(page, arr_element[0]['id'], platform_name,
-                                        dict_save_value)
-        if not element_yaml:
-            raise AssertionError(f'Element with ID {row[0]} and value {value} not found in the page')
+            logger.info(f"Verifying element '{element_id}' with value '{value}' and status '{status}'")
 
-        if row[2] and element_yaml:
-            if value != '' and helper is None:
-                logger.info(f'Verified for {row[0]} have value {row[1]} and status {row[2]}')
-                self.wait_element_for_status(element_yaml, row[2], driver, device, wait, False)
-                self.verify_value_in_element(element_yaml, value, device, driver, is_highlight, wait)
+            # Process value using saved values if needed
+            value = procees_value().get_value(value, dict_save_value) if value else ""
+
+            # Fetch the element definition from YAML
+            element_yaml = self.get_element(page, element_id, platform_name, dict_save_value)
+            if not element_yaml:
+                error_msg = f"Element with ID {element_id} and value '{value}' not found on the page."
+                logger.error(error_msg)
+                raise AssertionError(error_msg)
+
+            # Verify status and value
+            if status and element_yaml:
+                self.wait_element_for_status(element_yaml, status, driver, device, wait, False)
+
+                if value and not helper:
+                    logger.info(f"Validating value '{value}' for element '{element_id}'")
+                    self.verify_value_in_element(element_yaml, value, device, driver, is_highlight, wait)
+                else:
+                    logger.info(f"Element '{element_id}' status '{status}' validated without value check.")
+
             else:
-                logger.info(f'Verified for {row[0]} have value {row[1]} and status {row[2]}')
-                self.wait_element_for_status(element_yaml, row[2], driver, device, wait, False)
-        else:
-            raise AssertionError('Table must contain both field name and status')
+                raise AssertionError("Both field name and status are required for validation.")
 
-        self.verify_value_with_helpers(value, helper, element_yaml, device, driver, is_highlight)
+            # Verify with helpers if provided
+            if helper:
+                logger.info(f"Validating element '{element_id}' with helper '{helper}'")
+                self.verify_value_with_helpers(value, helper, element_yaml, device, driver, is_highlight)
+
+            logger.info(f"Verification completed for element '{element_id}'")
+
+        except AssertionError as ae:
+            logger.error(f"Assertion failed: {str(ae)}")
+            raise
+
+        except Exception as e:
+            logger.error(f"An error occurred during verification: {str(e)}")
+            raise RuntimeError(f"Error verifying elements on page '{page_present}': {str(e)}")
 
     # def get_value_from_user_random(self, value, dict_save_value):
     #     try:
