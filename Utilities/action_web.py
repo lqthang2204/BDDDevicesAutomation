@@ -47,35 +47,53 @@ class ManagementFile:
 
     def read_yaml_file(self, path, page_name, dict_page_element):
         """
-            Reads a YAML file and returns the content as a JSON object.
+    Reads a YAML file and returns the content as a JSON object. If the content for a specific page
+    is already cached in dict_page_element, it will return the cached version.
 
-            Args:
-                path (str): The path to the YAML file.
-                page_name (str): The name of the page.
-                dict_page_element (dict): A dictionary containing page elements.
+    Args:
+        path (str): The path to the YAML file.
+        page_name (str): The name of the page.
+        dict_page_element (dict): A dictionary containing page elements to cache YAML content.
 
-            Returns:
-                json: The JSON object representing the content of the YAML file.
-            """
+    Returns:
+        dict: The JSON object representing the content of the YAML file.
+    """
         try:
-            if dict_page_element and page_name in dict_page_element.keys():
-                obj_page = dict_page_element[page_name]
-                return obj_page
+            if dict_page_element and page_name in dict_page_element:
+                logger.debug(f"Page '{page_name}' found in cache.")
+                return dict_page_element[page_name]
             else:
+                logger.info(f"Reading YAML file for page '{page_name}' from path: {path}")
                 with open(path, encoding='utf-8') as page:
                     python_dict = yaml.load(page.read(), Loader=SafeLoader)
-                    json_result = json.dumps(python_dict)
+                    if python_dict is None:
+                        logger.warning(f"The YAML file for page '{page_name}' is empty or invalid.")
+                        return {}
+                    # Convert Python dictionary to JSON object
+                    json_result = json.dumps(python_dict, default=str)
                     json_object = json.loads(json_result)
                     dict_page_element[page_name] = json_object
+                    logger.info(f"YAML file for page '{page_name}' loaded and cached successfully.")
                     return json_object
-        except FileNotFoundError:
-            print(f"File '{page_name}' not found.")
-            logger.error(f"File '{page_name}' not found.")
-        except (yaml.YAMLError, json.JSONDecodeError) as e:
-            print(f"Error reading YAML file: {str(e)}")
-            logger.error(f"Error reading YAML file: {str(e)}")
+        except FileNotFoundError as e:
+            print(f"Error: The YAML file for '{page_name}' could not be found.")
+            logger.error(f"File '{path}' not found for page '{page_name}': {e}")
+            return {}
+        except yaml.YAMLError as e:
+            logger.error(f"Error parsing YAML file for page '{page_name}': {e}")
+            print(f"Error: The YAML file for '{page_name}' could not be parsed. Please check its syntax.")
+            return {}
+        except json.JSONDecodeError as e:
+            logger.error(f"Error converting YAML to JSON for page '{page_name}': {e}")
+            print(f"Error: There was an issue converting the YAML file to JSON for '{page_name}'.")
+            return {}
+        except Exception as e:
+            # Generic error catch for unexpected issues
+            logger.error(f"Unexpected error while reading YAML file for page '{page_name}': {str(e)}")
+            print(f"Error: An unexpected error occurred while reading the YAML file for '{page_name}'.")
+            return {}
 
-    def get_element_by(self, type, driver, value) -> WebElement:
+    def get_element_by(self, type: str, driver, value: str) -> WebElement:
         """
         Find and return a WebElement based on the given type and value.
 
@@ -94,23 +112,23 @@ class ManagementFile:
             TimeoutException: If the element is not found within the specified timeout.
             Exception: If there is an error locating the element.
         """
+        # Check if the locator type is valid
         logger.info(f'Getting list element by {type} with value is {value}')
         locator = self.SUPPORTED_LOCATOR_TYPES.get(type)
-        if locator is None:
-            raise ValueError(
-                f"Invalid locator type: {type}. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
-
+        if not locator:
+            logger.error(f"Invalid locator type: {type}. Supported types are 'id', 'name', 'xpath', 'link_text', "
+                         "'partial_link_text', 'class_name', 'css_selector'.")
+            raise ValueError(f"Invalid locator type: {type}. Supported types are 'id', 'name', 'xpath', 'link_text', "
+                             "'partial_link_text', 'class_name', 'css_selector'.")
         try:
             logger.info(f'Get element by {type} with value is {value}')
-
-            locator = self.SUPPORTED_LOCATOR_TYPES.get(type)
             return driver.find_element(locator, value)
-        except (NoSuchElementException, TimeoutException) as e:
-            logger.error(f"Element not found: {str(e)}")
-            assert False, f"Element not found: {str(e)}"
+        except NoSuchElementException:
+            logger.error(f"No such element found using {type} with value: {value}.")
+            return None  # Return None to indicate that the element could not be located
         except Exception as e:
-            logger.error(f"Error locating element: {str(e)}")
-            assert False, f"Error locating element: {str(e)}"
+            logger.error(f"Error locating element by {type} with value '{value}': {str(e)}")
+            return None  # Return None for unexpected errors, ensuring the process continues
 
     def get_list_element_by(self, type, driver, value):
         try:
