@@ -14,7 +14,6 @@ from libraries.faker import management_user
 from libraries.misc_operations import sanitize_datatable
 from project_runner import logger
 
-
 @step(u'I navigate to url {name}')
 def launchBrowser(context, name):
     if context.device['platformName'] == 'WEB':

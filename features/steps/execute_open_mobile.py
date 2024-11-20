@@ -2,6 +2,7 @@ import configparser
 import os
 
 from selenium.common import SessionNotCreatedException
+# from selenium.webdriver.common.devtools.
 
 from project_runner import logger, project_folder
 from appium import webdriver as appium_driver
@@ -26,8 +27,8 @@ class manage_hook_mobile:
                     context.wait = context.device['wait']
                     context.highlight = 'false'
             case _:
-                logger.error(f"platformName {context.device['platformName'].upper()} not support in framework")
-                assert False, f"platformName {context.device['platformName'].upper()} not support in framework"
+                logger.error(f"platformName {context.device['platformName'].upper()} not support in framework, please use Android or IOS")
+                assert False, f"platformName {context.device['platformName'].upper()} not support in framework, please use Android or IOS"
 
 
     def cross_browser_with_mobile(self, context, device, table):
@@ -114,6 +115,6 @@ class manage_hook_mobile:
             else:
                 context.driver.get(context.url[name])
         except Exception as e:
-            logger.error(f"An error occurred while navigating to URL: {str(e)}")
+            logger.error(f"An error occurred while navigating to URL: {str(e)} on device {context.device['platformName'].upper()}")
 
 

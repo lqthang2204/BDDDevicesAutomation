@@ -130,46 +130,116 @@ class common_device:
 
     def get_element(self, page, element, platform_name, dict_save_value):
         """
-           This function retrieves the locator for a given element from a page specification.
-           Args:
-               page (dict): The page specification.
-               element (str): The element to retrieve the locator for.
-               platform_name (str): The platform for which the locator is needed.
-               dict_save_value (dict): A dictionary of values to be used for substitution in the locator.
-           Returns:
-               dict: The locator for the given element.
-           Raises:
-               AssertionError: If the element does not exist in the page spec.
-           """
-        # Initialize text variable
+        Retrieves the locator for a given element from a page specification.
+
+        Args:
+            page (dict): The page specification containing element locators.
+            element (str): The ID of the element to retrieve the locator for.
+            platform_name (str): The platform for which the locator is needed (e.g., 'iOS', 'Android').
+            dict_save_value (dict): A dictionary of values to be used for substitution in the locator.
+
+        Returns:
+            dict: The locator for the given element, after applying necessary text substitutions.
+
+        Raises:
+            ValueError: If the element or its locator for the specified platform is not found.
+        """
+        # Validate inputs
+        if not isinstance(page, dict):
+            raise TypeError("Expected 'page' to be a dictionary.")
+        if not isinstance(element, str) or not element:
+            raise ValueError("Element ID should be a non-empty string.")
+        if not isinstance(platform_name, str) or not platform_name:
+            raise ValueError("Platform name should be a non-empty string.")
+        if dict_save_value is not None and not isinstance(dict_save_value, dict):
+            raise TypeError("Expected 'dict_save_value' to be a dictionary or None.")
+
         text = ""
+
         # Check if the element has a text condition
         if "with text" in element:
-            arr_value = element.split("with text")
-            # remove blank in array
-            arr_value = [i.lstrip() for i in arr_value]
-            element = arr_value[0].strip()
-            # remove double quote
-            text = arr_value[1].replace('"', '')
-            if dict_save_value:
-                text = dict_save_value.get(text, text)
-            page_temp = copy.deepcopy(page)
-        else:
-            page_temp = page
-        # Find the element in the page spec
-        element_spec = next((el for el in page_temp['elements'] if el['id'] == element), None)
-        if element_spec is None:
-            logger.error(f'Element {element} not found in page spec, with platform {platform_name}')
-            raise ValueError(f'Element {element} not found in page spec, with platform {platform_name}')
+            element, text = self._extract_text_from_element(element, dict_save_value)
+
+        # Make a copy of the page to avoid mutating the original
+        # page_temp = copy.deepcopy(page)
+
+        # Find the element in the page specification
+        element_spec = self._find_element_in_page(page, element, platform_name)
 
         # Find the locator for the specified platform
+        locator = self._find_locator_for_platform(element_spec, platform_name)
+
+        # Substitute the text in the locator value if applicable
+        if "{text}" in locator['value'] and text:
+            locator_temp = copy.deepcopy(locator)
+            locator_temp['value'] = locator_temp['value'].replace("{text}", text)
+            return locator_temp
+        else:
+            return locator
+
+
+    def _extract_text_from_element(self, element, dict_save_value):
+        """
+        Extracts and processes the text condition from the element ID if present.
+
+        Args:
+            element (str): The element ID containing the 'with text' condition.
+            dict_save_value (dict): The dictionary of substitution values.
+
+        Returns:
+            tuple: A tuple containing the element ID (str) and the processed text (str).
+        """
+        # Split the element by 'with text' and strip any excess whitespace
+        arr_value = [i.strip() for i in element.split("with text")]
+        element = arr_value[0].strip()  # Element ID without text condition
+        text = arr_value[1].replace('"', '').strip()  # Clean text, removing quotes
+
+        # If a dictionary of values is provided, substitute the text
+        if dict_save_value:
+            text = dict_save_value.get(text, text)
+
+        return element, text
+
+    def _find_element_in_page(self, page, element, platform_name):
+        """
+        Finds the element in the page specification.
+
+        Args:
+            page (dict): The page specification.
+            element (str): The ID of the element.
+            platform_name (str): The platform name (for logging purposes).
+
+        Returns:
+            dict: The element specification if found.
+
+        Raises:
+            ValueError: If the element is not found in the page specification.
+        """
+        element_spec = next((el for el in page['elements'] if el['id'] == element), None)
+        if element_spec is None:
+            logger.error(f"Element '{element}' not found in page spec for platform '{platform_name}'.")
+            raise ValueError(f"Element '{element}' not found in page spec for platform '{platform_name}'.")
+
+        return element_spec
+
+    def _find_locator_for_platform(self, element_spec, platform_name):
+        """
+        Finds the locator for the specified platform from the element specification.
+
+        Args:
+            element_spec (dict): The element specification containing locators.
+            platform_name (str): The platform name (e.g., 'iOS', 'Android').
+
+        Returns:
+            dict: The locator for the specified platform.
+
+        Raises:
+            ValueError: If the locator for the platform is not found.
+        """
         locator = next((loc for loc in element_spec['locators'] if loc['device'] == platform_name), None)
         if locator is None:
-            logger.error(f'Locator for element {element} not found for platform {platform_name}')
-            raise ValueError(f'Locator for element {element} not found for platform {platform_name}')
-
-        # Substitute the text in the locator value
-        locator['value'] = locator['value'].replace("{text}", text)
+            logger.error(f"Locator for element '{element_spec['id']}' not found for platform '{platform_name}'.")
+            raise ValueError(f"Locator for element '{element_spec['id']}' not found for platform '{platform_name}'.")
 
         return locator
 
@@ -294,11 +364,17 @@ class common_device:
             # Check if the element has a value attribute and is an input tag
             try:
                 if element.get_attribute("value") and element.tag_name.lower() == "input":
-                    print( element.get_attribute('value'))
+                    logger.info("Getting text on element: ")
                     return element.get_attribute('value')
                 else:
                     # If the element is not an input tag, return its text content
-                    return element.text
+                    text = element.text
+                    if len(text) == 0:
+                        text = element.get_attribute('innerText')
+                        return text
+                    if len(text) != 0:
+                        logger.info("Text on element: " + text)
+                        return text
 
             except (ElementNotInteractableException, StaleElementReferenceException):
                 sleep(2)
