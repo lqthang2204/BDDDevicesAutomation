@@ -24,61 +24,65 @@ from Utilities.process_value_input import procees_value
 class common_device:
     count_number = 0
 
+    def __init__(self):
+        self.ACTIONS_MAP = {
+            "click": lambda element, wait, element_page, device, driver: self.click_action(element, wait, element_page,
+                                                                                           device, driver),
+            "double-click": lambda element, driver: ActionChains(driver).double_click(element).perform(),
+            "right-click": lambda element, driver: ActionChains(driver).context_click(element).perform(),
+            "select": lambda element, value: Select(element).select_by_visible_text(value),
+            "type": lambda element, value: element.send_keys(value),
+            "text": lambda element, value: element.send_keys(value),
+            "clear": lambda element: element.clear(),
+            "hover-over": lambda element, driver, action, device: self.mouse_action(element, driver, action, device),
+            "scroll": lambda element, driver, device: self.scroll_to_element(element, driver, False, device, False),
+        }
+
     def check_att_is_exist(self, obj_action_elements, key, default=None):
         return obj_action_elements.get(key, default)
 
-    def action_page(self, element_page, action, driver, value, wait, dict_save_value, device, context, count_number=0):
+    def action_page(
+            self, element_page, action, driver, value, wait, dict_save_value, device, context, count_number=0
+    ):
         """
-           Executes a specified action on a given element.
-
-           Args:
-               element_page (dict): Element details such as locator strategy and value.
-               action (str): The action to perform (e.g., 'click', 'type').
-               driver (WebDriver): Selenium WebDriver instance.
-               value (str): Value to use for certain actions (e.g., typing).
-               wait (WebDriverWait): Explicit wait object.
-               dict_save_value (dict): Context dictionary for dynamic value processing.
-               device (str): Target device context.
-               context (object): Test context with configurations like highlighting.
-               count_number (int): Retry count for handling exceptions.
-           """
+        Executes a specified action on a web element.
+        """
         try:
-            # Locate the element on the device
+            # Locate the element
             element = self.get_element_by_from_device(element_page, device, driver)
-            logger.info(f'Executing {action} on element with value: {element_page["value"]}')
-            # Highlight the element for better visibility during testing
-            self.highlight(element, 0.3, context.highlight)
+            logger.info(f"Performing '{action}' on element with locator: {element_page.get('value')}")
+
+            # Highlight the element
+            if hasattr(context, "highlight") and context.highlight:
+                self.highlight(element, duration=0.3, highlight=context.highlight)
+
+            # Process the value
             if value:
                 value = procees_value().get_value(value, dict_save_value)
                 value = get_test_data_for(value, dict_save_value)
-            # Define a map of actions to corresponding methods
-            actions_map = {
-                "click": lambda: self.click_action(element, wait, element_page, device, driver),
-                "double-click": lambda: ActionChains(driver).double_click(on_element=element).perform(),
-                "right-click": lambda: ActionChains(driver).context_click(on_element=element).perform(),
-                "select": lambda: Select(element).select_by_visible_text(value),
-                "type": lambda: element.send_keys(value),
-                "text": lambda: element.send_keys(value),
-                "clear": lambda: element.clear(),
-                "hover-over": lambda: self.mouse_action(element, driver, action, device),
-                "scroll": lambda: self.scroll_to_element(element, driver, False, device, False),
-            }
-            # Perform the action if supported
-            if action in actions_map:
-                actions_map[action]()
+
+            # Execute the action
+            if action in self.ACTIONS_MAP:
+                if action in {"type", "text", "select"}:  # Actions requiring a value
+                    self.ACTIONS_MAP[action](element, value)
+                elif action in {"click", "double-click", "right-click", "hover-over", "scroll"}:  # No `value` needed
+                    self.ACTIONS_MAP[action](element, wait, element_page, device, driver)
+                elif action == "clear":  # Clear action needs only the element
+                    self.ACTIONS_MAP[action](element)
+                logger.info(f"Action '{action}' successfully performed.")
             else:
                 logger.error(f"Unsupported action: {action}")
-                assert False, f"Action '{action}' is not supported in the framework"
-        except (ElementNotInteractableException, StaleElementReferenceException, ElementClickInterceptedException):
-            # Handle known interaction exceptions
-            self.handle_element_not_interactable_exception(
-                element_page, action, driver, value, wait, dict_save_value, device, context, count_number)
-        except InvalidElementStateException:
-            # Handle invalid state exceptions
+                raise AssertionError(f"Action '{action}' is not supported by the framework.")
+            except (ElementNotInteractableException, StaleElementReferenceException, ElementClickInterceptedException) as e:
+                logger.warning(f"Retrying due to known interaction issue ({type(e).__name__}): {str(e)}")
+                self.handle_element_not_interactable_exception(
+                    element_page, action, driver, value, wait, dict_save_value, device, context, count_number
+                )
+        except InvalidElementStateException as e:
+            logger.error(f"Invalid state for element during action '{action}': {str(e)}")
             self.handle_invalid_element_state_exception(value, element_page, device, driver, action)
         except Exception as e:
-            # Log and raise any other exceptions
-            logger.error(f"Error performing '{action}' on element '{element}': {str(e)}")
+            logger.error(f"Unexpected error performing '{action}' on element: {str(e)}")
             raise
 
     def click_action(self, element, wait, element_page, device, driver):
