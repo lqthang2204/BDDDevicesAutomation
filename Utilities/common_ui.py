@@ -5,7 +5,7 @@ from appium.webdriver.common.touch_action import TouchAction
 from faker import Faker
 from selenium.common import NoSuchElementException, NoSuchFrameException, NoSuchWindowException, \
     StaleElementReferenceException, ElementNotInteractableException, InvalidElementStateException, \
-    ElementNotVisibleException, ElementClickInterceptedException, TimeoutException
+    ElementNotVisibleException, ElementClickInterceptedException, TimeoutException, WebDriverException
 from selenium.webdriver import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -25,7 +25,15 @@ class common_device:
     count_number = 0
 
     def __init__(self):
-        pass
+        self.ACTION_CLICK = "click"
+        self.ACTION_DOUBLE_CLICK = "double-click"
+        self.ACTION_RIGHT_CLICK = "right-click"
+        self.ACTION_SELECT = "select"
+        self.ACTION_TYPE = "type"
+        self.ACTION_TEXT = "text"
+        self.ACTION_CLEAR = "clear"
+        self.ACTION_HOVER_OVER = "hover-over"
+        self.ACTION_SCROLL = "scroll"
 
     def check_att_is_exist(self, obj_action_elements, key, default=None):
         return obj_action_elements.get(key, default)
@@ -88,19 +96,61 @@ class common_device:
     def _initialize_actions_map(self):
         """Initializes the ACTIONS_MAP with supported actions."""
         self.ACTIONS_MAP = {
-            "click": lambda element, wait, element_page, device, driver: self.click_action(
-                element, wait, element_page, device, driver
-            ),
-            "double-click": lambda element, driver: ActionChains(driver).double_click(element).perform(),
-            "right-click": lambda element, driver: ActionChains(driver).context_click(element).perform(),
-            "select": lambda element, value: Select(element).select_by_visible_text(value),
-            "type": lambda element, value: element.send_keys(value),
-            "text": lambda element, value: element.send_keys(value),
-            "clear": lambda element: element.clear(),
-            "hover-over": lambda element, driver, action, device: self.mouse_action(element, driver, action, device),
-            "scroll": lambda element, driver, device: self.scroll_to_element(element, driver, False, device, False),
+            self.ACTION_CLICK: self._handle_click_action,
+            self.ACTION_DOUBLE_CLICK: self._handle_double_click_action,
+            self.ACTION_RIGHT_CLICK: self._handle_right_click_action,
+            self.ACTION_SELECT: self._handle_select_action,
+            self.ACTION_TYPE: self._handle_type_action,
+            self.ACTION_TEXT: self._handle_type_action,  # Alias for "type"
+            self.ACTION_CLEAR: self._handle_clear_action,
+            self.ACTION_HOVER_OVER: self._handle_hover_over_action,
+            self.ACTION_SCROLL: self._handle_scroll_action,
         }
+        # self.ACTIONS_MAP = {
+        #     "click": lambda element, wait, element_page, device, driver: self.click_action(
+        #         element, wait, element_page, device, driver
+        #     ),
+        #     "double-click": lambda element, driver: ActionChains(driver).double_click(element).perform(),
+        #     "right-click": lambda element, driver: ActionChains(driver).context_click(element).perform(),
+        #     "select": lambda element, value: Select(element).select_by_visible_text(value),
+        #     "type": lambda element, value: element.send_keys(value),
+        #     "text": lambda element, value: element.send_keys(value),
+        #     "clear": lambda element: element.clear(),
+        #     "hover-over": lambda element, driver, action, device: self.mouse_action(element, driver, action, device),
+        #     "scroll": lambda element, driver, device: self.scroll_to_element(element, driver, False, device, False),
+        # }
 
+    def _handle_click_action(self, element, wait, element_page, device, driver):
+        """Handles a click action."""
+        self.click_action(element, wait, element_page, device, driver)
+
+    def _handle_double_click_action(self, element, driver):
+        """Handles a double-click action."""
+        ActionChains(driver).double_click(element).perform()
+
+    def _handle_right_click_action(self, element, driver):
+        """Handles a right-click action."""
+        ActionChains(driver).context_click(element).perform()
+
+    def _handle_select_action(self, element, value):
+        """Handles a select action (by visible text)."""
+        Select(element).select_by_visible_text(value)
+
+    def _handle_type_action(self, element, value):
+        """Handles typing text into an element."""
+        element.send_keys(value)
+
+    def _handle_clear_action(self, element):
+        """Handles clearing the text of an element."""
+        element.clear()
+
+    def _handle_hover_over_action(self, element, driver, action, device):
+        """Handles hovering over an element."""
+        self.mouse_action(element, driver, action, device)
+
+    def _handle_scroll_action(self, element, driver, device):
+        """Handles scrolling to an element."""
+        self.scroll_to_element(element, driver, flag=False, device=device, is_highlight=False)
     def _execute_action(self, action_function, action, element, driver, wait, value, device, element_page):
         """
         Executes the appropriate action based on the provided function and parameters.
@@ -1010,7 +1060,7 @@ class common_device:
           Returns:
               None
           """
-        if is_hightlight == 'true':
+        if is_hightlight:
             try:
                 driver = element._parent
 
@@ -1026,61 +1076,118 @@ class common_device:
                 pass
 
     def mouse_action(self, element, driver, action, device):
-        if action == 'hover-over':
-            if device['platformName'] == 'WEB':
-                action = ActionChains(driver)
-                action.move_to_element(element).perform()
+        """
+        Performs a mouse or touch action on an element based on the device and action type.
+
+        Args:
+            element: The target element for the action.
+            driver: The WebDriver or Appium Driver instance.
+            action: The type of action to perform (e.g., 'hover-over').
+            device: A dictionary containing device information, including 'platformName'.
+
+        Returns:
+            None
+        """
+        try:
+            # Validate device type
+            platform_name = device.get('platformName', '').upper()
+            if platform_name not in ['WEB', 'MOBILE']:
+                raise ValueError(f"Unsupported platformName: {platform_name}")
+
+            # Perform the appropriate action based on device type
+            if action == 'hover-over':
+                if platform_name == 'WEB':
+                    ActionChains(driver).move_to_element(element).perform()
+                elif platform_name in ["ANDROID", "IOS"]:
+                    TouchAction(driver).press(element).release().perform()
+                else:
+                    raise ValueError(f"Unsupported platformName: {platform_name}")
             else:
-                action = TouchAction(driver)
-                action.press(element).release().perform()
+                raise ValueError(f"Unsupported action: {action}")
 
-    def scroll_to_element_by_js(self, element, driver, flag, platform, is_highlight):
+        except Exception as e:
+            logging.error(f"Error performing mouse action '{action}' on {platform_name}: {e}", exc_info=True)
+
+    def scroll_to_element_by_js(self, element, driver, flag=True, platform="WEB", is_highlight=False):
         """
-          Scrolls to the specified Selenium Webdriver element using JavaScript.
+        Scrolls to the specified Selenium WebDriver element using JavaScript.
 
-          Args:
-              element: The Selenium Webdriver element to scroll to.
-              driver: The WebDriver instance.
-              flag: A flag indicating whether scrolling was successful.
-              platform: The platform name.
-              is_highlight: Flag to determine if highlighting should be applied.
+        Args:
+            element: The Selenium WebDriver element to scroll to.
+            driver: The WebDriver instance.
+            flag: A flag indicating whether to raise an error if scrolling fails. Defaults to True.
+            platform: The platform name, only "WEB" is supported. Defaults to "WEB".
+            is_highlight: Flag to determine if highlighting should be applied. Defaults to False.
 
-          Returns:
-              None
-          """
-        if platform == 'WEB':
-            try:
-                driver.execute_script(
-                    "arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });", element)
-                self.highlight(element, 0.3, is_highlight)
-            except:
-                assert flag, f'can not scroll to element {element}'
-        else:
-            assert True, f'feature scroll to element by javascript only support for Web environment'
+        Returns:
+            None
 
-    def scroll_to_element(self, element, driver, flag, platform, is_highlight):
+        Raises:
+            AssertionError: If scrolling fails or if the platform is unsupported.
         """
-           Scroll to the specified element on the webpage.
+        try:
+            # Validate platform
+            if platform.upper() != "WEB":
+                raise AssertionError(
+                    f"Scroll to element using JavaScript is only supported for the WEB platform. Provided: {platform}"
+                )
 
-           Args:
-               element: The Selenium Webdriver element to scroll to.
-               driver: The WebDriver instance.
-               platform: The platform name (default is 'WEB').
-               is_smooth_scroll: Flag to enable smooth scrolling (default is True).
+            # Execute JavaScript to scroll to the element
+            driver.execute_script(
+                "arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });", element
+            )
 
-           Returns:
-               None
-           """
-        if platform == 'WEB':
-            try:
-                ActionChains(driver).scroll_to_element(element).perform()
+            # Optionally highlight the element after scrolling
+            if is_highlight:
                 self.highlight(element, 0.3, is_highlight)
-            except:
-                try:
-                    logger.info(f'can not scroll to element {element} trying to scroll by javascript')
-                    self.scroll_to_element_by_js(element, driver, flag, platform, is_highlight)
-                except:
-                    assert flag, f'can not scroll to element {element}'
+
+            logging.info(f"Successfully scrolled to the element: {element}")
+
+        except Exception as e:
+            logging.error(f"Failed to scroll to the element: {element}. Error: {e}", exc_info=True)
+            if flag:
+                raise AssertionError(f"Failed to scroll to element: {element}") from e
+
+    def scroll_to_element(self, element, driver, flag=True, platform="WEB", is_highlight=False):
+        """
+        Scrolls to the specified element on the webpage using Selenium or JavaScript.
+
+        Args:
+            element: The Selenium WebDriver element to scroll to.
+            driver: The WebDriver instance.
+            flag: A flag indicating whether to raise an error if scrolling fails. Defaults to True.
+            platform: The platform name, only 'WEB' is supported. Defaults to 'WEB'.
+            is_highlight: Flag to enable highlighting after scrolling. Defaults to False.
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: If scrolling fails and the flag is set to True.
+        """
+        if platform.upper() != "WEB":
+            raise AssertionError(f"Scroll to element is only supported for the WEB platform. Provided: {platform}")
+
+        try:
+            # Try scrolling to the element using ActionChains
+            logging.info(f"Attempting to scroll to element using ActionChains: {element}")
+            ActionChains(driver).scroll_to_element(element).perform()
+
+            # Optionally highlight the element
+            if is_highlight:
+                self.highlight(element, 0.3, is_highlight)
+
+        except Exception as e:
+            logging.warning(
+                f"ActionChains scroll failed for element {element}. Attempting JavaScript scroll. Error: {e}")
+
+            # Fallback to JavaScript scrolling
+            try:
+                self.scroll_to_element_by_js(element, driver, flag, platform, is_highlight)
+            except Exception as js_e:
+                logging.error(f"JavaScript scroll also failed for element {element}. Error: {js_e}")
+                if flag:
+                    raise AssertionError(f"Failed to scroll to element: {element}") from js_e
 
     def switch_to_frame(self, driver, element_page, wait, device, status):
         try:
@@ -1095,14 +1202,53 @@ class common_device:
             print(f'Failed to switch to frame: {e}')
 
     def switch_to_frame_by_index(self, driver, index):
+        """
+        Switches to a frame by its index.
+
+        Args:
+            driver: The WebDriver instance.
+            index: The index of the frame to switch to.
+
+        Returns:
+            None
+        """
         try:
-            driver.switch_to.frame(int(index))
+            # Ensure index is an integer
+            index = int(index)
+
+            # Attempt to switch to the frame using the index
+            driver.switch_to.frame(index)
+            logging.info(f"Successfully switched to frame with index {index}")
+
+        except ValueError as e:
+            # Handle the case where the index is not a valid integer
+            self._handle_error(f"Index value must be an integer, got {type(index)}: {index}", e)
+
         except NoSuchFrameException as e:
-            print(f'Frame with index {index} not found: {e}')
+            # Handle the case where the frame with the given index is not found
+            self._handle_error(f"Frame with index {index} not found.", e)
+
+        except WebDriverException as e:
+            # Handle other WebDriver related exceptions
+            self._handle_error(f"Failed to switch to frame with index {index}.", e)
+
         except Exception as e:
-            print(f'Failed to switch to frame with index {index}: {e}')
-        except IndexError as e:
-            print(f'Index must be integer {index}: {e}')
+            # Catch any other unexpected exceptions
+            self._handle_error(f"Unexpected error occurred while switching to frame with index {index}.", e)
+
+    def _handle_error(self, message, exception):
+        """
+        Logs an error and raises a RuntimeError with the provided message and exception.
+
+        Args:
+            message: The error message to log and raise.
+            exception: The exception to log and raise.
+
+        Raises:
+            RuntimeError: Always raises a RuntimeError with the given message.
+        """
+        logging.error(f"{message} Error: {exception}", exc_info=True)
+        raise RuntimeError(message) from exception
 
     def switch_to_tab_by_index(self, driver, index):
         """
