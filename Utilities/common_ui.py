@@ -5,7 +5,7 @@ from appium.webdriver.common.touch_action import TouchAction
 from faker import Faker
 from selenium.common import NoSuchElementException, NoSuchFrameException, NoSuchWindowException, \
     StaleElementReferenceException, ElementNotInteractableException, InvalidElementStateException, \
-    ElementNotVisibleException, ElementClickInterceptedException
+    ElementNotVisibleException, ElementClickInterceptedException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -25,9 +25,72 @@ class common_device:
     count_number = 0
 
     def __init__(self):
+        pass
+
+    def check_att_is_exist(self, obj_action_elements, key, default=None):
+        return obj_action_elements.get(key, default)
+
+    def action_page(
+            self, element_page, action, driver, value, wait, dict_save_value, device, context, count_number=0
+    ):
+        """
+        Executes a specified action on a web element.
+
+        Args:
+            element_page (dict): Element details such as locator strategy and value.
+            action (str): The action to perform (e.g., 'click', 'type').
+            driver (WebDriver): Selenium WebDriver instance.
+            value (str): Value to use for certain actions (e.g., typing).
+            wait (WebDriverWait): Explicit wait object.
+            dict_save_value (dict): Context dictionary for dynamic value processing.
+            device (str): Target device context.
+            context (object): Test context with configurations like highlighting.
+            count_number (int): Retry count for handling exceptions.
+        """
+        try:
+            # Locate the element
+            element = self.get_element_by_from_device(element_page, device, driver)
+            logger.info(f"Performing '{action}' on element with locator: {element_page.get('value')}")
+
+            # Highlight the element if enabled in the context
+            if getattr(context, "highlight", False):
+                self.highlight(element, 0.3, context.highlight)
+
+            # Process the value if needed
+            if value:
+                value = procees_value().get_value(value, dict_save_value)
+                value = get_test_data_for(value, dict_save_value)
+
+            # Ensure ACTIONS_MAP is initialized
+            if not hasattr(self, "ACTIONS_MAP"):
+                self._initialize_actions_map()
+
+            # Check if the action is supported and execute it
+            if action in self.ACTIONS_MAP:
+                action_function = self.ACTIONS_MAP[action]
+                self._execute_action(action_function, action, element, driver, wait, value, device, element_page)
+                logger.info(f"Action '{action}' successfully performed.")
+            else:
+                logger.error(f"Unsupported action: {action}")
+                raise AssertionError(f"Action '{action}' is not supported by the framework.")
+        except (ElementNotInteractableException, StaleElementReferenceException, ElementClickInterceptedException) as e:
+            logger.warning(f"Retrying due to known interaction issue ({type(e).__name__}): {str(e)}")
+            self.handle_element_not_interactable_exception(
+                element_page, action, driver, value, wait, dict_save_value, device, context, count_number
+            )
+        except InvalidElementStateException as e:
+            logger.error(f"Invalid state for element during action '{action}': {str(e)}")
+            self.handle_invalid_element_state_exception(value, element_page, device, driver, action)
+        except Exception as e:
+            logger.error(f"Unexpected error performing '{action}' on element: {str(e)}")
+            raise
+
+    def _initialize_actions_map(self):
+        """Initializes the ACTIONS_MAP with supported actions."""
         self.ACTIONS_MAP = {
-            "click": lambda element, wait, element_page, device, driver: self.click_action(element, wait, element_page,
-                                                                                           device, driver),
+            "click": lambda element, wait, element_page, device, driver: self.click_action(
+                element, wait, element_page, device, driver
+            ),
             "double-click": lambda element, driver: ActionChains(driver).double_click(element).perform(),
             "right-click": lambda element, driver: ActionChains(driver).context_click(element).perform(),
             "select": lambda element, value: Select(element).select_by_visible_text(value),
@@ -38,52 +101,35 @@ class common_device:
             "scroll": lambda element, driver, device: self.scroll_to_element(element, driver, False, device, False),
         }
 
-    def check_att_is_exist(self, obj_action_elements, key, default=None):
-        return obj_action_elements.get(key, default)
-
-    def action_page(
-            self, element_page, action, driver, value, wait, dict_save_value, device, context, count_number=0
-    ):
+    def _execute_action(self, action_function, action, element, driver, wait, value, device, element_page):
         """
-        Executes a specified action on a web element.
+        Executes the appropriate action based on the provided function and parameters.
+
+        Args:
+            action_function (callable): The function to execute for the action.
+            action (str): The action being performed.
+            element (WebElement): The target web element.
+            driver (WebDriver): Selenium WebDriver instance.
+            wait (WebDriverWait): Explicit wait object.
+            value (str): Value to use for certain actions.
+            device (str): Target device context.
+            element_page (dict): Element details such as locator strategy and value.
         """
-        try:
-            # Locate the element
-            element = self.get_element_by_from_device(element_page, device, driver)
-            logger.info(f"Performing '{action}' on element with locator: {element_page.get('value')}")
-
-            # Highlight the element
-            if hasattr(context, "highlight") and context.highlight:
-                self.highlight(element, duration=0.3, highlight=context.highlight)
-
-            # Process the value
-            if value:
-                value = procees_value().get_value(value, dict_save_value)
-                value = get_test_data_for(value, dict_save_value)
-
-            # Execute the action
-            if action in self.ACTIONS_MAP:
-                if action in {"type", "text", "select"}:  # Actions requiring a value
-                    self.ACTIONS_MAP[action](element, value)
-                elif action in {"click", "double-click", "right-click", "hover-over", "scroll"}:  # No `value` needed
-                    self.ACTIONS_MAP[action](element, wait, element_page, device, driver)
-                elif action == "clear":  # Clear action needs only the element
-                    self.ACTIONS_MAP[action](element)
-                logger.info(f"Action '{action}' successfully performed.")
-            else:
-                logger.error(f"Unsupported action: {action}")
-                raise AssertionError(f"Action '{action}' is not supported by the framework.")
-            except (ElementNotInteractableException, StaleElementReferenceException, ElementClickInterceptedException) as e:
-                logger.warning(f"Retrying due to known interaction issue ({type(e).__name__}): {str(e)}")
-                self.handle_element_not_interactable_exception(
-                    element_page, action, driver, value, wait, dict_save_value, device, context, count_number
-                )
-        except InvalidElementStateException as e:
-            logger.error(f"Invalid state for element during action '{action}': {str(e)}")
-            self.handle_invalid_element_state_exception(value, element_page, device, driver, action)
-        except Exception as e:
-            logger.error(f"Unexpected error performing '{action}' on element: {str(e)}")
-            raise
+        if action in {"type", "text", "select"}:
+            action_function(element, value)
+        elif action in {"double-click", "right-click"}:
+            action_function(element, driver)
+        elif action == "hover-over":
+            action_function(element, driver, action, device)
+        elif action == "scroll":
+            action_function(element, driver, device)
+        elif action == "click":
+            action_function(element, wait, element_page, device, driver)
+        elif action == "clear":
+            action_function(element)
+        else:
+            logger.error(f"Unhandled action: {action}")
+            raise AssertionError(f"Action '{action}' is not implemented.")
 
     def click_action(self, element, wait, element_page, device, driver):
         """
@@ -148,34 +194,19 @@ class common_device:
         logger.info(f"Waiting for element '{element_page['value']}' to have status '{status}'")
 
         try:
-            # Status mapping for WebDriverWait conditions
-            status_map = {
-                "DISPLAYED": lambda: WebDriverWait(driver, wait).until(
-                    ec.visibility_of_element_located(locator_from_wait)),
-                "NOT_DISPLAYED": lambda: WebDriverWait(driver, wait).until(
-                    ec.invisibility_of_element_located(locator_from_wait)),
-                "ENABLED": lambda: WebDriverWait(driver, wait).until(ec.element_to_be_clickable(locator_from_wait)),
-                "NOT_ENABLED": lambda: WebDriverWait(driver, wait).until_not(
-                    ec.element_to_be_clickable(locator_from_wait)),
-                "EXISTED": lambda: WebDriverWait(driver, wait).until(lambda _: len(
-                    self.get_list_element_by_from_device(element_page, device, driver)) > 0),
-                "NOT_EXISTED": lambda: WebDriverWait(driver, wait).until(lambda _: len(
-                    self.get_list_element_by_from_device(element_page, device, driver)) == 0),
-                "SELECTED": lambda: WebDriverWait(driver, wait).until(
-                    ec.element_located_to_be_selected(locator_from_wait)),
-                "NOT_SELECTED": lambda: WebDriverWait(driver, wait).until_not(
-                    ec.element_located_to_be_selected(locator_from_wait)),
-            }
-
-            # Execute the condition for the specified status
-            if status in status_map:
-                status_map[status]()
-            else:
+            if not hasattr(self, "STATUS_CONDITIONS"):
+                self._initialize_status_conditions()
+            if status not in self.STATUS_CONDITIONS:
                 raise ValueError(f"Unsupported status: {status}")
 
+            condition = self.STATUS_CONDITIONS[status]
+            # Status mapping for WebDriverWait conditions
+            if status in ["EXISTED", "NOT_EXISTED"]:
+                condition(element_page, driver, device, wait)
+            else:
+                condition(driver, wait, locator_from_wait)
             logger.info(f"Element '{element_page['value']}' successfully achieved status '{status}'")
             return "PASS"
-
         except Exception as e:
             # Log the error
             logger.error(f"Failed to wait for element '{element_page['value']}' to have status '{status}': {str(e)}")
@@ -183,6 +214,46 @@ class common_device:
             assert flag, f"Failed to wait for element '{element_page['value']}' to have status '{status}': {str(e)}"
             if flag:
                 return "SKIP"
+
+    def _initialize_status_conditions(self):
+        # Define status conditions once as a class-level dictionary
+        self.STATUS_CONDITIONS = {
+            "DISPLAYED": lambda driver, wait, locator: self.wait_displayed(locator, driver, wait),
+            "NOT_DISPLAYED": lambda driver, wait, locator: self.wait_not_displayed(locator, driver, wait),
+            "ENABLED": lambda driver, wait, locator: self.wait_enabled(locator, driver, wait),
+            "NOT_ENABLED": lambda driver, wait, locator: self.wait_not_enabled(locator, driver, wait),
+            "EXISTED": lambda element_page, driver, device, wait: self.wait_existed(element_page, driver, device, wait),
+            "NOT_EXISTED": lambda element_page, driver, device, wait: self.wait_not_existed(element_page, driver,
+                                                                                            device, wait),
+            "SELECTED": lambda driver, wait, locator: self.wait_selected(locator, driver, wait),
+            "NOT_SELECTED": lambda driver, wait, locator: self.wait_not_selecte(locator, driver, wait),
+        }
+
+    def wait_displayed(self, locator, driver, wait):
+        WebDriverWait(driver, wait).until(ec.visibility_of_element_located(locator))
+
+    def wait_not_displayed(self, locator, driver, wait):
+        WebDriverWait(driver, wait).until(ec.invisibility_of_element_located(locator))
+
+    def wait_enabled(self, locator, driver, wait):
+        WebDriverWait(driver, wait).until(ec.element_to_be_clickable(locator))
+
+    def wait_not_enabled(self, locator, driver, wait):
+        WebDriverWait(driver, wait).until_not(ec.element_to_be_clickable(locator))
+
+    def wait_existed(self, element_page, driver, device, wait):
+        WebDriverWait(driver, wait).until(
+            lambda _: len(self.get_list_element_by_from_device(element_page, device, driver)) > 0)
+
+    def wait_not_existed(self, element_page, driver, device, wait):
+        WebDriverWait(driver, wait).until(
+            lambda _: len(self.get_list_element_by_from_device(element_page, device, driver)) == 0)
+
+    def wait_selected(self, locator, driver, wait):
+        WebDriverWait(driver, wait).until(ec.element_located_to_be_selected(locator))
+
+    def wait_not_selecte(self, locator, driver, wait):
+        WebDriverWait(driver, wait).until_not(ec.element_located_to_be_selected(locator))
 
     def get_element(self, page, element, platform_name, dict_save_value):
         """
@@ -245,6 +316,7 @@ class common_device:
             raise ValueError("Platform name should be a non-empty string.")
         if dict_save_value is not None and not isinstance(dict_save_value, dict):
             raise TypeError("Expected 'dict_save_value' to be a dictionary or None.")
+
     def _extract_text_from_element(self, element, dict_save_value):
         """
         Extracts and processes the text condition from the element ID if present.
@@ -345,7 +417,7 @@ class common_device:
                 value = procees_value().get_value(value, dict_save_value)
                 if value:
                     element_yaml = self.get_element(page, arr_element[0]['id'] + " with text " + value, platform_name,
-                                                dict_save_value)
+                                                    dict_save_value)
                 else:
                     element_yaml = self.get_element(page, arr_element[0]['id'], platform_name,
                                                     dict_save_value)
@@ -398,7 +470,7 @@ class common_device:
                 value = match.group(1)
                 logger.debug(f"Value after regex extraction: '{value}'")
             # Save the value to the dictionary
-                # Save the extracted value into the dictionary
+            # Save the extracted value into the dictionary
             dict_save_value[f"KEY.{key}"] = value
             logger.info(f"Text saved successfully for key: 'KEY.{key}'")
             return dict_save_value
@@ -815,66 +887,116 @@ class common_device:
     #         logging.error(f"An error occurred: {e}")
     #         raise
 
-    def verify_value_in_element(self, element_page, expect, device, driver, is_highlight, wait):
+    def verify_value_in_element(self, element_page, expected_value, device, driver, is_highlight, wait):
+        """
+        Verifies that the value of an element matches the expected value.
+
+        Args:
+            element_page (dict): Element locator details (type and value).
+            expected_value (str): The expected value to compare against.
+            device (dict): Device information (e.g., platform details).
+            driver (WebDriver): The Selenium WebDriver instance.
+            is_highlight (bool): Whether to highlight the element for debugging.
+            wait (int): Maximum wait time in seconds.
+
+        Raises:
+            AssertionError: If the element is not found or the value does not match the expected value.
+        """
+        element_name = element_page.get("value", "unknown")
         try:
-            locator_from_wait = common_device().get_locator_for_wait_from_device(element_page)
-            WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator_from_wait))
+            # Get the locator for waiting and wait until the element is present
+            locator = common_device().get_locator_for_wait_from_device(element_page)
+            logger.info(f"Waiting for element '{element_name}' to be present.")
+            WebDriverWait(driver, wait).until(ec.presence_of_element_located(locator))
+
+            # Find the element
             element = self.get_element_by_from_device(element_page, device, driver)
+
+            # Scroll to the element and optionally highlight it
             self.scroll_to_element_by_js(element, driver, True, device['platformName'], is_highlight)
-            value = self.get_value_element_form_device(element, device, element_page, driver)
-            logger.debug(f'value of the element is "{value}"')
-            logger.debug(f'values expected "{expect}"')
-            assert value == expect, f'value of the element is "{value}" not equal to values expected "{expect}"'
+
+            # Get the value of the element
+            actual_value = self.get_value_element_form_device(element, device, element_page, driver)
+            logger.debug(f"Actual value of the element: '{actual_value}'")
+            logger.debug(f"Expected value: '{expected_value}'")
+
+            # Verify the actual value matches the expected value
+            assert actual_value == expected_value, (
+                f"Value mismatch: Actual value is '{actual_value}', "
+                f"but expected '{expected_value}'."
+            )
+            logger.info(f"Value verification for element '{element_name}' passed.")
+        except TimeoutException:
+            logger.error(f"Timeout: Element '{element_name}' was not found within {wait} seconds.")
+            raise AssertionError(f"Timeout: Element '{element_name}' not found within {wait} seconds.")
         except NoSuchElementException:
-            logger.error('Element not found')
-            assert False, 'Element not found'
+            logger.error(f"Element '{element_name}' not found.")
+            raise AssertionError(f"Element '{element_name}' not found.")
+        except Exception as e:
+            logger.error(f"Unexpected error verifying value for element '{element_name}': {str(e)}")
+            raise AssertionError(f"Unexpected error verifying value for element '{element_name}'.") from e
 
     def verify_value_with_helpers(self, expected, helper, element_page, device, driver, is_highlight):
-        if helper in ['BACKGROUND-COLOR', 'COLOR', 'FONT_FAMILY', 'FONT_SIZE', 'FONT_WEIGHT', 'FONT_HEIGHT',
-                      'TEXT_ALIGN'] and expected and device['platformName'] != 'WEB':
-            assert False, f'framework only check {helper} for WEB env, not support for native app'
-        if helper and expected:
-            element = self.get_element_by_from_device(element_page, device, driver)
-            self.scroll_to_element_by_js(element, driver, True, device['platformName'], is_highlight)
-            if helper == 'REGEX':
-                value_element = self.get_value_element_form_device(element, device, element_page, driver)
-                check_match_pattern(expected, value_element, 'value of element not match with pattern')
-            elif helper == 'STARTS_WITH':
-                value_element = self.get_value_element_form_device(element, device, element_page, driver)
-                assert value_element.startswith(expected), f'value of element is {expected} not start with {expected}'
-            elif helper == 'ENDS_WITH':
-                value_element = self.get_value_element_form_device(element, device, element_page, driver)
-                assert value_element.endswith(expected), f'value of element is {expected} not ends with {expected}'
-            elif helper == 'CONTAINS':
-                value_element = self.get_value_element_form_device(element, device, element_page, driver)
-                assert expected in value_element, f'value of element is {value_element} not contains {expected}'
-            elif helper == 'BACKGROUND-COLOR':
-                bg_color = self.get_value_attribute_element_form_device(element, device, 'background-color', True)
-                assert bg_color == expected.lower(), f'element there is no background color same with {expected}'
-            elif helper == 'COLOR':
-                color = self.get_value_attribute_element_form_device(element, device, 'color', True)
-                assert color == expected.lower(), f'element there is no color same with {expected}'
-            elif helper == 'FONT_FAMILY':
-                value_attribute = self.get_value_attribute_element_form_device(element, device, 'font-family', True)
-                assert value_attribute == expected.lower(), f'element there is no font family same with {expected}'
-            elif helper == 'FONT_SIZE':
-                value_attribute = self.get_value_attribute_element_form_device(element, device, 'font-size', True)
-                assert value_attribute == expected.lower(), f'font family of element not same with {expected}'
-            elif helper == 'FONT_WEIGHT':
-                value_attribute = self.get_value_attribute_element_form_device(element, device, 'font-weight', True)
-                assert value_attribute == expected.lower(), f'font weight of element not same with {expected}'
-            elif helper == 'FONT_HEIGHT':
-                value_attribute = self.get_value_attribute_element_form_device(element, device, 'height', True)
-                assert value_attribute == expected.lower(), f'font height of element not same with {expected}'
-            elif helper == 'TEXT_ALIGN':
-                value_attribute = self.get_value_attribute_element_form_device(element, device, 'text-align', True)
-                assert value_attribute == expected.lower(), f'font align of element not same with {expected}'
-            else:
-                value_attribute = self.get_value_attribute_element_form_device(element, device, helper, False)
-                assert value_attribute == expected, f'value attribute of element not same with {expected}, need to check attribute of element'
-        elif helper and expected == '':
-            logger.error('The helper and value columns must both contain a value simultaneously.')
-            assert False, f'The helper and value columns must both contain a value simultaneously.  helper = {helper}, value = {expected}'
+        """
+        Verifies an element's value or attribute using helper conditions.
+
+        Args:
+            expected (str): The expected value or pattern.
+            helper (str): The helper condition to validate (e.g., 'CONTAINS', 'COLOR').
+            element_page (dict): Element locator details.
+            device (dict): Device information (e.g., platform details).
+            driver (WebDriver): The Selenium WebDriver instance.
+            is_highlight (bool): Whether to highlight the element for debugging.
+
+        Raises:
+            AssertionError: If the validation fails.
+        """
+        unsupported_helpers = [
+            'BACKGROUND-COLOR', 'COLOR', 'FONT_FAMILY', 'FONT_SIZE',
+            'FONT_WEIGHT', 'FONT_HEIGHT', 'TEXT_ALIGN'
+        ]
+
+        if helper in unsupported_helpers and device['platformName'] != 'WEB':
+            raise AssertionError(f"Framework only supports '{helper}' for WEB environments, not native apps.")
+
+        if not helper or expected == '':
+            logger.error("The helper and expected value must both be provided.")
+            raise AssertionError(f"Both helper and expected value are required. Helper: {helper}, Expected: {expected}")
+
+        # Retrieve the element
+        element = self.get_element_by_from_device(element_page, device, driver)
+        self.scroll_to_element_by_js(element, driver, True, device['platformName'], is_highlight)
+
+        # Retrieve element value or attribute based on the helper
+        if helper in ["REGEX", "STARTS_WITH", "ENDS_WITH", "CONTAINS"]:
+            value_element = self.get_value_element_form_device(element, device, element_page, driver)
+
+            if helper == "REGEX":
+                check_match_pattern(expected, value_element, "Value of element does not match the expected pattern.")
+            elif helper == "STARTS_WITH":
+                assert value_element.startswith(expected), (
+                    f"Value '{value_element}' does not start with '{expected}'."
+                )
+            elif helper == "ENDS_WITH":
+                assert value_element.endswith(expected), (
+                    f"Value '{value_element}' does not end with '{expected}'."
+                )
+            elif helper == "CONTAINS":
+                assert expected in value_element, (
+                    f"Value '{value_element}' does not contain '{expected}'."
+                )
+        else:
+            attribute_name = helper.lower().replace("_", "-")  # Map helper to CSS-like attribute name
+            is_css_property = helper in unsupported_helpers
+            value_attribute = self.get_value_attribute_element_form_device(
+                element, device, attribute_name, is_css_property
+            )
+
+            assert value_attribute == expected.lower(), (
+                f"'{attribute_name}' of element is '{value_attribute}', but expected '{expected}'."
+            )
+
+        logger.info(f"Validation using helper '{helper}' for element '{element_page.get('value', 'unknown')}' passed.")
 
     def highlight(self, element, time, is_hightlight):
         """
@@ -1165,7 +1287,8 @@ class common_device:
             logger.error(f"fail when execute javascript file {javascript_file}")
             assert False, f"fail when execute javascript file {javascript_file}"
 
-    def handle_element_not_interactable_exception(self, element_page, action, driver, value, wait, dict_save_value, device, context, count_number=0):
+    def handle_element_not_interactable_exception(self, element_page, action, driver, value, wait, dict_save_value,
+                                                  device, context, count_number=0):
         logger.debug(f'handle element not interactable exception {element_page}')
         element = self.get_element_by_from_device(element_page, device, driver)
         try:
@@ -1271,20 +1394,23 @@ class common_device:
                                                  dict_save_value, platform_name, context, count_number=0)
                         is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action, result)
                     except Exception as e:
-                        logger.error("can not execute action % with element have value  %s in framework", type_action, locator['value'])
+                        logger.error("can not execute action % with element have value  %s in framework", type_action,
+                                     locator['value'])
                         assert False, "can not execute action with element have value" + locator + "in framework"
                 elif self.check_field_exist(action_elements, 'condition') and self.check_field_exist(action_elements,
                                                                                                      'timeout') is False:
                     try:
-                        result = self.wait_element_for_status(locator, action_elements['condition'], driver, platform_name, wait,
-                                                     False)
+                        result = self.wait_element_for_status(locator, action_elements['condition'], driver,
+                                                              platform_name, wait,
+                                                              False)
                         if self.check_field_exist(action_elements, 'inputType'):
                             type_action = action_elements['inputType']
                             if type_action in ["click", "text", "scroll"]:
                                 self.action_page(locator, type_action, driver, value, wait, dict_save_value,
                                                  platform_name, context, count_number=0)
                             else:
-                                self.action_page(locator, "text", driver, type_action, wait, dict_save_value, platform_name,
+                                self.action_page(locator, "text", driver, type_action, wait, dict_save_value,
+                                                 platform_name,
                                                  context, count_number=0)
                         else:
                             self.wait_element_for_status(locator, action_elements['condition'], driver, platform_name,
@@ -1303,7 +1429,8 @@ class common_device:
                                 self.action_page(locator, type_action, driver, value, wait, dict_save_value,
                                                  platform_name, context, count_number=0)
                             else:
-                                self.action_page(locator, "text", driver, type_action, wait, dict_save_value, platform_name,
+                                self.action_page(locator, "text", driver, type_action, wait, dict_save_value,
+                                                 platform_name,
                                                  context, count_number=0)
                             is_break = self.check_status_to_break_loop(is_loop, index, arr_list_action)
                     except Exception as e:
@@ -1322,9 +1449,8 @@ class common_device:
         except Exception as e:
             logger.warning(f'{str(e)}, ignore this error as this field is not exist')
             return False
+
     def check_status_to_break_loop(self, is_loop, index, array, result):
         if index == len(array) - 1 and is_loop and result in ["PASS"]:
             return True
         return False
-
-
