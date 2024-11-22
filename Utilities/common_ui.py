@@ -148,9 +148,9 @@ class common_device:
         """Handles hovering over an element."""
         self.mouse_action(element, driver, action, device)
 
-    def _handle_scroll_action(self, element, driver, device):
+    def _handle_scroll_action(self, element, driver, flag, device, is_highlight):
         """Handles scrolling to an element."""
-        self.scroll_to_element(element, driver, flag=False, device=device, is_highlight=False)
+        self.scroll_to_element(element, driver, flag, device, is_highlight)
     def _execute_action(self, action_function, action, element, driver, wait, value, device, element_page):
         """
         Executes the appropriate action based on the provided function and parameters.
@@ -172,7 +172,7 @@ class common_device:
         elif action == "hover-over":
             action_function(element, driver, action, device)
         elif action == "scroll":
-            action_function(element, driver, device)
+            action_function(element, driver, False, device , False)
         elif action == "click":
             action_function(element, wait, element_page, device, driver)
         elif action == "clear":
@@ -1186,8 +1186,8 @@ class common_device:
                 self.scroll_to_element_by_js(element, driver, flag, platform, is_highlight)
             except Exception as js_e:
                 logging.error(f"JavaScript scroll also failed for element {element}. Error: {js_e}")
-                if flag:
-                    raise AssertionError(f"Failed to scroll to element: {element}") from js_e
+                assert flag, f"Failed to scroll to element: {element}"
+
 
     def switch_to_frame(self, driver, element_page, wait, device, status):
         try:
@@ -1588,12 +1588,25 @@ class common_device:
             logger.error(f'Not Found Action {action_id} in page yaml')
             assert False, "Not Found Action " + action_id + " in page yaml"
 
-    def check_field_exist(self, dict, key):
+    def check_field_exist(self, dictionary, key):
+        """
+        Checks if a specific key exists in a dictionary and has a non-empty value.
+
+        Args:
+            dictionary (dict): The dictionary to check.
+            key (str): The key to look for in the dictionary.
+
+        Returns:
+            bool: True if the key exists and has a value, False otherwise.
+
+        Logs:
+            A warning if the key does not exist or if accessing it raises an exception.
+        """
         try:
-            if dict[key]:
-                return True
+            # Check if the key exists and has a non-empty value
+            return bool(dictionary.get(key))
         except Exception as e:
-            logger.warning(f'{str(e)}, ignore this error as this field is not exist')
+            logger.warning(f"Error checking field '{key}': {str(e)}. This field does not exist or caused an error.")
             return False
 
     def check_status_to_break_loop(self, is_loop, index, array, result):
