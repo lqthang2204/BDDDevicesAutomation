@@ -1,0 +1,66 @@
+elements:
+  - &activity
+    id: activity
+    description: Continue button
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: IOS
+        type: PREDICATE
+        value: label == "Activity"
+  - &Body_Measurements
+    id: Body_Measurements
+    description: Continue button
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: IOS
+        type: PREDICATE
+        value: label == "Body Measurements"
+  - &Cycle_Tracking
+    id: Cycle_Tracking
+    description: Continue button
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: IOS
+        type: PREDICATE
+        value: label == "Cycle Tracking"
+  - &Hearing
+    id: Hearing
+    description: Continue button
+    locators:
+      - device: WEB
+        type: ID
+        value: com.android.chrome:id/signin_fre_dismiss_button
+      - device: ANDROID
+        type: ACCESSIBILITY_ID
+        value: Add alarm
+      - device: IOS
+        type: PREDICATE
+        value: label == "Hearing"
+actions:
+  - id: verify-fields
+    description: action perform verify
+    actionElements:
+      - element: *activity
+        condition: ENABLED
+      - element: *Body_Measurements
+        condition: ENABLED
+      - element: *Cycle_Tracking
+        condition: ENABLED
+      - element: *Hearing
+        condition: ENABLED
+        inputType: click

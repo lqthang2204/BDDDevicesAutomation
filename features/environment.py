@@ -14,8 +14,8 @@ def before_all(context):
     """
     Initializes the context with necessary values from the configuration file.
     """
-    image_attachments.set_attachments_condition(context, AttachmentsCondition.ONLY_ON_FAILURE)
     try:
+        image_attachments.set_attachments_condition(context, AttachmentsCondition.ONLY_ON_FAILURE)
         # Initialize dictionaries and variables in the context
         context.dict_save_value = {}
         context.driver = None
@@ -157,16 +157,8 @@ def before_scenario(context, scenario):
             if len(context.device) == 0:
                 logger.error('Framework only is support for chrome, firefox and safari..., trying open with chrome')
             context.device = context.device[0]
-            match context.device['platformName'].upper():
-                case "WEB":
-                    pass
-                case "ANDROID":
-                    pass
-                case "IOS":
-                    pass
-                case fail:
-                    logger.error(f'Framework only is support for chrome, firefox and safari..., trying open with chrome')
-                    assert False, "Framework only is support for chrome, firefox and safari..., trying open with chrome"
+            if not context.device['platformName'].upper() in ["WEB", "ANDROID", "IOS"]:
+                logger.error(f'Framework only is support for web(firefox, chrome, safari) android and ios..., trying open with chrome')
             context.url = context.env['link']
 
         context.apiurls = context.env['apifacets']['link']
@@ -245,7 +237,7 @@ def after_scenario(context, scenario):
                 print('can not update status for sauce lab')
                 assert True  # Assert to fail the scenario
         # Quit the driver
-        context.driver.quit()
+        # context.driver.quit()
     # Log the ending of the scenario
     logger.info(f'Scenario {scenario.name} Ended')
 
@@ -257,6 +249,8 @@ def after_all(context):
     if context.driver and context.platform == 'WEB':
         logger.info('Closing driver from After_ALL')
         context.driver.close()
+
+
 def convert_string_to_bool(value):
     """
     Converts a string value to a boolean value.

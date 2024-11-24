@@ -27,9 +27,9 @@ class ManagementFileAndroid:
             element = driver.find_element(AppiumBy.CSS_SELECTOR, value)
         elif type_element.__eq__("ACCESSIBILITY_ID"):
             element = driver.find_element(AppiumBy.ACCESSIBILITY_ID, value)
-        elif type_element.__eq__("IOS_PREDICATE"):
+        elif type_element.__eq__("PREDICATE"):
             element = driver.find_element(AppiumBy.IOS_PREDICATE, value)
-        elif type_element.__eq__("IOS_CLASS_CHAIN"):
+        elif type_element.__eq__("CLASS_CHAIN"):
             if value[:1] == '/':
                 value = value[1:]
             element = driver.find_element(AppiumBy.IOS_CLASS_CHAIN, value)
@@ -56,9 +56,9 @@ class ManagementFileAndroid:
             elements = driver.find_elements(AppiumBy.CSS_SELECTOR, value)
         elif type_element.__eq__("ACCESSIBILITY_ID"):
             elements = driver.find_elemen(AppiumBy.ACCESSIBILITY_ID, value)
-        elif type_element.__eq__("IOS_PREDICATE"):
+        elif type_element.__eq__("PREDICATE"):
             elements = driver.find_elemen(AppiumBy.IOS_PREDICATE, value)
-        elif type_element.__eq__("IOS_CLASS_CHAIN"):
+        elif type_element.__eq__("CLASS_CHAIN"):
             if value[:1] == '/':
                 value = value[1:]
             elements = driver.find_elemen(AppiumBy.IOS_CLASS_CHAIN, value)
@@ -99,9 +99,9 @@ class ManagementFileAndroid:
             locator = (AppiumBy.CSS_SELECTOR, value)
         elif type.__eq__("ACCESSIBILITY_ID"):
             locator = (AppiumBy.ACCESSIBILITY_ID, value)
-        elif type.__eq__("IOS_PREDICATE"):
+        elif type.__eq__("PREDICATE"):
             locator = (AppiumBy.IOS_PREDICATE, value)
-        elif type.__eq__("IOS_CLASS_CHAIN"):
+        elif type.__eq__("CLASS_CHAIN"):
             if value[:1] == '/':
                 value = value[1:]
             locator = (AppiumBy.IOS_CLASS_CHAIN, value)

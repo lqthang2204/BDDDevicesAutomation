@@ -203,3 +203,4 @@ elements:
       - device: IOS
         type: XPATH
         value: (//XCUIElementTypeStaticText[@name="test-Item title"])[4]
+

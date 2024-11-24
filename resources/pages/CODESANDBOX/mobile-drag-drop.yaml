@@ -6,7 +6,7 @@ elements:
         type: CSS
         value: cr-link-row[id*='importDataDialogTrigger']
       - device: IOS
-        type: IOS_PREDICATE
+        type: PREDICATE
         value: label == "Click to Run"
       - device: ANDROID
         type: XPATH

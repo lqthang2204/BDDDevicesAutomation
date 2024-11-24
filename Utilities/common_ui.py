@@ -871,7 +871,7 @@ class common_device:
             # Filter for the target element by ID
             arr_element = [el for el in page.get('elements', []) if el['id'] == element_id]
             if not arr_element:
-                error_msg = f"Element with ID {element_id} not found in {page_present}.yaml"
+                error_msg = f"Element with ID {element_id} not found in dictionary {page_present}"
                 logger.error(error_msg)
                 raise AssertionError(error_msg)
 
@@ -963,7 +963,8 @@ class common_device:
             element = self.get_element_by_from_device(element_page, device, driver)
 
             # Scroll to the element and optionally highlight it
-            self.scroll_to_element_by_js(element, driver, True, device['platformName'], is_highlight)
+            if device['platformName'].upper() == "WEB":
+                self.scroll_to_element_by_js(element, driver, True, device['platformName'], is_highlight)
 
             # Get the value of the element
             actual_value = self.get_value_element_form_device(element, device, element_page, driver)
@@ -1127,22 +1128,20 @@ class common_device:
         """
         try:
             # Validate platform
-            if platform.upper() != "WEB":
-                raise AssertionError(
-                    f"Scroll to element using JavaScript is only supported for the WEB platform. Provided: {platform}"
+            if platform.upper() == "WEB":
+
+                # Execute JavaScript to scroll to the element
+                driver.execute_script(
+                    "arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });", element
                 )
 
-            # Execute JavaScript to scroll to the element
-            driver.execute_script(
-                "arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });", element
-            )
+                # Optionally highlight the element after scrolling
+                if is_highlight:
+                    self.highlight(element, 0.3, is_highlight)
 
-            # Optionally highlight the element after scrolling
-            if is_highlight:
-                self.highlight(element, 0.3, is_highlight)
-
-            logging.info(f"Successfully scrolled to the element: {element}")
-
+                logging.info(f"Successfully scrolled to the element: {element}")
+            else:
+                logger.info(f"Scroll to element is only supported for the WEB platform. Provided: {platform}")
         except Exception as e:
             logging.error(f"Failed to scroll to the element: {element}. Error: {e}", exc_info=True)
             if flag:
