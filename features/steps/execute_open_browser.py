@@ -223,7 +223,7 @@ class manage_hook_browser:
             config = manage_remote().read_config_remote()
 
             # Get browser options based on remote config
-            options = self.get_option_from_browser(context, config.get("remote", "browser"), device, table)
+            options = self.get_option_from_browser(context, config.get("drivers_config", "browser"), device, table)
 
             # Set browser version and platform name
             options.browser_version = 'latest'
