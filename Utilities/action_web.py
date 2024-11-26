@@ -255,7 +255,7 @@ class ManagementFile:
 
         # Create Shadow instance and configure explicit wait
         shadow = Shadow(driver)
-        shadow.set_explicit_wait(wait, polling_interval=0.2)
+        shadow.set_explicit_wait(wait, 0.2)
 
         try:
             element = self._find_shadow_element(shadow, locator_type, locator_value)
