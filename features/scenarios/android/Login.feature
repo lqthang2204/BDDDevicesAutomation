@@ -44,6 +44,7 @@ Feature: login mobile
           | file config |
           | capabilities_android_app_demo            |
     And I change the page spec to indexRN
+     And I wait for element username to be ENABLED
      And I click element username
      And I type "standard_user" into element username
      And I type "secret_sauce" into element password

@@ -139,6 +139,7 @@ Feature: orange HRM 2 web
     And I change the page spec to checkBoxPage
     And I wait for element option-button with text "Selenium" to be ENABLED
     And I click element option-button with text "Selenium"
+    And I wait for element option-button with text "Radio & Checkbox Demo" to be DISPLAYED
     And I wait for element option-button with text "Radio & Checkbox Demo" to be ENABLED
     And I click element option-button with text "Radio & Checkbox Demo"
     And I wait for element radio-one to be DISPLAYED

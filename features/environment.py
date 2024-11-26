@@ -6,6 +6,8 @@ from Utilities.read_configuration import read_configuration
 from project_runner import logger, project_folder
 from sauceclient import SauceClient, SauceException
 from steps.execute_open_mobile import manage_hook_mobile as manage_remote
+from behavex_images import image_attachments
+from behavex_images.image_attachments import AttachmentsCondition
 
 
 def before_all(context):
@@ -13,6 +15,7 @@ def before_all(context):
     Initializes the context with necessary values from the configuration file.
     """
     try:
+        image_attachments.set_attachments_condition(context, AttachmentsCondition.ONLY_ON_FAILURE)
         # Initialize dictionaries and variables in the context
         context.dict_save_value = {}
         context.driver = None
@@ -21,34 +24,124 @@ def before_all(context):
 
         # Read configuration file
         config_file_path = os.path.join(context.root_path, 'config_env.ini')
-        file = open(config_file_path, 'r')
-        context.config_env = configparser.RawConfigParser(allow_no_value=True)
-        context.config_env.read_file(file)
+        load_configuration(context, config_file_path)
 
-        # Get platform and highlighting info from config
-        context.platform = context.config_env.get("drivers_config", "platform").upper()
-        context.highlight = convert_string_to_bool(context.config_env.get("drivers_config", "is_highlight").lower())
+        # Set platform-specific values
+        context.platform = get_platform(context.config_env)
+        context.highlight = get_highlight_flag(context.config_env)
 
-        # Set project folder and stage name
-        context.project_folder = project_folder
-        context.stage_name = context.config_env.get("drivers_config", "stage").upper()
+        # Set stage and browser configurations
+        context.stage_name = get_stage_name(context.config_env)
+        context.browser = get_browser(context.config_env)
 
-        # Set browser based on config or default to chrome
-        if context.config_env.has_option("drivers_config", "browser"):
-            context.browser = context.config_env.get("drivers_config", "browser")
-        else:
-            context.browser = "chrome"
-
-        # Read environment specific configuration
+        # Load environment-specific configuration based on stage
         context.env = read_configuration().read(context.stage_name)
 
+        # Log the successful initialization
+        logger.info(
+            f"Context successfully initialized for platform: {context.platform}, stage: {context.stage_name}, browser: {context.browser}")
+
     except Exception as e:
-        # Log any errors that occur during initialization
-        logger.error(str(e))
+        # Log the exception and raise a RuntimeError to signal failure
+        logger.error(f"Error initializing context: {str(e)}")
+        raise RuntimeError(f"Failed to initialize context: {str(e)}")
 # def before_feature(context, feature):
     # rerun_failed_scenarios(context)
 
+def load_configuration(context, config_file_path):
+    """
+    Loads the configuration file and reads it into the context.
 
+    Args:
+        context (object): The context object to store the configuration.
+        config_file_path (str): The path to the configuration file.
+    """
+    if not os.path.exists(config_file_path):
+        logger.error(f"Configuration file not found: {config_file_path}")
+        raise FileNotFoundError(f"Configuration file not found: {config_file_path}")
+
+    logger.info(f"Loading configuration file: {config_file_path}")
+
+    # Open the config file safely using 'with'
+    with open(config_file_path, 'r') as file:
+        context.config_env = configparser.RawConfigParser(allow_no_value=True)
+        context.config_env.read_file(file)
+
+
+def get_platform(config_env):
+    """
+    Retrieves the platform information from the configuration file.
+
+    Args:
+        config_env (ConfigParser): The configuration object.
+
+    Returns:
+        str: The platform (uppercase).
+    """
+    try:
+        platform = config_env.get("drivers_config", "platform").upper()
+        logger.info(f"Platform set to: {platform}")
+        return platform
+    except Exception as e:
+        logger.error(f"Error retrieving platform configuration: {e}")
+        raise ValueError("Platform not found in configuration.")
+
+
+def get_highlight_flag(config_env):
+    """
+    Retrieves the 'is_highlight' flag from the configuration file and converts it to a boolean.
+
+    Args:
+        config_env (ConfigParser): The configuration object.
+
+    Returns:
+        bool: True if 'is_highlight' is set to 'true', otherwise False.
+    """
+    try:
+        highlight = convert_string_to_bool(config_env.get("drivers_config", "is_highlight").lower())
+        logger.info(f"Highlight flag set to: {highlight}")
+        return highlight
+    except Exception as e:
+        logger.error(f"Error retrieving highlight configuration: {e}")
+        raise ValueError("Highlight flag not found in configuration.")
+
+
+def get_stage_name(config_env):
+    """
+    Retrieves the stage name from the configuration file.
+
+    Args:
+        config_env (ConfigParser): The configuration object.
+
+    Returns:
+        str: The stage name (uppercase).
+    """
+    try:
+        stage_name = config_env.get("drivers_config", "stage").upper()
+        logger.info(f"Stage name set to: {stage_name}")
+        return stage_name
+    except Exception as e:
+        logger.error(f"Error retrieving stage name: {e}")
+        raise ValueError("Stage name not found in configuration.")
+
+
+def get_browser(config_env):
+    """
+    Retrieves the browser name from the configuration file, or defaults to 'chrome'.
+
+    Args:
+        config_env (ConfigParser): The configuration object.
+
+    Returns:
+        str: The browser name.
+    """
+    try:
+        browser = config_env.get("drivers_config", "browser", fallback="chrome")
+        logger.info(f"Browser set to: {browser}")
+        return browser
+    except Exception as e:
+        logger.error(f"Error retrieving browser configuration: {e}")
+        raise ValueError("Browser not found in configuration.")
 def before_scenario(context, scenario):
     """
     This function runs before a scenario is executed.
@@ -64,16 +157,8 @@ def before_scenario(context, scenario):
             if len(context.device) == 0:
                 logger.error('Framework only is support for chrome, firefox and safari..., trying open with chrome')
             context.device = context.device[0]
-            match context.device['platformName'].upper():
-                case "WEB":
-                    pass
-                case "ANDROID":
-                    pass
-                case "IOS":
-                    pass
-                case fail:
-                    logger.error(f'Framework only is support for chrome, firefox and safari..., trying open with chrome')
-                    assert False, "Framework only is support for chrome, firefox and safari..., trying open with chrome"
+            if not context.device['platformName'].upper() in ["WEB", "ANDROID", "IOS"]:
+                logger.error(f'Framework only is support for web(firefox, chrome, safari) android and ios..., trying open with chrome')
             context.url = context.env['link']
 
         context.apiurls = context.env['apifacets']['link']
@@ -120,12 +205,8 @@ def after_step(context, step):
         step (obj): The step object representing the current step being executed.
     """
     if step.status == 'failed' and hasattr(context, 'evidence_path'):
-        logger.error(f"Error occurred in step '{step.name}' of feature '{context.feature.name}'")
-        print(f"Error occurred in step '{step.name}' of feature '{context.feature.name}'")
-        current_time = datetime.datetime.now()
-        date_time = str(current_time.year) + '_' + str(current_time.month) + '_' + str(current_time.day) + '_' + str(
-            current_time.microsecond)
-        context.driver.get_screenshot_as_file(context.evidence_path + '/' + step.name + '_' + date_time + '.png')
+        screenshot = context.driver.get_screenshot_as_png()
+        image_attachments.attach_image_binary(context, screenshot)
 
 
 def after_scenario(context, scenario):
@@ -156,7 +237,7 @@ def after_scenario(context, scenario):
                 print('can not update status for sauce lab')
                 assert True  # Assert to fail the scenario
         # Quit the driver
-        context.driver.quit()
+        # context.driver.quit()
     # Log the ending of the scenario
     logger.info(f'Scenario {scenario.name} Ended')
 
@@ -168,6 +249,8 @@ def after_all(context):
     if context.driver and context.platform == 'WEB':
         logger.info('Closing driver from After_ALL')
         context.driver.close()
+
+
 def convert_string_to_bool(value):
     """
     Converts a string value to a boolean value.

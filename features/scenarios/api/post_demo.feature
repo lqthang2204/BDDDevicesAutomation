@@ -6,7 +6,7 @@ Feature: API POST demo one
   Scenario: DEMO for POST call in API one
     Given I set apifacet as SFCC-TOKEN without endpoint
     And I set form sfcc-token with below attributes
-    Then I trigger POST call with below attributes
+    Then I trigger POST call request with below attributes
     Then I verify response body with below attributes
       | FieldName      | FieldValue | Helpers          |
       | $.access_token |            | KEY.access_token |
@@ -29,7 +29,7 @@ Feature: API POST demo one
       | body.LoginEmail | KEY.unique-gmail   |
       | SecLoginEmail   | KEY.randomNumLen10 |
       | body.ExternalId | KEY.ExternalId     |
-    And I trigger POST call with below attributes
+    And I trigger POST call request with below attributes
     Then I verify response code with status is "200"
     Then I verify response body with below attributes
       | FieldName                | FieldValue | Helpers  |

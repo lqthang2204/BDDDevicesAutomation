@@ -30,7 +30,7 @@ Feature: orange HRM web
     And I click element mobile-button
     And I type "test" into element search-input
 
-
+  @test3
   Scenario: test login page1
     Given I navigate to url OPEN_MRS
     And I change the page spec to LoginPage

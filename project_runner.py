@@ -22,8 +22,8 @@ def main(context):
 @click.option('--feature-dir', '-fd', 'feature_dir', type=str, default='features', show_default=True,
               help='feature directory. Default value is the folder named features')
 @click.option('--tags', '-tg', default='{~@norun}', help='specify behave tags to run. Default value ~@norun signifies All')
-@click.option('--forks', '-fk', type=click.IntRange(1, 10), default=5, show_default=True,
-              help='number of processes. Default value is 5')
+@click.option('--forks', '-fk', type=click.IntRange(1, 10), default=1, show_default=True,
+              help='number of processes. Default value is 1')
 @click.option('--stage', '-sg', 'stage_name', type=click.Choice(['QA', 'SIT', 'UAT', 'PROD']), default='QA',
               help='specify the stage to run. Default value is QA')
 @click.option('--platform', '-pl', 'platform_name', type=click.Choice(['API', 'WEB', 'ANDROID', 'IOS']), default='WEB',

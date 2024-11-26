@@ -25,3 +25,15 @@ elements:
       - device: IOS
         type: XPATH
         value: //XCUIElementTypeButton[@name="Continue"]
+  - id: browse-button
+    description: remove button
+    locators:
+      - device: WEB
+        type: XPATH
+        value: html/body/a/img
+      - device: ANDROID
+        type: XPATH
+        value: //android.view.ViewGroup[@content-desc="test-CONTINUE SHOPPING"]/android.widget.TextView
+      - device: IOS
+        type: PREDICATE
+        value: label == "Browse"

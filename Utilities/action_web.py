@@ -47,35 +47,53 @@ class ManagementFile:
 
     def read_yaml_file(self, path, page_name, dict_page_element):
         """
-            Reads a YAML file and returns the content as a JSON object.
+    Reads a YAML file and returns the content as a JSON object. If the content for a specific page
+    is already cached in dict_page_element, it will return the cached version.
 
-            Args:
-                path (str): The path to the YAML file.
-                page_name (str): The name of the page.
-                dict_page_element (dict): A dictionary containing page elements.
+    Args:
+        path (str): The path to the YAML file.
+        page_name (str): The name of the page.
+        dict_page_element (dict): A dictionary containing page elements to cache YAML content.
 
-            Returns:
-                json: The JSON object representing the content of the YAML file.
-            """
+    Returns:
+        dict: The JSON object representing the content of the YAML file.
+    """
         try:
-            if dict_page_element and page_name in dict_page_element.keys():
-                obj_page = dict_page_element[page_name]
-                return obj_page
+            if dict_page_element and page_name in dict_page_element:
+                logger.debug(f"Page '{page_name}' found in cache.")
+                return dict_page_element[page_name]
             else:
+                logger.info(f"Reading YAML file for page '{page_name}' from path: {path}")
                 with open(path, encoding='utf-8') as page:
                     python_dict = yaml.load(page.read(), Loader=SafeLoader)
-                    json_result = json.dumps(python_dict)
+                    if python_dict is None:
+                        logger.warning(f"The YAML file for page '{page_name}' is empty or invalid.")
+                        return {}
+                    # Convert Python dictionary to JSON object
+                    json_result = json.dumps(python_dict, default=str)
                     json_object = json.loads(json_result)
                     dict_page_element[page_name] = json_object
+                    logger.info(f"YAML file for page '{page_name}' loaded and cached successfully.")
                     return json_object
-        except FileNotFoundError:
-            print(f"File '{page_name}' not found.")
-            logger.error(f"File '{page_name}' not found.")
-        except (yaml.YAMLError, json.JSONDecodeError) as e:
-            print(f"Error reading YAML file: {str(e)}")
-            logger.error(f"Error reading YAML file: {str(e)}")
+        except FileNotFoundError as e:
+            print(f"Error: The YAML file for '{page_name}' could not be found.")
+            logger.error(f"File '{path}' not found for page '{page_name}': {e}")
+            return {}
+        except yaml.YAMLError as e:
+            logger.error(f"Error parsing YAML file for page '{page_name}': {e}")
+            print(f"Error: The YAML file for '{page_name}' could not be parsed. Please check its syntax.")
+            return {}
+        except json.JSONDecodeError as e:
+            logger.error(f"Error converting YAML to JSON for page '{page_name}': {e}")
+            print(f"Error: There was an issue converting the YAML file to JSON for '{page_name}'.")
+            return {}
+        except Exception as e:
+            # Generic error catch for unexpected issues
+            logger.error(f"Unexpected error while reading YAML file for page '{page_name}': {str(e)}")
+            print(f"Error: An unexpected error occurred while reading the YAML file for '{page_name}'.")
+            return {}
 
-    def get_element_by(self, type, driver, value) -> WebElement:
+    def get_element_by(self, type: str, driver, value: str) -> WebElement:
         """
         Find and return a WebElement based on the given type and value.
 
@@ -94,23 +112,23 @@ class ManagementFile:
             TimeoutException: If the element is not found within the specified timeout.
             Exception: If there is an error locating the element.
         """
+        # Check if the locator type is valid
         logger.info(f'Getting list element by {type} with value is {value}')
         locator = self.SUPPORTED_LOCATOR_TYPES.get(type)
-        if locator is None:
-            raise ValueError(
-                f"Invalid locator type: {type}. Supported types are 'id', 'name', 'xpath', 'link_text', 'partial_link_text', 'class_name', and 'css_selector'.")
-
+        if not locator:
+            logger.error(f"Invalid locator type: {type}. Supported types are 'id', 'name', 'xpath', 'link_text', "
+                         "'partial_link_text', 'class_name', 'css_selector'.")
+            raise ValueError(f"Invalid locator type: {type}. Supported types are 'id', 'name', 'xpath', 'link_text', "
+                             "'partial_link_text', 'class_name', 'css_selector'.")
         try:
             logger.info(f'Get element by {type} with value is {value}')
-
-            locator = self.SUPPORTED_LOCATOR_TYPES.get(type)
             return driver.find_element(locator, value)
-        except (NoSuchElementException, TimeoutException) as e:
-            logger.error(f"Element not found: {str(e)}")
-            assert False, f"Element not found: {str(e)}"
+        except NoSuchElementException:
+            logger.error(f"No such element found using {type} with value: {value}.")
+            return None  # Return None to indicate that the element could not be located
         except Exception as e:
-            logger.error(f"Error locating element: {str(e)}")
-            assert False, f"Error locating element: {str(e)}"
+            logger.error(f"Error locating element by {type} with value '{value}': {str(e)}")
+            return None  # Return None for unexpected errors, ensuring the process continues
 
     def get_list_element_by(self, type, driver, value):
         try:
@@ -152,173 +170,112 @@ class ManagementFile:
                 The locator for the specified element page and device.
             """
         try:
-            locators = [locator for locator in element_page.get_list_locator() if locator.get_device().__eq__(device)]
+            locators = [locator for locator in element_page.get_list_locator() if locator.get_device() == device]
             if not locators:
                 raise ValueError(f"No locators found for device: {device}")
+            logger.info(f"Locator found for device '{device}' and element page '{element_page}'.")
             return locators[0]
+        except ValueError as e:
+            logger.error(f"ValueError in get_locator: {str(e)}")
+            raise
         except Exception as e:
-            raise ValueError(f"Error getting locator: {str(e)}")
+            logger.error(f"Unexpected error in get_locator: {str(e)}")
+            raise ValueError(f"Error getting locator for device '{device}' and element page '{element_page}': {str(e)}")
 
     def get_locator_from_action(self, element_page, device):
         """
-          A function to get the locator from the element page based on the provided device.
-          Args:
-              self: The object itself.
-              element_page (dict): The element page containing locators.
-              device (str): The device to get the locator for.
-          Returns:
-              dict: The locator for the specified device.
-          """
+        A function to get the locator from the element page based on the provided device.
+
+        Args:
+            element_page (dict): The element page containing locators.
+            device (str): The device to get the locator for.
+
+        Returns:
+            dict: The locator for the specified device.
+
+        Raises:
+            ValueError: If the 'locators' key is not found in the element_page.
+            TypeError: If the 'device' is not of the expected type.
+        """
+        # Validate input types
+        if not isinstance(element_page, dict):
+            logger.error("Invalid element_page: Expected a dictionary.")
+            raise TypeError("Expected element_page to be a dictionary.")
+        if not isinstance(device, str):
+            logger.error(f"Invalid device type: {type(device)}. Expected a string.")
+            raise TypeError("Expected device to be a string.")
+
+        # Check if 'locators' key exists in the element_page
+        if 'locators' not in element_page:
+            logger.error(f"Element page does not contain 'locators' key: {element_page}")
+            raise ValueError("The element_page must contain a 'locators' key.")
+
         try:
-            return next(locator for locator in element_page['locators'] if locator['device'] == device)
+            logger.info(f"Searching for locator for device '{device}' in element page.")
+            # Search for the locator corresponding to the device
+            locator = next(locator for locator in element_page['locators'] if locator['device'] == device)
+            logger.info(f"Locator found for device '{device}'.")
+            return locator
         except StopIteration:
+            # If no locator is found, log and return None
+            logger.warning(f"No locator found for device '{device}' in element page.")
             return None
+        except Exception as e:
+            # Log any unexpected errors
+            logger.error(f"Error occurred while retrieving locator for device '{device}': {str(e)}")
+            raise
 
     def check_att_is_exist(self, obj_action_elements, key, default=None):
         return obj_action_elements.get(key, default)
 
-    def process_execute_action(self, driver, wait, element, type_action, value, locator, action_elements,
-                               dict_save_value):
+    def get_shadow_element(self, locator_type, driver, locator_value, wait, is_highlight):
         """
-            Process and execute an action on a web element.
-            Args:
-                driver (WebDriver): The web driver instance.
-                wait (int): The wait time in seconds.
-                element (WebElement): The web element to interact with.
-                type_action (str): The type of action to perform ('click' or 'text').
-                value (str): The value to send to the element (if type_action is 'text').
-                locator (dict): The locator of the element.
-                action_elements (list): The list of action elements.
-            Raises:
-                TimeoutException: If the element is not clickable within the specified wait time.
-                Exception: If an error occurs during action execution.
-            """
-        try:
-            value = procees_value().get_value(value, dict_save_value)
-            logger.info(f'execute action  {type_action} with element have value {locator}')
-            WebDriverWait(driver, wait).until(ec.element_to_be_clickable(element))
-            if type_action == 'click':
-                if element.get_attribute("disabled") is None:
-                    element.click()
-                else:
-                    WebDriverWait(driver, wait).until_not(
-                        ec.element_attribute_to_include(
-                            self.get_locator_for_wait(locator[type], locator['value']), "disabled"))
-                    element.click()
-            elif type_action == "text":
-                element.send_keys(value)
-            else:
-                self.wait_for_action(action_elements, wait, driver, element, locator)
-        except TimeoutException:
-            logger.error(f'Timeout waiting for element to be clickable: {locator}')
-        except Exception as e:
-            logger.error(f'An error occurred during action execution: {str(e)}')
-
-    # def check_field_exist(self, dict, key):
-    #     try:
-    #         if dict[key]:
-    #             return True
-    #     except Exception as e:
-    #         print(f'not found attribute in dictionary: {str(e)}')
-    #         return False
-
-    def wait_for_action(self, action_elements, wait, driver, element, locator):
-        """
-        Wait for a specific action on a web element based on the given conditions.
+        Finds a shadow DOM element based on the provided parameters.
 
         Args:
-            action_elements (dict): Dictionary containing the condition for the action.
-            wait (int): The wait time in seconds.
-            driver (WebDriver): The web driver instance.
-            element (WebElement): The web element to interact with.
-            locator (dict): The locator of the element.
+            locator_type (str): The type of locator. Must be 'CSS' or 'XPATH'.
+            driver (WebDriver): The WebDriver instance.
+            locator_value (str): The value used to locate the shadow element.
+            wait (int): The time in seconds to wait for the shadow element to appear.
+            is_highlight (bool): Whether to highlight the shadow element.
+
+        Returns:
+            WebElement: The located shadow element.
 
         Raises:
-            TimeoutException: If the condition is not met within the specified wait time.
-            Exception: If an error occurs during action execution.
+            ValueError: If the locator_type is invalid.
+            NoSuchElementException: If the shadow element cannot be found.
         """
-        locator_from_wait = self.get_locator_for_wait(locator['type'], locator['value'])
-        supported_conditions = ["ENABLED", "NOT_ENABLED", "DISPLAYED", "NOT_DISPLAYED", "EXISTED", "NOT_EXISTED",
-                                "SELECTED", "NOT_SELECTED"]
-        try:
-            condition = action_elements.get('condition')
-            if condition not in supported_conditions:
-                raise ValueError(f"Unsupported condition: {condition}")
+        logger.info(f'Attempting to locate shadow element: {locator_value} with type: {locator_type}')
 
-            if condition in ["ENABLED", "DISPLAYED", "EXISTED", "SELECTED"]:
-                WebDriverWait(driver, wait).until(
-                    self.get_expected_condition(driver, condition, locator_from_wait))
-            elif condition in ["NOT_ENABLED", "NOT_DISPLAYED", "NOT_EXISTED", "NOT_SELECTED"]:
-                WebDriverWait(driver, wait).until_not(
-                    self.get_expected_condition(driver, condition[4:], locator_from_wait))
-            else:
-                raise ValueError(f"Unsupported condition: {condition}")
-        except (TimeoutException, ValueError) as e:
-            error_message = f"Failed to wait for action with condition '{condition}' on element: {locator}. Error: {str(e)}"
-            logger.error(error_message)
-            raise TimeoutException(error_message)
-        except Exception as e:
-            error_message = f"An error occurred during action execution on element: {locator}. Error: {str(e)}"
-            logger.error(error_message)
-            raise Exception(error_message)
+        valid_types = {'CSS', 'XPATH'}
+        if locator_type not in valid_types:
+            logger.error(f"Invalid locator type: {locator_type}. Supported types: {valid_types}")
+            raise ValueError(f"Locator type must be one of {valid_types}. Received: {locator_type}")
 
-    def get_expected_condition(self, driver, condition, locator):
-        """
-          Get the expected condition based on the given condition type and locator.
-          Args:
-              driver (WebDriver): The web driver instance.
-              condition (str): The type of condition to check.
-              locator (dict): The locator information for the element.
-          Returns:
-              ExpectedCondition: The expected condition based on the input.
-          Raises:
-              ValueError: If the condition type is not supported.
-          """
-        if condition == "ENABLED":
-            return ec.element_to_be_clickable(locator)
-        elif condition == "DISPLAYED":
-            return ec.presence_of_element_located(locator)
-        elif condition == "EXISTED":
-            return lambda driver: len(self.get_list_element_by(locator['type'], driver, locator['value'])) > 0
-        elif condition == "SELECTED":
-            return ec.element_located_to_be_selected(locator)
-        else:
-            raise ValueError(f"Unsupported condition: {condition}")
-
-    def get_shadow_element(self, type, driver, value, wait, is_highlight):
-        """
-            This method finds a shadow element based on the provided type, driver, value, wait, and highlight settings.
-            Args:
-                type (str): The type of the shadow element. It should be either 'CSS' or 'XPATH'.
-                driver (WebDriver): The webdriver instance.
-                value (str): The value used to locate the shadow element.
-                wait (int): The time to wait for the shadow element to appear.
-                is_highlight (bool): Whether to highlight the shadow element.
-            Returns:
-                WebElement: The found shadow element.
-            Raises:
-                AssertionError: If the type of shadow element is not 'CSS'.
-            """
-        logger.info(f'Finding shadow element {value}')
-
+        # Create Shadow instance and configure explicit wait
         shadow = Shadow(driver)
         shadow.set_explicit_wait(wait, 0.2)
+
         try:
-            if type == 'CSS':
-                element = shadow.find_element(value, False)
-            elif type == 'XPATH':
-                element = shadow.find_element_by_xpath(value, False)
-            else:
-                logger.error(f'The type of shadow element must be CSS or XPATH, type is {type}')
-                raise AssertionError(f'The type of shadow element must be CSS or XPATH')
+            element = self._find_shadow_element(shadow, locator_type, locator_value)
             if is_highlight:
                 shadow.highlight(element, color='red', time_in_mili_seconds=0.2)
-            logger.debug(f'Shadow element {value} found')
+            logger.debug(f'Shadow element located successfully: {locator_value}')
             return element
         except NoSuchElementException:
-            logger.error(f'Shadow element {value} not found')
-            raise NoSuchElementException(f'Shadow element {value} not found')
+            logger.error(f"Shadow element not found: {locator_value}")
+            raise NoSuchElementException(f"Could not locate shadow element: {locator_value}")
+        except Exception as e:
+            logger.error(f"An error occurred while locating shadow element: {locator_value}. Error: {str(e)}")
+            raise
 
+    def _find_shadow_element(self, shadow, locator_type, locator_value):
+        """Find the shadow element using the specified locator type."""
+        if locator_type == 'CSS':
+            return shadow.find_element(locator_value, False)
+        elif locator_type == 'XPATH':
+            return shadow.find_element_by_xpath(locator_value, False)
     def action_with_shadow_element(self, element_page, action, driver, value, wait, dict_save_value, is_highlight):
         """
             Perform actions on a shadow element.
@@ -391,27 +348,45 @@ class ManagementFile:
 
     def handle_popup(self, driver, status, wait):
         """
-           Handles a popup dialog on a web page.
-           Args:
-               driver (WebDriver): The Selenium WebDriver instance.
-               status (str): The desired status of the popup dialog.
-               wait (int): The wait time in seconds.
-           Raises:
-               AssertionError: If the status is not supported.
-           """
+        Handles a popup dialog on a web page.
+
+        Args:
+            driver (WebDriver): The Selenium WebDriver instance.
+            status (str): The desired action for the popup dialog ('accept' or 'dismiss').
+            wait (int): The maximum time to wait for the popup to appear, in seconds.
+
+        Raises:
+            ValueError: If the provided status is unsupported.
+            AssertionError: If no alert is present or other errors occur.
+        """
+        logger.info(f"Attempting to handle popup with status '{status}'.")
+
+        # Validate the provided status
+        supported_statuses = {'accept', 'dismiss'}
+        if status not in supported_statuses:
+            logger.error(f"Unsupported status: '{status}'. Supported statuses: {supported_statuses}")
+            raise ValueError(f"Unsupported status: '{status}'. Supported statuses: {supported_statuses}")
+
         try:
+            # Wait for the alert to be present
+            WebDriverWait(driver, wait).until(ec.alert_is_present(), "Timed out waiting for alert to appear.")
             alert = driver.switch_to.alert
-            WebDriverWait(driver, wait).until(ec.alert_is_present(), 'Timed out waiting for simple alert to appear')
+            logger.info(f"Popup detected: '{alert.text.strip()}' (if available).")
+
+            # Handle the alert based on the specified status
             if status == 'accept':
                 alert.accept()
+                logger.info("Popup accepted successfully.")
             elif status == 'dismiss':
                 alert.dismiss()
-            else:
-                logger.error("Unsupported status: %s", status)
-                assert False, "Not supported status in framework"
+                logger.info("Popup dismissed successfully.")
+
+        except TimeoutException:
+            logger.error("Timed out waiting for alert to appear.")
+            raise AssertionError("No alert present within the specified wait time.")
         except NoAlertPresentException:
-            logger.error("No alert present")
-            assert False, "No alert present"
+            logger.error("No alert present when attempting to switch.")
+            raise AssertionError("No alert present to handle.")
         except Exception as e:
-            logger.error(f"Failed to handle popup: {e}")
-            assert False, f"Failed to handle popup: {e}"
+            logger.error(f"Unexpected error while handling popup: {str(e)}")
+            raise AssertionError(f"Unexpected error while handling popup: {str(e)}")

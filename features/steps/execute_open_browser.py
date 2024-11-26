@@ -1,7 +1,4 @@
-import configparser
-import datetime
 import os
-import json
 from selenium import webdriver
 from selenium.common import SessionNotCreatedException
 from selenium.webdriver.chrome.options import Options as chrome_option
@@ -11,9 +8,7 @@ from selenium.webdriver.firefox.service import Service as firefox_service
 from selenium.webdriver.safari.options import Options as safari_option
 from selenium.webdriver.safari.service import Service as safari_service
 from project_runner import logger, project_folder
-from appium import webdriver as appium_driver
 from execute_open_mobile import manage_hook_mobile as manage_remote
-import json
 
 
 class manage_hook_browser:
@@ -41,66 +36,87 @@ class manage_hook_browser:
 
     def launch_browser(self, context, device, browser, table, name):
         """
-        Launches a browser based on the provided context.
+        Launches a browser based on the provided context and configuration.
 
         Args:
-        - self: the class instance
-        - context: the context containing device and configuration information
-        - device: the device information
-        - browser: the browser type
-        - table: the table to interact with
-        - name: the name of the browser to open
+            - self: the class instance
+            - context: the context containing device and configuration information
+            - device: the device information
+            - browser: the browser type
+            - table: the table to interact with
+            - name: the name of the browser to open
         """
 
-        # Get the browser options
+        # Step 1: Get browser-specific options
         option = self.get_option_from_browser(context, browser, device, table)
 
-        # Check if the driver is not already initialized
-        try:
-            if context.driver is None:
-                # Check if the device requires auto-download of the driver
-                if 'auto_download_driver' in device and context.device['auto_download_driver'] is False:
-                    self.get_driver_from_path(context, browser, device, option)
-                else:
-                    # Initialize the driver based on the browser type
-                    match browser:
-                        case 'chrome':
-                            context.driver = webdriver.Chrome(options=option)
-                        case 'firefox':
-                            context.driver = webdriver.Firefox(options=option)
-                        case 'safari':
-                            context.driver = webdriver.Safari()
-                        case _:
-                            logger.info(
-                                'Framework only supports chrome, firefox, and safari..., trying to open with chrome')
-                            context.driver = webdriver.Chrome(options=option)
+        # Step 2: Initialize the WebDriver if not already initialized
+        if context.driver is None:
+            try:
+                self._initialize_driver(context, browser, device, option)
 
-                # Set wait and time_page_load attributes from the device
+                # Step 3: Set page load and wait time based on the device configuration
                 context.wait = self.check_attr_exist(device, 'wait')
                 context.time_page_load = self.check_attr_exist(device, 'time_page_load')
 
-                # Maximize the window if --window-size argument is not present
-                if any("--window-size" in argument for argument in option.__getattribute__("arguments")) is False:
+                # Step 4: Maximize window if not explicitly specified
+                if not any("--window-size" in argument for argument in option.__getattribute__("arguments")):
                     context.driver.maximize_window()
-            # Open the provided URL in the browser
-                    try:
-                        context.driver.get(context.url[name])
-                    except Exception as e:
-                        logger.error(f"not open browser with url {name} please check file envriroment")
-                        assert False, f"not open browser with url {name} please check file envriroment"
-            elif 'KEY.' in name and context.driver is not None:
-                temp_url = context.dict_save_value[name]
-                context.driver.get(temp_url)
+
+            except SessionNotCreatedException as e:
+                logger.error(f"Failed to initialize the browser driver: {e}")
+                assert False, f"Failed to initialize the browser driver: {e}"
+            except Exception as e:
+                logger.error(f"Unexpected error occurred during driver initialization: {e}")
+                assert False, f"Unexpected error occurred: {e}"
+
+        # Step 5: Open the correct URL in the browser
+        self._open_url_in_browser(context, name)
+
+    def _initialize_driver(self, context, browser, device, option):
+        """
+        Initializes the WebDriver based on the provided browser and device configuration.
+        """
+        # Check if the device requires auto-download of the driver
+        if 'auto_download_driver' in device and not device.get('auto_download_driver', True):
+            self.get_driver_from_path(context, browser, device, option)
+        else:
+            # Initialize the driver based on the browser type
+            match browser.upper():
+                case 'CHROME':
+                    context.driver = webdriver.Chrome(options=option)
+                case 'FIREFOX':
+                    context.driver = webdriver.Firefox(options=option)
+                case 'SAFARI':
+                    context.driver = webdriver.Safari()
+                case _:
+                    logger.warning(f"Unsupported browser '{browser}', defaulting to Chrome.")
+                    context.driver = webdriver.Chrome(options=option)
+
+    def _open_url_in_browser(self, context, name):
+        """
+        Opens the URL corresponding to the given name in the browser.
+        """
+        try:
+            # Handle special cases like KEY.* URLs
+            if 'KEY.' in name:
+                temp_url = context.dict_save_value.get(name)
+                if temp_url:
+                    context.driver.get(temp_url)
+                else:
+                    logger.error(f"URL for '{name}' not found in saved values.")
+                    assert False, f"URL for '{name}' not found in saved values."
             else:
-                try:
-                    context.driver.get(context.url[name])
-                except Exception as e:
-                    logger.error(f"not open browser with url {name} please check file envriroment", )
-                    assert False, f"not open browser with url {name} please check file envriroment"
-                # context.driver.get(context.dict_save_value[name[0]])
-        except SessionNotCreatedException as e:
-            logger.error(f"Failed to open browser: {e}")
-            assert False, f"Failed to open browser: {e}"
+                url_to_open = context.url.get(name)
+                if url_to_open:
+                    context.driver.get(url_to_open)
+                else:
+                    logger.error(f"URL '{name}' not found in environment settings.")
+                    assert False, f"URL '{name}' not found in environment settings."
+
+        except Exception as e:
+            logger.error(f"Failed to open browser with URL '{name}': {e}")
+            assert False, f"Failed to open browser with URL '{name}': {e}"
 
     def get_driver_from_path(self, context, browser, device, option):
         """
@@ -207,7 +223,7 @@ class manage_hook_browser:
             config = manage_remote().read_config_remote()
 
             # Get browser options based on remote config
-            options = self.get_option_from_browser(context, config.get("remote", "browser"), device, table)
+            options = self.get_option_from_browser(context, config.get("drivers_config", "browser"), device, table)
 
             # Set browser version and platform name
             options.browser_version = 'latest'

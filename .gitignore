@@ -12,3 +12,4 @@ output
 WebDriver
 target
 **/geckodriver.log
+__pycache__

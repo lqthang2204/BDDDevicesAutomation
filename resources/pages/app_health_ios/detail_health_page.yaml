@@ -10,7 +10,7 @@ elements:
         type: ACCESSIBILITY_ID
         value: Add alarm
       - device: IOS
-        type: IOS_PREDICATE
+        type: PREDICATE
         value: label == "First Name"
   - &field-text
     id: field base to text
@@ -49,7 +49,7 @@ elements:
         type: ACCESSIBILITY_ID
         value: Add alarm
       - device: IOS
-        type: IOS_PREDICATE
+        type: PREDICATE
         value: label == "Last Name"
   - &last-name-field
     id: last-name-field

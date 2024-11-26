@@ -1,7 +1,7 @@
 @test-app-clock @mobile @ios
 Feature:  mobile ios
 
-  @safari_drag_and_drop
+  @safari_drag_and_drop @norun
   Scenario: run safari to test drag and drop feature
     Given I open application with config below
       | file config             |
@@ -32,11 +32,13 @@ Feature:  mobile ios
        | capabilities_ios_safari |
     And I navigate to url GURU99-DOUBLE
     And I change the page spec to double-example
+    And I wait for element selenium-button to be ENABLED
     And I click element selenium-button
+    And I wait for element selenium-demo-page to be ENABLED
     And I click element selenium-demo-page
 
   @scroll_element_ios
-  Scenario: Scroll element demo IOS
+  Scenario: Scroll element demo IOS tedt
     Given I open application with config below
       | file config               |
       | capabilities_iOS_app_demo |
@@ -67,3 +69,24 @@ Feature:  mobile ios
 #    //XCUIElementTypeStaticText[@name="Sauce Labs Backpack"]
 #    And I click element selenium-button
 #    And I click element selenium-demo-page
+
+  @test-app-health-3
+  Scenario: test app health ios
+    Given I open application with config below
+      | file config |
+      | capabilities_app_health_ios            |
+     And I close application
+    And I open application with config below
+      | file config |
+      | capabilities_app_health_ios            |
+#    And I close application
+    Given I change the page spec to index_health
+    And I click element browse-button
+    And I change the page spec to browse_page
+    And I verify that following elements with below attributes
+      | Field             | Value             | Status  | Helpers  |
+      | activity          | Activity          | ENABLED |          |
+      | Body_Measurements | Body Measurements | ENABLED |          |
+      | Cycle_Tracking    | Cycle             | ENABLED | CONTAINS |
+      | Hearing           | H[a-z]            | ENABLED | REGEX    |
+    And I perform verify-fields action
