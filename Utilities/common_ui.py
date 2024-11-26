@@ -10,7 +10,7 @@ from selenium.webdriver import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
-from Utilities.action_android import ManagementFileAndroid
+from Utilities.action_mobile import ManagementFileAndroid
 from Utilities.action_web import ManagementFile
 from project_runner import logger
 from selenium.webdriver.support.color import Color
@@ -647,7 +647,7 @@ class common_device:
             if platform_name == "WEB":
                 element = ManagementFile().get_element_by(element_page['type'], driver, element_page['value'])
             elif platform_name in {"ANDROID", "IOS"}:
-                element = ManagementFileAndroid().get_by_android(element_page['type'], driver, element_page['value'])
+                element = ManagementFileAndroid().get_by_mobile(element_page['type'], driver, element_page['value'])
             else:
                 raise ValueError(f"Unsupported device platform: {platform_name}")
 

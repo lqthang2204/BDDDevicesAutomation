@@ -4,7 +4,7 @@ import os
 import yaml
 from yaml import SafeLoader
 
-from project_runner import project_folder
+from project_runner import project_folder, logger
 
 
 class read_configuration:
@@ -62,19 +62,44 @@ class read_configuration:
             # If there is an error parsing the YAML file, raise an error
             raise yaml.YAMLError(f"Error parsing API endpoints file at {api_endpoint_path}: {str(e)}")
         return api_endpoint
-    def get_content_javascript(self,root_path, javascript):
+
+    def get_content_javascript(self, root_path, javascript):
         """
-           Reads the content of a JavaScript file.
-           Args:
-               root_path (str): The root path where the JavaScript file is located.
-               javascript (str): The name of the JavaScript file (without the extension).
-           Returns:
-               str: The content of the JavaScript file.
-           Raises:
-               FileNotFoundError: If the JavaScript file does not exist.
-           """
-        # Construct the full path to the JavaScript file
-        config_file_path = os.path.join(root_path, "javascripts", f"{javascript}.js")
-        with open(config_file_path) as dataFile:
-            data = dataFile.read()
-            return data
+        Reads the content of a JavaScript file.
+
+        Args:
+            root_path (str): The root path where the JavaScript file is located.
+            javascript (str): The name of the JavaScript file (without the extension).
+
+        Returns:
+            str: The content of the JavaScript file.
+
+        Raises:
+            FileNotFoundError: If the JavaScript file does not exist.
+            IOError: If there is an issue reading the file.
+        """
+        try:
+            # Construct the full path to the JavaScript file
+            config_file_path = os.path.join(root_path, "javascripts", f"{javascript}.js")
+            logger.info(f"Attempting to read JavaScript file: {config_file_path}")
+
+            # Check if the file exists
+            if not os.path.exists(config_file_path):
+                logger.error(f"JavaScript file not found: {config_file_path}")
+                raise FileNotFoundError(f"JavaScript file not found: {config_file_path}")
+
+            # Read and return the file content
+            with open(config_file_path, "r", encoding="utf-8") as dataFile:
+                data = dataFile.read()
+                logger.info(f"Successfully read JavaScript file: {config_file_path}")
+                return data
+
+        except FileNotFoundError as e:
+            logger.error(f"FileNotFoundError: {str(e)}")
+            raise
+        except IOError as e:
+            logger.error(f"IOError while reading the file: {str(e)}")
+            raise
+        except Exception as e:
+            logger.error(f"An unexpected error occurred: {str(e)}")
+            raise
