@@ -506,7 +506,7 @@ class common_device:
             element = self.get_element_by_from_device(element_page, device, driver)
 
             # Scroll to the element if needed
-            self.scroll_to_element_by_js(element, driver, True, device['platformName'], True)
+            self.scroll_to_element_by_js(element, driver, True, device['platformName'], False)
 
             # Get the value of the element
             value = self.get_value_element_form_device(element, device, element_page, driver)
