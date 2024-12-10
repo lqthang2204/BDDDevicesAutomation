@@ -39,7 +39,7 @@ class common_device:
         return obj_action_elements.get(key, default)
 
     def action_page(
-            self, element_page, action, driver, value, wait, dict_save_value, device, context, count_number=0
+            self, element_page, action, driver, value, wait, dict_save_value, device, context, count_number
     ):
         """
         Executes a specified action on a web element.
@@ -76,19 +76,22 @@ class common_device:
             # Check if the action is supported and execute it
             if action in self.ACTIONS_MAP:
                 action_function = self.ACTIONS_MAP[action]
-                self._execute_action(action_function, action, element, driver, wait, value, device, element_page)
+                try:
+                    self._execute_action(action_function, action, element, driver, wait, value, device, element_page)
+                except (
+                        ElementNotInteractableException, StaleElementReferenceException,
+                        ElementClickInterceptedException) as e:
+                    logger.warning(f"Retrying due to known interaction issue ({type(e).__name__}): {str(e)}")
+                    self.handle_element_not_interactable_exception(
+                        element_page, action, driver, value, wait, dict_save_value, device, context, count_number
+                    )
+                except InvalidElementStateException as e:
+                    logger.error(f"Invalid state for element during action '{action}': {str(e)}")
+                    self.handle_invalid_element_state_exception(value, element_page, device, driver, action)
                 logger.info(f"Action '{action}' successfully performed.")
             else:
                 logger.error(f"Unsupported action: {action}")
                 raise AssertionError(f"Action '{action}' is not supported by the framework.")
-        except (ElementNotInteractableException, StaleElementReferenceException, ElementClickInterceptedException) as e:
-            logger.warning(f"Retrying due to known interaction issue ({type(e).__name__}): {str(e)}")
-            self.handle_element_not_interactable_exception(
-                element_page, action, driver, value, wait, dict_save_value, device, context, count_number
-            )
-        except InvalidElementStateException as e:
-            logger.error(f"Invalid state for element during action '{action}': {str(e)}")
-            self.handle_invalid_element_state_exception(value, element_page, device, driver, action)
         except Exception as e:
             logger.error(f"Unexpected error performing '{action}' on element: {str(e)}")
             raise
@@ -151,6 +154,7 @@ class common_device:
     def _handle_scroll_action(self, element, driver, flag, device, is_highlight):
         """Handles scrolling to an element."""
         self.scroll_to_element(element, driver, flag, device, is_highlight)
+
     def _execute_action(self, action_function, action, element, driver, wait, value, device, element_page):
         """
         Executes the appropriate action based on the provided function and parameters.
@@ -172,7 +176,7 @@ class common_device:
         elif action == "hover-over":
             action_function(element, driver, action, device)
         elif action == "scroll":
-            action_function(element, driver, False, device , False)
+            action_function(element, driver, False, device, False)
         elif action == "click":
             action_function(element, wait, element_page, device, driver)
         elif action == "clear":
@@ -192,33 +196,29 @@ class common_device:
                device (str): Target device context ('WEB' or 'MOBILE').
                driver (WebDriver): Selenium WebDriver instance.
            """
-        try:
-            if element_page['device'] == "WEB":
-                # Check if the element is not disabled
-                if element.get_attribute("disabled") is None:
-                    logger.info("Element is enabled. Performing click.")
-                    element.click()
-                else:
-                    # Wait until the element is no longer disabled
-                    logger.info("Element is disabled. Waiting for it to become enabled.")
-                    WebDriverWait(driver, wait).until_not(
-                        ec.element_attribute_to_include(
-                            ManagementFile().get_locator_for_wait(element_page['type'], element_page['value']),
-                            "disabled"))
-                    logger.info("Element is now enabled. Performing click.")
-                    element.click()
-            # For MOBILE elements
-            else:
-                logger.info(f"Clicking element on {device} device.")
-                # Wait until the element is clickable
-                locator_from_wait = ManagementFileAndroid().get_locator_for_wait(element_page['type'],
-                                                                                 element_page['value'])
-                WebDriverWait(driver, wait).until(ec.element_to_be_clickable(locator_from_wait))
+        if element_page['device'] == "WEB":
+            # Check if the element is not disabled
+            if element.get_attribute("disabled") is None:
+                logger.info("Element is enabled. Performing click.")
                 element.click()
-                logger.info(f"Click action successfully performed on element: {element_page['value']}")
-        except Exception as e:
-            # Log the error and raise the exception
-            logger.error(f"Error during click action on element: {element_page['value']}. Error: {str(e)}")
+            else:
+                # Wait until the element is no longer disabled
+                logger.info("Element is disabled. Waiting for it to become enabled.")
+                WebDriverWait(driver, wait).until_not(
+                    ec.element_attribute_to_include(
+                        ManagementFile().get_locator_for_wait(element_page['type'], element_page['value']),
+                        "disabled"))
+                logger.info("Element is now enabled. Performing click.")
+                element.click()
+        # For MOBILE elements
+        else:
+            logger.info(f"Clicking element on {device} device.")
+            # Wait until the element is clickable
+            locator_from_wait = ManagementFileAndroid().get_locator_for_wait(element_page['type'],
+                                                                             element_page['value'])
+            WebDriverWait(driver, wait).until(ec.element_to_be_clickable(locator_from_wait))
+            element.click()
+            logger.info(f"Click action successfully performed on element: {element_page['value']}")
 
     def wait_element_for_status(self, element_page, status, driver, device, wait, flag):
         """
@@ -1186,7 +1186,6 @@ class common_device:
             except Exception as js_e:
                 logging.error(f"JavaScript scroll also failed for element {element}. Error: {js_e}")
                 assert flag, f"Failed to scroll to element: {element}"
-
 
     def switch_to_frame(self, driver, element_page, wait, device, status):
         try:
