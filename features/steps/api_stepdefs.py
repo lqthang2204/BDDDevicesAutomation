@@ -8,6 +8,7 @@ from libraries.api.request_core import Requests
 from libraries.data_generators import get_test_data_for
 from libraries.misc_operations import sanitize_datatable
 from project_runner import logger
+from libraries.api import api_newman
 
 
 @step(u'I set apifacet as {api_facet} for endpoint {endpoint_name}')
@@ -126,3 +127,8 @@ def step_impl(context, api_method, times_number):
             break
     if not success:
         raise Exception('Polling attempts exceeded')
+@step(u'I run postman collection with file {collection_json_file}')
+def step_impl(context, collection_json_file):
+    file_path = os.path.join(context.root_path, "resources/postman-test/collection", f"{collection_json_file}")
+    api_newman.run_command(file_path)
+
