@@ -46,10 +46,13 @@ def step_impl(context, payload_file):
     # After reading We can read the Datatable and replace the values with some Runtime values also using the function get_test_data_for()
     payload_json = json.loads(payload_json)
     context.req.set_payload(payload_json, context)
+
+
 @step(u'I set payload {payload_file}')
 def step_impl(context, payload_file):
     if context.table:
-        logger.error('you are setting below attributes with datatable but it is not required, please choise script "set payload {payload_file} with below attributes"')
+        logger.error(
+            'you are setting below attributes with datatable but it is not required, please choise script "set payload {payload_file} with below attributes"')
     else:
         payload_file = os.path.join(context.root_path, 'resources', 'api', 'request-json', payload_file + '.json')
         logger.info(f'payload file : {payload_file}')
@@ -79,7 +82,9 @@ def step_impl(context, api_method):
             if row[0].lower() == 'param':
                 list_data.append(row[1])
             elif row[0].lower() == 'path':
-                context.req.api_base_url = context.req.api_base_url.replace('{' + row[1] + '}', get_test_data_for(row[2], context.dict_save_value))
+                context.req.api_base_url = context.req.api_base_url.replace('{' + row[1] + '}',
+                                                                            get_test_data_for(row[2],
+                                                                                              context.dict_save_value))
         if list_data:
             context.req.params = json.dumps(list_data)
     #  code to be moved into a separate function as it will include a lot of detailing based on Issue #30
@@ -127,8 +132,15 @@ def step_impl(context, api_method, times_number):
             break
     if not success:
         raise Exception('Polling attempts exceeded')
-@step(u'I run postman collection with file {collection_json_file}')
+
+@step(u'I run postman collection file {} with data file {}')
+def step_impl(context, collection_json_file, data_file):
+    collection_path = os.path.join(context.root_path, "resources/postman-test/collection", f"{collection_json_file}")
+    data_file_path = os.path.join(context.root_path, "resources/postman-test/data-file", f"{data_file}")
+    api_newman.run_command(collection_path, data_file_path)
+@step(u'I run postman collection file {}')
 def step_impl(context, collection_json_file):
     file_path = os.path.join(context.root_path, "resources/postman-test/collection", f"{collection_json_file}")
     api_newman.run_command(file_path)
+
 

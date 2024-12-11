@@ -28,15 +28,13 @@ def run_command(file, data_file = 0):
                 p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
             output, error = p.communicate()
-
+            logger.debug(output.decode('utf-8').strip())
             # Handle the process return code
             if p.returncode != 0:
                 error_msg = error.decode('utf-8').strip() if error else 'Unknown error'
                 response = f"Error while running the command: {error_msg}"
                 assert False, response
             else:
-                # GREEN = "\033[32m"
-                # RESET = "\033[0m"
                 response = f"Command succeeded:\n{output.decode('utf-8').strip()}"
             # logging.(response)
             logger.info(response)

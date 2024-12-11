@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "c11b0163-1394-43de-8a02-02c1e1079871",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12276119",
+		"_collection_link": "https://techsdd.postman.co/workspace/ATA-ticket~bd7140bf-47c0-42b2-849f-8629af1a85b0/collection/12276119-c11b0163-1394-43de-8a02-02c1e1079871?action=share&source=collection_link&creator=12276119"
+	},
+	"item": [
+		{
+			"name": "get all",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url-qa-test}}/sim/entities",
+					"host": [
+						"{{url-qa-test}}"
+					],
+					"path": [
+						"sim",
+						"entities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add entities",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"json_response = JSON.parse(responseBody);\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);})\r",
+							"\r",
+							"  \r",
+							"pm.test(\"Body is correct\", function () {\r",
+							"    json_response['name'] === 'bob'\r",
+							"});\r",
+							"entities_id = json_response['id']\r",
+							"pm.globals.set(\"entities_id\", entities_id)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": {{name}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url-qa-test}}/sim/entities",
+					"host": [
+						"{{url-qa-test}}"
+					],
+					"path": [
+						"sim",
+						"entities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get single",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"console.log(entities_id)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"json_response = JSON.parse(responseBody);\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);})\r",
+							"\r",
+							"  \r",
+							"pm.test(\"Body is correct\", function () {\r",
+							"    json_response['name'] === 'bob';\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url-qa-test}}/sim/entities/{{entities_id}}",
+					"host": [
+						"{{url-qa-test}}"
+					],
+					"path": [
+						"sim",
+						"entities",
+						"{{entities_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
