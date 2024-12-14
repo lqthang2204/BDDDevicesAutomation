@@ -1,8 +1,10 @@
+import gzip
 import subprocess
 import shutil
 import platform
 from project_runner import logger
-import os
+import json
+
 
 def check_newman():
     """
@@ -28,9 +30,9 @@ def run_command(file, data_file = 0):
                 p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
             output, error = p.communicate()
-            logger.debug(output.decode('utf-8').strip())
             # Handle the process return code
             if p.returncode != 0:
+                logger.debug(output.decode('utf-8').strip())
                 error_msg = error.decode('utf-8').strip() if error else 'Unknown error'
                 response = f"Error while running the command: {error_msg}"
                 assert False, response
@@ -43,6 +45,46 @@ def run_command(file, data_file = 0):
             error_msg = f"An exception occurred: {str(e)}"
             response = f"Error while running the command: {error_msg}"
             assert False, response
+def read_file_data(file_path):
+    """
+    Reads a JSON file and prints its content.
+
+    Args:
+        file_path (str): The path to the JSON file.
+
+    Returns:
+        list | dict: Parsed JSON data if successful, None otherwise.
+    """
+    """
+       Reads a JSON file and prints its content.
+
+       Args:
+           file_path (str): The path to the JSON file.
+
+       Returns:
+           dict or list: Parsed JSON data if successful, None otherwise.
+       """
+    try:
+        json_array = json.load(file_path)
+        store_list = []
+
+        for item in json_array:
+            print(item)
+            # return data
+    except FileNotFoundError:
+        print(f"Error: The file '{file_path}' was not found.")
+    except json.JSONDecodeError as e:
+        print(f"Error: Failed to decode JSON. {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+    return None
+
+
+def modify_file_data(data):
+    print("rtest")
+
+
+
 
 # Example usage
 # file = "E:/Work-Space-Research\Selenium-with-python-behave/resources/postman-test/collection/apichallenges_2.postman_collection.json"

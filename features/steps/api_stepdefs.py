@@ -133,6 +133,19 @@ def step_impl(context, api_method, times_number):
     if not success:
         raise Exception('Polling attempts exceeded')
 
+@step(u'I run postman collection file {} with data file {} with override value')
+def step_impl(context, collection_json_file, data_file):
+    if context.table:
+        collection_path = os.path.join(context.root_path, "resources/postman-test/collection",
+                                       f"{collection_json_file}")
+        data_file_path = os.path.join(context.root_path, "resources/postman-test/data-file", f"{data_file}")
+        api_newman.read_file_data(data_file_path)
+        context_table = sanitize_datatable(context.table)
+        # for row in context_table:
+        #     logger.info(row)
+
+
+    print("test ")
 @step(u'I run postman collection file {} with data file {}')
 def step_impl(context, collection_json_file, data_file):
     collection_path = os.path.join(context.root_path, "resources/postman-test/collection", f"{collection_json_file}")

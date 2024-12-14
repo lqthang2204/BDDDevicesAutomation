@@ -17,3 +17,13 @@ Feature: Demo features run newman
   Scenario: run newman with collection and data file
     Given I navigate to url GURU99
     And I run postman collection file apichallenges4.postman_collection.json with data file apichallenges_2.data.json
+
+
+          @newman @api @apichallenges5
+  Scenario: run newman with collection and data file
+#    Given I navigate to url GURU99
+    And I create a random user
+    And I run postman collection file apichallenges4.postman_collection.json with data file apichallenges_2.json with override value
+      | Field | Value            |
+      | name  | USER.first_name |
+
