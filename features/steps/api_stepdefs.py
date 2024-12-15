@@ -135,12 +135,28 @@ def step_impl(context, api_method, times_number):
 
 @step(u'I run postman collection file {} with data file {} with override value')
 def step_impl(context, collection_json_file, data_file):
+    import datetime
     if context.table:
         collection_path = os.path.join(context.root_path, "resources/postman-test/collection",
                                        f"{collection_json_file}")
         data_file_path = os.path.join(context.root_path, "resources/postman-test/data-file", f"{data_file}")
-        api_newman.read_file_data(data_file_path)
+        try:
+            os.makedirs(os.path.dirname(collection_path), exist_ok=True)
+            os.makedirs(os.path.dirname(data_file_path), exist_ok=True)
+        except FileNotFoundError:
+            print(f"Error: The file '{file_path}' was not found.")
+            logger.error(f"Error: The file '{file_path}' was not found.")
+            raise FileNotFoundError
         context_table = sanitize_datatable(context.table)
+        data = api_newman.update_data(data_file_path, context_table, dict_save_value=context.dict_save_value)
+        current_time = datetime.datetime.now()
+        date_time = str(current_time.year) + '_' + str(current_time.month) + '_' + str(current_time.day) + '_' + str(
+            current_time.microsecond)
+        new_data_file = os.path.join(context.root_path, "resources/postman-test/data-file", f"data_collection_{date_time}.json")
+        if api_newman.write_file_data(data, new_data_file):
+            api_newman.run_command(collection_path, new_data_file)
+            api_newman.delete_file_data(new_data_file)
+
         # for row in context_table:
         #     logger.info(row)
 
@@ -150,10 +166,23 @@ def step_impl(context, collection_json_file, data_file):
 def step_impl(context, collection_json_file, data_file):
     collection_path = os.path.join(context.root_path, "resources/postman-test/collection", f"{collection_json_file}")
     data_file_path = os.path.join(context.root_path, "resources/postman-test/data-file", f"{data_file}")
+    try:
+        os.makedirs(os.path.dirname(collection_path), exist_ok=True)
+        os.makedirs(os.path.dirname(data_file_path), exist_ok=True)
+    except FileNotFoundError:
+        print(f"Error: The file '{file_path}' was not found.")
+        logger.error(f"Error: The file '{file_path}' was not found.")
+        raise FileNotFoundError
     api_newman.run_command(collection_path, data_file_path)
 @step(u'I run postman collection file {}')
 def step_impl(context, collection_json_file):
     file_path = os.path.join(context.root_path, "resources/postman-test/collection", f"{collection_json_file}")
+    try:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    except FileNotFoundError:
+        print(f"Error: The file '{file_path}' was not found.")
+        logger.error(f"Error: The file '{file_path}' was not found.")
+        raise FileNotFoundError
     api_newman.run_command(file_path)
 
 
