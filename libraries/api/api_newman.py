@@ -113,7 +113,6 @@ def write_file_data(data, file_path):
         # Write the JSON data to the file
         with open(file_path, 'w', encoding='utf-8') as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
-
         print(f"Data written to '{file_path}' successfully.")
         return True
     except FileNotFoundError:
@@ -138,6 +137,19 @@ def delete_file_data(file_path):
     else:
         print(f"File '{file_path}' not found.")
         assert False, f"File '{file_path}' not found."
+def check_file_exist(file_path):
+    import os
+    try:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        return True
+    except FileNotFoundError:
+        print(f"Error: The file '{file_path}' was not found.")
+        logger.error(f"Error: The file '{file_path}' was not found.")
+        raise FileNotFoundError
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        logger.error(f"An unexpected error occurred: {e}")
+        return False
 
 #     logger.info(row)
 
