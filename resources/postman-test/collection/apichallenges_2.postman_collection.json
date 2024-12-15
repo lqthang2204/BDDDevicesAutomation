@@ -2,9 +2,7 @@
 	"info": {
 		"_postman_id": "cd65f242-28bb-445d-8f99-bb8838873389",
 		"name": "New Collection",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "12276119",
-		"_collection_link": "https://techsdd.postman.co/workspace/ATA-ticket~bd7140bf-47c0-42b2-849f-8629af1a85b0/collection/12276119-cd65f242-28bb-445d-8f99-bb8838873389?action=share&source=collection_link&creator=12276119"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{

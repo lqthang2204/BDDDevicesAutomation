@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bbb186f8-b8eb-4390-8017-0ef3ba96d89b",
+		"_postman_id": "c11b0163-1394-43de-8a02-02c1e1079871",
 		"name": "New Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -61,7 +61,6 @@
 							"pm.test(\"Status code is 201\", function () {\r",
 							"    pm.response.to.have.status(201);})\r",
 							"\r",
-							"console.log(\"name is \", json_response['name'])\r",
 							"  \r",
 							"pm.test(\"Body is correct\", function () {\r",
 							"    json_response['name'] === 'bob'\r",
@@ -120,7 +119,7 @@
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);})\r",
 							"\r",
-							"console.log('name is '+  json_response['name'])\r",
+							"  \r",
 							"pm.test(\"Body is correct\", function () {\r",
 							"    json_response['name'] === 'bob';\r",
 							"});"
