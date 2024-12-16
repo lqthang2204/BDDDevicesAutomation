@@ -23,6 +23,6 @@ Feature: performance run collection
     Given I navigate to url GURU99
     And I create a random user
     And I run postman collection file reqres.postman_collection.json with data file data_collection_reqres.json with override value
-      | Field | Value             |
-      | name  | USER.first_nameds |
+      | Field | Value           |
+      | name  | USER.first_name |
 
