@@ -1,0 +1,42 @@
+{
+	"info": {
+		"_postman_id": "cd65f242-28bb-445d-8f99-bb8838873389",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://apichallenges.eviltester.com/sim/entities",
+					"protocol": "https",
+					"host": [
+						"apichallenges",
+						"eviltester",
+						"com"
+					],
+					"path": [
+						"sim",
+						"entities"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

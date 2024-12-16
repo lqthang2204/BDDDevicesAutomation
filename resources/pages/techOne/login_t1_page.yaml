@@ -44,10 +44,10 @@ actions:
     actionElements:
       - element: *user-name
         condition: DISPLAYED
-        inputType: text
+        inputType: CHIEN_NGUYEN
       - element: *password
         condition: DISPLAYED
-        inputType: text
+        inputType: Technology@06092015
       - element: *login-button
         condition: ENABLED
         inputType: click

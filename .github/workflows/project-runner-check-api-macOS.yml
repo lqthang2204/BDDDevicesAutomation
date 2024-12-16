@@ -29,6 +29,14 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest
         pip3 install -r requirements.txt
+    - name: Install node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - name: Install newman
+      run: |
+        npm install -g newman
+        npm install -g newman-reporter-htmlextra
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names

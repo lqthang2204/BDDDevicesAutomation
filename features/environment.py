@@ -15,7 +15,7 @@ def before_all(context):
     Initializes the context with necessary values from the configuration file.
     """
     try:
-        image_attachments.set_attachments_condition(context, AttachmentsCondition.ONLY_ON_FAILURE)
+        # image_attachments.set_attachments_condition(context, AttachmentsCondition.ONLY_ON_FAILURE)
         # Initialize dictionaries and variables in the context
         context.dict_save_value = {}
         context.driver = None
@@ -198,15 +198,19 @@ import datetime
 
 def after_step(context, step):
     """
-    Takes a screenshot if the step fails and saves it in the evidence path provided in the context.
+       Takes a screenshot if the step fails and saves it in the evidence path provided in the context.
 
-    Args:
-        context (obj): The context object containing information about the test run.
-        step (obj): The step object representing the current step being executed.
-    """
+       Args:
+           context (obj): The context object containing information about the test run.
+           step (obj): The step object representing the current step being executed.
+       """
     if step.status == 'failed' and hasattr(context, 'evidence_path'):
-        screenshot = context.driver.get_screenshot_as_png()
-        image_attachments.attach_image_binary(context, screenshot)
+        logger.error(f"Error occurred in step '{step.name}' of feature '{context.feature.name}'")
+        print(f"Error occurred in step '{step.name}' of feature '{context.feature.name}'")
+        current_time = datetime.datetime.now()
+        date_time = str(current_time.year) + '_' + str(current_time.month) + '_' + str(current_time.day) + '_' + str(
+            current_time.microsecond)
+        context.driver.get_screenshot_as_file(context.evidence_path + '/' + step.name + '_' + date_time + '.png')
 
 
 def after_scenario(context, scenario):
