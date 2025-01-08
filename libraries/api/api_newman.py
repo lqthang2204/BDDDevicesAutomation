@@ -81,20 +81,18 @@ def update_data(data, table, dict_save_value):
     data = read_file_data(data)
     if not data:
         raise ValueError("Data read from the file is empty or invalid.")
+    first_item = data[0] if isinstance(data, list) and data else {}
 
     for row in table:
         # Extract the key and column from the table row
         key, column = row[0], row[1]
 
         # Ensure the first item in data is a dictionary
-        if key in data[0]:
+        if key in first_item:
             # Try fetching a value using both methods
-            value = get_test_data_for(column, dict_save_value)
-            value = procees_value().get_value(column, dict_save_value)
-
-            # Update the value in the data dictionary
+            value = get_test_data_for(column, dict_save_value) or procees_value().get_value(column, dict_save_value)
             if value is not None:
-                data[0][key] = value
+                first_item[key] = value
     return data
 
 
