@@ -3,9 +3,9 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/lqthang2204/BDDDevicesAutomation.svg)](https://github.com/lqthang2204/BDDDevicesAutomation/commits/main)
 # BDDDevicesAutomation
 
-### About this project
+### Overview
 
-* The project holds all automation tests for multi-project by browser and mobile (android and ios)
+* The BDDDevicesAutomation repository is designed for automating tests using Behavior-Driven Development (BDD) with Behave and Selenium, covering web, mobile, and API testing. It’s ideal for developers and testers working on multi-project automation, especially for Chrome, with reusable steps for web UI actions and verifications.
 
 ### Why do I need this project?
 
@@ -14,34 +14,32 @@ This project is for chrome
 * This project will provide tests specific to performing various browser UI actions and verifications.
 * The project will provide the use of the same steps for Web.
 
-### When and why would I need to modify this project?
+### Getting Started
+* To use the repository, clone it from GitHub, set up a virtual environment, and install dependencies with pip install -r requirements.txt. Ensure Python 3.x and necessary drivers for Selenium are installed. For IDE setup, consider PyCharm, with guidance at JetBrains PyCharm Download Page.
 
-Any QA or Developer can contribute to this project for valid acceptable scenarios as below:
-
-. Add a new test or feature file of clubbing various tests.
-. There is an error with an existing test and needs to be updated.
-. There is missing documentation.
-. Any other case that should be brought up to QA leads.
-
-### How do I set up Pychamr?
-
-Review the https://www.jetbrains.com/idea/download/#section=windows, which addresses
-questions such as:
-
-. How do I import the code into Pycharm?
-. How do I check out and change GIT branches?
-. What are environment variables and how to configure them for running tests?
 
 ### How do I get the code, afresh?
 
-. You can download code at https://github.com/lqthang2204/Selenium-with-python-behave
-. Clone this project to a working folder on your local machine.
-Follow https://github.com/lqthang2204/Selenium-with-python-behave for cloning a repository.
+* You can download code at https://github.com/lqthang2204/BDDDevicesAutomation
+* Clone this project to a working folder on your local machine. Follow https://github.com/lqthang2204/BDDDevicesAutomation for cloning a repository.
 
-### Test execution
+### Running Tests
+ Run tests using commands like python project_runner.py run -fd 'features/scenarios/web' -tg '{@web}' -fk 3 -sg SIT -pl WEB -ps scenario. Parallel testing is supported with behavex -t @regression --parallel-processes 2, and remote testing with Saucelabs is possible.
+
+### Prerequisites
+Before diving in, ensure the following are installed and configured:
+
+* Python: Version 3.x, with 3.9 or higher recommended for compatibility.
+* Behave: The BDD framework for Python, essential for running feature files.
+* Selenium: Required for browser and device automation, particularly for web and mobile testing.
+* Additional Dependencies: Install any other packages listed in the requirements.txt file, which can be done via:
+
+    **pip install -r requirements.txt**
+* Device Access: For mobile testing, ensure access to emulators or physical devices, along with necessary drivers.
+* IDE: An Integrated Development Environment like PyCharm or VS Code is recommended for development, with setup guidance available at JetBrains PyCharm Download Page.
 
 #### How do I run an automation test?
-
+The repository provides several commands for test execution, detailed in the table above. For example:
 * Recommended VM options :
     * Recommended Command for CLI
         * HELP : ```python project_runner.py run --help```
