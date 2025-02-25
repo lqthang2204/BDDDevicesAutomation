@@ -7,13 +7,6 @@
 
 * The BDDDevicesAutomation repository is designed for automating tests using Behavior-Driven Development (BDD) with Behave and Selenium, covering web, mobile, and API testing. It’s ideal for developers and testers working on multi-project automation, especially for Chrome, with reusable steps for web UI actions and verifications.
 
-### Why do I need this project?
-
-This project is for chrome
-
-* This project will provide tests specific to performing various browser UI actions and verifications.
-* The project will provide the use of the same steps for Web.
-
 ### Getting Started
 * To use the repository, clone it from GitHub, set up a virtual environment, and install dependencies with pip install -r requirements.txt. Ensure Python 3.x and necessary drivers for Selenium are installed. For IDE setup, consider PyCharm, with guidance at JetBrains PyCharm Download Page.
 
