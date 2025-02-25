@@ -31,7 +31,7 @@ Follow https://github.com/lqthang2204/BDDDevicesAutomation for cloning a reposit
 Before diving in, ensure the following are installed and configured:
 
 * Python: Version 3.x, with 3.9 or higher recommended for compatibility.
-*   Behave: The BDD framework for Python, essential for running feature files.
+* Behave: The BDD framework for Python, essential for running feature files.
 * Selenium: Required for browser and device automation, particularly for web and mobile testing.
 * Additional Dependencies: Install any other packages listed in the requirements.txt file, which can be done via:
 
