@@ -5,7 +5,7 @@
 
 ### Overview
 
-The BDDDevicesAutomation repository is designed for automating tests using Behavior-Driven Development (BDD) with Behave and Selenium, covering web, mobile, and API testing. It’s ideal for developers and testers working on multi-project automation, especially for Chrome, with reusable steps for web UI actions and verifications.
+* The BDDDevicesAutomation repository is designed for automating tests using Behavior-Driven Development (BDD) with Behave and Selenium, covering web, mobile, and API testing. It’s ideal for developers and testers working on multi-project automation, especially for Chrome, with reusable steps for web UI actions and verifications.
 
 ### Why do I need this project?
 
@@ -15,14 +15,13 @@ This project is for chrome
 * The project will provide the use of the same steps for Web.
 
 ### Getting Started
- To use the repository, clone it from GitHub, set up a virtual environment, and install dependencies with pip install -r requirements.txt. Ensure Python 3.x and necessary drivers for Selenium are installed. For IDE setup, consider PyCharm, with guidance at JetBrains PyCharm Download Page.
+* To use the repository, clone it from GitHub, set up a virtual environment, and install dependencies with pip install -r requirements.txt. Ensure Python 3.x and necessary drivers for Selenium are installed. For IDE setup, consider PyCharm, with guidance at JetBrains PyCharm Download Page.
 
 
 ### How do I get the code, afresh?
 
-. You can download code at https://github.com/lqthang2204/BDDDevicesAutomation
-. Clone this project to a working folder on your local machine.
-Follow https://github.com/lqthang2204/BDDDevicesAutomation for cloning a repository.
+* You can download code at https://github.com/lqthang2204/BDDDevicesAutomation
+* Clone this project to a working folder on your local machine. Follow https://github.com/lqthang2204/BDDDevicesAutomation for cloning a repository.
 
 ### Running Tests
  Run tests using commands like python project_runner.py run -fd 'features/scenarios/web' -tg '{@web}' -fk 3 -sg SIT -pl WEB -ps scenario. Parallel testing is supported with behavex -t @regression --parallel-processes 2, and remote testing with Saucelabs is possible.
